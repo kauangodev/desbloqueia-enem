@@ -5,7 +5,7 @@ URL confirmada para este projeto: https://desbloqueia-enem.vercel.app. O endere�
 
 ## 1. Banco, autenticação e arquivos (Supabase)
 
-1. Crie/selecione o projeto Supabase e execute, em ordem, `supabase/migrations/001_platform.sql` e `002_catalog.sql` pelo SQL Editor. Migrações iniciais: executar uma vez.
+1. Crie/selecione o projeto Supabase e execute, em ordem, `supabase/migrations/001_platform.sql`, `002_catalog.sql` e `003_cakto_launch.sql` pelo SQL Editor. Migrações iniciais: executar uma vez.
 2. Configure as três variáveis Supabase de `.env.example` no Vercel. Somente URL e chave anônima são públicas. Nunca exponha service_role.
 3. Em Auth, configure Site URL para o domínio acima e permita o callback `/auth/callback`. Configure SMTP de produção para os links de acesso. Desative cadastros públicos; contas são criadas pelo fulfillment e convites administrativos.
 4. Crie o proprietário por convite no Supabase Auth. Promova somente seu UUID com `update public.profiles set role='admin' where id='<UUID conferido>';`. Nenhum cadastro público recebe papel administrativo.
@@ -18,7 +18,11 @@ Nenhuma amostra interior foi designada como pública: a landing usa apenas as ca
 
 Referências consultadas: https://docs.cakto.com.br/conceitos/webhooks e https://www.cakto.com.br/api.
 
-- Cadastre os produtos reais Essencial e Premium e suas ofertas. Preencha IDs exatos e checkout em `/admin?tab=produtos`. Domínio permitido: `https://pay.cakto.com.br`.
+- O catálogo de lançamento está em `config/cakto-products.json`: Essencial por R$ 19,90 e Premium por R$ 39,90, ambos em pagamento único. As descrições e benefícios refletem somente os materiais existentes.
+- As capas quadradas de checkout estão em `public/products/`. Depois de publicar o site, os arquivos ficam nos endereços definidos no catálogo e podem ser aplicados às ofertas.
+- Para conferir o plano sem alterar a conta, execute `npm run cakto:plan`. Para provisionar, use localmente `CAKTO_CLIENT_ID` e `CAKTO_CLIENT_SECRET` com escopos mínimos de leitura/escrita para produtos, ofertas e webhooks, então execute `npm run cakto:provision`. O script reutiliza produtos com o mesmo nome, cria os ausentes, atualiza as ofertas, vincula as capas e cadastra o webhook.
+- O resultado fica somente em `private/cakto-provision-result.json`, pasta ignorada pelo Git. Ele contém IDs, links dos checkouts e o secret do webhook; não publique esse arquivo.
+- Preencha os IDs exatos e checkout em `/admin?tab=produtos`. Domínio permitido: `https://pay.cakto.com.br`.
 - Webhook: `https://desbloqueia-enem.vercel.app/api/webhooks/cakto`.
 - Secret em `CAKTO_WEBHOOK_SECRET`; ativação separada em `CAKTO_WEBHOOK_ENABLED=true`.
 - Assinatura oficial: HMAC SHA-256 de `timestamp.corpo_original`, headers `X-Cakto-Timestamp` e `X-Cakto-Signature: v1=...`; tolerância de cinco minutos. Não usar um segredo enviado pelo cliente como autorização.

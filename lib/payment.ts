@@ -32,7 +32,8 @@ export const orderSchema = z.object({
   customer: z.object({ email: z.email().max(254), name: z.string().max(160) }),
   product: z.object({ id: z.string().min(1) }),
   offer: z.object({ id: z.string().min(1) }),
-  amount: z.number().nonnegative(),
+  baseAmount: z.number().nonnegative().optional(),
+  amount: z.number().nonnegative().nullable(),
   currency: z.literal("BRL"),
 });
 export const eventSchema = z.object({

@@ -15,6 +15,7 @@ before(async () => {
   );
   await db.exec(readFileSync("supabase/migrations/001_platform.sql", "utf8"));
   await db.exec(readFileSync("supabase/migrations/002_catalog.sql", "utf8"));
+  await db.exec(readFileSync("supabase/migrations/003_cakto_launch.sql", "utf8"));
   await db.exec(
     `grant usage on schema public,auth to authenticated,anon;grant select,insert,update,delete on all tables in schema public to authenticated;grant execute on function auth.uid() to authenticated;update offers set cakto_product_id='product-'||plan,cakto_offer_id='offer-'||plan;insert into auth.users(id,email) values('${alice}','alice@example.test'),('${bob}','bob@example.test'),('${admin}','admin@example.test');update profiles set role='admin' where id='${admin}';`,
   );
@@ -126,6 +127,14 @@ test("recusa e Pix pendente não liberam conteúdo", async () => {
     )[0].n,
     0,
   );
+});
+test("pedido pendente aceita amount nulo e usa baseAmount", async () => {
+  const pending = { ...payload("pix-null"), amount: null, baseAmount: 19.9 };
+  assert.ok(eventSchema.safeParse({ event: "pix_gerado", data: pending }).success);
+  await db.query("select receive_payment($1,$2::jsonb)", ["pix_gerado", pending]);
+  const [order] = await rows("select amount,status from orders where id='pix-null'");
+  assert.equal(Number(order.amount), 19.9);
+  assert.equal(order.status, "pending");
 });
 test("upgrade e reembolso preservam outro pedido válido", async () => {
   await event("upgrade", "purchase_approved", "premium");

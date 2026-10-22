@@ -24,10 +24,12 @@ export const plans = [
     description: "Mais prática. Mais repertório. Tudo conectado.",
     features: [
       "Tudo do Essencial",
+      "Kit completo de revisão com 87 páginas",
       "Dois simulados compactos",
       "Preparação para redação",
-      "Biblioteca histórica do ENEM",
-      "Fichas e checklists do kit",
+      "Biblioteca navegável com 1.800 referências",
+      "7 resoluções autorais já disponíveis",
+      "Fichas e checklists para a reta final",
     ],
   },
 ] as const;

@@ -1,0 +1,36 @@
+{
+  "salesPage": "https://desbloqueia-enem.vercel.app/#planos",
+  "accessPage": "https://desbloqueia-enem.vercel.app/entrar",
+  "webhookUrl": "https://desbloqueia-enem.vercel.app/api/webhooks/cakto",
+  "products": [
+    {
+      "plan": "essencial",
+      "name": "Desbloqueia ENEM 2026 — Essencial",
+      "price": "19.90",
+      "coverUrl": "https://desbloqueia-enem.vercel.app/products/desbloqueia-enem-essencial.png",
+      "description": "Material digital para revisão do ENEM 2026 com resumos estratégicos de Linguagens e Redação, Ciências Humanas, Ciências da Natureza e Matemática, cronograma de estudos, mapa da revisão e uma seleção de 40 exercícios comentados. Leitura pela plataforma em celular, tablet ou computador.",
+      "benefits": [
+        "Resumos estratégicos por disciplina",
+        "Cronograma e mapa da revisão",
+        "40 exercícios comentados",
+        "Leitura na plataforma"
+      ]
+    },
+    {
+      "plan": "premium",
+      "name": "Desbloqueia ENEM 2026 — Premium",
+      "price": "39.90",
+      "coverUrl": "https://desbloqueia-enem.vercel.app/products/desbloqueia-enem-premium.png",
+      "description": "Pacote digital completo para a reta final do ENEM 2026. Reúne todo o Essencial, kit de revisão com 87 páginas, dois simulados compactos, preparação para redação, fichas e checklists, biblioteca navegável com 1.800 referências do ENEM e 7 resoluções autorais já disponíveis.",
+      "benefits": [
+        "Tudo do plano Essencial",
+        "Kit completo de revisão com 87 páginas",
+        "Dois simulados compactos",
+        "Preparação para redação",
+        "Biblioteca navegável com 1.800 referências",
+        "7 resoluções autorais já disponíveis",
+        "Fichas e checklists para a reta final"
+      ]
+    }
+  ]
+}

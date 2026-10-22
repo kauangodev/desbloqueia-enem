@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/payment.test.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "cakto:plan": "node scripts/cakto-provision.mjs",
+    "cakto:provision": "node scripts/cakto-provision.mjs --apply"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
