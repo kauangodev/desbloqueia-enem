@@ -139,14 +139,14 @@ export default function Library({ entries }: { entries: Entry[] }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Prova oficial ↗
+              Prova oficial
             </a>
             <a
               href={safeUrl(r.consulta_resolucao_terceiros)}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Correção externa ↗
+              Correção externa
             </a>
             {r.resolucao_autoral ? (
               <div className="solution">

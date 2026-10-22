@@ -36,18 +36,7 @@ export function Header() {
         </nav>
         <div className="header-actions">
           <Link href="/entrar" className="login-link">
-            Entrar{" "}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              aria-hidden="true"
-            >
-              <path d="M14 4h6v16h-6M4 12h12m-4-4 4 4-4 4" />
-            </svg>
+            Entrar
           </Link>
           <button
             className="menu-button"
@@ -128,9 +117,6 @@ export function MaterialPreview() {
           >
             <span>{String(i + 1).padStart(2, "0")}</span>
             {item.title}
-            <span className="tab-arrow" aria-hidden="true">
-              ↗
-            </span>
           </button>
         ))}
       </div>

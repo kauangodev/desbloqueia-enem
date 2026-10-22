@@ -9,6 +9,7 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Essencial", exact: true }),
   ).toBeVisible();
+  await expect(page.locator("body")).not.toContainText("↗");
   await expect(
     page.getByRole("heading", { name: "Premium", exact: true }),
   ).toBeVisible();
@@ -22,6 +23,24 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await expect(
     page.getByText("As vendas ainda não estão abertas.", { exact: false }),
   ).toBeVisible();
+});
+
+test("faixa de matérias corre suavemente da esquerda para a direita", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const track = page.locator("[data-discipline-track]");
+  await expect(track).toBeVisible();
+  await expect(track.locator("span")).toHaveCount(10);
+  const x = () =>
+    track.evaluate((element) => {
+      const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform);
+      return matrix.m41;
+    });
+  const before = await x();
+  await page.waitForTimeout(400);
+  expect(await x()).toBeGreaterThan(before);
 });
 const viewports = [
   { width: 320, height: 568 },

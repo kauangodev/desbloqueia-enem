@@ -158,12 +158,33 @@ textarea {
 }
 .nav {
   display: flex;
-  gap: 30px;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid rgb(8 72 45 / 12%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 72%);
+  box-shadow: 0 10px 30px rgb(8 72 45 / 7%);
   font-size: 14px;
+}
+.nav a {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 17px;
+  border-radius: 999px;
+  color: #244137;
+  font-weight: 600;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
 }
 .nav a:hover,
 .text-link:hover {
-  color: var(--blue);
+  color: #08482d;
+}
+.nav a:hover,
+.nav a:focus-visible {
+  background: #dae7c7;
+  transform: translateY(-1px);
 }
 .header-actions {
   display: flex;
@@ -171,12 +192,24 @@ textarea {
   gap: 12px;
 }
 .login-link {
-  display: flex;
-  gap: 10px;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 44px;
+  padding: 10px 20px;
+  border: 1px solid rgb(8 72 45 / 14%);
+  border-radius: 999px;
+  background: #08482d;
+  color: #fff;
+  box-shadow: 0 10px 24px rgb(8 72 45 / 14%);
   font-size: 14px;
   font-weight: 600;
+  transition: transform 180ms ease, background 180ms ease;
+}
+.login-link:hover,
+.login-link:focus-visible {
+  background: #0b5938;
+  transform: translateY(-1px);
 }
 .menu-button {
   display: none;
@@ -228,22 +261,24 @@ textarea {
   flex-wrap: wrap;
 }
 .button {
-  min-height: 50px;
+  min-height: 54px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 13px 23px;
+  padding: 14px 26px;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: 999px;
   font-size: 14px;
   font-weight: 600;
   transition:
     background 0.18s,
-    transform 0.18s;
+    transform 0.18s,
+    box-shadow 0.18s;
   gap: 8px;
 }
 .button:hover {
   transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgb(8 72 45 / 14%);
 }
 .primary {
   background: var(--navy);
@@ -253,7 +288,7 @@ textarea {
   background: #1c406d;
 }
 .secondary {
-  border-color: #cbd1dc;
+  border-color: rgb(8 72 45 / 20%);
   background: white;
   color: var(--navy);
 }
@@ -265,9 +300,12 @@ textarea {
   font-size: 14px;
   font-weight: 550;
   display: inline-flex;
-  gap: 12px;
+  gap: 0;
   align-items: center;
-  text-underline-offset: 4px;
+  padding: 9px 0 7px;
+  border-bottom: 1px solid currentColor;
+  text-decoration: none;
+  transition: color 180ms ease, border-color 180ms ease;
 }
 .hero-footnote {
   display: flex;
@@ -357,15 +395,44 @@ textarea {
 .discipline-strip {
   border-block: 1px solid var(--line);
   background: white;
+  overflow: hidden;
 }
-.discipline-strip > .container {
+.discipline-marquee {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.discipline-track {
   display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  padding-block: 23px;
+  width: max-content;
+  will-change: transform;
+  animation: discipline-flow 32s linear infinite;
+}
+.discipline-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: clamp(42px, 6vw, 94px);
+  padding: 22px clamp(21px, 3vw, 47px);
+}
+.discipline-group span {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(42px, 6vw, 94px);
+  color: #355749;
   font-size: 13px;
-  color: var(--muted);
-  flex-wrap: wrap;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.discipline-group i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #86a56d;
+}
+@keyframes discipline-flow {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
 }
 .intro-section {
   display: grid;
@@ -417,32 +484,55 @@ textarea {
   gap: 60px;
 }
 .material-index {
-  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 18px;
 }
 .material-index button {
   display: flex;
   align-items: center;
   gap: 20px;
-  border: 0;
-  border-bottom: 1px solid #d8dee7;
-  background: transparent;
+  border: 1px solid rgb(8 72 45 / 13%);
+  border-radius: 16px;
+  background: rgb(255 255 255 / 50%);
   color: var(--muted);
-  min-height: 76px;
+  min-height: 68px;
   width: 100%;
   text-align: left;
   font-size: 17px;
+  padding: 10px 18px 10px 12px;
+  box-shadow: 0 8px 24px transparent;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 .material-index button > span:first-child {
-  font-size: 11px;
-  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 50%;
+  background: rgb(8 72 45 / 10%);
+  color: #294f3f;
+  font-size: 10px;
 }
 .material-index button[aria-selected="true"] {
-  color: var(--navy);
+  border-color: #08482d;
+  background: #08482d;
+  color: white;
   font-weight: 600;
+  box-shadow: 0 16px 34px rgb(8 72 45 / 16%);
+  transform: translateX(8px);
 }
-.material-index .tab-arrow {
-  margin-left: auto;
-  font-size: 20px;
+.material-index button[aria-selected="true"] > span:first-child {
+  background: #dae7c7;
+  color: #08482d;
+}
+.material-index button:hover:not([aria-selected="true"]) {
+  border-color: rgb(8 72 45 / 28%);
+  background: rgb(255 255 255 / 82%);
+  transform: translateX(4px);
 }
 .material-stage {
   background: #e0e5eb;
@@ -566,8 +656,9 @@ textarea {
 .price-card {
   border: 1px solid var(--line);
   padding: 36px;
-  border-radius: 12px;
+  border-radius: 26px;
   background: var(--bg);
+  box-shadow: 0 18px 50px rgb(8 72 45 / 6%);
 }
 .plan-title {
   display: flex;
@@ -584,7 +675,7 @@ textarea {
   padding: 5px 9px;
   background: #d6f27c;
   color: #102a4c;
-  border-radius: 4px;
+  border-radius: 999px;
   white-space: nowrap;
 }
 .price-card > p {
@@ -653,7 +744,10 @@ textarea {
   display: flex;
   gap: 26px;
   align-items: center;
-  padding-block: 24px;
+  padding: 24px 28px;
+  border: 1px solid rgb(8 72 45 / 12%);
+  border-radius: 22px;
+  background: #f5f8ef;
 }
 .guarantee-number {
   font-size: 62px;
@@ -1174,10 +1268,12 @@ th {
   animation: nav-enter 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .brand b,
-.login-link,
 .landing-main h2,
 .landing-main h3 {
   color: #101410;
+}
+.login-link {
+  color: #fff;
 }
 .brand b > span,
 .nav a:hover,
@@ -1223,6 +1319,9 @@ th {
 .landing-main .material-index button[aria-selected="true"],
 .landing-main .library-note b {
   color: #08482d;
+}
+.landing-main .material-index button[aria-selected="true"] {
+  color: #fff;
 }
 .landing-main .study-outline,
 .landing-main .price-card {
@@ -1400,6 +1499,8 @@ th {
   }
   .login-link {
     font-size: 12px;
+    min-height: 40px;
+    padding-inline: 15px;
   }
   .nav {
     display: none;
@@ -1407,9 +1508,11 @@ th {
     left: 0;
     right: 0;
     top: 74px;
-    background: #f5f8ef;
-    padding: 20px;
+    background: rgb(245 248 239 / 98%);
+    padding: 16px 20px 20px;
     border-bottom: 1px solid var(--line);
+    border-radius: 0 0 22px 22px;
+    box-shadow: 0 18px 32px rgb(8 72 45 / 12%);
   }
   .nav.open {
     display: flex;
@@ -1417,8 +1520,10 @@ th {
     gap: 0;
   }
   .nav a {
-    padding: 13px 0;
+    justify-content: center;
+    padding: 13px 16px;
     min-height: 46px;
+    border-radius: 12px;
   }
   .hero {
     grid-template-columns: 1fr;
@@ -1475,11 +1580,13 @@ th {
   .edition-seal {
     font-size: 8px;
   }
-  .discipline-strip > .container {
-    gap: 12px 24px;
-    justify-content: center;
+  .discipline-group {
+    gap: 34px;
+    padding: 18px 17px;
+  }
+  .discipline-group span {
+    gap: 34px;
     font-size: 11px;
-    padding-block: 18px;
   }
   .intro-section,
   .study-section,
@@ -1507,9 +1614,13 @@ th {
   }
   .material-index {
     display: flex;
+    flex-direction: row;
+    gap: 8px;
     overflow: auto;
     padding: 0;
+    scrollbar-width: none;
   }
+  .material-index::-webkit-scrollbar { display: none; }
   .material-index button {
     flex: 0 0 auto;
     min-height: 50px;
@@ -1517,13 +1628,14 @@ th {
     gap: 8px;
     font-size: 13px;
     padding-inline: 12px;
-    border-bottom: 2px solid transparent;
+    border: 1px solid rgb(8 72 45 / 13%);
+    border-radius: 999px;
   }
   .material-index button[aria-selected="true"] {
-    border-color: var(--navy);
+    border-color: #08482d;
+    transform: none;
   }
-  .material-index button > span:first-child,
-  .tab-arrow {
+  .material-index button > span:first-child {
     display: none;
   }
   .material-stage {

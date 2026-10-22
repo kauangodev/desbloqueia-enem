@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Header, Footer, MaterialPreview, FAQ } from "../components/site";
 import { ReelHero } from "../components/landing/ReelHero";
+import { DisciplineMarquee } from "../components/landing/DisciplineMarquee";
 import { money } from "../lib/config";
 import { publicPlans } from "../lib/catalog";
 export const dynamic = "force-dynamic";
@@ -12,15 +13,7 @@ export default async function Home() {
       <Header />
       <main id="conteudo" className="landing-main">
         <ReelHero />
-        <div className="discipline-strip">
-          <div className="container">
-            <span>Linguagens</span>
-            <span>Ciências Humanas</span>
-            <span>Ciências da Natureza</span>
-            <span>Matemática</span>
-            <span>Redação</span>
-          </div>
-        </div>
+        <DisciplineMarquee />
         <section className="container section intro-section">
           <h2>
             O conteúdo importa.
@@ -92,7 +85,7 @@ export default async function Home() {
               aluno conecta pequenas etapas para ajudar você a manter a rotina.
             </p>
             <Link href="/entrar" className="text-link">
-              Conhecer o acesso do aluno <span aria-hidden="true">↗</span>
+              Conhecer o acesso do aluno
             </Link>
           </div>
           <div className="study-outline">
@@ -197,7 +190,7 @@ export default async function Home() {
                 </p>
               </div>
               <Link className="text-link" href="/politicas/reembolso">
-                Ler a política <span aria-hidden="true">↗</span>
+                Ler a política
               </Link>
             </div>
           </div>

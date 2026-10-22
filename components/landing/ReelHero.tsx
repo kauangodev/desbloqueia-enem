@@ -31,7 +31,6 @@ export function ReelHero() {
         <div className={styles.primaryWrap}>
           <Link className={styles.primaryCta} href="#planos">
             Explorar os planos
-            <span aria-hidden="true">↗</span>
           </Link>
         </div>
         <Link className={styles.secondaryCta} href="#materiais">
