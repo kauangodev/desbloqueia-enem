@@ -6,3 +6,8 @@ build/
 .env
 .env.*
 !.env.example
+public/vendor/
+test-results/
+playwright-report/
+.impeccable/
+private/

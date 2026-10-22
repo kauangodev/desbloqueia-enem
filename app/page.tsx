@@ -1,20 +1,311 @@
-"use client";
-import { useMemo, useState } from "react";
-
-const materials = [["Guia editorial", "Mapa da revisão", "/covers/guia.png"], ["Linguagens & Redação", "Caderno didático", "/covers/linguagens.png"], ["Ciências Humanas", "Caderno didático", "/covers/humanas.png"], ["Ciências da Natureza", "Caderno didático", "/covers/natureza.png"], ["Matemática", "Caderno didático", "/covers/matematica.png"]];
-const faqs = [["Como funciona o acesso ao material?", "O acesso será organizado pela área de alunos quando a autenticação e a entrega forem configuradas. Nesta fase, a página apresenta a oferta sem simular uma compra."], ["O kit funciona no celular?", "Sim. A experiência foi desenhada para celular, tablet e computador."], ["Quais as diferenças entre os planos?", "O Essencial reúne os cadernos de revisão e o cronograma. O Premium acrescenta o kit completo, simulados compactos, redação e biblioteca histórica."], ["Como funciona a biblioteca de provas?", "A biblioteca navegável reúne referências de 2016 a 2025, com links para fontes oficiais e indicação transparente do estado de cada resolução."], ["Existe garantia de sete dias?", "A garantia será publicada junto do checkout real, respeitando o direito de arrependimento e a política comercial aplicável."], ["Como falar com o suporte?", "O canal de suporte ainda será configurado. Nenhum contato fictício é exibido nesta versão."]];
-
-export default function Home() {
-  const [openFaq, setOpenFaq] = useState<number | null>(0); const [activeMaterial, setActiveMaterial] = useState(0); const firstTestDate = useMemo(() => new Date("2026-11-08T00:00:00-03:00"), []); const days = Math.max(0, Math.ceil((firstTestDate.getTime() - Date.now()) / 86400000));
-  return <main>
-    <header className="topbar"><a className="brand" href="#inicio"><span className="brandMark">D</span> desbloqueia<span>enem</span></a><nav><a href="#inclui">Incluído</a><a href="#planos">Planos</a><a href="#duvidas">Dúvidas</a></nav><a className="login" href="#oferta">Área do aluno ↗</a></header>
-    <section className="hero shell" id="inicio"><div className="heroCopy"><p className="eyebrow">SEU MATERIAL DE REVISÃO PARA O ENEM 2026 <i /></p><h1>Uma reta final mais organizada <em>começa aqui.</em></h1><p className="lede">Resumos, exercícios comentados, simulados e um plano de estudos para transformar seus últimos dias de preparação em uma rotina mais clara e objetiva.</p><div className="actions"><a className="button primary" href="#planos">CONHECER OS PLANOS <span>→</span></a><small>Material digital · Acesso pela plataforma · Estude no seu ritmo</small></div></div><div className="heroVisual"><div className="heroStack"><img src="/covers/kit.png" alt="Capa real do Kit Reta Final ENEM 2026" /><div className="heroTag">EDIÇÃO INDEPENDENTE<br /><b>21 OUT 2026</b></div></div><div className="heroNote"><span>87</span><small>páginas no<br />kit completo</small></div></div></section>
-    <div className="notice shell"><span>✦</span><b>{days} dias até a primeira prova</b><span>·</span><span>8 e 15 de novembro de 2026</span></div>
-    <section className="value shell"><div className="sectionIntro"><p className="kicker">A PROPOSTA</p><h2>Estude com menos ruído e mais <em>direção.</em></h2><p>Uma seleção editorial para revisar fundamentos, praticar com objetividade e enxergar melhor o caminho até a prova.</p></div><div className="valueGrid"><article><span>01</span><h3>Revise com clareza.</h3><p>Cadernos autorais organizados por área, com fundamentos, exemplos e alertas de prova.</p></article><article><span>02</span><h3>Pratique de verdade.</h3><p>Questões comentadas e simulados compactos para transformar revisão em ação.</p></article><article><span>03</span><h3>Organize seu tempo.</h3><p>Guia editorial e cronograma para decidir o próximo bloco de estudo sem improviso.</p></article></div></section>
-    <section className="includes shell" id="inclui"><div className="sectionHead"><div><p className="kicker">MATERIAIS REAIS</p><h2>Conheça o que já está<br /><em>em edição.</em></h2></div><p>As capas abaixo são prévias reais dos arquivos fornecidos. PDFs completos não ficam expostos nesta landing page.</p></div><div className="materialRail">{materials.map(([title,sub,src],i)=><button className={`material ${i===activeMaterial?"active":""}`} key={title} onClick={()=>setActiveMaterial(i)}><img src={src} alt={`Capa de ${title}`} /><span>{sub}</span><b>{title}</b></button>)}</div><div className="materialDetail"><div><p className="kicker">PRÉVIA SELECIONADA</p><h3>{materials[activeMaterial][0]}</h3><p>{materials[activeMaterial][1]} · edição de estudo 2026</p></div><span>CAPA REAL<br />DO ARQUIVO</span></div></section>
-    <section className="plans shell" id="planos"><div className="sectionHead"><div><p className="kicker">DOIS CAMINHOS DE REVISÃO</p><h2>Escolha o nível de<br /><em>estrutura.</em></h2></div><p>Preços iniciais configuráveis. Os botões permanecem desativados até que checkout e entrega sejam definidos.</p></div><div className="planGrid"><article className="plan"><p className="planLabel">PARA COMEÇAR</p><h3>Kit Essencial</h3><p>O núcleo para organizar sua revisão com objetividade.</p><ul><li>Resumos estratégicos de revisão</li><li>Cronograma de estudos</li><li>Caderno com 40 exercícios comentados</li><li>Acesso aos materiais pela área de alunos</li></ul><strong>R$ 19,90 <small>preço inicial</small></strong><a className="button disabled" href="#planos">CHECKOUT EM CONFIGURAÇÃO <span>→</span></a><small className="fineprint">Compra e entrega ainda não habilitadas.</small></article><article className="plan premium"><div className="planBadge">MAIS COMPLETO</div><p className="planLabel">PARA IR ALÉM</p><h3>Kit Premium</h3><p>O Essencial mais a experiência completa de preparação.</p><ul><li>Todo o conteúdo do Essencial</li><li>Kit completo com 87 páginas</li><li>Dois simulados compactos</li><li>Módulo de preparação para redação</li><li>Biblioteca histórica de provas</li></ul><strong>R$ 39,90 <small>preço inicial</small></strong><a className="button disabled" href="#planos">CHECKOUT EM CONFIGURAÇÃO <span>→</span></a><small className="fineprint">Compra e entrega ainda não habilitadas.</small></article></div></section>
-    <section className="guarantee shell"><div className="guaranteeIcon">◌</div><div><p className="kicker">DECISÃO TRANQUILA</p><h2>Você tem 7 dias para decidir.</h2><p>Após a compra, poderá solicitar o reembolso dentro do prazo de sete dias corridos, conforme a política informada no checkout e seus direitos como consumidor.</p></div><a href="#duvidas">Ver condições →</a></section>
-    <section className="faq shell" id="duvidas"><div><p className="kicker">AINDA COM DÚVIDAS?</p><h2>Perguntas<br /><em>frequentes.</em></h2></div><div className="faqList">{faqs.map(([q,a],i)=><div className="faqItem" key={q}><button aria-expanded={openFaq===i} onClick={()=>setOpenFaq(openFaq===i?null:i)}><span>{q}</span><b>{openFaq===i?"−":"+"}</b></button>{openFaq===i&&<p>{a}</p>}</div>)}</div></section>
-    <footer><div className="shell footerInner"><div><a className="brand" href="#inicio"><span className="brandMark">D</span> desbloqueia<span>enem</span></a><p>Material educacional independente.<br />Sem vínculo oficial com INEP ou MEC.</p></div><div><b>Biblioteca</b><p>1.800 referências navegáveis<br />2016 — 2025</p></div><div><b>Em breve</b><p>Área do aluno<br />Suporte e integrações</p></div></div><div className="shell copyright">© 2026 Desbloqueia Enem · Política de privacidade · Termos de uso · Reembolso</div></footer>
-  </main>;
+import Image from "next/image";
+import Link from "next/link";
+import { Header, Footer, MaterialPreview, FAQ } from "../components/site";
+import { money } from "../lib/config";
+import { publicPlans } from "../lib/catalog";
+export const dynamic = "force-dynamic";
+export const metadata = { alternates: { canonical: "/" } };
+export default async function Home() {
+  const plans = await publicPlans();
+  return (
+    <>
+      <Header />
+      <main id="conteudo">
+        <section className="hero container" id="kit">
+          <div className="hero-copy">
+            <div className="product-label">
+              <span />
+              Desbloqueia ENEM 2026
+            </div>
+            <h1>
+              Sua reta final
+              <br />
+              do ENEM,
+              <br />
+              <span>
+                organizada em
+                <br />
+                um só lugar.
+              </span>
+            </h1>
+            <p>
+              Tenha acesso a resumos, exercícios comentados, simulados e um
+              cronograma de estudos para revisar com mais organização e
+              praticidade.
+            </p>
+            <div className="hero-actions">
+              <Link className="button primary" href="#planos">
+                Conhecer os planos
+              </Link>
+              <Link className="text-link" href="#materiais">
+                Explorar os materiais <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
+            <div className="hero-footnote">
+              <span>Feito para o seu ritmo.</span>
+              <span>Do celular ao computador.</span>
+            </div>
+          </div>
+          <div className="hero-art">
+            <div className="art-heading">
+              <span>SUA PRÓXIMA ETAPA.</span>
+              <span>EDIÇÃO 2026</span>
+            </div>
+            <div className="cover-composition">
+              <Image
+                className="cover rear-cover"
+                src="/covers/matematica.png"
+                width={290}
+                height={411}
+                alt="Capa real do caderno de Matemática"
+                priority
+              />
+              <Image
+                className="cover main-cover"
+                src="/covers/kit.png"
+                width={350}
+                height={496}
+                alt="Capa real do Kit Reta Final ENEM 2026"
+                priority
+              />
+            </div>
+            <div className="art-bottom">
+              <div>
+                <span className="art-line" />
+                Menos dispersão.
+                <br />
+                <b>Mais direção.</b>
+              </div>
+              <span className="edition-seal">
+                REVISAR
+                <br />
+                PRATICAR
+                <br />
+                AVANÇAR
+              </span>
+            </div>
+          </div>
+        </section>
+        <div className="discipline-strip">
+          <div className="container">
+            <span>Linguagens</span>
+            <span>Ciências Humanas</span>
+            <span>Ciências da Natureza</span>
+            <span>Matemática</span>
+            <span>Redação</span>
+          </div>
+        </div>
+        <section className="container section intro-section">
+          <h2>
+            O conteúdo importa.
+            <br />
+            <span>O caminho também.</span>
+          </h2>
+          <div>
+            <p className="large-copy">
+              Revisar não precisa ser uma coleção de abas abertas. Reúna o
+              material, encontre seu próximo passo e dê continuidade ao que
+              começou.
+            </p>
+            <div className="benefit-lines">
+              <p>
+                <b>Organize sua revisão.</b>
+                <span>Um lugar para encontrar seus materiais.</span>
+              </p>
+              <p>
+                <b>Pratique com intenção.</b>
+                <span>Exercícios e simulados para trabalhar o conteúdo.</span>
+              </p>
+              <p>
+                <b>Continue de onde parou.</b>
+                <span>Leitura e tarefas com progresso salvo na sua conta.</span>
+              </p>
+            </div>
+          </div>
+        </section>
+        <section className="materials-section" id="materiais">
+          <div className="container section">
+            <div className="section-heading">
+              <h2>
+                Abra espaço
+                <br />
+                para aprender.
+              </h2>
+              <p>
+                Conheça as capas dos materiais reais.
+                <br />
+                Uma coleção organizada por área,
+                <br />
+                com conteúdo para consultar no seu ritmo.
+              </p>
+            </div>
+            <MaterialPreview />
+            <div className="library-note">
+              <span>2016 — 2025</span>
+              <p>
+                <b>A história da prova também ensina.</b> O Premium inclui a
+                biblioteca navegável de referências do ENEM, com filtros, fontes
+                oficiais e indicação do que já foi resolvido.
+              </p>
+              <span>
+                1.800 referências
+                <br />7 resoluções autorais
+              </span>
+            </div>
+          </div>
+        </section>
+        <section className="container section study-section">
+          <div>
+            <h2>
+              Um estudo que
+              <br />
+              <span>acompanha você.</span>
+            </h2>
+            <p>
+              Seus cadernos, uma agenda de revisão e a próxima página. A área do
+              aluno conecta pequenas etapas para ajudar você a manter a rotina.
+            </p>
+            <Link href="/entrar" className="text-link">
+              Conhecer o acesso do aluno <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+          <div className="study-outline">
+            <div className="outline-top">
+              <b>Seu espaço de estudo</b>
+              <span>Desbloqueia ENEM</span>
+            </div>
+            <div className="outline-row">
+              <span>01</span>
+              <div>
+                <b>Escolha o material</b>
+                <p>Navegue por disciplina e conteúdo do seu plano.</p>
+              </div>
+            </div>
+            <div className="outline-row">
+              <span>02</span>
+              <div>
+                <b>Faça uma etapa por vez</b>
+                <p>Leia, pratique e organize suas tarefas.</p>
+              </div>
+            </div>
+            <div className="outline-row">
+              <span>03</span>
+              <div>
+                <b>Retome seu caminho</b>
+                <p>Volte à página salva na próxima sessão.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="pricing-section" id="planos">
+          <div className="container section">
+            <div className="section-heading">
+              <h2>
+                Escolha seu
+                <br />
+                próximo passo.
+              </h2>
+              <p>
+                Do essencial à revisão completa.
+                <br />
+                Pagamento único. Materiais digitais.
+                <br />
+                Sem promessa de nota ou aprovação.
+              </p>
+            </div>
+            <div className="pricing-grid">
+              {plans.map((p) => (
+                <article
+                  key={p.id}
+                  className={`price-card ${p.id === "premium" ? "premium" : ""}`}
+                >
+                  <div className="plan-title">
+                    <h3>{p.name}</h3>
+                    {p.id === "premium" && <span>Mais completo</span>}
+                  </div>
+                  <p>{p.description}</p>
+                  <div className="price">
+                    {money(p.cents)}
+                    <small>pagamento único</small>
+                  </div>
+                  <ul>
+                    {p.features.map((f) => (
+                      <li key={f}>
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          aria-hidden="true"
+                        >
+                          <path d="m5 12 4 4L19 6" />
+                        </svg>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    className={`button ${p.id === "premium" ? "lime" : "secondary"}`}
+                    href={`/comprar/${p.id}`}
+                  >
+                    Escolher {p.name}
+                  </Link>
+                  <small className="plan-note">Vendas em preparação</small>
+                </article>
+              ))}
+            </div>
+            <div className="guarantee">
+              <div className="guarantee-number">
+                7<span>DIAS</span>
+              </div>
+              <div>
+                <h3>
+                  Compre com tranquilidade.
+                  <br />
+                  Você tem 7 dias de garantia.
+                </h3>
+                <p>
+                  Consulte como solicitar o reembolso e as condições de acesso.
+                </p>
+              </div>
+              <Link className="text-link" href="/politicas/reembolso">
+                Ler a política <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+        <section className="container section faq-section" id="duvidas">
+          <div>
+            <h2>
+              Antes de
+              <br />
+              <span>começar.</span>
+            </h2>
+            <p>
+              Respostas para estudar
+              <br />
+              com mais clareza.
+            </p>
+            <Link className="text-link" href="/suporte">
+              Falar com o atendimento
+            </Link>
+          </div>
+          <FAQ />
+        </section>
+        <section className="closing container">
+          <h2>
+            Um próximo passo.
+            <br />
+            Uma revisão mais organizada.
+          </h2>
+          <Link href="#planos" className="button primary">
+            Encontrar meu plano
+          </Link>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
 }

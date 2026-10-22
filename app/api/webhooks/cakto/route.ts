@@ -1,0 +1,51 @@
+import { NextResponse } from "next/server";
+import { eventSchema, verifySignature } from "../../../../lib/payment";
+import { serviceClient } from "../../../../lib/supabase";
+import { jsonError } from "../../../../lib/http";
+export async function POST(req: Request) {
+  if (
+    !process.env.CAKTO_WEBHOOK_SECRET ||
+    process.env.CAKTO_WEBHOOK_ENABLED !== "true"
+  )
+    return jsonError("Integração indisponível", 503);
+  if (Number(req.headers.get("content-length") || 0) > 131072)
+    return jsonError("Corpo muito grande", 413);
+  const raw = await req.text();
+  if (Buffer.byteLength(raw) > 131072)
+    return jsonError("Corpo muito grande", 413);
+  if (
+    !verifySignature(
+      raw,
+      req.headers.get("x-cakto-timestamp"),
+      req.headers.get("x-cakto-signature"),
+      process.env.CAKTO_WEBHOOK_SECRET,
+    )
+  )
+    return jsonError("Assinatura inválida", 401);
+  let payload;
+  try {
+    payload = eventSchema.parse(JSON.parse(raw));
+  } catch {
+    return jsonError("Evento inválido", 422);
+  }
+  try {
+    const db = serviceClient();
+    const items = Array.isArray(payload.data) ? payload.data : [payload.data];
+    for (const order of items) {
+      if (payload.event === "purchase_approved" && order.status !== "paid")
+        return jsonError("Estado incompatível", 422);
+      const { error } = await db.rpc("receive_payment", {
+        p_event: payload.event,
+        p_data: order,
+      });
+      if (error)
+        return jsonError(
+          "Evento não persistido; reenvie pelo painel Cakto",
+          503,
+        );
+    }
+    return NextResponse.json({ received: true });
+  } catch {
+    return jsonError("Banco indisponível; reenvie pelo painel Cakto", 503);
+  }
+}
