@@ -31,33 +31,9 @@
   text-align: center;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 32px;
-  padding: 7px 15px;
-  border: 1px solid rgb(8 72 45 / 14%);
-  border-radius: 999px;
-  background: var(--mint);
-  color: var(--forest);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.09em;
-  animation: badgeIn 420ms 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-.badge i {
-  width: 3px;
-  height: 3px;
-  margin-inline: 9px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
 .intro h1 {
   max-width: 1080px;
-  margin: clamp(20px, 2.3vw, 32px) auto 18px;
+  margin: 0 auto 18px;
   color: var(--headline);
   font-family: var(--font-inter-tight), Inter, sans-serif;
   font-size: clamp(54px, 6.1vw, 88px);
@@ -313,11 +289,6 @@
   text-align: center;
 }
 
-@keyframes badgeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-
 @keyframes lineIn {
   from { opacity: 0; filter: blur(5px); transform: translateY(30px); }
   to { opacity: 1; filter: blur(0); transform: translateY(0); }
@@ -354,7 +325,7 @@
 
   .intro h1 {
     max-width: 680px;
-    margin-top: 22px;
+    margin-top: 0;
     font-size: clamp(38px, 9.8vw, 56px);
     line-height: 1.02;
     letter-spacing: -0.048em;
@@ -425,12 +396,6 @@
     padding-bottom: 48px;
   }
 
-  .badge {
-    min-height: 29px;
-    padding-inline: 11px;
-    font-size: 8px;
-  }
-
   .intro h1 {
     margin-bottom: 16px;
   }
@@ -458,10 +423,6 @@
 }
 
 @media (max-width: 350px) {
-  .badge {
-    letter-spacing: 0.055em;
-  }
-
   .intro h1 {
     font-size: 38px;
   }
@@ -476,7 +437,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .badge,
   .intro h1 span,
   .intro > p,
   .stage,

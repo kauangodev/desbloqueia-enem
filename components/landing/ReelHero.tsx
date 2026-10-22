@@ -7,9 +7,6 @@ export function ReelHero() {
   return (
     <section className={styles.hero} id="kit" aria-labelledby="hero-title">
       <div className={styles.intro}>
-        <span className={styles.badge}>
-          DESBLOQUEIA ENEM 2026 <i aria-hidden="true" /> KIT DIGITAL
-        </span>
         <h1 id="hero-title">
           <span>Sua reta final,</span>
           <span>

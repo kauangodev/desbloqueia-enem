@@ -4,7 +4,7 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     /Sua reta final,\s*mais leve e organizada\./,
   );
-  await expect(page.getByText("DESBLOQUEIA ENEM 2026")).toBeVisible();
+  await expect(page.getByText("DESBLOQUEIA ENEM 2026", { exact: true })).toHaveCount(0);
   await expect(page.locator("[data-carousel-card]")).toHaveCount(12);
   await expect(
     page.getByRole("heading", { name: "Essencial", exact: true }),
