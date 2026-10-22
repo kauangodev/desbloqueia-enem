@@ -1,7 +1,26 @@
 import type { Metadata } from "next";
+import { Caveat, Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  weight: ["700"],
+  variable: "--font-inter-tight",
+  display: "swap",
+});
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["600"],
+  variable: "--font-caveat",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -23,7 +42,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body>
+      <body className={`${inter.variable} ${interTight.variable} ${caveat.variable}`}>
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo
         </a>

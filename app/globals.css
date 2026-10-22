@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;450;500;550;600;650;700;750;800&display=swap");
 :root {
   --bg: #f7f8fa;
   --surface: #fff;
@@ -22,7 +21,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: Geist, Arial, sans-serif;
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.6;
 }
@@ -1155,6 +1154,135 @@ th {
 .success {
   color: #176449;
 }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Public landing art direction */
+.site-header {
+  background: rgb(245 248 239 / 92%);
+  border-color: rgb(8 72 45 / 12%);
+  backdrop-filter: blur(16px);
+  animation: nav-enter 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.brand b,
+.login-link,
+.landing-main h2,
+.landing-main h3 {
+  color: #101410;
+}
+.brand b > span,
+.nav a:hover,
+.text-link:hover,
+.landing-main .text-link {
+  color: #08482d;
+}
+.landing-main {
+  background: #f5f8ef;
+}
+.landing-main h2 {
+  font-family: var(--font-inter-tight), Inter, sans-serif;
+  font-weight: 700;
+}
+.landing-main h2 span {
+  color: #557064;
+}
+.landing-main .discipline-strip {
+  background: #fff;
+  border-color: rgb(8 72 45 / 12%);
+}
+.landing-main .intro-section,
+.landing-main .study-section,
+.landing-main .faq-section,
+.landing-main .closing {
+  background: #f5f8ef;
+}
+.landing-main .benefit-lines p,
+.landing-main .faq-list details,
+.landing-main .library-note {
+  border-color: rgb(8 72 45 / 14%);
+}
+.landing-main .materials-section {
+  --muted: #51645a;
+  background: #e8f0df;
+}
+.landing-main .material-stage {
+  background: #d8e5cf;
+}
+.landing-main .material-index button {
+  border-color: rgb(8 72 45 / 14%);
+}
+.landing-main .material-index button[aria-selected="true"],
+.landing-main .library-note b {
+  color: #08482d;
+}
+.landing-main .study-outline,
+.landing-main .price-card {
+  border-color: rgb(8 72 45 / 14%);
+  background: #fff;
+}
+.landing-main .outline-row > span,
+.landing-main .price-card li svg,
+.landing-main .guarantee-number {
+  color: #0e6842;
+}
+.landing-main .pricing-section {
+  background: #fbfcf8;
+}
+.landing-main .price-card.premium {
+  background: #08482d;
+  border-color: #08482d;
+}
+.landing-main .price-card.premium h3 {
+  color: #fff;
+}
+.landing-main .price-card.premium > p,
+.landing-main .price-card.premium .price small,
+.landing-main .price-card.premium .plan-note {
+  color: #cbdccc;
+}
+.landing-main .plan-title > span,
+.landing-main .lime {
+  background: #dae7c7;
+  color: #08482d;
+}
+.landing-main .secondary {
+  border-color: rgb(8 72 45 / 22%);
+  color: #08482d;
+}
+.landing-main .primary {
+  background: #08482d;
+}
+.landing-main .primary:hover {
+  background: #0b5938;
+}
+.site-footer {
+  --muted: #53645b;
+  background: #e4ecd9;
+  color: #101410;
+}
+.footer-bottom {
+  border-color: rgb(8 72 45 / 14%);
+}
+
+@keyframes nav-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 @keyframes cover-enter {
   from {
     transform: translateY(12px) rotate(4deg);
@@ -1279,7 +1407,7 @@ th {
     left: 0;
     right: 0;
     top: 74px;
-    background: var(--bg);
+    background: #f5f8ef;
     padding: 20px;
     border-bottom: 1px solid var(--line);
   }

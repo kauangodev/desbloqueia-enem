@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Header, Footer, MaterialPreview, FAQ } from "../components/site";
+import { ReelHero } from "../components/landing/ReelHero";
 import { money } from "../lib/config";
 import { publicPlans } from "../lib/catalog";
 export const dynamic = "force-dynamic";
@@ -10,82 +10,8 @@ export default async function Home() {
   return (
     <>
       <Header />
-      <main id="conteudo">
-        <section className="hero container" id="kit">
-          <div className="hero-copy">
-            <div className="product-label">
-              <span />
-              Desbloqueia ENEM 2026
-            </div>
-            <h1>
-              Sua reta final
-              <br />
-              do ENEM,
-              <br />
-              <span>
-                organizada em
-                <br />
-                um só lugar.
-              </span>
-            </h1>
-            <p>
-              Tenha acesso a resumos, exercícios comentados, simulados e um
-              cronograma de estudos para revisar com mais organização e
-              praticidade.
-            </p>
-            <div className="hero-actions">
-              <Link className="button primary" href="#planos">
-                Conhecer os planos
-              </Link>
-              <Link className="text-link" href="#materiais">
-                Explorar os materiais <span aria-hidden="true">↗</span>
-              </Link>
-            </div>
-            <div className="hero-footnote">
-              <span>Feito para o seu ritmo.</span>
-              <span>Do celular ao computador.</span>
-            </div>
-          </div>
-          <div className="hero-art">
-            <div className="art-heading">
-              <span>SUA PRÓXIMA ETAPA.</span>
-              <span>EDIÇÃO 2026</span>
-            </div>
-            <div className="cover-composition">
-              <Image
-                className="cover rear-cover"
-                src="/covers/matematica.png"
-                width={290}
-                height={411}
-                alt="Capa real do caderno de Matemática"
-                priority
-              />
-              <Image
-                className="cover main-cover"
-                src="/covers/kit.png"
-                width={350}
-                height={496}
-                alt="Capa real do Kit Reta Final ENEM 2026"
-                priority
-              />
-            </div>
-            <div className="art-bottom">
-              <div>
-                <span className="art-line" />
-                Menos dispersão.
-                <br />
-                <b>Mais direção.</b>
-              </div>
-              <span className="edition-seal">
-                REVISAR
-                <br />
-                PRATICAR
-                <br />
-                AVANÇAR
-              </span>
-            </div>
-          </div>
-        </section>
+      <main id="conteudo" className="landing-main">
+        <ReelHero />
         <div className="discipline-strip">
           <div className="container">
             <span>Linguagens</span>
