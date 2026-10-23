@@ -44,7 +44,7 @@ export const materials = [
     description: "Prioridades de estudo e curadoria pedagógica.",
     pages: 12,
     plan: "essencial",
-    cover: "/covers/editorial-v3/guia.png",
+    cover: "/covers/editorial-v3/guia.jpg",
   },
   {
     id: "linguagens",
@@ -53,7 +53,7 @@ export const materials = [
     description: "Leitura, interpretação e construção de argumentos.",
     pages: 13,
     plan: "essencial",
-    cover: "/covers/editorial-v3/linguagens.png",
+    cover: "/covers/editorial-v3/linguagens.jpg",
   },
   {
     id: "humanas",
@@ -62,7 +62,7 @@ export const materials = [
     description: "Contextos, conceitos e conexões para sua revisão.",
     pages: 15,
     plan: "essencial",
-    cover: "/covers/editorial-v3/humanas.png",
+    cover: "/covers/editorial-v3/humanas.jpg",
   },
   {
     id: "natureza",
@@ -71,7 +71,7 @@ export const materials = [
     description: "Fundamentos, exemplos resolvidos e alertas de prova.",
     pages: 15,
     plan: "essencial",
-    cover: "/covers/editorial-v3/natureza.png",
+    cover: "/covers/editorial-v3/natureza.jpg",
   },
   {
     id: "matematica",
@@ -80,7 +80,7 @@ export const materials = [
     description: "Raciocínio e prática, uma etapa de cada vez.",
     pages: 14,
     plan: "essencial",
-    cover: "/covers/editorial-v3/matematica.png",
+    cover: "/covers/editorial-v3/matematica.jpg",
   },
   {
     id: "kit",
@@ -89,6 +89,6 @@ export const materials = [
     description: "Revisão, exercícios, simulados e redação em um volume.",
     pages: 87,
     plan: "premium",
-    cover: "/covers/editorial-v3/kit.png",
+    cover: "/covers/editorial-v3/kit.jpg",
   },
 ] as const;
