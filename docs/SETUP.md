@@ -34,7 +34,7 @@ Referências consultadas: https://docs.cakto.com.br/conceitos/webhooks e https:/
 
 ## 3. E-mail e fila
 
-Configure `RESEND_API_KEY`, `EMAIL_FROM` (domínio verificado) e `CRON_SECRET` aleatório no servidor. Configure um agendador para chamar `GET /api/jobs/fulfillment` com `Authorization: Bearer <CRON_SECRET>` a cada 5 minutos. Use plano compatível; o painel Vercel encontrado está em Hobby, não foi contratado upgrade.
+O acesso não depende de Resend: após um webhook pago, o comprador usa o mesmo e-mail da Cakto e o Supabase Auth envia um link seguro. `RESEND_API_KEY`, `EMAIL_FROM` (domínio verificado) e `CRON_SECRET` são opcionais e servem apenas para uma mensagem de boas-vindas personalizada. Se usados, configure um agendador para chamar `GET /api/jobs/fulfillment` com `Authorization: Bearer <CRON_SECRET>` a cada 5 minutos.
 
 O worker cria/vincula a conta, liga direitos ao usuário e envia instruções. O login em si usa Supabase Auth/SMTP e PKCE. E-mail transacional contém link para `/entrar`, nunca senha. Fila persistente, lease de cinco minutos, backoff e limite de oito tentativas. Admin pode reenfileirar. `accepted` significa aceitação pelo Resend, não entrega comprovada. Monitore falhas e configure alertas operacionais no provedor. O Resend deduplica por ID de entrega; após sua janela de retenção, retry pode gerar nova mensagem.
 
@@ -48,7 +48,7 @@ O suporte foi iniciado com responsável `Kauan` e `kauango.dev@gmail.com`. Ainda
 
 Meta Pixel e GA opcionais, carregados após consentimento; IDs em `.env.example`. ViewContent e InitiateCheckout são preparados. Não há evento Purchase no navegador. Configure Purchase na Cakto como única fonte; se migrar para CAPI, utilize ID do pedido e desative a outra fonte antes. As UTMs são guardadas apenas após consentimento. Não há credencial de marketing no backend.
 
-Somente após validar compra de homologação, e-mail, login, leitor, upload, cancelamento e privilégios em um Supabase configurado, ative ofertas e `CHECKOUT_ENABLED=true`. A API exige também secret, webhook, e-mail, worker e suporte. Flag não é atestado de homologação. A abertura comercial depende de plano Vercel adequado e validação dos arquivos incluídos em cada oferta.
+Somente após validar compra de homologação, link de login, leitor, upload, cancelamento e privilégios em um Supabase configurado, ative ofertas e `CHECKOUT_ENABLED=true`. A API exige Supabase, secret do webhook, oferta e dados de suporte; e-mail de boas-vindas e worker são opcionais. A flag não é atestado de homologação.
 
 ## Validação e limites da entrega
 

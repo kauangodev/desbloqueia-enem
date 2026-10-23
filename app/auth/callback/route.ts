@@ -6,7 +6,21 @@ export async function GET(req: Request) {
   const db = await sessionClient();
   if (code && db) {
     const { error } = await db.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(`${appUrl}/aluno`);
+    if (!error) {
+      const {
+        data: { user },
+      } = await db.auth.getUser();
+      if (user) {
+        const { data: profile } = await db
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .maybeSingle();
+        return NextResponse.redirect(
+          `${appUrl}${profile?.role === "admin" ? "/admin" : "/aluno"}`,
+        );
+      }
+    }
   }
   return NextResponse.redirect(`${appUrl}/entrar?erro=expirado`);
 }

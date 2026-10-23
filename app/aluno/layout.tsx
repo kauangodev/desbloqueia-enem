@@ -15,7 +15,7 @@ export default async function StudentLayout({
     <div className="portal">
       <aside className="sidebar">
         <Brand />
-        <PortalNav />
+        <PortalNav isAdmin={who.profile?.role === "admin"} />
         <form method="post" action="/api/auth/logout">
           <button>Sair</button>
         </form>

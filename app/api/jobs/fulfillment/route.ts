@@ -9,8 +9,6 @@ export async function GET(req: Request) {
     req.headers.get("authorization") !== `Bearer ${process.env.CRON_SECRET}`
   )
     return jsonError("Não autorizado", 401);
-  if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM)
-    return jsonError("E-mail não configurado", 503);
   const db = serviceClient();
   const { data: jobs, error } = await db.rpc("claim_emails");
   if (error) return jsonError("Fila indisponível", 503);
@@ -56,6 +54,18 @@ export async function GET(req: Request) {
         .update({ user_id: userId })
         .eq("email", job.email);
       if (linkError) throw new Error("entitlement_link_failed");
+      if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) {
+        await db
+          .from("email_deliveries")
+          .update({
+            status: "access_ready",
+            leased_until: null,
+            last_error: null,
+          })
+          .eq("id", job.id);
+        accepted++;
+        continue;
+      }
       const sent = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {

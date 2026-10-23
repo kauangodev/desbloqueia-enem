@@ -3,10 +3,55 @@ import { redirect } from "next/navigation";
 import { Header, Footer } from "../../components/site";
 import AdminEditor from "../../components/admin-editor";
 import Link from "next/link";
+import { money } from "../../lib/config";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
   robots: { index: false, follow: false },
+};
+type CrmProfile = { id: string; name: string; email: string; role: string };
+type CrmOrder = {
+  id: string;
+  email: string;
+  name: string;
+  plan: string;
+  amount: number;
+  status: string;
+  created_at: string;
+};
+type CrmEntitlement = {
+  order_id: string;
+  user_id: string | null;
+  email: string;
+  plan: string;
+  active: boolean;
+};
+type CrmDelivery = {
+  order_id: string;
+  email: string;
+  status: string;
+  last_error: string | null;
+};
+type CrmCustomer = {
+  email: string;
+  name: string;
+  profile: CrmProfile | null;
+  orders: CrmOrder[];
+  entitlements: CrmEntitlement[];
+  deliveries: CrmDelivery[];
+};
+const date = (value?: string) =>
+  value
+    ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(
+        new Date(value),
+      )
+    : "—";
+const orderStatus: Record<string, string> = {
+  paid: "Pago",
+  pending: "Pendente",
+  refused: "Recusado",
+  refunded: "Reembolsado",
+  chargedback: "Chargeback",
 };
 export default async function Admin({
   searchParams,
@@ -101,72 +146,175 @@ export default async function Admin({
       />
     );
   } else if (tab === "alunos") {
-    const query = db
-      .from("profiles")
-      .select("id,name,email,role")
-      .order("name")
-      .limit(100);
-    if (q) query.ilike("email", `%${q.replace(/[%_]/g, "")}%`);
-    const { data } = await query;
-    const { data: orders } = await db
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(100);
+    const [profilesResult, ordersResult, accessResult, deliveriesResult] =
+      await Promise.all([
+        db.from("profiles").select("id,name,email,role").limit(500),
+        db
+          .from("orders")
+          .select("id,email,name,plan,amount,status,created_at")
+          .order("created_at", { ascending: false })
+          .limit(500),
+        db
+          .from("entitlements")
+          .select("order_id,user_id,email,plan,active")
+          .limit(500),
+        db
+          .from("email_deliveries")
+          .select("order_id,email,status,last_error")
+          .limit(500),
+      ]);
+    const customers = new Map<string, CrmCustomer>();
+    const ensure = (email: string) => {
+      const key = email.toLowerCase();
+      if (!customers.has(key))
+        customers.set(key, {
+          email: key,
+          name: "",
+          profile: null,
+          orders: [],
+          entitlements: [],
+          deliveries: [],
+        });
+      return customers.get(key)!;
+    };
+    (profilesResult.data as CrmProfile[] | null)?.forEach((profile) => {
+      const customer = ensure(profile.email);
+      customer.profile = profile;
+      customer.name = profile.name;
+    });
+    (ordersResult.data as CrmOrder[] | null)?.forEach((order) => {
+      const customer = ensure(order.email);
+      customer.orders.push(order);
+      if (!customer.name) customer.name = order.name;
+    });
+    (accessResult.data as CrmEntitlement[] | null)?.forEach((access) =>
+      ensure(access.email).entitlements.push(access),
+    );
+    (deliveriesResult.data as CrmDelivery[] | null)?.forEach((delivery) =>
+      ensure(delivery.email).deliveries.push(delivery),
+    );
+    const needle = q.trim().toLowerCase();
+    const rows = [...customers.values()]
+      .filter((customer) => customer.profile?.role !== "admin" || customer.orders.length)
+      .filter(
+        (customer) =>
+          !needle ||
+          customer.email.includes(needle) ||
+          customer.name.toLowerCase().includes(needle),
+      )
+      .sort(
+        (a, b) =>
+          (b.orders[0]?.created_at || "").localeCompare(
+            a.orders[0]?.created_at || "",
+          ) || a.email.localeCompare(b.email),
+      );
+    const paidCustomers = rows.filter((customer) =>
+      customer.orders.some((order) => order.status === "paid"),
+    ).length;
+    const activeCustomers = rows.filter((customer) =>
+      customer.entitlements.some((access) => access.active),
+    ).length;
     content = (
       <>
+        <div className="crm-heading">
+          <div>
+            <h2>CRM de alunos</h2>
+            <p>
+              Cadastros, pagamentos recebidos pela Cakto e acessos liberados no
+              site, reunidos pelo e-mail da compra.
+            </p>
+          </div>
+          <span className="crm-count">{rows.length} contato(s)</span>
+        </div>
+        <div className="stat-grid crm-stats">
+          <div className="stat">
+            <strong>{rows.length}</strong>
+            <span>Contatos</span>
+          </div>
+          <div className="stat">
+            <strong>{paidCustomers}</strong>
+            <span>Com pagamento</span>
+          </div>
+          <div className="stat">
+            <strong>{activeCustomers}</strong>
+            <span>Com acesso ativo</span>
+          </div>
+        </div>
         <form className="filters">
           <input type="hidden" name="tab" value="alunos" />
           <input
             name="q"
-            aria-label="Buscar aluno por e-mail"
-            placeholder="Buscar por e-mail"
+            aria-label="Buscar aluno por nome ou e-mail"
+            placeholder="Buscar por nome ou e-mail"
             defaultValue={q}
           />
           <button className="button primary">Buscar</button>
         </form>
         <div className="table-wrap">
-          <table>
+          <table className="crm-table">
             <thead>
               <tr>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Papel</th>
+                <th>Contato</th>
+                <th>Plano e acesso</th>
+                <th>Pagamento</th>
+                <th>Conta no site</th>
+                <th>Última compra</th>
               </tr>
             </thead>
             <tbody>
-              {data?.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.name}</td>
-                  <td>{p.email}</td>
-                  <td>{p.role}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <h2>Últimos pedidos</h2>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Pedido</th>
-                <th>E-mail</th>
-                <th>Plano</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders
-                ?.filter((o) => !q || o.email.includes(q))
-                .map((o) => (
-                  <tr key={o.id}>
-                    <td>{o.id}</td>
-                    <td>{o.email}</td>
-                    <td>{o.plan}</td>
-                    <td>{o.status}</td>
+              {rows.map((customer) => {
+                const active = customer.entitlements.filter(
+                  (access) => access.active,
+                );
+                const plan = active.some((access) => access.plan === "premium")
+                  ? "Premium"
+                  : active.length
+                    ? "Essencial"
+                    : "Sem acesso";
+                const lastOrder = customer.orders[0];
+                const paidTotal = customer.orders
+                  .filter((order) => order.status === "paid")
+                  .reduce((total, order) => total + Number(order.amount) * 100, 0);
+                return (
+                  <tr key={customer.email}>
+                    <td>
+                      <strong>{customer.name || "Nome não informado"}</strong>
+                      <a href={`mailto:${customer.email}`}>{customer.email}</a>
+                    </td>
+                    <td>
+                      <span className={`crm-badge ${active.length ? "success" : "muted"}`}>
+                        {plan}
+                      </span>
+                      <small>{active.length ? "Liberado" : "Inativo"}</small>
+                    </td>
+                    <td>
+                      <strong>{orderStatus[lastOrder?.status] || "Sem pedido"}</strong>
+                      <small>
+                        {customer.orders.length} pedido(s)
+                        {paidTotal ? ` · ${money(paidTotal)}` : ""}
+                      </small>
+                    </td>
+                    <td>
+                      <span
+                        className={`crm-badge ${customer.profile ? "success" : "pending"}`}
+                      >
+                        {customer.profile ? "Criada" : "Aguardando acesso"}
+                      </span>
+                      <small>
+                        {customer.deliveries[0]?.status === "failed"
+                          ? "Boas-vindas com falha"
+                          : "Login por link seguro"}
+                      </small>
+                    </td>
+                    <td>{date(lastOrder?.created_at)}</td>
                   </tr>
-                ))}
+                );
+              })}
+              {!rows.length ? (
+                <tr>
+                  <td colSpan={5}>Nenhum contato encontrado.</td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>
@@ -181,8 +329,9 @@ export default async function Admin({
     content = (
       <>
         <p>
-          “accepted” significa aceito pelo provedor, não confirmação de leitura
-          ou chegada na caixa de entrada. Reenvios entram na fila do worker.
+          A Cakto confirma o pagamento ao comprador. Este histórico registra
+          apenas a preparação da conta e o e-mail opcional de boas-vindas do
+          site. “accepted” não confirma leitura ou chegada na caixa de entrada.
         </p>
         {data?.map((d) => (
           <div key={d.id}>
@@ -201,18 +350,22 @@ export default async function Admin({
     );
   } else if (tab === "integracoes") {
     const items = [
-      ["Banco e autenticação", !!process.env.NEXT_PUBLIC_SUPABASE_URL],
       [
-        "Recepção Cakto",
+        "Área de alunos e autenticação",
+        !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+          !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      ],
+      [
+        "Cakto — pagamentos e webhook",
         process.env.CAKTO_WEBHOOK_ENABLED === "true" &&
           !!process.env.CAKTO_WEBHOOK_SECRET,
       ],
       ["Compras", process.env.CHECKOUT_ENABLED === "true"],
       [
-        "E-mail transacional",
+        "Boas-vindas por e-mail (opcional)",
         !!process.env.RESEND_API_KEY && !!process.env.EMAIL_FROM,
       ],
-      ["Worker de entrega", !!process.env.CRON_SECRET],
+      ["Automação de boas-vindas (opcional)", !!process.env.CRON_SECRET],
       ["Meta Pixel", !!process.env.NEXT_PUBLIC_META_PIXEL_ID],
       ["Google Analytics", !!process.env.NEXT_PUBLIC_GA_ID],
     ];
@@ -277,7 +430,7 @@ export default async function Admin({
             ["visao", "Visão geral"],
             ["produtos", "Produtos"],
             ["materiais", "Materiais"],
-            ["alunos", "Alunos e pedidos"],
+            ["alunos", "CRM de alunos"],
             ["entregas", "Entregas"],
             ["suporte", "WhatsApp e Atendimento"],
             ["integracoes", "Integrações"],

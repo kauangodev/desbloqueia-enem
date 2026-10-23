@@ -8,10 +8,7 @@ export async function GET(
   if (
     process.env.CHECKOUT_ENABLED !== "true" ||
     process.env.CAKTO_WEBHOOK_ENABLED !== "true" ||
-    !process.env.CAKTO_WEBHOOK_SECRET ||
-    !process.env.RESEND_API_KEY ||
-    !process.env.EMAIL_FROM ||
-    !process.env.CRON_SECRET
+    !process.env.CAKTO_WEBHOOK_SECRET
   )
     return jsonError("Vendas ainda não disponíveis.", 503);
   const { plan } = await params;

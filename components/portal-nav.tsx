@@ -12,7 +12,7 @@ export const links = [
   ["conta", "Minha conta"],
   ["suporte", "Atendimento"],
 ];
-export default function PortalNav() {
+export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const path = usePathname();
   return (
     <nav aria-label="Área do aluno">
@@ -27,6 +27,11 @@ export default function PortalNav() {
           {label}
         </Link>
       ))}
+      {isAdmin ? (
+        <Link href="/admin" aria-current={path === "/admin" ? "page" : undefined}>
+          Administração
+        </Link>
+      ) : null}
     </nav>
   );
 }

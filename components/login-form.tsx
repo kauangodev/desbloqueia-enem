@@ -49,8 +49,8 @@ export default function LoginForm({ configured }: { configured: boolean }) {
         </p>
       )}
       <p className="subtle">
-        Sem senha para memorizar. O link é pessoal e tem validade limitada. Para
-        recuperar o acesso, solicite um novo link.
+        Use o mesmo e-mail informado na Cakto. Sem senha para memorizar: o link
+        é pessoal, comprova que o e-mail é seu e tem validade limitada.
       </p>
     </form>
   );

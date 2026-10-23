@@ -17,7 +17,13 @@ before(async () => {
   await db.exec(readFileSync("supabase/migrations/002_catalog.sql", "utf8"));
   await db.exec(readFileSync("supabase/migrations/003_cakto_launch.sql", "utf8"));
   await db.exec(
-    `grant usage on schema public,auth to authenticated,anon;grant select,insert,update,delete on all tables in schema public to authenticated;grant execute on function auth.uid() to authenticated;update offers set cakto_product_id='product-'||plan,cakto_offer_id='offer-'||plan;insert into auth.users(id,email) values('${alice}','alice@example.test'),('${bob}','bob@example.test'),('${admin}','admin@example.test');update profiles set role='admin' where id='${admin}';`,
+    readFileSync(
+      "supabase/migrations/20261023041013_admin_invites_and_secure_self_provision.sql",
+      "utf8",
+    ),
+  );
+  await db.exec(
+    `grant usage on schema public,auth to authenticated,anon;grant select,insert,update,delete on all tables in schema public to authenticated;grant execute on function auth.uid() to authenticated;update offers set cakto_product_id='product-'||plan,cakto_offer_id='offer-'||plan;insert into admin_invites(email,name) values('admin@example.test','Admin Teste');insert into auth.users(id,email) values('${alice}','alice@example.test'),('${bob}','bob@example.test'),('${admin}','admin@example.test');`,
   );
 });
 after(() => db.close());
@@ -198,6 +204,15 @@ test("aluno existente é vinculado, novo aluno recebe vínculo no trigger", asyn
     (await rows("select user_id from entitlements where order_id='new'"))[0]
       .user_id,
   );
+});
+test("convite administrativo promove somente o e-mail convidado", async () => {
+  const [invited] = await rows(
+    `select role,name from profiles where id='${admin}'`,
+  );
+  const [student] = await rows(`select role from profiles where id='${bob}'`);
+  assert.equal(invited.role, "admin");
+  assert.equal(invited.name, "Admin Teste");
+  assert.equal(student.role, "student");
 });
 test("falha e retry de email preservam fila, lease impede concorrência", async () => {
   await db.exec("update email_deliveries set status='accepted'");

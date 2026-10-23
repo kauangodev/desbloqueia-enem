@@ -19,10 +19,10 @@ export async function POST(req: Request) {
   )
     return jsonError("Informe um e-mail válido.");
   try {
-    const hash = createHash("sha256")
-      .update(email.trim().toLowerCase())
-      .digest("hex");
-    const { data: allowed, error: limitError } = await serviceClient().rpc(
+    const normalizedEmail = email.trim().toLowerCase();
+    const adminDb = serviceClient();
+    const hash = createHash("sha256").update(normalizedEmail).digest("hex");
+    const { data: allowed, error: limitError } = await adminDb.rpc(
       "take_rate_limit",
       { p_key: `login:${hash}`, p_limit: 3, p_seconds: 900 },
     );
@@ -31,18 +31,39 @@ export async function POST(req: Request) {
         "Aguarde alguns minutos antes de tentar novamente.",
         429,
       );
+    const [{ data: entitlement }, { data: invite }] = await Promise.all([
+      adminDb
+        .from("entitlements")
+        .select("order_id")
+        .eq("email", normalizedEmail)
+        .eq("active", true)
+        .limit(1)
+        .maybeSingle(),
+      adminDb
+        .from("admin_invites")
+        .select("name")
+        .eq("email", normalizedEmail)
+        .eq("active", true)
+        .maybeSingle(),
+    ]);
+    if (!entitlement && !invite)
+      return NextResponse.json({
+        message:
+          "Se este e-mail tem uma compra aprovada ou convite, você receberá um link de acesso. Confira também o spam.",
+      });
     const { error } = await db.auth.signInWithOtp({
-      email: email.trim().toLowerCase(),
+      email: normalizedEmail,
       options: {
-        shouldCreateUser: false,
+        shouldCreateUser: true,
         emailRedirectTo: `${appUrl}/auth/callback`,
+        data: invite?.name ? { name: invite.name } : undefined,
       },
     });
     if (error && error.status && error.status >= 500)
       return jsonError("Não foi possível enviar agora. Tente novamente.", 503);
     return NextResponse.json({
       message:
-        "Se este e-mail tem uma conta, você receberá um link de acesso. Confira também o spam.",
+        "Se este e-mail tem uma compra aprovada ou convite, você receberá um link de acesso. Confira também o spam.",
     });
   } catch {
     return jsonError("Serviço temporariamente indisponível.", 503);
