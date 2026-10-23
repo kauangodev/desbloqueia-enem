@@ -582,6 +582,17 @@ textarea {
   height: 355px;
   animation: preview-enter 0.3s ease-out;
 }
+.preview-paper::after {
+  content: "";
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: 50%;
+  width: min(270px, 74%);
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgb(0 20 20 / 42%), transparent 72%);
+  pointer-events: none;
+}
 .preview-paper img {
   height: 100%;
   width: auto;
@@ -610,11 +621,19 @@ textarea {
   background: #d9e8c7;
 }
 .preview-cover-title {
-  left: 20px;
-  right: 20px;
-  bottom: 22px;
-  max-width: 210px;
-  font-size: clamp(18px, 2vw, 28px);
+  left: 50%;
+  right: auto;
+  bottom: 50%;
+  width: min(245px, 76%);
+  transform: translate(-50%, 50%);
+  text-align: center;
+  font-size: clamp(20px, 2.2vw, 30px);
+  text-shadow: 0 3px 18px rgb(0 0 0 / 72%);
+}
+.preview-cover-title::before {
+  width: 42px;
+  height: 4px;
+  margin: 0 auto 12px;
 }
 .preview-caption {
   display: flex;
