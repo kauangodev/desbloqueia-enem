@@ -5,7 +5,7 @@ URL confirmada para este projeto: https://desbloqueia-enem.vercel.app. O endere�
 
 ## 1. Banco, autenticação e arquivos (Supabase)
 
-1. Crie/selecione o projeto Supabase e execute, em ordem, `supabase/migrations/001_platform.sql`, `002_catalog.sql` e `003_cakto_launch.sql` pelo SQL Editor. Migrações iniciais: executar uma vez.
+1. O projeto Supabase de produção `Desbloqueia ENEM` (`gkomnwosoiozjjyckcvl`, São Paulo) foi criado em 23/10/2026. As migrations `001` a `005` já foram aplicadas; a última restringe as funções privilegiadas e adiciona os índices recomendados pelo advisor.
 2. Configure as três variáveis Supabase de `.env.example` no Vercel. Somente URL e chave anônima são públicas. Nunca exponha service_role.
 3. Em Auth, configure Site URL para o domínio acima e permita o callback `/auth/callback`. Configure SMTP de produção para os links de acesso. Desative cadastros públicos; contas são criadas pelo fulfillment e convites administrativos.
 4. Crie o proprietário por convite no Supabase Auth. Promova somente seu UUID com `update public.profiles set role='admin' where id='<UUID conferido>';`. Nenhum cadastro público recebe papel administrativo.
@@ -42,7 +42,7 @@ O worker cria/vincula a conta, liga direitos ao usuário e envia instruções. O
 
 O logo oficial não estava no repositório/anexo. Identificação textual provisória GoDev Education; nenhum símbolo oficial foi recriado. Substituir quando o arquivo for disponibilizado.
 
-Em `/admin?tab=suporte`, configure responsável legal, documento, e-mail, horário, nome de suporte, WhatsApp e mensagem. WhatsApp só aparece se ativado e válido. Revise as políticas com os dados comerciais definitivos antes de vender. O endereço sem hífen depende de decisão sobre o outro projeto, não de criar um projeto novo.
+O suporte foi iniciado com responsável `Kauan` e `kauango.dev@gmail.com`. Ainda é obrigatório preencher documento legal, horário e, se desejado, WhatsApp antes da abertura comercial. WhatsApp só aparece se ativado e válido. Revise as políticas com os dados comerciais definitivos antes de vender. O endereço sem hífen depende de decisão sobre o outro projeto, não de criar um projeto novo.
 
 ## 5. Métricas e lançamento
 
