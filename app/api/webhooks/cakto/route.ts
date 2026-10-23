@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { eventSchema, verifySignature } from "../../../../lib/payment";
+import {
+  eventSchema,
+  verifySignature,
+  verifyWebhookSecret,
+} from "../../../../lib/payment";
 import { serviceClient } from "../../../../lib/supabase";
 import { jsonError } from "../../../../lib/http";
 export async function POST(req: Request) {
@@ -13,18 +17,30 @@ export async function POST(req: Request) {
   const raw = await req.text();
   if (Buffer.byteLength(raw) > 131072)
     return jsonError("Corpo muito grande", 413);
+  let untrustedPayload: unknown;
+  try {
+    untrustedPayload = JSON.parse(raw);
+  } catch {
+    return jsonError("Evento inválido", 422);
+  }
+  const bodySecret =
+    typeof untrustedPayload === "object" && untrustedPayload !== null
+      ? (untrustedPayload as { secret?: unknown }).secret
+      : undefined;
+  const signatureValid = verifySignature(
+    raw,
+    req.headers.get("x-cakto-timestamp"),
+    req.headers.get("x-cakto-signature"),
+    process.env.CAKTO_WEBHOOK_SECRET,
+  );
   if (
-    !verifySignature(
-      raw,
-      req.headers.get("x-cakto-timestamp"),
-      req.headers.get("x-cakto-signature"),
-      process.env.CAKTO_WEBHOOK_SECRET,
-    )
+    !signatureValid &&
+    !verifyWebhookSecret(bodySecret, process.env.CAKTO_WEBHOOK_SECRET)
   )
     return jsonError("Assinatura inválida", 401);
   let payload;
   try {
-    payload = eventSchema.parse(JSON.parse(raw));
+    payload = eventSchema.parse(untrustedPayload);
   } catch {
     return jsonError("Evento inválido", 422);
   }

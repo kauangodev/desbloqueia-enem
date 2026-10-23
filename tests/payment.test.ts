@@ -3,7 +3,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHmac } from "node:crypto";
 import { PGlite } from "@electric-sql/pglite";
-import { verifySignature, eventSchema, nextStatus } from "../lib/payment";
+import {
+  verifySignature,
+  verifyWebhookSecret,
+  eventSchema,
+  nextStatus,
+} from "../lib/payment";
 import { welcomeEmail } from "../lib/email";
 const db = new PGlite();
 const alice = "11111111-1111-4111-8111-111111111111",
@@ -71,6 +76,9 @@ test("HMAC válido, segredo inválido, corpo adulterado e replay antigo", () => 
   assert.equal(verifySignature(raw + " ", time, sign, key, 1000000000), false);
   assert.equal(verifySignature(raw, time, sign, key, 1000400000), false);
   assert.equal(verifySignature(raw, "NaN", sign, key), false);
+  assert.equal(verifyWebhookSecret(key, key), true);
+  assert.equal(verifyWebhookSecret("wrong", key), false);
+  assert.equal(verifyWebhookSecret(undefined, key), false);
 });
 test("payload V1/V2 e validação de dados", () => {
   assert.ok(

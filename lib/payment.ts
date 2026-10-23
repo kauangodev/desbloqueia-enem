@@ -26,6 +26,15 @@ export function verifySignature(
     );
   });
 }
+
+export function verifyWebhookSecret(received: unknown, secret: string) {
+  if (typeof received !== "string" || !received || !secret) return false;
+  const actual = Buffer.from(received);
+  const expected = Buffer.from(secret);
+  return (
+    actual.length === expected.length && timingSafeEqual(actual, expected)
+  );
+}
 export const orderSchema = z.object({
   id: z.string().min(1).max(120),
   status: z.string(),

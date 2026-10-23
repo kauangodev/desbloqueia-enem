@@ -25,7 +25,7 @@ Referências consultadas: https://docs.cakto.com.br/conceitos/webhooks e https:/
 - O resultado fica somente em `private/cakto-provision-result.json`, pasta ignorada pelo Git. Ele contém IDs, links dos checkouts e o secret do webhook; não publique esse arquivo.
 - Preencha os IDs exatos e checkout em `/admin?tab=produtos`. Domínio permitido: `https://pay.cakto.com.br`.
 - Webhook: `https://desbloqueia-enem.vercel.app/api/webhooks/cakto`.
-- Secret em `CAKTO_WEBHOOK_SECRET`; ativação separada em `CAKTO_WEBHOOK_ENABLED=true`.
+- Secret em `CAKTO_WEBHOOK_SECRET`; ativação separada em `CAKTO_WEBHOOK_ENABLED=true`. O receptor prefere a assinatura HMAC dos headers e aceita, como compatibilidade oficial da Cakto, o mesmo secret no corpo com comparação em tempo constante.
 - Assinatura oficial: HMAC SHA-256 de `timestamp.corpo_original`, headers `X-Cakto-Timestamp` e `X-Cakto-Signature: v1=...`; tolerância de cinco minutos. Não usar um segredo enviado pelo cliente como autorização.
 - São processados purchase_approved (somente status paid), purchase_refused, refund, chargeback e geração pendente. V1 e lista V2 são aceitas. Só ofertas cadastradas são aceitas. Fixtures usam IDs `product-*` de teste e nunca são cadastradas na produção.
 - Pedido, evento, direito e fila de entrega são gravados em uma transação PostgreSQL. Duplicidade é por pedido + evento, com trava por pedido. Reembolso/chargeback são terminais e revogam apenas o pedido correspondente; outros direitos continuam ativos.
