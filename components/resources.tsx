@@ -15,13 +15,16 @@ export default function Resources({ items }: { items: Material[] }) {
     <div className="resource-grid">
       {items.map((m) => (
         <Link className="resource" href={`/aluno/ler/${m.id}`} key={m.id}>
-          <div>
+          <div className="resource-cover">
             <Image
               src={m.cover}
               width={200}
               height={283}
               alt={`Capa: ${m.title}`}
             />
+            <span className="cover-title" aria-hidden="true">
+              {m.title}
+            </span>
           </div>
           <div className="resource-info">
             <h3>{m.title}</h3>

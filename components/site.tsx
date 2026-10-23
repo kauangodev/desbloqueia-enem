@@ -152,6 +152,9 @@ export function MaterialPreview() {
             height={467}
             alt={`Capa real: ${material.title}`}
           />
+          <span className="cover-title preview-cover-title" aria-hidden="true">
+            {material.title}
+          </span>
         </div>
         <div className="preview-caption">
           <div>
