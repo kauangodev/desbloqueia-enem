@@ -7,6 +7,9 @@
       "plan": "essencial",
       "name": "Desbloqueia ENEM 2026 — Essencial",
       "price": "19.90",
+      "productId": "6ff97951-a03a-4bed-bbe5-62c88031c0fc",
+      "offerId": "3biievb",
+      "checkoutUrl": "https://pay.cakto.com.br/3biievb_1233750",
       "coverUrl": "https://desbloqueia-enem.vercel.app/products/desbloqueia-enem-essencial.png",
       "description": "Material digital para revisão do ENEM 2026 com resumos estratégicos de Linguagens e Redação, Ciências Humanas, Ciências da Natureza e Matemática, cronograma de estudos, mapa da revisão e uma seleção de 40 exercícios comentados. Leitura pela plataforma em celular, tablet ou computador.",
       "benefits": [
@@ -20,6 +23,9 @@
       "plan": "premium",
       "name": "Desbloqueia ENEM 2026 — Premium",
       "price": "39.90",
+      "productId": "e1fc994d-6000-41d4-9b08-5af47ec3ce07",
+      "offerId": "3fq7t2s",
+      "checkoutUrl": "https://pay.cakto.com.br/3fq7t2s_1233753",
       "coverUrl": "https://desbloqueia-enem.vercel.app/products/desbloqueia-enem-premium.png",
       "description": "Pacote digital completo para a reta final do ENEM 2026. Reúne todo o Essencial, kit de revisão com 87 páginas, dois simulados compactos, preparação para redação, fichas e checklists, biblioteca navegável com 1.800 referências do ENEM e 7 resoluções autorais já disponíveis.",
       "benefits": [

@@ -19,6 +19,7 @@ Nenhuma amostra interior foi designada como pública: a landing usa apenas as ca
 Referências consultadas: https://docs.cakto.com.br/conceitos/webhooks e https://www.cakto.com.br/api.
 
 - O catálogo de lançamento está em `config/cakto-products.json`: Essencial por R$ 19,90 e Premium por R$ 39,90, ambos em pagamento único. As descrições e benefícios refletem somente os materiais existentes.
+- Os produtos de produção foram criados na Cakto em 23/10/2026. A migration `004_cakto_live_offers.sql` registra os IDs e links oficiais, mantendo as ofertas desativadas até a homologação completa da entrega.
 - As capas quadradas de checkout estão em `public/products/`. Depois de publicar o site, os arquivos ficam nos endereços definidos no catálogo e podem ser aplicados às ofertas.
 - Para conferir o plano sem alterar a conta, execute `npm run cakto:plan`. Para provisionar, use localmente `CAKTO_CLIENT_ID` e `CAKTO_CLIENT_SECRET` com escopos mínimos de leitura/escrita para produtos, ofertas e webhooks, então execute `npm run cakto:provision`. O script reutiliza produtos com o mesmo nome, cria os ausentes, atualiza as ofertas, vincula as capas e cadastra o webhook.
 - O resultado fica somente em `private/cakto-provision-result.json`, pasta ignorada pelo Git. Ele contém IDs, links dos checkouts e o secret do webhook; não publique esse arquivo.
