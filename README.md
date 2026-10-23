@@ -8,4 +8,6 @@ Consulte [docs/SETUP.md](docs/SETUP.md) para ativar infraestrutura e pagamentos.
 
 URL estável deste projeto: https://desbloqueia-enem.vercel.app.
 
+Links de demonstração temporários podem ser configurados com `DEMO_ACCESS_SECRET`, `DEMO_STUDENT_TOKEN` e `DEMO_ADMIN_TOKEN`. Eles criam apenas uma sessão de preview controlada pelo proprietário e não substituem a autenticação dos clientes.
+
 As skills de design instaladas estão em `.skills/`. A direção visual e as restrições estão em DESIGN.md e PRODUCT.md.

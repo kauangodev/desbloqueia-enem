@@ -59,6 +59,8 @@ export async function POST(
       updated_at: new Date().toISOString(),
     });
   return error
-    ? jsonError("Não foi possível salvar.", 503)
+    ? who.demo
+      ? NextResponse.json({ saved: false, demo: true })
+      : jsonError("Não foi possível salvar.", 503)
     : NextResponse.json({ saved: true });
 }
