@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { materials } from "../lib/config";
 export function Brand() {
   return (
@@ -98,27 +98,46 @@ export function Footer() {
 }
 export function MaterialPreview() {
   const [active, setActive] = useState(0);
+  const activeTab = useRef<HTMLButtonElement>(null);
   const material = materials[active];
+  useEffect(() => {
+    activeTab.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [active]);
   return (
     <div className="material-explorer">
-      <div
-        className="material-index"
-        role="tablist"
-        aria-label="Cadernos de estudo"
-      >
-        {materials.map((item, i) => (
-          <button
-            role="tab"
-            id={`tab-${item.id}`}
-            aria-controls="material-panel"
-            aria-selected={active === i}
-            key={item.id}
-            onClick={() => setActive(i)}
-          >
-            <span>{String(i + 1).padStart(2, "0")}</span>
-            {item.title}
-          </button>
-        ))}
+      <div className="material-index-shell">
+        <div className="material-index-heading">
+          <span>Explore por área</span>
+          <small>
+            {String(active + 1).padStart(2, "0")} / {String(materials.length).padStart(2, "0")}
+          </small>
+        </div>
+        <div
+          className="material-index"
+          role="tablist"
+          aria-label="Cadernos de estudo"
+        >
+          {materials.map((item, i) => (
+            <button
+              role="tab"
+              id={`tab-${item.id}`}
+              aria-controls="material-panel"
+              aria-selected={active === i}
+              aria-current={active === i ? "true" : undefined}
+              ref={active === i ? activeTab : undefined}
+              key={item.id}
+              onClick={() => setActive(i)}
+            >
+              <span>{String(i + 1).padStart(2, "0")}</span>
+              <b>{item.title}</b>
+              <small>{item.category}</small>
+            </button>
+          ))}
+        </div>
       </div>
       <div
         className="material-stage"

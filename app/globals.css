@@ -483,6 +483,26 @@ textarea {
   grid-template-columns: 0.8fr 1.2fr;
   gap: 60px;
 }
+.material-index-shell {
+  min-width: 0;
+}
+.material-index-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 4px;
+  color: #08482d;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.material-index-heading small {
+  color: #718176;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
 .material-index {
   display: flex;
   flex-direction: column;
@@ -492,7 +512,7 @@ textarea {
 .material-index button {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
   border: 1px solid rgb(8 72 45 / 13%);
   border-radius: 16px;
   background: rgb(255 255 255 / 50%);
@@ -516,6 +536,22 @@ textarea {
   background: rgb(8 72 45 / 10%);
   color: #294f3f;
   font-size: 10px;
+}
+.material-index button b {
+  display: block;
+  font-size: inherit;
+  font-weight: 600;
+}
+.material-index button small {
+  display: block;
+  margin-left: auto;
+  color: #718176;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.material-index button[aria-selected="true"] small {
+  color: rgb(255 255 255 / 72%);
 }
 .material-index button[aria-selected="true"] {
   border-color: #08482d;
