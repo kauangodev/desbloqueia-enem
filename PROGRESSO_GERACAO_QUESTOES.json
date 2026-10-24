@@ -1,0 +1,42 @@
+{
+  "updatedAt": "2026-10-24",
+  "target": {
+    "simulados": 30,
+    "listasExercicios": 60,
+    "questoes": 2100
+  },
+  "completed": {
+    "cycles": 1,
+    "simulados": 2,
+    "listasExercicios": 1,
+    "questoes": 100,
+    "validated": 100,
+    "imported": 100
+  },
+  "pending": {
+    "simulados": 28,
+    "listasExercicios": 59,
+    "questoes": 2000,
+    "humanReview": 100,
+    "libraryResolutions": 1793
+  },
+  "filesProduced": [
+    "data/question-bank.ts",
+    "data/library.json"
+  ],
+  "errors": [
+    "Não há banco MySQL/Hostinger conectado para importar conteúdo.",
+    "O catálogo atual não possui snapshot versionado por tentativa.",
+    "A produção continua em lotes de 100; o lote 01 foi concluído."
+  ],
+  "backgroundProcessing": false,
+  "batches": [
+    {
+      "id": 1,
+      "size": 100,
+      "status": "validated_and_published",
+      "range": "aut-001..aut-100"
+    }
+  ]
+}
+
