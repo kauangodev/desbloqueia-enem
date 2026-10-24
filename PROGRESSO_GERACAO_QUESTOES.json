@@ -51,12 +51,13 @@
     }
   ],
   "generatedCatalog": {
-    "status": "validated_ready_for_production",
+    "status": "published_production",
     "exerciseCollections": 60,
     "simulationCollections": 30,
     "totalQuestions": 2100,
     "reviewStatus": "revisao_inicial",
-    "pedagogicalReview": "pending"
+    "pedagogicalReview": "pending_independent_review",
+    "productionCommit": "42bfca2612518540735ddaffe4420c3dfb9a6f3a"
   }
 }
 
