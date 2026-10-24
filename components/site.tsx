@@ -189,7 +189,7 @@ export function MaterialPreview() {
 const faqs = [
   [
     "Como vou acessar meus materiais?",
-    "O acesso é pela área do aluno, com o mesmo e-mail usado na compra. As vendas estão em preparação; quando abertas, apenas pagamentos confirmados liberarão o plano adquirido.",
+    "O acesso é pela área do aluno, com o mesmo e-mail usado na compra. A Cakto processa o pagamento e somente compras confirmadas liberam o plano adquirido.",
   ],
   [
     "Qual é a diferença entre os planos?",
@@ -235,4 +235,5 @@ export function FAQ() {
     </div>
   );
 }
+
 
