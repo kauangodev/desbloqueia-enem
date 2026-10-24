@@ -13,12 +13,15 @@ export async function POST(req: Request) {
     );
   const input = await req.json().catch(() => null);
   const email = typeof input?.email === "string" ? input.email.trim().toLowerCase() : null;
+  const password = typeof input?.password === "string" ? input.password : null;
   if (
     typeof email !== "string" ||
     email.length > 254 ||
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   )
     return jsonError("Informe um e-mail válido.");
+  if (!password || password.length < 8)
+    return jsonError("Informe a senha com pelo menos 8 caracteres.");
   try {
     const normalizedEmail = email.trim().toLowerCase();
     const adminDb = serviceClient();
@@ -50,30 +53,18 @@ export async function POST(req: Request) {
     if (entitlementError || inviteError)
       return jsonError("Não foi possível verificar o acesso. Tente novamente mais tarde.", 503);
     if (!entitlement && !invite)
-      return NextResponse.json({
-        message:
-          "Se este e-mail tem uma compra aprovada ou convite, você receberá um link de acesso. Confira também o spam.",
-      });
-    const { error } = await db.auth.signInWithOtp({
-      email: normalizedEmail,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: `${appUrl}/auth/callback`,
-        data: invite?.name ? { name: invite.name } : undefined,
-      },
-    });
+      return jsonError("E-mail ou senha inválidos.", 401);
+    const { data: signedIn, error } = await db.auth.signInWithPassword({ email: normalizedEmail, password });
     if (error) {
       console.error("auth_email_failed", { code: error.code, status: error.status });
       return jsonError(
-        error.status === 429
-          ? "Limite de envios atingido. Aguarde alguns minutos e tente novamente."
-          : "O envio do link está indisponível. Nenhum link foi enviado. Tente novamente mais tarde ou fale com o atendimento.",
-        error.status === 429 ? 429 : 503,
+        error.status === 429 ? "Muitas tentativas. Aguarde alguns minutos." : "E-mail ou senha inválidos.",
+        error.status === 429 ? 429 : 401,
       );
     }
+    const { data: profile } = await db.from("profiles").select("role").eq("id", signedIn.user.id).maybeSingle();
     return NextResponse.json({
-      message:
-        "Se este e-mail tem uma compra aprovada ou convite, você receberá um link de acesso. Confira também o spam.",
+      redirect: `${appUrl}${profile?.role === "admin" ? "/admin" : "/aluno"}`,
     });
   } catch {
     return jsonError("Serviço temporariamente indisponível.", 503);

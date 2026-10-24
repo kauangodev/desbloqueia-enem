@@ -24,7 +24,7 @@ export default async function Login({
           <p>Entre no seu espaço de estudo do Desbloqueia ENEM 2026.</p>
           {erro && (
             <p role="alert" className="error">
-              Este link expirou ou não é válido. Solicite um novo abaixo.
+              Este acesso expirou ou não é válido. Solicite uma nova configuração de senha abaixo.
             </p>
           )}
           <LoginForm configured={authConfigured()} />

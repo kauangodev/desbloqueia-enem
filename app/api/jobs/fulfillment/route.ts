@@ -1,4 +1,4 @@
-import { serviceClient } from "../../../../lib/supabase";
+import { publicClient, serviceClient } from "../../../../lib/supabase";
 import { welcomeEmail } from "../../../../lib/email";
 import { appUrl } from "../../../../lib/config";
 import { jsonError } from "../../../../lib/http";
@@ -54,6 +54,13 @@ export async function GET(req: Request) {
         .update({ user_id: userId })
         .eq("email", job.email);
       if (linkError) throw new Error("entitlement_link_failed");
+      const auth = publicClient();
+      if (!auth) throw new Error("auth_not_configured");
+      const { error: passwordEmailError } = await auth.auth.resetPasswordForEmail(
+        job.email,
+        { redirectTo: `${appUrl}/auth/callback?next=/definir-senha` },
+      );
+      if (passwordEmailError) throw new Error("password_setup_email_failed");
       if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) {
         await db
           .from("email_deliveries")

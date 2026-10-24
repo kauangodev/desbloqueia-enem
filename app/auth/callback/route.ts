@@ -4,6 +4,7 @@ import { appUrl } from "../../../lib/config";
 import { createHash } from "node:crypto";
 export async function GET(req: Request) {
   const code = new URL(req.url).searchParams.get("code");
+  const next = new URL(req.url).searchParams.get("next");
   const db = await sessionClient();
   if (code && db) {
     const { error } = await db.auth.exchangeCodeForSession(code);
@@ -23,9 +24,8 @@ export async function GET(req: Request) {
           .select("role")
           .eq("id", user.id)
           .maybeSingle();
-        return NextResponse.redirect(
-          `${appUrl}${profile?.role === "admin" ? "/admin" : "/aluno"}`,
-        );
+        const destination = next === "/definir-senha" ? next : profile?.role === "admin" ? "/admin" : "/aluno";
+        return NextResponse.redirect(`${appUrl}${destination}`);
       }
     }
   }

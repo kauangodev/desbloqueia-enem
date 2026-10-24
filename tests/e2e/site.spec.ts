@@ -194,7 +194,7 @@ test("páginas públicas são responsivas em 320px", async ({ page }) => {
 test("sem integrações não há sucesso simulado", async ({ page, request }) => {
   await page.goto("/entrar");
   await expect(
-    page.getByRole("button", { name: "Receber link de acesso" }),
+    page.getByRole("button", { name: "Entrar na área de alunos" }),
   ).toBeDisabled();
   expect(
     (
