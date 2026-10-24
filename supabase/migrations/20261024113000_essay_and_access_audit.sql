@@ -31,10 +31,15 @@ create policy access_fingerprints_admin on public.account_access_fingerprints fo
 using ((select public.is_admin()) or user_id = (select auth.uid()));
 create index if not exists access_fingerprints_user_idx on public.account_access_fingerprints(user_id, last_seen desc);
 
-create or replace function public.record_access_fingerprint(p_user_id uuid, p_fingerprint_hash text, p_user_agent text) returns void language sql security definer set search_path=public as $$
+create or replace function public.record_access_fingerprint(p_user_id uuid, p_fingerprint_hash text, p_user_agent text) returns void language plpgsql security definer set search_path=public as $$
+begin
+  if p_user_id <> auth.uid() and not public.is_admin() then
+    raise exception 'access denied';
+  end if;
   insert into public.account_access_fingerprints(user_id, fingerprint_hash, user_agent)
   values (p_user_id, p_fingerprint_hash, left(coalesce(p_user_agent, ''), 500))
   on conflict (user_id, fingerprint_hash) do update set seen_count = account_access_fingerprints.seen_count + 1, last_seen = now(), user_agent = excluded.user_agent;
+end;
 $$;
 revoke all on function public.record_access_fingerprint(uuid,text,text) from public, anon, authenticated;
 grant execute on function public.record_access_fingerprint(uuid,text,text) to authenticated, service_role;
