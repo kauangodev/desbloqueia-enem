@@ -5,6 +5,7 @@ import AdminEditor from "../../components/admin-editor";
 import Link from "next/link";
 import { money } from "../../lib/config";
 import { checkoutConfigured } from "../../lib/readiness";
+import TicketManager from "../../components/ticket-manager";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
@@ -459,6 +460,9 @@ export default async function Admin({
         </ul>
       </>
     );
+  } else if (tab === "tickets") {
+    const { data, error } = await db.from("support_tickets").select("id,email,subject,message,status,priority,admin_note,created_at,updated_at").order("updated_at", { ascending: false }).limit(100);
+    content = error ? <p className="status-message">O sistema de tickets ainda precisa da migração do banco para ser ativado.</p> : <TicketManager tickets={data || []} />;
   } else {
     const stats = await Promise.all(
       [
@@ -525,6 +529,7 @@ export default async function Admin({
             ["entregas", "Entregas"],
             ["suporte", "WhatsApp e Atendimento"],
             ["integracoes", "Integrações"],
+            ["tickets", "Tickets"],
           ].map(([id, label]) => (
             <Link
               key={id}

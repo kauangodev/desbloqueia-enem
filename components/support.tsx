@@ -1,8 +1,11 @@
 import { sessionClient } from "../lib/supabase";
+import SupportTicketForm from "./support-ticket-form";
 export default async function Support({
   showPrivateEmail = false,
+  showTicketForm = false,
 }: {
   showPrivateEmail?: boolean;
+  showTicketForm?: boolean;
 }) {
   const db = await sessionClient();
   const settings = db
@@ -23,6 +26,7 @@ export default async function Support({
       ? settings.whatsapp
       : null;
   return (
+    <div className="support-stack">
     <div className="empty-state">
       <h2>{settings?.name || "Atendimento GoDev Education"}</h2>
       {settings?.hours && <p>{settings.hours}</p>}
@@ -49,6 +53,8 @@ export default async function Support({
           aqui antes da abertura das vendas.
         </p>
       )}
+    </div>
+    {showTicketForm && <SupportTicketForm />}
     </div>
   );
 }
