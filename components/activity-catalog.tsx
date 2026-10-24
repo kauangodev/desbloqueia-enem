@@ -20,9 +20,11 @@ const areaTone: Record<string, string> = {
 export default function ActivityCatalog({
   kind,
   items,
+  filters = [],
 }: {
   kind: "exercicios" | "simulados";
   items: ActivityCatalogItem[];
+  filters?: { label: string; href: string; active?: boolean }[];
 }) {
   const isSimulation = kind === "simulados";
   const totalQuestions = items.reduce((sum, item) => sum + item.count, 0);
@@ -48,13 +50,12 @@ export default function ActivityCatalog({
           <div><strong>{areas.length}</strong><span>áreas</span></div>
         </div>
       </div>
-      <div className="activity-catalog-toolbar">
-        <span className="catalog-toolbar-label">Áreas cobertas</span>
-        <div className="catalog-filters" aria-label="Áreas presentes no conteúdo">
-          <span className="catalog-filter active">Todas</span>
-          {areas.map((area) => <span className="catalog-filter" key={area}>{area}</span>)}
+      {filters.length ? <div className="activity-catalog-toolbar">
+        <span className="catalog-toolbar-label">Filtre por área</span>
+        <div className="catalog-filters" aria-label="Filtrar exercícios por área">
+          {filters.map((filter) => <Link className={filter.active ? "catalog-filter active" : "catalog-filter"} href={filter.href} aria-current={filter.active ? "page" : undefined} key={filter.label}>{filter.label}</Link>)}
         </div>
-      </div>
+      </div> : null}
       {items.length ? (
         <div className="activity-catalog-grid">
           {items.map((item, index) => (

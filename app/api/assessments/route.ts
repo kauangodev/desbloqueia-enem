@@ -2,7 +2,7 @@ import { canAccess } from "../../../lib/supabase";
 import { sameOrigin, jsonError } from "../../../lib/http";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { questionsFor, questionsForCollection } from "../../../data/question-bank";
+import { questionBank, questionsFor, questionsForCollection } from "../../../data/question-bank";
 const inputSchema = z.object({
   activity: z.enum(["exercicios", "simulado-1", "simulado-2"]),
   collectionId: z.string().regex(/^[a-z0-9-]+$/).optional(),
@@ -14,9 +14,11 @@ export async function POST(req: Request) {
   if (!who) return jsonError("Acesso não autorizado", 403);
   const parsed = inputSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return jsonError("Resultado inválido");
-  const questions = parsed.data.collectionId
-    ? questionsForCollection(parsed.data.collectionId)
-    : questionsFor(parsed.data.activity);
+  const questions = parsed.data.collectionId === "simulado-completo"
+    ? questionBank.filter((question) => question.activity === "simulado-1" || question.activity === "simulado-2")
+    : parsed.data.collectionId
+      ? questionsForCollection(parsed.data.collectionId)
+      : questionsFor(parsed.data.activity);
   if (!questions.length) return jsonError("Atividade não encontrada", 404);
   const answers = Object.fromEntries(
     questions.map((question) => [question.id, parsed.data.answers[question.id] || ""]),

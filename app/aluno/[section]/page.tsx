@@ -38,7 +38,7 @@ export default async function Section({
   searchParams,
 }: {
   params: Promise<{ section: string }>;
-  searchParams?: Promise<{ simulado?: string; lista?: string }>;
+  searchParams?: Promise<{ simulado?: string; lista?: string; area?: string }>;
 }) {
   const { section } = await params;
   const search = (await searchParams) || {};
@@ -100,8 +100,8 @@ export default async function Section({
         <div className="correction-history-list">
           {attempts.map((attempt) => {
             const percentage = attempt.total ? Math.round((attempt.score / attempt.total) * 100) : 0;
-            const label = attempt.collection_id || (attempt.activity === "simulado-1" ? "Simulado 1" : attempt.activity === "simulado-2" ? "Simulado 2" : "Exercícios");
-            const questions = attempt.collection_id ? questionsForCollection(attempt.collection_id) : questionsFor(attempt.activity as Question["activity"]);
+            const label = attempt.collection_id === "simulado-completo" ? "Provão completo ENEM" : attempt.collection_id || (attempt.activity === "simulado-1" ? "Simulado 1" : attempt.activity === "simulado-2" ? "Simulado 2" : "Exercícios");
+            const questions = attempt.collection_id === "simulado-completo" ? questionBank.filter((question) => question.activity === "simulado-1" || question.activity === "simulado-2") : attempt.collection_id ? questionsForCollection(attempt.collection_id) : questionsFor(attempt.activity as Question["activity"]);
             const missed = questions.filter((question) => attempt.answers?.[question.id] !== question.answer);
             return (
               <details className="correction-history-card" key={attempt.id}>
@@ -148,7 +148,8 @@ export default async function Section({
   else if (section === "exercicios") {
     const collectionId = search.lista && /^[a-z0-9-]+$/.test(search.lista) ? search.lista : undefined;
     const exerciseCollections = [...new Set(questionsFor("exercicios").map((question) => question.collectionId))];
-    const selectedQuestions = collectionId ? questionsForCollection(collectionId) : [];
+    const exerciseArea = { linguagens: "Linguagens", humanas: "Ciências Humanas", natureza: "Ciências da Natureza", matematica: "Matemática" }[search.area || ""];
+    const selectedQuestions = collectionId ? questionsForCollection(collectionId).filter((question) => !exerciseArea || question.area === exerciseArea) : [];
     const selectedCollectionId = selectedQuestions.length ? selectedQuestions[0].collectionId : undefined;
     content = selectedQuestions.length ? (
       <>
@@ -158,25 +159,34 @@ export default async function Section({
     ) : (
       <ActivityCatalog
         kind="exercicios"
+        filters={[
+          { label: "Todas", href: "/aluno/exercicios", active: !search.area },
+          { label: "Linguagens", href: "/aluno/exercicios?area=linguagens", active: search.area === "linguagens" },
+          { label: "Ciências Humanas", href: "/aluno/exercicios?area=humanas", active: search.area === "humanas" },
+          { label: "Ciências da Natureza", href: "/aluno/exercicios?area=natureza", active: search.area === "natureza" },
+          { label: "Matemática", href: "/aluno/exercicios?area=matematica", active: search.area === "matematica" },
+        ]}
         items={exerciseCollections.map((id) => {
           const collectionQuestions = questionsForCollection(id);
+          const visibleQuestions = exerciseArea ? collectionQuestions.filter((question) => question.area === exerciseArea) : collectionQuestions;
+          if (!visibleQuestions.length) return null;
           return {
             id,
             title: id.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
-            count: collectionQuestions.length,
-            areas: [...new Set(collectionQuestions.map((question) => question.area))],
-            href: `/aluno/exercicios?lista=${id}`,
+            count: visibleQuestions.length,
+            areas: [...new Set(visibleQuestions.map((question) => question.area))],
+            href: `/aluno/exercicios?lista=${id}${search.area ? `&area=${search.area}` : ""}`,
             eyebrow: "Lista de exercícios",
             supportingText: "Reforce conceitos e identifique seu próximo ponto de revisão.",
           };
-        })}
+        }).filter((item): item is NonNullable<typeof item> => Boolean(item))}
       />
     );
   } else if (section === "simulados") {
-    const selectedSimulation = search.simulado === "1" ? "simulado-1" : search.simulado === "2" ? "simulado-2" : search.simulado && /^simulado-[0-9]+$/.test(search.simulado) ? search.simulado : undefined;
-    const simulationCollections = [...new Set(questionBank.filter((question) => question.collectionId.startsWith("simulado")).map((question) => question.collectionId))];
-    const selectedQuestions = selectedSimulation ? questionsForCollection(selectedSimulation) : [];
-    const selectedSimulationId = selectedQuestions.length ? selectedQuestions[0].collectionId : undefined;
+    const selectedSimulation = search.simulado === "completo" ? "simulado-completo" : undefined;
+    const completeSimulationQuestions = questionBank.filter((question) => question.activity === "simulado-1" || question.activity === "simulado-2");
+    const selectedQuestions = selectedSimulation === "simulado-completo" ? completeSimulationQuestions : [];
+    const selectedSimulationId = selectedQuestions.length ? "simulado-completo" : undefined;
     content = selectedQuestions.length ? (
       <>
         <div className="assessment-switcher"><Link href="/aluno/simulados">Todos os simulados</Link><Link href="/aluno/correcoes">Ver correções</Link></div>
@@ -185,18 +195,15 @@ export default async function Section({
     ) : (
       <ActivityCatalog
         kind="simulados"
-        items={simulationCollections.map((id) => {
-          const collectionQuestions = questionsForCollection(id);
-          return {
-            id,
-            title: id.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
-            count: collectionQuestions.length,
-            areas: [...new Set(collectionQuestions.map((question) => question.area))],
-            href: `/aluno/simulados?simulado=${id}`,
-            eyebrow: "Simulado ENEM",
-            supportingText: "Uma sessão completa para testar estratégia, ritmo e repertório.",
-          };
-        })}
+        items={[{
+          id: "simulado-completo",
+          title: "Provão completo ENEM",
+          count: completeSimulationQuestions.length,
+          areas: [...new Set(completeSimulationQuestions.map((question) => question.area))],
+          href: "/aluno/simulados?simulado=completo",
+          eyebrow: "Simulado completo",
+          supportingText: "Todas as áreas em uma única prova para medir seu nível de preparação.",
+        }]}
       />
     );
   } else if (section === "biblioteca") {
