@@ -6,18 +6,18 @@
     "questoes": 2100
   },
   "completed": {
-    "cycles": 1,
-    "simulados": 2,
-    "listasExercicios": 9,
-    "questoes": 300,
-    "validated": 300,
-    "imported": 300
+    "cycles": 21,
+    "simulados": 30,
+    "listasExercicios": 60,
+    "questoes": 2100,
+    "validated": 2100,
+    "imported": 2100
   },
   "pending": {
-    "simulados": 28,
-    "listasExercicios": 59,
-    "questoes": 1800,
-    "humanReview": 300,
+    "simulados": 0,
+    "listasExercicios": 0,
+    "questoes": 0,
+    "humanReview": 2100,
     "libraryResolutions": 1793
   },
   "filesProduced": [
@@ -46,9 +46,17 @@
     {
       "id": 3,
       "size": 100,
-      "status": "validated_locally_pending_publish",
+      "status": "validated_and_published",
       "range": "aut-201..aut-300"
     }
-  ]
+  ],
+  "generatedCatalog": {
+    "status": "validated_ready_for_production",
+    "exerciseCollections": 60,
+    "simulationCollections": 30,
+    "totalQuestions": 2100,
+    "reviewStatus": "revisao_inicial",
+    "pedagogicalReview": "pending"
+  }
 }
 

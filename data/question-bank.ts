@@ -1,3 +1,5 @@
+import { generatedQuestions } from "./generated-question-bank";
+
 export type QuestionOption = { id: string; text: string };
 export type Question = { id: string; activity: "exercicios" | "simulado-1" | "simulado-2"; collectionId: string; number: number; area: string; topic: string; difficulty: "média" | "alta"; statement: string; options: QuestionOption[]; answer: string; explanation: string; nextStep: string; sourceLabel: string; origin: "desbloqueio_enem_autoral"; version: number; reviewStatus: "revisao_inicial" | "revisado" };
 const q = (id: string, activity: Question["activity"], number: number, area: string, topic: string, difficulty: Question["difficulty"], statement: string, options: string[], answer: string, explanation: string, nextStep: string, collectionId: string = activity): Question => ({ id, activity, collectionId, number, area, topic, difficulty, statement, options: options.map((text, i) => ({ id: String.fromCharCode(65 + i), text })), answer, explanation, nextStep, sourceLabel: "Autoral · matriz ENEM", origin: "desbloqueio_enem_autoral", version: 1, reviewStatus: "revisao_inicial" });
@@ -309,6 +311,7 @@ questionBank.push(
   q("aut-299", "exercicios", 24, "Matemática", "Notação científica", "média", "O número 7 200 000 pode ser escrito como", ["7,2×10⁴", "7,2×10⁵", "7,2×10⁶", "72×10⁶", "0,72×10⁶"], "C", "A vírgula é deslocada seis casas à esquerda: 7,2×10⁶.", "Conte as casas no número original", "lista-09"),
   q("aut-300", "exercicios", 25, "Matemática", "MDC", "média", "O máximo divisor comum de 18 e 24 é", ["2", "3", "6", "9", "12"], "C", "Os divisores comuns incluem 1, 2, 3 e 6; o maior é 6.", "Liste divisores ou use fatoração", "lista-09"),
 );
+questionBank.push(...generatedQuestions);
 export function questionsFor(activity: Question["activity"]) { return questionBank.filter((question) => question.activity === activity); }
 export function questionsForCollection(collectionId: string) { return questionBank.filter((question) => question.collectionId === collectionId); }
 

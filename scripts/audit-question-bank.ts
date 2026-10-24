@@ -9,6 +9,7 @@ const ids = questionBank.map((question) => question.id);
 const invalid = questionBank.filter(
   (question) =>
     question.options.length !== 5 ||
+    new Set(question.options.map((option) => option.text)).size !== 5 ||
     !question.options.some((option) => option.id === question.answer) ||
     !question.statement.trim() ||
     !question.explanation.trim() ||
@@ -48,7 +49,14 @@ console.log(
         ).length,
       },
       target: {
-        simulados: { required: 30, current: 2 },
+        simulados: {
+          required: 30,
+          current: new Set(
+            questionBank
+              .filter((question) => question.collectionId.startsWith("simulado"))
+              .map((question) => question.collectionId),
+          ).size,
+        },
         exercises: {
           requiredLists: 60,
           requiredQuestions: 1500,

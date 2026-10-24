@@ -9,7 +9,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import AssessmentPlayer from "../../../components/assessment-player";
 import EssayWorkspace from "../../../components/essay-workspace";
-import { questionsFor, questionsForCollection } from "../../../data/question-bank";
+import { questionBank, questionsFor, questionsForCollection } from "../../../data/question-bank";
 import type { Question } from "../../../data/question-bank";
 const sections: Record<string, [string, string]> = {
   materiais: ["Meus materiais", "Sua coleção, organizada por disciplina."],
@@ -164,8 +164,20 @@ export default async function Section({
       </div>
     );
   } else if (section === "simulados") {
-    const activity = search.simulado === "2" ? "simulado-2" : "simulado-1";
-    content = <><div className="assessment-switcher"><Link className={activity === "simulado-1" ? "active" : ""} href="/aluno/simulados?simulado=1">Simulado 1 · Humanas + Linguagens</Link><Link className={activity === "simulado-2" ? "active" : ""} href="/aluno/simulados?simulado=2">Simulado 2 · Natureza + Matemática</Link></div><AssessmentPlayer questions={questionsFor(activity)} title={activity === "simulado-1" ? "Simulado 1" : "Simulado 2"} subtitle="Resolva todas as questões. A correção detalhada aparece ao finalizar." /></>;
+    const selectedSimulation = search.simulado === "1" ? "simulado-1" : search.simulado === "2" ? "simulado-2" : search.simulado && /^simulado-[0-9]+$/.test(search.simulado) ? search.simulado : undefined;
+    const simulationCollections = [...new Set(questionBank.filter((question) => question.collectionId.startsWith("simulado")).map((question) => question.collectionId))];
+    const selectedQuestions = selectedSimulation ? questionsForCollection(selectedSimulation) : [];
+    const selectedSimulationId = selectedQuestions.length ? selectedQuestions[0].collectionId : undefined;
+    content = selectedQuestions.length ? (
+      <>
+        <div className="assessment-switcher"><Link href="/aluno/simulados">Todos os simulados</Link><Link href="/aluno/correcoes">Ver correções</Link></div>
+        <AssessmentPlayer questions={selectedQuestions} collectionId={selectedSimulationId} title={selectedSimulationId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva todas as questões. A correção detalhada aparece ao finalizar." />
+      </>
+    ) : (
+      <div className="assessment-switcher">
+        {simulationCollections.map((id) => <Link key={id} href={`/aluno/simulados?simulado=${id}`}><b>{id.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())}</b><small>{questionsForCollection(id).length} questões · tempo sugerido de revisão</small></Link>)}
+      </div>
+    );
   } else if (section === "biblioteca") {
     const entries = JSON.parse(
       await readFile(path.join(process.cwd(), "data/library.json"), "utf8"),
