@@ -31,6 +31,7 @@ export default async function Buy({
             </Link>
             .
           </p>
+          <p className="status-message">Após o pagamento aprovado pela Cakto, o acesso é vinculado ao e-mail informado na compra. Você receberá instruções para criar sua senha e entrar na área de alunos.</p>
           {checkoutConfigured() ? (
             <Link className="button primary" href={`/api/checkout/${p.id}`}>
               Continuar para o pagamento

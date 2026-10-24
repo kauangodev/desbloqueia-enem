@@ -499,7 +499,7 @@ textarea {
   text-transform: uppercase;
 }
 .material-index-heading small {
-  color: #718176;
+  color: #29483a;
   font-size: 10px;
   letter-spacing: 0.08em;
 }
@@ -545,13 +545,13 @@ textarea {
 .material-index button small {
   display: block;
   margin-left: auto;
-  color: #718176;
+  color: #29483a;
   font-size: 10px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .material-index button[aria-selected="true"] small {
-  color: rgb(255 255 255 / 72%);
+  color: #ffffff;
 }
 .material-index button[aria-selected="true"] {
   border-color: #08482d;
@@ -2120,7 +2120,18 @@ th {
 .feedback-score strong { font-size: 3rem; line-height: 1; }
 .feedback-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 .feedback-columns ul, .essay-feedback ol { padding-left: 1.25rem; }
-@media (max-width: 700px) { .essay-header, .essay-feedback, .essay-grid { grid-template-columns: 1fr; } .essay-actions { align-items: stretch; flex-direction: column; } .feedback-columns { grid-template-columns: 1fr; } }
+.competency-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .6rem; margin: 1.25rem 0; }
+.competency-grid article { padding: .8rem; border: 1px solid #d7dfc9; border-radius: .9rem; background: #fffdf4; }
+.competency-grid b, .competency-grid strong { display: block; }
+.competency-grid strong { margin-top: .35rem; color: #0a4d3b; }
+.competency-grid p { margin: .5rem 0 0; font-size: .8rem; }
+.correction-history-card { overflow: hidden; }
+.correction-history-card summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer; list-style: none; }
+.correction-history-card summary::-webkit-details-marker { display: none; }
+.correction-history-detail { padding-top: 1rem; }
+.correction-history-detail .correction { margin-top: .75rem; }
+@media (max-width: 900px) { .competency-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .essay-header, .essay-feedback, .essay-grid { grid-template-columns: 1fr; } .essay-actions { align-items: stretch; flex-direction: column; } .feedback-columns { grid-template-columns: 1fr; } .competency-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 650px) {
   .section-intro-row { align-items: stretch; flex-direction: column; }
   .correction-history-card { align-items: flex-start; }

@@ -4,10 +4,12 @@ import { ReelHero } from "../components/landing/ReelHero";
 import { DisciplineMarquee } from "../components/landing/DisciplineMarquee";
 import { money } from "../lib/config";
 import { publicPlans } from "../lib/catalog";
+import { checkoutConfigured } from "../lib/readiness";
 export const dynamic = "force-dynamic";
 export const metadata = { alternates: { canonical: "/" } };
 export default async function Home() {
   const plans = await publicPlans();
+  const checkoutReady = checkoutConfigured();
   return (
     <>
       <Header />
@@ -171,7 +173,7 @@ export default async function Home() {
                   >
                     Escolher {p.name}
                   </Link>
-                  <small className="plan-note">Vendas em preparação</small>
+                  <small className="plan-note">{checkoutReady ? "Pagamento seguro pela Cakto · acesso liberado após confirmação" : "Vendas em preparação"}</small>
                 </article>
               ))}
             </div>

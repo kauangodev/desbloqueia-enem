@@ -10,6 +10,7 @@ import path from "node:path";
 import AssessmentPlayer from "../../../components/assessment-player";
 import EssayWorkspace from "../../../components/essay-workspace";
 import { questionsFor } from "../../../data/question-bank";
+import type { Question } from "../../../data/question-bank";
 const sections: Record<string, [string, string]> = {
   materiais: ["Meus materiais", "Sua coleção, organizada por disciplina."],
   exercicios: [
@@ -99,15 +100,23 @@ export default async function Section({
           {attempts.map((attempt) => {
             const percentage = attempt.total ? Math.round((attempt.score / attempt.total) * 100) : 0;
             const label = attempt.activity === "simulado-1" ? "Simulado 1" : attempt.activity === "simulado-2" ? "Simulado 2" : "Exercícios";
+            const questions = questionsFor(attempt.activity as Question["activity"]);
+            const missed = questions.filter((question) => attempt.answers?.[question.id] !== question.answer);
             return (
-              <article className="correction-history-card" key={attempt.id}>
+              <details className="correction-history-card" key={attempt.id}>
+                <summary>
                 <div>
                   <span className="eyebrow">{label}</span>
                   <h3>{attempt.score} de {attempt.total} acertos</h3>
                   <p>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(attempt.completed_at))}</p>
                 </div>
                 <strong>{percentage}%</strong>
-              </article>
+                </summary>
+                <div className="correction-history-detail">
+                  <p><b>{missed.length}</b> ponto(s) para retomar nesta tentativa.</p>
+                  {missed.length ? missed.map((question) => <article className="correction wrong" key={question.id}><b>Questão {question.number} · {question.area}</b><p>{question.explanation}</p><small>Próximo passo: {question.nextStep}.</small></article>) : <p className="success">Você não deixou questões erradas nesta tentativa.</p>}
+                </div>
+              </details>
             );
           })}
         </div>

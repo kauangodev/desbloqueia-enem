@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-type Feedback = { score: number; summary: string; strengths: string[]; improvements: string[]; action_plan: string[] };
+type Feedback = { score: number; summary: string; strengths: string[]; improvements: string[]; action_plan: string[]; competencies: { name: string; score: number; rationale: string }[] };
 
 const prompts = [
   "Os desafios para combater a desinformação científica no Brasil",
@@ -58,7 +58,7 @@ export default function EssayWorkspace() {
           <ul className="task-list"><li>Apresente uma tese clara.</li><li>Conecte argumentos ao tema.</li><li>Detalhe agente, ação e finalidade.</li><li>Revise coesão, pontuação e norma-padrão.</li></ul>
         </aside>
       </div>
-      {feedback && <section className="essay-feedback" aria-live="polite"><div className="feedback-score"><span>Diagnóstico estimado</span><strong>{feedback.score}</strong><small>/ 1000</small></div><div><span className="eyebrow">Leitura geral</span><p>{feedback.summary}</p><div className="feedback-columns"><div><h3>Pontos fortes</h3><ul>{feedback.strengths.map((item) => <li key={item}>{item}</li>)}</ul></div><div><h3>Próximos ajustes</h3><ul>{feedback.improvements.map((item) => <li key={item}>{item}</li>)}</ul></div></div><h3>Plano de revisão</h3><ol>{feedback.action_plan.map((item) => <li key={item}>{item}</li>)}</ol></div></section>}
+      {feedback && <section className="essay-feedback" aria-live="polite"><div className="feedback-score"><span>Diagnóstico estimado</span><strong>{feedback.score}</strong><small>/ 1000 · orientação pedagógica</small></div><div><span className="eyebrow">Leitura geral</span><p>{feedback.summary}</p><div className="competency-grid">{feedback.competencies.map((item) => <article key={item.name}><b>{item.name}</b><strong>{item.score}/200</strong><p>{item.rationale}</p></article>)}</div><div className="feedback-columns"><div><h3>Pontos fortes</h3><ul>{feedback.strengths.map((item) => <li key={item}>{item}</li>)}</ul></div><div><h3>Próximos ajustes</h3><ul>{feedback.improvements.map((item) => <li key={item}>{item}</li>)}</ul></div></div><h3>Plano de revisão</h3><ol>{feedback.action_plan.map((item) => <li key={item}>{item}</li>)}</ol><p className="subtle">A correção é um diagnóstico automatizado para estudo e não substitui a avaliação oficial do ENEM.</p></div></section>}
     </div>
   );
 }
