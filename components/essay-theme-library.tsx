@@ -57,7 +57,10 @@ export default function EssayThemeLibrary({ themes, value, onChange }: Props) {
               </button>
               {expanded && <div className="essay-theme-body">
                 <p>{theme.summary}</p>
+                <div className="essay-theme-section"><strong>Contexto para repertoriar</strong><p>{theme.context}</p></div>
+                <div className="essay-theme-section"><strong>Pontos para estudar</strong><ul>{theme.keyPoints.map((point) => <li key={point}>{point}</li>)}</ul></div>
                 <div className="essay-theme-angles">{theme.angles.map((angle) => <span key={angle}>{angle}</span>)}</div>
+                <div className="essay-theme-section"><strong>Caminho de intervenção</strong><p>{theme.intervention}</p></div>
                 <a href={theme.sourceUrl} target="_blank" rel="noreferrer">Consultar fonte: {theme.sourceLabel}</a>
               </div>}
             </article>
