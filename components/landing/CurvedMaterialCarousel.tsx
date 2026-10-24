@@ -103,6 +103,10 @@ export function CurvedMaterialCarousel() {
       const bounds = viewport.getBoundingClientRect();
       motion.width = bounds.width;
       motion.height = bounds.height;
+      // ResizeObserver can run before IntersectionObserver has delivered its
+      // first entry. Keep the visible default until the observer has a real
+      // answer; otherwise a desktop first paint could start frozen forever.
+      if (document.visibilityState === "visible") motion.visible = true;
       renderCards();
     };
     const updateMotionPreference = () => {
@@ -135,13 +139,17 @@ export function CurvedMaterialCarousel() {
       const delta = Math.min((time - previous) / 1000, 0.05);
       previousTimeRef.current = time;
 
-      if (motion.visible && !motion.hidden && !motion.reduced) {
+      const pageVisible = document.visibilityState === "visible";
+      if ((motion.visible || pageVisible) && !motion.hidden && !motion.reduced) {
         if (!motion.dragging) {
           if (Math.abs(motion.velocity) > 5) {
             motion.offset += motion.velocity * delta;
             motion.velocity *= Math.pow(0.055, delta);
           } else {
             motion.velocity = 0;
+            // Keep the idle movement frame-rate independent. The modulo in
+            // renderCards handles the circular wrap without letting offset
+            // grow indefinitely during a long desktop session.
             motion.offset -= 50 * delta;
           }
           renderCards();
