@@ -33,6 +33,18 @@ export const plans = [
     ],
   },
 ] as const;
+export const caktoFallbackOffers = {
+  essencial: {
+    productId: "6ff97951-a03a-4bed-bbe5-62c88031c0fc",
+    offerId: "3biievb",
+    checkoutUrl: "https://pay.cakto.com.br/3biievb_1233750",
+  },
+  premium: {
+    productId: "e1fc994d-6000-41d4-9b08-5af47ec3ce07",
+    offerId: "3fq7t2s",
+    checkoutUrl: "https://pay.cakto.com.br/3fq7t2s_1233753",
+  },
+} as const;
 export type Plan = "essencial" | "premium";
 export const money = (cents: number) =>
   (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -92,3 +104,4 @@ export const materials = [
     cover: "/covers/editorial-v3/kit.jpg",
   },
 ] as const;
+
