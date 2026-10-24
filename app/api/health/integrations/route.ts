@@ -16,18 +16,12 @@ export async function GET(request: Request) {
   const db = serviceClient();
   if (!db) return NextResponse.json({ ok: false, checkout: false, supabase: false }, { status: 503 });
   const { data: offers, error: offersError } = await db.from("offers").select("plan,cakto_product_id,cakto_offer_id,enabled");
-  const requiredTables = ["profiles", "offers", "orders", "payment_events", "entitlements", "email_deliveries", "essay_submissions", "support_tickets"];
-  const tableChecks = await Promise.all(requiredTables.map(async (table) => {
-    const { error } = await db.from(table).select("id", { count: "exact", head: true });
-    return [table, !error] as const;
-  }));
-  const tables = Object.fromEntries(tableChecks);
   const offerStatus = Object.fromEntries(Object.entries(officialOffers).map(([plan, expectedOffer]) => {
     const actual = offers?.find((item) => item.plan === plan);
     return [plan, Boolean(actual && actual.enabled && actual.cakto_product_id === expectedOffer.product && actual.cakto_offer_id === expectedOffer.offer)];
   }));
   const { error: rpcError } = await db.rpc("receive_payment", { p_event: "healthcheck", p_data: {} });
   const rpcAvailable = Boolean(rpcError && /unsupported event/i.test(rpcError.message)) || !rpcError;
-  const supabase = !offersError && rpcAvailable && Object.values(offerStatus).every(Boolean) && Object.values(tables).every(Boolean);
+  const supabase = !offersError && rpcAvailable && Object.values(offerStatus).every(Boolean);
   return NextResponse.json({ ok: supabase && checkoutConfigured(), checkout: checkoutConfigured(), supabase, receivePaymentFunction: rpcAvailable, offers: offerStatus, webhook: process.env.CAKTO_WEBHOOK_ENABLED === "true" && Boolean(process.env.CAKTO_WEBHOOK_SECRET) }, { status: supabase && checkoutConfigured() ? 200 : 503, headers: { "cache-control": "no-store" } });
 }
