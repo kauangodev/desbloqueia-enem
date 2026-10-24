@@ -78,8 +78,39 @@ export default async function Section({
       </div>
     );
   } else if (section === "suporte") content = <Support />;
-  else if (section === "correcoes")
-    content = (
+  else if (section === "correcoes") {
+    const { data: attempts } = await who.db
+      .from("assessment_attempts")
+      .select("id,activity,score,total,completed_at,answers")
+      .eq("user_id", who.user.id)
+      .order("completed_at", { ascending: false });
+    content = attempts?.length ? (
+      <div className="correction-history">
+        <div className="section-intro-row">
+          <div>
+            <span className="eyebrow">Seu histórico</span>
+            <h2>Correções e próximos passos</h2>
+          </div>
+          <Link className="button secondary" href="/aluno/exercicios">Nova tentativa</Link>
+        </div>
+        <div className="correction-history-list">
+          {attempts.map((attempt) => {
+            const percentage = attempt.total ? Math.round((attempt.score / attempt.total) * 100) : 0;
+            const label = attempt.activity === "simulado-1" ? "Simulado 1" : attempt.activity === "simulado-2" ? "Simulado 2" : "Exercícios";
+            return (
+              <article className="correction-history-card" key={attempt.id}>
+                <div>
+                  <span className="eyebrow">{label}</span>
+                  <h3>{attempt.score} de {attempt.total} acertos</h3>
+                  <p>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(attempt.completed_at))}</p>
+                </div>
+                <strong>{percentage}%</strong>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    ) : (
       <div className="empty-state correction-empty">
         <span className="eyebrow">Seu histórico</span>
         <h2>Suas correções aparecerão aqui</h2>
@@ -87,6 +118,7 @@ export default async function Section({
         <Link className="button primary" href="/aluno/exercicios">Começar exercícios</Link>
       </div>
     );
+  }
   else if (!entitled)
     content = (
       <div className="empty-state">

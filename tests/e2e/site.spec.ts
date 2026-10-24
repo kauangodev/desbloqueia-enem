@@ -162,6 +162,9 @@ test("rotas privadas e arquivos exigem sessão", async ({ page, request }) => {
     "/aluno",
     "/aluno/materiais",
     "/aluno/biblioteca",
+    "/aluno/exercicios",
+    "/aluno/simulados",
+    "/aluno/correcoes",
     "/admin",
   ]) {
     await page.goto(path);
