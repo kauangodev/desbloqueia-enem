@@ -1329,6 +1329,10 @@ textarea {
   color: var(--muted);
   margin-top: 6px;
 }
+.crm-user-details { margin-top: .65rem; }
+.crm-user-details summary { color: #0b6847; cursor: pointer; font-size: .7rem; font-weight: 750; }
+.crm-user-details p { margin: .45rem 0; color: #52655b; font-size: .7rem; white-space: normal; }
+.crm-user-details small { display: block; max-width: 220px; color: #6f7d75; font-size: .68rem; white-space: normal; }
 .crm-stats {
   max-width: none;
 }

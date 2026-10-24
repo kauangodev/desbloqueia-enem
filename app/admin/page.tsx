@@ -339,6 +339,12 @@ export default async function Admin({
                     <td>
                       <strong>{customer.name || "Nome não informado"}</strong>
                       <a href={`mailto:${customer.email}`}>{customer.email}</a>
+                      <details className="crm-user-details">
+                        <summary>Ver atividade</summary>
+                        <p><b>{customer.attempts.length}</b> sessão(ões) · <b>{customer.essays.length}</b> redação(ões)</p>
+                        {customer.attempts.slice(0, 3).map((attempt) => <small key={`${attempt.user_id}-${attempt.completed_at}`}>{attempt.collection_id || attempt.activity} · {attempt.score}/{attempt.total} · {date(attempt.completed_at)}</small>)}
+                        {!customer.attempts.length && <small>Nenhuma sessão registrada.</small>}
+                      </details>
                     </td>
                     <td>
                       <span className={`crm-badge ${active.length ? "success" : "muted"}`}>
