@@ -5,7 +5,7 @@ export type EssayTheme = {
   summary: string;
   context: string;
   keyPoints: string[];
-  intervention: string;,
+  intervention: string;
   angles: string[];
   sourceLabel: string;
   sourceUrl: string;
