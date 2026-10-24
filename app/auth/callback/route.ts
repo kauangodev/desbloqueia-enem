@@ -24,7 +24,7 @@ export async function GET(req: Request) {
           .select("role")
           .eq("id", user.id)
           .maybeSingle();
-        const destination = next === "/definir-senha" ? next : profile?.role === "admin" ? "/admin" : "/aluno";
+        const destination = next === "/definir-senha" || !next ? "/definir-senha" : profile?.role === "admin" ? "/admin" : "/aluno";
         return NextResponse.redirect(`${appUrl}${destination}`);
       }
     }

@@ -58,7 +58,7 @@ export async function GET(req: Request) {
       if (!auth) throw new Error("auth_not_configured");
       const { error: passwordEmailError } = await auth.auth.resetPasswordForEmail(
         job.email,
-        { redirectTo: `${appUrl}/auth/callback?next=/definir-senha` },
+        { redirectTo: `${appUrl}/auth/callback` },
       );
       if (passwordEmailError) throw new Error("password_setup_email_failed");
       if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) {

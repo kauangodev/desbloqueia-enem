@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   }
   const auth = publicClient();
   if (!auth) return jsonError("Autenticação indisponível.", 503);
-  const { error } = await auth.auth.resetPasswordForEmail(email, { redirectTo: `${appUrl}/auth/callback?next=/definir-senha` });
+  const { error } = await auth.auth.resetPasswordForEmail(email, { redirectTo: `${appUrl}/auth/callback` });
   if (error) return jsonError("Não foi possível enviar as instruções de senha agora.", 503);
   return NextResponse.json({ message: "Enviamos as instruções para criar ou trocar sua senha. Confira sua caixa de entrada e o spam." });
 }
