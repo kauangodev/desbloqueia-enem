@@ -36,8 +36,8 @@ before(async () => {
   );
 });
 after(() => db.close());
-test("checkout exige envio de acesso validado e todas as integrações", () => {
-  const ready = { CHECKOUT_ENABLED: "true", AUTH_EMAIL_READY: "true", CAKTO_WEBHOOK_ENABLED: "true", CAKTO_WEBHOOK_SECRET: "test", NEXT_PUBLIC_SUPABASE_URL: "https://example.test", NEXT_PUBLIC_SUPABASE_ANON_KEY: "test", SUPABASE_SERVICE_ROLE_KEY: "test" };
+test("checkout exige pagamento e integração de acesso validados", () => {
+  const ready = { CHECKOUT_ENABLED: "true", CAKTO_WEBHOOK_ENABLED: "true", CAKTO_WEBHOOK_SECRET: "test", NEXT_PUBLIC_SUPABASE_URL: "https://example.test", NEXT_PUBLIC_SUPABASE_ANON_KEY: "test", SUPABASE_SERVICE_ROLE_KEY: "test" };
   assert.equal(checkoutConfigured(ready), true);
   for (const key of Object.keys(ready)) {
     assert.equal(checkoutConfigured({ ...ready, [key]: "" }), false, key);
@@ -347,4 +347,5 @@ test("e-mail de acesso usa marca e não envia senha", () => {
   assert.ok(html.includes("https://example.test/entrar"));
   assert.ok(!html.includes("password="));
 });
+
 
