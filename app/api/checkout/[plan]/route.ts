@@ -2,6 +2,7 @@ import { serviceClient } from "../../../../lib/supabase";
 import { jsonError } from "../../../../lib/http";
 import { NextResponse } from "next/server";
 import { checkoutConfigured } from "../../../../lib/readiness";
+import { caktoFallbackOffers } from "../../../../lib/config";
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ plan: string }> },
@@ -12,27 +13,20 @@ export async function GET(
   if (!["essencial", "premium"].includes(plan))
     return jsonError("Plano inválido", 404);
   try {
-  const db = serviceClient();
-  const { data: offer } = await db
-    .from("offers")
-    .select("*")
-    .eq("plan", plan)
-    .eq("enabled", true)
-    .single();
-  const { data: support } = await db
-    .from("support_settings")
-    .select("email,legal_name")
-    .eq("id", true)
-    .single();
-  if (
-    !offer?.checkout_url ||
-    !offer.cakto_product_id ||
-    !offer.cakto_offer_id ||
-    !support?.email ||
-    !support.legal_name
-  )
-    return jsonError("Plano ainda não disponível.", 503);
-  const url = new URL(offer.checkout_url);
+  const fallback = caktoFallbackOffers[plan as keyof typeof caktoFallbackOffers];
+  if (!fallback) return jsonError("Plano inválido", 404);
+  let offer: { checkout_url?: string; cakto_product_id?: string; cakto_offer_id?: string } | null = null;
+  try {
+    const db = serviceClient();
+    const result = await db.from("offers").select("checkout_url,cakto_product_id,cakto_offer_id").eq("plan", plan).eq("enabled", true).single();
+    offer = result.data;
+  } catch {
+    offer = null;
+  }
+  const checkoutUrl = offer?.checkout_url || fallback.checkoutUrl;
+  const productId = offer?.cakto_product_id || fallback.productId;
+  const offerId = offer?.cakto_offer_id || fallback.offerId;
+  const url = new URL(checkoutUrl);
   if (
     url.protocol !== "https:" ||
     url.hostname !== "pay.cakto.com.br" ||
@@ -41,9 +35,13 @@ export async function GET(
   )
     return jsonError("Checkout inválido", 503);
   const response = NextResponse.redirect(url, 303);
+  response.headers.set("X-Checkout-Plan", plan);
+  response.headers.set("X-Cakto-Product", productId);
+  response.headers.set("X-Cakto-Offer", offerId);
   response.headers.set("Cache-Control", "private, no-store");
   return response;
   } catch {
     return jsonError("Pagamento temporariamente indisponível. Tente novamente mais tarde.", 503);
   }
 }
+
