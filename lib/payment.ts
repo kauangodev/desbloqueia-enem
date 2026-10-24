@@ -50,10 +50,22 @@ export const eventSchema = z.object({
     "purchase_approved",
     "purchase_refused",
     "refund",
+    "refund_requested",
     "chargeback",
+    "dispute_defense_requested",
+    "purchase_email_failed",
     "pix_gerado",
     "boleto_gerado",
     "picpay_gerado",
+    "openfinance_nubank_gerado",
+    "subscription_created",
+    "subscription_renewed",
+    "subscription_renewal_refused",
+    "subscription_paused",
+    "subscription_resumed",
+    "subscription_late",
+    "subscription_late_recovered",
+    "subscription_canceled",
   ]),
   data: z.union([orderSchema, z.array(orderSchema).min(1).max(20)]),
 });
@@ -61,6 +73,9 @@ export function nextStatus(current: string | null, event: string) {
   if (current === "refunded" || current === "chargedback") return current;
   if (event === "refund") return "refunded";
   if (event === "chargeback") return "chargedback";
+  if (["subscription_canceled", "subscription_paused", "subscription_late", "subscription_renewal_refused"].includes(event)) return event.replace("subscription_", "");
+  if (["subscription_created", "subscription_renewed", "subscription_resumed", "subscription_late_recovered"].includes(event)) return "paid";
   if (current === "paid" || event === "purchase_approved") return "paid";
   return event === "purchase_refused" ? "refused" : "pending";
 }
+

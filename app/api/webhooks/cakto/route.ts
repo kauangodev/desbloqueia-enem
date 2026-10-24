@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     const db = serviceClient();
     const items = Array.isArray(payload.data) ? payload.data : [payload.data];
     for (const order of items) {
-      if (payload.event === "purchase_approved" && order.status !== "paid")
+      if (["purchase_approved", "subscription_created", "subscription_renewed", "subscription_resumed", "subscription_late_recovered"].includes(payload.event) && order.status !== "paid")
         return jsonError("Estado incompatível", 422);
       const { error } = await db.rpc("receive_payment", {
         p_event: payload.event,
@@ -65,3 +65,4 @@ export async function POST(req: Request) {
     return jsonError("Banco indisponível; reenvie pelo painel Cakto", 503);
   }
 }
+

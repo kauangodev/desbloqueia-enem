@@ -205,6 +205,17 @@ test("aprovação atrasada após reembolso não reativa acesso", async () => {
     false,
   );
   assert.equal(nextStatus("refunded", "purchase_approved"), "refunded");
+  assert.equal(nextStatus("paid", "subscription_paused"), "paused");
+  assert.equal(nextStatus("late", "subscription_resumed"), "paid");
+  assert.equal(nextStatus("paid", "subscription_canceled"), "canceled");
+});
+
+test("eventos oficiais adicionais da Cakto são aceitos sem liberar cobranças pendentes", () => {
+  const pending = payload("official-event");
+  assert.equal(eventSchema.safeParse({ event: "subscription_renewed", data: pending }).success, true);
+  assert.equal(eventSchema.safeParse({ event: "subscription_canceled", data: pending }).success, true);
+  assert.equal(eventSchema.safeParse({ event: "openfinance_nubank_gerado", data: pending }).success, true);
+  assert.equal(nextStatus(null, "openfinance_nubank_gerado"), "pending");
 });
 test("chargeback revoga somente o pedido afetado", async () => {
   await event("cb", "purchase_approved");
@@ -336,3 +347,4 @@ test("e-mail de acesso usa marca e não envia senha", () => {
   assert.ok(html.includes("https://example.test/entrar"));
   assert.ok(!html.includes("password="));
 });
+
