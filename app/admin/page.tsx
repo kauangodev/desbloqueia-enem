@@ -310,7 +310,9 @@ export default async function Admin({
                       <small>
                         {customer.deliveries[0]?.status === "failed"
                           ? "Boas-vindas com falha"
-                          : "Login por link seguro"}
+                          : customer.profile
+                            ? "Cadastro disponível com senha"
+                            : "Cadastro após pagamento aprovado"}
                       </small>
                     </td>
                     <td>{date(lastOrder?.created_at)}</td>
@@ -464,3 +466,4 @@ export default async function Admin({
     </>
   );
 }
+

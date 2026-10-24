@@ -1,0 +1,53 @@
+import { readFileSync } from "node:fs";
+import { questionBank } from "../data/question-bank";
+
+const library = JSON.parse(readFileSync("data/library.json", "utf8")) as Array<{
+  estado_resolucao?: string;
+}>;
+const activities = ["exercicios", "simulado-1", "simulado-2"] as const;
+const ids = questionBank.map((question) => question.id);
+const invalid = questionBank.filter(
+  (question) =>
+    question.options.length !== 5 ||
+    !question.options.some((option) => option.id === question.answer) ||
+    !question.statement.trim() ||
+    !question.explanation.trim() ||
+    !question.nextStep.trim(),
+);
+
+console.log(
+  JSON.stringify(
+    {
+      questionBank: {
+        total: questionBank.length,
+        byActivity: Object.fromEntries(
+          activities.map((activity) => [
+            activity,
+            questionBank.filter((question) => question.activity === activity).length,
+          ]),
+        ),
+        uniqueIds: new Set(ids).size,
+        duplicateIds: ids.filter((id, index) => ids.indexOf(id) !== index),
+        invalidRecords: invalid.map((question) => question.id),
+        sourceLabels: [...new Set(questionBank.map((question) => question.sourceLabel))],
+      },
+      library: {
+        total: library.length,
+        resolved: library.filter(
+          (item) => item.estado_resolucao === "EXPLICADA E CONFERIDA",
+        ).length,
+        pending: library.filter((item) =>
+          String(item.estado_resolucao || "").startsWith("PENDENTE"),
+        ).length,
+      },
+      target: {
+        simulados: { required: 30, current: 2 },
+        exercises: { required: 50, current: 1 },
+        completeQuestions: { required: 2100, current: 0 },
+      },
+    },
+    null,
+    2,
+  ),
+);
+
