@@ -9,7 +9,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import AssessmentPlayer from "../../../components/assessment-player";
 import EssayWorkspace from "../../../components/essay-workspace";
-import { questionsFor } from "../../../data/question-bank";
+import { questionsFor, questionsForCollection } from "../../../data/question-bank";
 import type { Question } from "../../../data/question-bank";
 const sections: Record<string, [string, string]> = {
   materiais: ["Meus materiais", "Sua coleção, organizada por disciplina."],
@@ -37,7 +37,7 @@ export default async function Section({
   searchParams,
 }: {
   params: Promise<{ section: string }>;
-  searchParams?: Promise<{ simulado?: string }>;
+  searchParams?: Promise<{ simulado?: string; lista?: string }>;
 }) {
   const { section } = await params;
   const search = (await searchParams) || {};
@@ -84,7 +84,7 @@ export default async function Section({
   else if (section === "correcoes") {
     const { data: attempts } = await who.db
       .from("assessment_attempts")
-      .select("id,activity,score,total,completed_at,answers")
+      .select("id,activity,collection_id,score,total,completed_at,answers")
       .eq("user_id", who.user.id)
       .order("completed_at", { ascending: false });
     content = attempts?.length ? (
@@ -99,8 +99,8 @@ export default async function Section({
         <div className="correction-history-list">
           {attempts.map((attempt) => {
             const percentage = attempt.total ? Math.round((attempt.score / attempt.total) * 100) : 0;
-            const label = attempt.activity === "simulado-1" ? "Simulado 1" : attempt.activity === "simulado-2" ? "Simulado 2" : "Exercícios";
-            const questions = questionsFor(attempt.activity as Question["activity"]);
+            const label = attempt.collection_id || (attempt.activity === "simulado-1" ? "Simulado 1" : attempt.activity === "simulado-2" ? "Simulado 2" : "Exercícios");
+            const questions = attempt.collection_id ? questionsForCollection(attempt.collection_id) : questionsFor(attempt.activity as Question["activity"]);
             const missed = questions.filter((question) => attempt.answers?.[question.id] !== question.answer);
             return (
               <details className="correction-history-card" key={attempt.id}>
@@ -145,7 +145,24 @@ export default async function Section({
       </div>
     );
   else if (section === "exercicios") {
-    content = <AssessmentPlayer questions={questionsFor("exercicios")} title="Exercícios de base" subtitle="Resolva no seu ritmo e descubra onde concentrar energia na próxima revisão." />;
+    const collectionId = search.lista && /^[a-z0-9-]+$/.test(search.lista) ? search.lista : undefined;
+    const exerciseCollections = [...new Set(questionsFor("exercicios").map((question) => question.collectionId))];
+    const selectedQuestions = collectionId ? questionsForCollection(collectionId) : [];
+    const selectedCollectionId = selectedQuestions.length ? selectedQuestions[0].collectionId : undefined;
+    content = selectedQuestions.length ? (
+      <>
+        <div className="assessment-switcher"><Link href="/aluno/exercicios">Todas as listas</Link><Link href="/aluno/correcoes">Ver correções</Link></div>
+        <AssessmentPlayer questions={selectedQuestions} collectionId={selectedCollectionId} title={selectedCollectionId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva no seu ritmo. Ao finalizar, a correção detalhada ficará salva no seu histórico." />
+      </>
+    ) : (
+      <div className="assessment-switcher">
+        {exerciseCollections.map((id) => {
+          const collectionQuestions = questionsForCollection(id);
+          const areas = [...new Set(collectionQuestions.map((question) => question.area))].join(" · ");
+          return <Link key={id} href={`/aluno/exercicios?lista=${id}`}><b>{id.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())}</b><small>{collectionQuestions.length} questões · {areas}</small></Link>;
+        })}
+      </div>
+    );
   } else if (section === "simulados") {
     const activity = search.simulado === "2" ? "simulado-2" : "simulado-1";
     content = <><div className="assessment-switcher"><Link className={activity === "simulado-1" ? "active" : ""} href="/aluno/simulados?simulado=1">Simulado 1 · Humanas + Linguagens</Link><Link className={activity === "simulado-2" ? "active" : ""} href="/aluno/simulados?simulado=2">Simulado 2 · Natureza + Matemática</Link></div><AssessmentPlayer questions={questionsFor(activity)} title={activity === "simulado-1" ? "Simulado 1" : "Simulado 2"} subtitle="Resolva todas as questões. A correção detalhada aparece ao finalizar." /></>;

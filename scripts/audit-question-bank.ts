@@ -14,6 +14,12 @@ const invalid = questionBank.filter(
     !question.explanation.trim() ||
     !question.nextStep.trim(),
 );
+const collectionCounts = Object.fromEntries(
+  [...new Set(questionBank.map((question) => question.collectionId))].map((collectionId) => [
+    collectionId,
+    questionBank.filter((question) => question.collectionId === collectionId).length,
+  ]),
+);
 
 console.log(
   JSON.stringify(
@@ -30,6 +36,7 @@ console.log(
         duplicateIds: ids.filter((id, index) => ids.indexOf(id) !== index),
         invalidRecords: invalid.map((question) => question.id),
         sourceLabels: [...new Set(questionBank.map((question) => question.sourceLabel))],
+        collections: collectionCounts,
       },
       library: {
         total: library.length,
@@ -42,8 +49,13 @@ console.log(
       },
       target: {
         simulados: { required: 30, current: 2 },
-        exercises: { required: 50, current: 1 },
-        completeQuestions: { required: 2100, current: 0 },
+        exercises: {
+          requiredLists: 60,
+          requiredQuestions: 1500,
+          currentLists: new Set(questionBank.filter((question) => question.activity === "exercicios").map((question) => question.collectionId)).size,
+          currentQuestions: questionBank.filter((question) => question.activity === "exercicios").length,
+        },
+        completeQuestions: { required: 2100, current: questionBank.length },
       },
     },
     null,
