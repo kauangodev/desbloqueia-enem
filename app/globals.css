@@ -2103,6 +2103,24 @@ th {
 .correction-history-card h3 { margin: .25rem 0; font-size: 1.05rem; }
 .correction-history-card p { margin: 0; color: var(--muted, #64748b); font-size: .88rem; }
 .correction-history-card strong { color: var(--accent, #075b42); font-size: 1.5rem; }
+.essay-workspace { display: grid; gap: 1.25rem; margin-top: 2rem; }
+.essay-header, .essay-feedback { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: start; padding: 1.5rem; border: 1px solid var(--line, #dce5dc); border-radius: 1.5rem; background: linear-gradient(135deg, #fff, #eff6ed); }
+.essay-header h2 { margin: .35rem 0 .5rem; }
+.essay-header p { max-width: 52rem; margin: 0; color: var(--muted, #64748b); }
+.essay-badge { padding: .6rem .8rem; border-radius: 999px; color: var(--accent, #075b42); background: #dcebd2; white-space: nowrap; }
+.essay-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(250px, .8fr); gap: 1rem; align-items: start; }
+.essay-editor { display: grid; gap: 1rem; }
+.essay-editor textarea { min-height: 360px; resize: vertical; line-height: 1.7; }
+.essay-actions { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.essay-side { padding: 1.5rem; border-radius: 1.5rem; background: #0a4d3b; color: #f7fbf2; }
+.essay-side h3 { margin: .35rem 0 1rem; }
+.essay-side .task-list { color: inherit; }
+.essay-feedback { grid-template-columns: 180px 1fr; background: #f6f0da; }
+.feedback-score { display: grid; align-content: start; gap: .2rem; padding: 1rem; border-radius: 1rem; background: #0a4d3b; color: white; }
+.feedback-score strong { font-size: 3rem; line-height: 1; }
+.feedback-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.feedback-columns ul, .essay-feedback ol { padding-left: 1.25rem; }
+@media (max-width: 700px) { .essay-header, .essay-feedback, .essay-grid { grid-template-columns: 1fr; } .essay-actions { align-items: stretch; flex-direction: column; } .feedback-columns { grid-template-columns: 1fr; } }
 @media (max-width: 650px) {
   .section-intro-row { align-items: stretch; flex-direction: column; }
   .correction-history-card { align-items: flex-start; }

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import AssessmentPlayer from "../../../components/assessment-player";
+import EssayWorkspace from "../../../components/essay-workspace";
 import { questionsFor } from "../../../data/question-bank";
 const sections: Record<string, [string, string]> = {
   materiais: ["Meus materiais", "Sua coleção, organizada por disciplina."],
@@ -78,6 +79,7 @@ export default async function Section({
       </div>
     );
   } else if (section === "suporte") content = <Support />;
+  else if (section === "redacao") content = <EssayWorkspace />;
   else if (section === "correcoes") {
     const { data: attempts } = await who.db
       .from("assessment_attempts")

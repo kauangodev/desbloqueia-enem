@@ -376,6 +376,8 @@ export default async function Admin({
       ["Automação de boas-vindas (opcional)", !!process.env.CRON_SECRET],
       ["Meta Pixel", !!process.env.NEXT_PUBLIC_META_PIXEL_ID],
       ["Google Analytics", !!process.env.NEXT_PUBLIC_GA_ID],
+      ["Correção de redação (OpenAI)", !!process.env.OPENAI_API_KEY],
+      ["Auditoria de acesso por hash", !!process.env.ACCESS_FINGERPRINT_SALT],
     ];
     content = (
       <>
