@@ -406,7 +406,9 @@ textarea {
   display: flex;
   width: max-content;
   will-change: transform;
-  animation: discipline-flow 32s linear infinite;
+  animation: discipline-flow 38s linear infinite;
+  transform: translate3d(-50%, 0, 0);
+  backface-visibility: hidden;
 }
 .discipline-group {
   display: flex;
@@ -431,8 +433,8 @@ textarea {
   background: #86a56d;
 }
 @keyframes discipline-flow {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
 }
 .intro-section {
   display: grid;
@@ -2136,3 +2138,4 @@ th {
   .section-intro-row { align-items: stretch; flex-direction: column; }
   .correction-history-card { align-items: flex-start; }
 }
+

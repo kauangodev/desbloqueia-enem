@@ -217,7 +217,7 @@ const faqs = [
   ],
   [
     "Como falar com o atendimento?",
-    "A página Atendimento reúne nossos canais oficiais. Você também pode escrever para kauango.dev@gmail.com com o e-mail da compra e sua dúvida. Nunca envie sua senha ou dados do cartão.",
+    "A página Atendimento reúne nossos canais oficiais. Informe o e-mail usado na compra e descreva sua dúvida. Nunca envie sua senha ou dados do cartão.",
   ],
 ];
 export function FAQ() {
@@ -235,3 +235,4 @@ export function FAQ() {
     </div>
   );
 }
+

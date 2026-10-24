@@ -150,7 +150,9 @@ export function CurvedMaterialCarousel() {
             // Keep the idle movement frame-rate independent. The modulo in
             // renderCards handles the circular wrap without letting offset
             // grow indefinitely during a long desktop session.
-            motion.offset -= 50 * delta;
+            // Move left-to-right in an endless circular track. The duplicated
+            // item set and modulo wrapping keep the motion seamless.
+            motion.offset += 50 * delta;
           }
           renderCards();
         }
@@ -254,4 +256,5 @@ export function CurvedMaterialCarousel() {
     </div>
   );
 }
+
 

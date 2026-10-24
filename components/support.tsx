@@ -1,5 +1,9 @@
 import { sessionClient } from "../lib/supabase";
-export default async function Support() {
+export default async function Support({
+  showPrivateEmail = false,
+}: {
+  showPrivateEmail?: boolean;
+}) {
   const db = await sessionClient();
   const settings = db
     ? (
@@ -22,7 +26,7 @@ export default async function Support() {
     <div className="empty-state">
       <h2>{settings?.name || "Atendimento GoDev Education"}</h2>
       {settings?.hours && <p>{settings.hours}</p>}
-      {email && (
+      {email && showPrivateEmail && (
         <p>
           <a className="text-link" href={`mailto:${email}`}>
             {email}
@@ -39,7 +43,7 @@ export default async function Support() {
           Conversar pelo WhatsApp
         </a>
       )}
-      {!email && !phone && (
+      {!phone && (!email || !showPrivateEmail) && (
         <p>
           Os canais de atendimento estão em preparação. Eles serão publicados
           aqui antes da abertura das vendas.
@@ -48,3 +52,4 @@ export default async function Support() {
     </div>
   );
 }
+

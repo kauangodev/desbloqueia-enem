@@ -79,7 +79,7 @@ export default async function Section({
         </p>
       </div>
     );
-  } else if (section === "suporte") content = <Support />;
+  } else if (section === "suporte") content = <Support showPrivateEmail />;
   else if (section === "redacao") content = <EssayWorkspace />;
   else if (section === "correcoes") {
     const { data: attempts } = await who.db
@@ -180,3 +180,4 @@ export default async function Section({
     </>
   );
 }
+
