@@ -2,13 +2,21 @@ import { NextResponse } from "next/server";
 import { sessionClient } from "../../../lib/supabase";
 import { appUrl } from "../../../lib/config";
 import { createHash } from "node:crypto";
+import type { EmailOtpType } from "@supabase/supabase-js";
 export async function GET(req: Request) {
-  const code = new URL(req.url).searchParams.get("code");
-  const next = new URL(req.url).searchParams.get("next");
+  const params = new URL(req.url).searchParams;
+  const code = params.get("code");
+  const tokenHash = params.get("token_hash");
+  const tokenType = params.get("type");
+  const next = params.get("next");
   const db = await sessionClient();
-  if (code && db) {
-    const { error } = await db.auth.exchangeCodeForSession(code);
-    if (!error) {
+  if (db) {
+    const exchange = code
+      ? await db.auth.exchangeCodeForSession(code)
+      : tokenHash && tokenType === "recovery"
+        ? await db.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" as EmailOtpType })
+        : { error: new Error("missing_auth_token") };
+    if (!exchange.error) {
       const {
         data: { user },
       } = await db.auth.getUser();
@@ -29,5 +37,6 @@ export async function GET(req: Request) {
       }
     }
   }
-  return NextResponse.redirect(`${appUrl}/entrar?erro=expirado`);
+  const reason = params.get("error_code") || params.get("error") || "expirado";
+  return NextResponse.redirect(`${appUrl}/entrar?erro=${encodeURIComponent(reason)}`);
 }

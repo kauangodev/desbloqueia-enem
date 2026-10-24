@@ -18,7 +18,12 @@ export default function SetPasswordForm() {
       setBusy(true); setMessage("");
       const { error } = await browserClient().auth.updateUser({ password });
       setBusy(false);
-      if (error) return setMessage("Este link expirou. Solicite uma nova configuração de senha.");
+      if (error) {
+        const expired = /expired|invalid|session/i.test(error.message);
+        return setMessage(expired
+          ? "Este link não é mais válido. Solicite uma nova configuração de senha."
+          : "Não foi possível salvar sua senha agora. Tente novamente.");
+      }
       router.push("/aluno");
     }}>
       <label className="field">Nova senha<input name="password" type="password" autoComplete="new-password" minLength={8} required /></label>
