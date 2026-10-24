@@ -11,6 +11,7 @@ import AssessmentPlayer from "../../../components/assessment-player";
 import EssayWorkspace from "../../../components/essay-workspace";
 import { questionBank, questionsFor, questionsForCollection } from "../../../data/question-bank";
 import type { Question } from "../../../data/question-bank";
+import ActivityCatalog from "../../../components/activity-catalog";
 const sections: Record<string, [string, string]> = {
   materiais: ["Meus materiais", "Sua coleção, organizada por disciplina."],
   exercicios: [
@@ -155,13 +156,21 @@ export default async function Section({
         <AssessmentPlayer questions={selectedQuestions} collectionId={selectedCollectionId} title={selectedCollectionId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva no seu ritmo. Ao finalizar, a correção detalhada ficará salva no seu histórico." />
       </>
     ) : (
-      <div className="assessment-switcher">
-        {exerciseCollections.map((id) => {
+      <ActivityCatalog
+        kind="exercicios"
+        items={exerciseCollections.map((id) => {
           const collectionQuestions = questionsForCollection(id);
-          const areas = [...new Set(collectionQuestions.map((question) => question.area))].join(" · ");
-          return <Link key={id} href={`/aluno/exercicios?lista=${id}`}><b>{id.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())}</b><small>{collectionQuestions.length} questões · {areas}</small></Link>;
+          return {
+            id,
+            title: id.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+            count: collectionQuestions.length,
+            areas: [...new Set(collectionQuestions.map((question) => question.area))],
+            href: `/aluno/exercicios?lista=${id}`,
+            eyebrow: "Lista de exercícios",
+            supportingText: "Reforce conceitos e identifique seu próximo ponto de revisão.",
+          };
         })}
-      </div>
+      />
     );
   } else if (section === "simulados") {
     const selectedSimulation = search.simulado === "1" ? "simulado-1" : search.simulado === "2" ? "simulado-2" : search.simulado && /^simulado-[0-9]+$/.test(search.simulado) ? search.simulado : undefined;
@@ -174,9 +183,21 @@ export default async function Section({
         <AssessmentPlayer questions={selectedQuestions} collectionId={selectedSimulationId} title={selectedSimulationId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva todas as questões. A correção detalhada aparece ao finalizar." />
       </>
     ) : (
-      <div className="assessment-switcher">
-        {simulationCollections.map((id) => <Link key={id} href={`/aluno/simulados?simulado=${id}`}><b>{id.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())}</b><small>{questionsForCollection(id).length} questões · tempo sugerido de revisão</small></Link>)}
-      </div>
+      <ActivityCatalog
+        kind="simulados"
+        items={simulationCollections.map((id) => {
+          const collectionQuestions = questionsForCollection(id);
+          return {
+            id,
+            title: id.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+            count: collectionQuestions.length,
+            areas: [...new Set(collectionQuestions.map((question) => question.area))],
+            href: `/aluno/simulados?simulado=${id}`,
+            eyebrow: "Simulado ENEM",
+            supportingText: "Uma sessão completa para testar estratégia, ritmo e repertório.",
+          };
+        })}
+      />
     );
   } else if (section === "biblioteca") {
     const entries = JSON.parse(
