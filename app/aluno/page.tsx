@@ -14,6 +14,7 @@ export default async function Dashboard() {
     who.db
       .from("reading_progress")
       .select("*")
+      .eq("user_id", who.user.id)
       .order("updated_at", { ascending: false }),
     who.db
       .from("entitlements")
@@ -23,11 +24,12 @@ export default async function Dashboard() {
     who.db
       .from("study_progress")
       .select("*")
+      .eq("user_id", who.user.id)
       .eq("done", false)
       .order("date")
       .limit(3),
   ]);
-  const plan = access?.some((e) => e.plan === "premium")
+  const plan = who.profile?.role === "admin" ? "Administrador" : access?.some((e) => e.plan === "premium")
     ? "Premium"
     : access?.length
       ? "Essencial"

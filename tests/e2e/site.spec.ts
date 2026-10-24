@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 test("landing, planos, capas e FAQ", async ({ page }) => {
   await page.goto("/");
+  await page.evaluate(() => document.fonts.ready);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     /Sua reta final,\s*mais leve e organizada\./,
   );
@@ -15,6 +17,9 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   ).toBeVisible();
   await page.getByRole("tab", { name: /Matemática/ }).click();
   await expect(page.getByRole("tabpanel")).toContainText("Matemática");
+  await page.getByRole("tab", { name: /Matemática/ }).press("Home");
+  await expect(page.getByRole("tab").first()).toBeFocused();
+  await expect(page.getByRole("tab").first()).toHaveAttribute("aria-selected", "true");
   await page.getByText("A biblioteca tem 1.800 resoluções?").click();
   await expect(page.locator("details[open]")).toContainText("Não.");
   await page
@@ -152,6 +157,7 @@ test("redução de movimento mantém o carrossel estável", async ({ page }) => 
   expect(await card.getAttribute("style")).toBe(before);
 });
 test("rotas privadas e arquivos exigem sessão", async ({ page, request }) => {
+  await page.context().addCookies([{ name: "desbloqueia_demo", value: "admin.invalid", domain: "127.0.0.1", path: "/" }]);
   for (const path of [
     "/aluno",
     "/aluno/materiais",
@@ -170,6 +176,17 @@ test("rotas privadas e arquivos exigem sessão", async ({ page, request }) => {
   expect(admin.status()).toBe(403);
   const worker = await request.get("/api/jobs/fulfillment");
   expect(worker.status()).toBe(401);
+  await page.goto("/demo/acesso?token=invalid");
+  await expect(page).toHaveURL(/\/entrar/);
+  expect((await page.context().cookies()).some((c) => c.name === "desbloqueia_demo")).toBe(false);
+});
+
+test("páginas públicas são responsivas em 320px", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  for (const route of ["/entrar", "/comprar/essencial", "/comprar/premium", "/suporte", "/politicas/termos"]) {
+    await page.goto(route);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), route).toBeTruthy();
+  }
 });
 test("sem integrações não há sucesso simulado", async ({ page, request }) => {
   await page.goto("/entrar");

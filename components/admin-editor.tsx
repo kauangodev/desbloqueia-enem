@@ -122,6 +122,7 @@ export default function AdminEditor({
               onChange={(e) => V({ ...value, [key]: e.target.value })}
             >
               {[
+                "Revisão",
                 "Cronograma",
                 "Linguagens",
                 "Humanas",

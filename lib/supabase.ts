@@ -2,7 +2,6 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { getDemoMode } from "./demo-auth";
 export const authConfigured = () =>
   Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -47,27 +46,6 @@ export function serviceClient() {
   );
 }
 export async function identity() {
-  const demoMode = await getDemoMode();
-  if (demoMode) {
-    const id =
-      demoMode === "admin"
-        ? "00000000-0000-4000-8000-000000000001"
-        : "00000000-0000-4000-8000-000000000002";
-    return {
-      db: serviceClient(),
-      user: {
-        id,
-        email: "kauango.dev+aluno@gmail.com",
-        user_metadata: { name: demoMode === "admin" ? "Kauan · demonstração" : "Aluno · demonstração" },
-      },
-      profile: {
-        id,
-        name: demoMode === "admin" ? "Kauan · demonstração" : "Aluno · demonstração",
-        role: demoMode === "admin" ? "admin" : "student",
-      },
-      demo: true,
-    };
-  }
   const db = await sessionClient();
   if (!db) return null;
   const {
@@ -85,7 +63,6 @@ export async function identity() {
 export async function canAccess(plan: string) {
   const who = await identity();
   if (!who) return null;
-  if (who.demo) return who;
   if (who.profile?.role === "admin") return who;
   const { data } = await who.db
     .from("entitlements")

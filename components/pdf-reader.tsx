@@ -18,11 +18,19 @@ export default function PdfReader({
   const canvas = useRef<HTMLCanvasElement>(null),
     frame = useRef<HTMLDivElement>(null);
   const [retry, R] = useState(0);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    if (!frame.current) return;
+    const observer = new ResizeObserver(([entry]) => setWidth(Math.floor(entry.contentRect.width)));
+    observer.observe(frame.current);
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     let closed = false;
     let loaded: PDFDocumentProxy | undefined;
     let loading: PDFDocumentLoadingTask | undefined;
     E("");
+    D(null);
     S("Carregando documento…");
     (async () => {
       try {
@@ -31,14 +39,20 @@ export default function PdfReader({
         if (!res.ok) throw new Error(result.error);
         const pdf = await import("pdfjs-dist");
         pdf.GlobalWorkerOptions.workerSrc = "/vendor/pdf.worker.min.mjs";
-        loading = pdf.getDocument({ url: result.url });
+        // Download once while the short-lived URL is valid. Subsequent page
+        // changes must not depend on expired HTTP range requests.
+        const file = await fetch(result.url);
+        if (!file.ok) throw new Error("Não foi possível baixar o documento. Tente novamente.");
+        const data = await file.arrayBuffer();
+        if (closed) return;
+        loading = pdf.getDocument({ data });
         loaded = await loading.promise;
         if (closed) {
           await loading.destroy();
           return;
         }
         D(loaded);
-        P((p) => Math.min(p, loaded!.numPages));
+        P((p) => Math.max(1, Math.min(Math.trunc(p) || 1, loaded!.numPages)));
       } catch (e) {
         if (!closed) {
           E(e instanceof Error ? e.message : "Falha ao abrir PDF.");
@@ -60,10 +74,11 @@ export default function PdfReader({
     (async () => {
       try {
         S("Preparando página…");
+        E("");
         const pdfPage = await doc.getPage(page);
         if (canceled || !canvas.current) return;
         const base = pdfPage.getViewport({ scale: 1 });
-        const available = (frame.current?.clientWidth || 800) - 40;
+        const available = Math.max(120, (width || frame.current?.clientWidth || 800) - 40);
         const scale = Math.min(1.5, available / base.width) * zoom;
         const viewport = pdfPage.getViewport({ scale });
         const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -98,7 +113,7 @@ export default function PdfReader({
       canceled = true;
       task?.cancel();
     };
-  }, [doc, page, zoom, id]);
+  }, [doc, page, zoom, id, width]);
   async function download() {
     try {
       const res = await fetch(`/api/materials/${id}?download=1`);
@@ -129,7 +144,7 @@ export default function PdfReader({
             value={page}
             onChange={(e) => {
               const n = Number(e.target.value);
-              if (doc && n >= 1 && n <= doc.numPages) P(n);
+              if (doc && Number.isInteger(n) && n >= 1 && n <= doc.numPages) P(n);
             }}
           />{" "}
           / {doc?.numPages || "…"}

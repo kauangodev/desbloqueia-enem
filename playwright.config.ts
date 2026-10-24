@@ -9,7 +9,7 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: "pnpm start --port 3100",
+    command: "node node_modules/next/dist/bin/next start --port 3100",
     url: "http://127.0.0.1:3100",
     reuseExistingServer: !process.env.CI,
     timeout: 120000,

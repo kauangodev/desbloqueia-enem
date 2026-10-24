@@ -4,6 +4,7 @@ import { Header, Footer } from "../../components/site";
 import AdminEditor from "../../components/admin-editor";
 import Link from "next/link";
 import { money } from "../../lib/config";
+import { checkoutConfigured } from "../../lib/readiness";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
@@ -71,6 +72,7 @@ export default async function Admin({
     ]);
     content = (
       <>
+        <p className="status-message">Preços e benefícios editados aqui atualizam o site. Confira os mesmos valores na Cakto antes de ativar uma oferta; esta tela não altera o produto na plataforma de pagamentos.</p>
         {products?.map((p) => (
           <AdminEditor
             key={p.id}
@@ -164,6 +166,10 @@ export default async function Admin({
           .limit(500),
       ]);
     const customers = new Map<string, CrmCustomer>();
+    const crmResults = [profilesResult, ordersResult, accessResult, deliveriesResult];
+    if (crmResults.some((result) => result.error))
+      throw new Error("Não foi possível carregar o CRM. Tente novamente.");
+    const truncated = crmResults.some((result) => (result.data?.length || 0) === 500);
     const ensure = (email: string) => {
       const key = email.toLowerCase();
       if (!customers.has(key))
@@ -226,6 +232,7 @@ export default async function Admin({
           </div>
           <span className="crm-count">{rows.length} contato(s)</span>
         </div>
+        {truncated && <p className="status-message" role="status">Esta visão está limitada a 500 registros por fonte. Os totais e a busca consideram somente os registros carregados.</p>}
         <div className="stat-grid crm-stats">
           <div className="stat">
             <strong>{rows.length}</strong>
@@ -360,7 +367,8 @@ export default async function Admin({
         process.env.CAKTO_WEBHOOK_ENABLED === "true" &&
           !!process.env.CAKTO_WEBHOOK_SECRET,
       ],
-      ["Compras", process.env.CHECKOUT_ENABLED === "true"],
+      ["Envio de login homologado (SMTP)", process.env.AUTH_EMAIL_READY === "true"],
+      ["Compras liberadas", checkoutConfigured()],
       [
         "Boas-vindas por e-mail (opcional)",
         !!process.env.RESEND_API_KEY && !!process.env.EMAIL_FROM,
@@ -425,6 +433,10 @@ export default async function Admin({
       <Header />
       <main id="conteudo" className="container section">
         <h1 className="page-title">Administração</h1>
+        <div className="admin-actions">
+          <Link className="button secondary" href="/aluno">Abrir área do aluno</Link>
+          <form action="/api/auth/logout" method="post"><button className="button secondary">Sair da conta</button></form>
+        </div>
         <nav className="admin-tabs" aria-label="Administração">
           {[
             ["visao", "Visão geral"],

@@ -18,6 +18,7 @@ const material = z.object({
   title: z.string().min(1).max(180),
   description: z.string().max(800),
   category: z.enum([
+    "Revisão",
     "Cronograma",
     "Linguagens",
     "Humanas",
@@ -30,12 +31,12 @@ const material = z.object({
   ]),
   plan,
   pages: z.number().int().min(1).max(5000),
-  cover: z.string().regex(/^\/covers\/[a-z]+\.png$/),
+  cover: z.string().regex(/^\/covers\/(?:[a-z0-9-]+\/)?[a-z0-9-]+\.(?:png|jpg|webp)$/),
   published: z.boolean(),
   downloadable: z.boolean(),
   storage_path: z
     .string()
-    .regex(/^private\/[a-z0-9-]+\.pdf$/)
+    .regex(/^private\/[A-Za-z0-9_-]+\.pdf$/)
     .nullable(),
   public_sample_url: z
     .string()
@@ -112,6 +113,8 @@ export async function POST(req: Request) {
           .from("materials")
           .download(v.storage_path);
         if (signed.error) throw new Error("Arquivo privado não encontrado.");
+        const signature = await signed.data.slice(0, 5).text();
+        if (signature !== "%PDF-") throw new Error("O arquivo enviado não é um PDF válido.");
       }
       const { data: old } = await db
         .from("materials")
@@ -137,6 +140,8 @@ export async function POST(req: Request) {
         signedUrl: data.signedUrl,
       });
     } else if (input.action === "resend") {
+      if (!process.env.RESEND_API_KEY || !process.env.CRON_SECRET)
+        return jsonError("O envio de boas-vindas ainda não está configurado. O acesso usa o link solicitado na página Entrar.", 503);
       const id = z.uuid().parse(input.data.id);
       const { data: job } = await db
         .from("email_deliveries")

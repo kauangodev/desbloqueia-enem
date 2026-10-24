@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { materials } from "../lib/config";
 export function Brand() {
   return (
@@ -98,15 +98,19 @@ export function Footer() {
 }
 export function MaterialPreview() {
   const [active, setActive] = useState(0);
-  const activeTab = useRef<HTMLButtonElement>(null);
+  const tabs = useRef<HTMLDivElement>(null);
   const material = materials[active];
-  useEffect(() => {
-    activeTab.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    });
-  }, [active]);
+  function selectTab(index: number, focus = false) {
+    setActive(index);
+    const container = tabs.current;
+    const tab = container?.querySelectorAll<HTMLButtonElement>("[role=tab]")[index];
+    if (!container || !tab) return;
+    if (focus) tab.focus({ preventScroll: true });
+    if (container.scrollWidth > container.clientWidth) {
+      container.scrollTo({ left: tab.offsetLeft - container.offsetLeft - (container.clientWidth - tab.offsetWidth) / 2,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+    }
+  }
   return (
     <div className="material-explorer">
       <div className="material-index-shell">
@@ -118,8 +122,19 @@ export function MaterialPreview() {
         </div>
         <div
           className="material-index"
+          ref={tabs}
           role="tablist"
           aria-label="Cadernos de estudo"
+          onKeyDown={(event) => {
+            let next = active;
+            if (["ArrowRight", "ArrowDown"].includes(event.key)) next = (active + 1) % materials.length;
+            else if (["ArrowLeft", "ArrowUp"].includes(event.key)) next = (active - 1 + materials.length) % materials.length;
+            else if (event.key === "Home") next = 0;
+            else if (event.key === "End") next = materials.length - 1;
+            else return;
+            event.preventDefault();
+            selectTab(next, true);
+          }}
         >
           {materials.map((item, i) => (
             <button
@@ -128,9 +143,9 @@ export function MaterialPreview() {
               aria-controls="material-panel"
               aria-selected={active === i}
               aria-current={active === i ? "true" : undefined}
-              ref={active === i ? activeTab : undefined}
+              tabIndex={active === i ? 0 : -1}
               key={item.id}
-              onClick={() => setActive(i)}
+              onClick={() => selectTab(i)}
             >
               <span>{String(i + 1).padStart(2, "0")}</span>
               <b>{item.title}</b>
@@ -202,7 +217,7 @@ const faqs = [
   ],
   [
     "Como falar com o atendimento?",
-    "Os canais oficiais aparecerão na página de atendimento assim que forem definidos. Nenhuma venda será aberta antes da configuração do suporte.",
+    "A página Atendimento reúne nossos canais oficiais. Você também pode escrever para kauango.dev@gmail.com com o e-mail da compra e sua dúvida. Nunca envie sua senha ou dados do cartão.",
   ],
 ];
 export function FAQ() {

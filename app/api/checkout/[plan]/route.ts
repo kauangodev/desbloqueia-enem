@@ -1,19 +1,17 @@
 import { serviceClient } from "../../../../lib/supabase";
 import { jsonError } from "../../../../lib/http";
 import { NextResponse } from "next/server";
+import { checkoutConfigured } from "../../../../lib/readiness";
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ plan: string }> },
 ) {
-  if (
-    process.env.CHECKOUT_ENABLED !== "true" ||
-    process.env.CAKTO_WEBHOOK_ENABLED !== "true" ||
-    !process.env.CAKTO_WEBHOOK_SECRET
-  )
+  if (!checkoutConfigured())
     return jsonError("Vendas ainda não disponíveis.", 503);
   const { plan } = await params;
   if (!["essencial", "premium"].includes(plan))
     return jsonError("Plano inválido", 404);
+  try {
   const db = serviceClient();
   const { data: offer } = await db
     .from("offers")
@@ -42,5 +40,10 @@ export async function GET(
     url.password
   )
     return jsonError("Checkout inválido", 503);
-  return NextResponse.redirect(url, 303);
+  const response = NextResponse.redirect(url, 303);
+  response.headers.set("Cache-Control", "private, no-store");
+  return response;
+  } catch {
+    return jsonError("Pagamento temporariamente indisponível. Tente novamente mais tarde.", 503);
+  }
 }

@@ -8,6 +8,8 @@ export const links = [
   ["simulados", "Simulados"],
   ["redacao", "Redação"],
   ["cronograma", "Meu cronograma"],
+  ["checklists", "Fichas e checklists"],
+  ["correcoes", "Minhas correções"],
   ["biblioteca", "Biblioteca ENEM"],
   ["conta", "Minha conta"],
   ["suporte", "Atendimento"],

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Header, Footer } from "../../../components/site";
-import { plans } from "../../../lib/config";
+import { publicPlans } from "../../../lib/catalog";
+import { checkoutConfigured } from "../../../lib/readiness";
 import Link from "next/link";
 export default async function Buy({
   params,
@@ -8,7 +9,7 @@ export default async function Buy({
   params: Promise<{ plan: string }>;
 }) {
   const { plan } = await params;
-  const p = plans.find((p) => p.id === plan);
+  const p = (await publicPlans()).find((p) => p.id === plan);
   if (!p) notFound();
   return (
     <>
@@ -21,6 +22,8 @@ export default async function Buy({
             {p.name}.
           </h1>
           <p>Desbloqueia ENEM 2026</p>
+          <p className="price">{(p.cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
+          <ul>{p.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
           <p>
             Antes de comprar, confira os itens do plano e nossa{" "}
             <Link href="/politicas/reembolso">
@@ -28,7 +31,7 @@ export default async function Buy({
             </Link>
             .
           </p>
-          {process.env.CHECKOUT_ENABLED === "true" ? (
+          {checkoutConfigured() ? (
             <Link className="button primary" href={`/api/checkout/${p.id}`}>
               Continuar para o pagamento
             </Link>

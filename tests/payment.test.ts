@@ -10,6 +10,7 @@ import {
   nextStatus,
 } from "../lib/payment";
 import { welcomeEmail } from "../lib/email";
+import { checkoutConfigured } from "../lib/readiness";
 const db = new PGlite();
 const alice = "11111111-1111-4111-8111-111111111111",
   bob = "22222222-2222-4222-8222-222222222222",
@@ -21,6 +22,9 @@ before(async () => {
   await db.exec(readFileSync("supabase/migrations/001_platform.sql", "utf8"));
   await db.exec(readFileSync("supabase/migrations/002_catalog.sql", "utf8"));
   await db.exec(readFileSync("supabase/migrations/003_cakto_launch.sql", "utf8"));
+  await db.exec(readFileSync("supabase/migrations/004_cakto_live_offers.sql", "utf8"));
+  await db.exec(readFileSync("supabase/migrations/005_security_hardening.sql", "utf8"));
+  await db.exec(readFileSync("supabase/migrations/20261023120000_payment_amount.sql", "utf8"));
   await db.exec(
     readFileSync(
       "supabase/migrations/20261023041013_admin_invites_and_secure_self_provision.sql",
@@ -32,6 +36,31 @@ before(async () => {
   );
 });
 after(() => db.close());
+test("checkout exige envio de acesso validado e todas as integrações", () => {
+  const ready = { CHECKOUT_ENABLED: "true", AUTH_EMAIL_READY: "true", CAKTO_WEBHOOK_ENABLED: "true", CAKTO_WEBHOOK_SECRET: "test", NEXT_PUBLIC_SUPABASE_URL: "https://example.test", NEXT_PUBLIC_SUPABASE_ANON_KEY: "test", SUPABASE_SERVICE_ROLE_KEY: "test" };
+  assert.equal(checkoutConfigured(ready), true);
+  for (const key of Object.keys(ready)) {
+    assert.equal(checkoutConfigured({ ...ready, [key]: "" }), false, key);
+  }
+});
+test("aprovação atualiza valor de pedido previamente pendente", async () => {
+  await db.query("select receive_payment($1,$2::jsonb)", ["pix_gerado", { ...payload("pending-zero"), amount: null }]);
+  await event("pending-zero", "purchase_approved");
+  const [order] = await rows("select amount,status from orders where id='pending-zero'");
+  assert.equal(Number(order.amount), 19.9);
+  assert.equal(order.status, "paid");
+});
+test("metadados do cadastro não concedem administrador", async () => {
+  await db.exec(`insert into auth.users(id,email,raw_user_meta_data) values('55555555-5555-4555-8555-555555555555','spoof@example.test','{"role":"admin"}');`);
+  assert.equal((await rows("select role from profiles where email='spoof@example.test'"))[0].role, "student");
+});
+test("anônimo não pode chamar funções privilegiadas", async () => {
+  await db.exec("set role anon");
+  try {
+    for (const query of ["select claim_emails()", "select take_rate_limit('bypass',3,900)", "select is_admin()", "select has_plan('premium')"])
+      await assert.rejects(() => db.exec(query));
+  } finally { await db.exec("reset role"); }
+});
 function payload(id: string, plan = "essencial", email = "alice@example.test") {
   return {
     id,
