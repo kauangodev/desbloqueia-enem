@@ -49,9 +49,9 @@ export default function ActivityCatalog({
         </div>
       </div>
       <div className="activity-catalog-toolbar">
-        <span className="catalog-toolbar-label">Conteúdo disponível</span>
+        <span className="catalog-toolbar-label">Áreas cobertas</span>
         <div className="catalog-filters" aria-label="Áreas presentes no conteúdo">
-          <span className="catalog-filter active">Todas as áreas</span>
+          <span className="catalog-filter active">Todas</span>
           {areas.map((area) => <span className="catalog-filter" key={area}>{area}</span>)}
         </div>
       </div>
