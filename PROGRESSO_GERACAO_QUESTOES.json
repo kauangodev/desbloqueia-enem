@@ -8,16 +8,16 @@
   "completed": {
     "cycles": 1,
     "simulados": 2,
-    "listasExercicios": 5,
-    "questoes": 200,
-    "validated": 200,
-    "imported": 200
+    "listasExercicios": 9,
+    "questoes": 300,
+    "validated": 300,
+    "imported": 300
   },
   "pending": {
     "simulados": 28,
     "listasExercicios": 59,
-    "questoes": 1900,
-    "humanReview": 200,
+    "questoes": 1800,
+    "humanReview": 300,
     "libraryResolutions": 1793
   },
   "filesProduced": [
@@ -40,8 +40,14 @@
     {
       "id": 2,
       "size": 100,
-      "status": "validated_locally_pending_publish",
+      "status": "validated_and_published",
       "range": "aut-101..aut-200"
+    },
+    {
+      "id": 3,
+      "size": 100,
+      "status": "validated_locally_pending_publish",
+      "range": "aut-201..aut-300"
     }
   ]
 }
