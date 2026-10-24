@@ -26,11 +26,11 @@ function makeQuestion(
   nextStep: string,
   seed: number,
 ): Question {
-  const correctIndex = options.indexOf(correct);
   const ordered = rotate(options, seed % options.length);
   const answerIndex = ordered.indexOf(correct);
   return {
     id,
+    batchId: Math.ceil(Number(id.replace("aut-", "")) / 100),
     activity,
     collectionId,
     number,

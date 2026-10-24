@@ -56,7 +56,8 @@
     "simulationCollections": 30,
     "totalQuestions": 2100,
     "reviewStatus": "revisao_inicial",
-    "pedagogicalReview": "pending_independent_review",
+    "pedagogicalReview": "automated_gate_passed_human_review_pending",
+    "pedagogicalGatePassed": true,
     "productionCommit": "42bfca2612518540735ddaffe4420c3dfb9a6f3a"
   }
 }

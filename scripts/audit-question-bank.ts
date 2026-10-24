@@ -21,6 +21,23 @@ const collectionCounts = Object.fromEntries(
     questionBank.filter((question) => question.collectionId === collectionId).length,
   ]),
 );
+const batchCounts = Object.fromEntries(
+  [...new Set(questionBank.map((question) => question.batchId))]
+    .sort((a, b) => a - b)
+    .map((batchId) => [batchId, questionBank.filter((question) => question.batchId === batchId).length]),
+);
+const pedagogicalInvalid = questionBank.filter(
+  (question) =>
+    question.statement.trim().length < 10 ||
+    question.explanation.trim().length < 10 ||
+    question.nextStep.trim().length < 10 ||
+    !["Linguagens", "Ciências Humanas", "Ciências da Natureza", "Matemática"].includes(question.area) ||
+    !question.topic.trim() ||
+    !question.sourceLabel.startsWith("Autoral"),
+);
+const invalidBatchIds = Object.entries(batchCounts)
+  .filter(([, count]) => count !== 100)
+  .map(([batchId]) => Number(batchId));
 
 console.log(
   JSON.stringify(
@@ -38,6 +55,12 @@ console.log(
         invalidRecords: invalid.map((question) => question.id),
         sourceLabels: [...new Set(questionBank.map((question) => question.sourceLabel))],
         collections: collectionCounts,
+        batches: batchCounts,
+        pedagogicalGate: {
+          passed: pedagogicalInvalid.length === 0 && invalidBatchIds.length === 0 && Object.keys(batchCounts).length === 21,
+          invalidRecords: pedagogicalInvalid.map((question) => question.id),
+          invalidBatchIds,
+        },
       },
       library: {
         total: library.length,
@@ -70,4 +93,5 @@ console.log(
     2,
   ),
 );
+if (invalid.length || pedagogicalInvalid.length || invalidBatchIds.length || Object.keys(batchCounts).length !== 21) process.exitCode = 1;
 
