@@ -2236,6 +2236,9 @@ th {
 .essay-theme-details { justify-self: start; border: 0; border-bottom: 1px solid #6c967a; padding: 0 0 .15rem; background: transparent; color: #0b6847; font-size: .74rem; font-weight: 800; }
 .essay-theme-body { border-top: 1px solid #e2ebe1; padding-top: .7rem; }
 .essay-theme-body p { margin: 0; color: #304e42; font-size: .82rem; line-height: 1.55; }
+.essay-theme-section { display: grid; gap: .35rem; margin-top: .85rem; }
+.essay-theme-section strong { color: #123e2f; font-size: .78rem; }
+.essay-theme-section ul { display: grid; gap: .35rem; margin: 0; padding-left: 1.1rem; color: #304e42; font-size: .8rem; line-height: 1.5; }
 .essay-theme-body a { display: inline-block; margin-top: .75rem; color: #0b6847; font-size: .72rem; font-weight: 800; text-decoration: underline; }
 .essay-theme-angles { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .7rem; }
 .essay-theme-angles span { padding: .25rem .45rem; border-radius: .4rem; background: #eef5eb; color: #406250; font-size: .68rem; }
