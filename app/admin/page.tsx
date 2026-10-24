@@ -33,6 +33,20 @@ type CrmDelivery = {
   status: string;
   last_error: string | null;
 };
+type CrmAttempt = {
+  user_id: string;
+  activity: string;
+  collection_id: string | null;
+  score: number;
+  total: number;
+  completed_at: string;
+};
+type CrmEssay = {
+  user_id: string;
+  status: string;
+  score: number | null;
+  created_at: string;
+};
 type CrmCustomer = {
   email: string;
   name: string;
@@ -40,6 +54,8 @@ type CrmCustomer = {
   orders: CrmOrder[];
   entitlements: CrmEntitlement[];
   deliveries: CrmDelivery[];
+  attempts: CrmAttempt[];
+  essays: CrmEssay[];
 };
 const date = (value?: string) =>
   value
@@ -148,7 +164,7 @@ export default async function Admin({
       />
     );
   } else if (tab === "alunos") {
-    const [profilesResult, ordersResult, accessResult, deliveriesResult] =
+    const [profilesResult, ordersResult, accessResult, deliveriesResult, attemptsResult, essaysResult] =
       await Promise.all([
         db.from("profiles").select("id,name,email,role").limit(500),
         db
@@ -164,9 +180,20 @@ export default async function Admin({
           .from("email_deliveries")
           .select("order_id,email,status,last_error")
           .limit(500),
+        db
+          .from("assessment_attempts")
+          .select("user_id,activity,collection_id,score,total,completed_at")
+          .order("completed_at", { ascending: false })
+          .limit(1000),
+        db
+          .from("essay_submissions")
+          .select("user_id,status,score,created_at")
+          .order("created_at", { ascending: false })
+          .limit(1000),
       ]);
     const customers = new Map<string, CrmCustomer>();
     const crmResults = [profilesResult, ordersResult, accessResult, deliveriesResult];
+    const activityResultsAvailable = !attemptsResult.error && !essaysResult.error;
     if (crmResults.some((result) => result.error))
       throw new Error("Não foi possível carregar o CRM. Tente novamente.");
     const truncated = crmResults.some((result) => (result.data?.length || 0) === 500);
@@ -180,6 +207,8 @@ export default async function Admin({
           orders: [],
           entitlements: [],
           deliveries: [],
+          attempts: [],
+          essays: [],
         });
       return customers.get(key)!;
     };
@@ -199,6 +228,17 @@ export default async function Admin({
     (deliveriesResult.data as CrmDelivery[] | null)?.forEach((delivery) =>
       ensure(delivery.email).deliveries.push(delivery),
     );
+    const profileById = new Map(
+      (profilesResult.data as CrmProfile[] | null)?.map((profile) => [profile.id, profile]) || [],
+    );
+    (activityResultsAvailable ? attemptsResult.data as CrmAttempt[] | null : null)?.forEach((attempt) => {
+      const profile = profileById.get(attempt.user_id);
+      if (profile) ensure(profile.email).attempts.push(attempt);
+    });
+    (activityResultsAvailable ? essaysResult.data as CrmEssay[] | null : null)?.forEach((essay) => {
+      const profile = profileById.get(essay.user_id);
+      if (profile) ensure(profile.email).essays.push(essay);
+    });
     const needle = q.trim().toLowerCase();
     const rows = [...customers.values()]
       .filter((customer) => customer.profile?.role !== "admin" || customer.orders.length)
@@ -220,6 +260,8 @@ export default async function Admin({
     const activeCustomers = rows.filter((customer) =>
       customer.entitlements.some((access) => access.active),
     ).length;
+    const completedSessions = rows.reduce((total, customer) => total + customer.attempts.length, 0);
+    const submittedEssays = rows.reduce((total, customer) => total + customer.essays.length, 0);
     content = (
       <>
         <div className="crm-heading">
@@ -233,7 +275,8 @@ export default async function Admin({
           <span className="crm-count">{rows.length} contato(s)</span>
         </div>
         {truncated && <p className="status-message" role="status">Esta visão está limitada a 500 registros por fonte. Os totais e a busca consideram somente os registros carregados.</p>}
-        <div className="stat-grid crm-stats">
+        {!activityResultsAvailable && <p className="status-message" role="status">Atividade detalhada ainda não está disponível neste ambiente. O CRM de pagamentos continua funcionando normalmente.</p>}
+        <div className="stat-grid crm-stats admin-kpis">
           <div className="stat">
             <strong>{rows.length}</strong>
             <span>Contatos</span>
@@ -245,6 +288,14 @@ export default async function Admin({
           <div className="stat">
             <strong>{activeCustomers}</strong>
             <span>Com acesso ativo</span>
+          </div>
+          <div className="stat">
+            <strong>{completedSessions}</strong>
+            <span>Sessões concluídas</span>
+          </div>
+          <div className="stat">
+            <strong>{submittedEssays}</strong>
+            <span>Redações enviadas</span>
           </div>
         </div>
         <form className="filters">
@@ -265,6 +316,7 @@ export default async function Admin({
                 <th>Plano e acesso</th>
                 <th>Pagamento</th>
                 <th>Conta no site</th>
+                <th>Atividade</th>
                 <th>Última compra</th>
               </tr>
             </thead>
@@ -315,13 +367,17 @@ export default async function Admin({
                             : "Cadastro após pagamento aprovado"}
                       </small>
                     </td>
+                    <td>
+                      <strong>{customer.attempts.length} sessão(ões)</strong>
+                      <small>{customer.essays.length ? `${customer.essays.length} redação(ões)` : "Sem redações"}</small>
+                    </td>
                     <td>{date(lastOrder?.created_at)}</td>
                   </tr>
                 );
               })}
               {!rows.length ? (
                 <tr>
-                  <td colSpan={5}>Nenhum contato encontrado.</td>
+                  <td colSpan={6}>Nenhum contato encontrado.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -405,6 +461,9 @@ export default async function Admin({
         "entitlements",
         "materials",
         "email_deliveries",
+        "assessment_attempts",
+        "essay_submissions",
+        "account_access_fingerprints",
       ].map(async (table) => {
         let query = db.from(table).select("*", { count: "exact", head: true });
         if (table === "entitlements") query = query.eq("active", true);
@@ -420,6 +479,9 @@ export default async function Admin({
       entitlements: "Acessos ativos",
       materials: "Materiais publicados",
       email_deliveries: "Falhas de entrega",
+      assessment_attempts: "Sessões concluídas",
+      essay_submissions: "Redações enviadas",
+      account_access_fingerprints: "Dispositivos observados",
     };
     content = (
       <div className="stat-grid">
@@ -435,8 +497,15 @@ export default async function Admin({
   return (
     <>
       <Header />
-      <main id="conteudo" className="container section">
-        <h1 className="page-title">Administração</h1>
+      <main id="conteudo" className="container section admin-shell">
+        <div className="admin-hero">
+          <div>
+            <span className="eyebrow">Central de gestão</span>
+            <h1 className="page-title">Administração</h1>
+            <p>Veja o que está acontecendo no produto, nos acessos e na jornada dos alunos.</p>
+          </div>
+          <span className="admin-live-indicator"><i /> Ambiente conectado</span>
+        </div>
         <div className="admin-actions">
           <Link className="button secondary" href="/aluno">Abrir área do aluno</Link>
           <form action="/api/auth/logout" method="post"><button className="button secondary">Sair da conta</button></form>
