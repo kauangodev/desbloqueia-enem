@@ -75,7 +75,7 @@ export const essayThemes: EssayTheme[] = [
     summary: "Enfrentar a violência contra crianças e adolescentes depende de protocolos claros, escuta qualificada, sigilo e articulação entre escola, família e rede de proteção.",
     angles: ["rede intersetorial", "prevenção e acolhimento", "direitos da infância"],
     sourceLabel: "Ministério da Igualdade Racial — Escola que Protege",
-    sourceUrl: "https://www.gov.br/igualdaderacial/pt-br/assuntos/programas-e-projetos/observatorio-de-monitoramento-e-avaliacao/politicas-intergovernamentais/educacao/escola-que-protege/",
+    sourceUrl: "https://www.gov.br/igualdaderacial/pt-br/assuntos/programas-e-projetos/observatorio-de-monitoramento-e-avaliacao/politicas-intergovernamentais/educacao/perguntas-e-respostas/programa-escola-que-protege/",
     updatedAt: "outubro de 2026",
     featured: true,
   },
