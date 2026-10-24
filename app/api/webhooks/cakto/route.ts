@@ -6,6 +6,7 @@ import {
 } from "../../../../lib/payment";
 import { serviceClient } from "../../../../lib/supabase";
 import { jsonError } from "../../../../lib/http";
+import { caktoFallbackOffers } from "../../../../lib/config";
 export async function POST(req: Request) {
   if (
     !process.env.CAKTO_WEBHOOK_SECRET ||
@@ -50,6 +51,16 @@ export async function POST(req: Request) {
     for (const order of items) {
       if (["purchase_approved", "subscription_created", "subscription_renewed", "subscription_resumed", "subscription_late_recovered"].includes(payload.event) && order.status !== "paid")
         return jsonError("Estado incompatível", 422);
+      const fallback = Object.entries(caktoFallbackOffers).find(([, offer]) => offer.productId === order.product.id && offer.offerId === order.offer.id);
+      if (fallback) {
+        await db.from("offers").upsert({
+          plan: fallback[0],
+          cakto_product_id: fallback[1].productId,
+          cakto_offer_id: fallback[1].offerId,
+          checkout_url: fallback[1].checkoutUrl,
+          enabled: true,
+        }, { onConflict: "plan" });
+      }
       const { error } = await db.rpc("receive_payment", {
         p_event: payload.event,
         p_data: order,
@@ -65,4 +76,5 @@ export async function POST(req: Request) {
     return jsonError("Banco indisponível; reenvie pelo painel Cakto", 503);
   }
 }
+
 
