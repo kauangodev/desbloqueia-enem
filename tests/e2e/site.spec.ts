@@ -23,11 +23,8 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await page.getByText("A biblioteca tem 1.800 resoluções?").click();
   await expect(page.locator("details[open]")).toContainText("Não.");
   await page
-    .getByRole("link", { name: "Escolher Premium", exact: true })
-    .click();
-  await expect(
-    page.getByText("As vendas ainda não estão abertas.", { exact: false }),
-  ).toBeVisible();
+    .getByRole("link", { name: "Comprar Premium", exact: true });
+  await expect(planLink).toHaveAttribute("href", "/api/checkout/premium");
 });
 
 test("faixa de matérias corre suavemente da esquerda para a direita", async ({
