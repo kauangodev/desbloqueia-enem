@@ -18,8 +18,8 @@ export async function GET(
     return jsonError("Material não disponível para esta conta.", 403);
   if (!m.storage_path) return jsonError("Arquivo ainda não publicado.", 404);
   const download = new URL(req.url).searchParams.get("download") === "1";
-  if (download && !m.downloadable)
-    return jsonError("Download não autorizado.", 403);
+  if (download)
+    return jsonError("O material é disponibilizado exclusivamente no leitor da plataforma.", 403);
   const { data, error } = await serviceClient()
     .storage.from("materials")
     .createSignedUrl(m.storage_path, 60, {
