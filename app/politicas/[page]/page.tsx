@@ -80,8 +80,8 @@ const policies: Record<
         "Após a confirmação do reembolso ou chargeback, o acesso vinculado àquele pedido será revogado. Outras compras válidas permanecem ativas. O conteúdo já baixado não deve ser redistribuído.",
       ],
       [
-        "Vendas em preparação",
-        "Nenhuma cobrança é realizada enquanto o checkout estiver indisponível. A configuração dos canais de atendimento é obrigatória antes da abertura das vendas.",
+        "Pagamento pela Cakto",
+        "O checkout é processado pela Cakto. A liberação do acesso ocorre somente após a confirmação do pagamento e fica vinculada ao e-mail informado na compra.",
       ],
     ],
   },
