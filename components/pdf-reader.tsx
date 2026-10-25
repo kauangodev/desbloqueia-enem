@@ -114,16 +114,6 @@ export default function PdfReader({
       task?.cancel();
     };
   }, [doc, page, zoom, id, width]);
-  async function download() {
-    try {
-      const res = await fetch(`/api/materials/${id}?download=1`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      window.location.assign(data.url);
-    } catch (e) {
-      E(e instanceof Error ? e.message : "Download indisponível.");
-    }
-  }
   return (
     <div ref={frame}>
       <div className="reader-toolbar">
