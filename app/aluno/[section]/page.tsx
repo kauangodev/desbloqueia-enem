@@ -131,6 +131,7 @@ export default async function Section({
       </div>
     );
   }
+  } else if (section === "suporte") content = <Support showPrivateEmail />;
   else if (!entitled)
     content = (
       <div className="empty-state">
@@ -140,12 +141,12 @@ export default async function Section({
             : "Seu acesso ainda não está ativo."}
         </h2>
         <p>Os materiais são liberados após a confirmação da compra.</p>
-        <Link className="button primary" href="/#planos">
-          Ver planos
-        </Link>
+        <p>Os materiais são liberados após a confirmação da compra.</p>
+        <Link className="button primary" href="/#planos">Ver planos</Link>
       </div>
     );
-  else if (section === "exercicios") {
+  else if (section === "redacao") content = <EssayWorkspace />;
+  else if (section === "correcoes") {  else if (section === "exercicios") {
     const collectionId = search.lista && /^[a-z0-9-]+$/.test(search.lista) ? search.lista : undefined;
     const exerciseCollections = [...new Set(questionsFor("exercicios").map((question) => question.collectionId))];
     const exerciseArea = { linguagens: "Linguagens", humanas: "Ciências Humanas", natureza: "Ciências da Natureza", matematica: "Matemática" }[search.area || ""];
