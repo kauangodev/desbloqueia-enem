@@ -185,9 +185,7 @@ export default function PdfReader({
           Tela cheia
         </button>
         {downloadable && (
-          <button className="button secondary" onClick={download}>
-            Baixar PDF
-          </button>
+          <span className="subtle">Leitura protegida na plataforma</span>
         )}
       </div>
       <p role="status">{status}</p>
@@ -199,7 +197,7 @@ export default function PdfReader({
       <div className="reader-canvas">
         <canvas
           ref={canvas}
-          aria-label={`Página ${page} do material. Use Baixar PDF para uma leitura acessível no seu leitor preferido.`}
+          aria-label={`Página ${page} do material.`}
         />
       </div>
     </div>
