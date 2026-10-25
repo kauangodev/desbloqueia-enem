@@ -22,7 +22,7 @@
     {
       "plan": "premium",
       "name": "Desbloqueia ENEM 2026 — Premium",
-      "price": "39.90",
+      "price": "32.90",
       "productId": "e1fc994d-6000-41d4-9b08-5af47ec3ce07",
       "offerId": "3fq7t2s",
       "checkoutUrl": "https://pay.cakto.com.br/3fq7t2s_1233753",
@@ -31,10 +31,11 @@
       "benefits": [
         "Tudo do plano Essencial",
         "Kit completo de revisão com 87 páginas",
-        "Dois simulados compactos",
+        "2.100 questões autorais no estilo ENEM",
+        "30 simulados com 600 questões",
+        "60 listas de exercícios com 1.500 questões",
         "Preparação para redação",
         "Biblioteca navegável com 1.800 referências",
-        "7 resoluções autorais já disponíveis",
         "Fichas e checklists para a reta final"
       ]
     }
