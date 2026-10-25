@@ -209,7 +209,7 @@ const faqs = [
   ],
   [
     "Preciso criar uma senha?",
-    "O acesso usa um link seguro enviado ao seu e-mail. Se o link expirar, você poderá solicitar outro em Entrar. O serviço de envio será ativado antes da abertura das vendas.",
+    "Após a compra aprovada, use o mesmo e-mail da Cakto para criar sua senha e entrar na área de alunos. Se precisar, você poderá redefinir a senha pela tela de acesso.",
   ],
   [
     "Como funciona a garantia?",
