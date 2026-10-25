@@ -169,7 +169,7 @@ export default async function Home() {
                   </ul>
                   <Link
                     className={`button ${p.id === "premium" ? "lime" : "secondary"}`}
-                    href={`/comprar/${p.id}`}
+                    href={`/api/checkout/${p.id}`}
                   >
                     Escolher {p.name}
                   </Link>
