@@ -201,11 +201,11 @@ const faqs = [
   ],
   [
     "Os materiais são PDFs? Posso baixar?",
-    "Os materiais são digitais em PDF. Downloads ficam disponíveis na área do aluno quando autorizados para o material e seu plano. As imagens desta página mostram as capas reais.",
+    "Os materiais são digitais em PDF. A leitura acontece dentro do leitor protegido da área do aluno, com navegação, zoom e tela cheia; o download direto não fica disponível. As imagens desta página mostram as capas reais.",
   ],
   [
     "A biblioteca tem 1.800 resoluções?",
-    "Não. São 1.800 posições de questões de 2016 a 2025, com links para provas oficiais e fontes externas. O acervo recebido inclui sete resoluções autorais; os demais itens indicam suas pendências.",
+    "Não. São 1.800 posições de questões de 2016 a 2025, com links para provas oficiais e fontes externas. O acervo organiza 1.800 posições de questões com fontes externas e indica o que já foi resolvido; ele não representa 1.800 resoluções autorais.",
   ],
   [
     "Preciso criar uma senha?",
