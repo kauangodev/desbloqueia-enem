@@ -22,8 +22,7 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await expect(page.getByRole("tab").first()).toHaveAttribute("aria-selected", "true");
   await page.getByText("A biblioteca tem 1.800 resoluções?").click();
   await expect(page.locator("details[open]")).toContainText("Não.");
-  await page
-    .getByRole("link", { name: "Comprar Premium", exact: true });
+  const planLink = page.getByRole("link", { name: "Comprar Premium", exact: true });
   await expect(planLink).toHaveAttribute("href", "/api/checkout/premium");
 });
 
