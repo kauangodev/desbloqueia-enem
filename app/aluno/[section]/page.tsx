@@ -141,7 +141,6 @@ export default async function Section({
             : "Seu acesso ainda não está ativo."}
         </h2>
         <p>Os materiais são liberados após a confirmação da compra.</p>
-        <p>Os materiais são liberados após a confirmação da compra.</p>
         <Link className="button primary" href="/#planos">Ver planos</Link>
       </div>
     );
