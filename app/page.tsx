@@ -71,7 +71,7 @@ export default async function Home() {
               <span>
                 2.100 questões autorais
                 <br />30 simulados · 60 listas
-                <br />1.800 referências
+                <br />1.800 questões de referência
               </span>
             </div>
           </div>
