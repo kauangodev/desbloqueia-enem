@@ -77,9 +77,10 @@ export async function POST(req: Request) {
     await adminDb.rpc("clear_rate_limit", { p_key: `login:${hash}` });
     const { data: profile } = await db.from("profiles").select("role").eq("id", signedIn.user.id).maybeSingle();
     return NextResponse.json({
-      redirect: `${appUrl}${profile?.role === "admin" ? "/admin" : "/aluno"}`,
+      redirect: `${appUrl}${signedIn.user.must_change_password ? "/definir-senha?first=1" : profile?.role === "admin" ? "/admin" : "/aluno"}`,
     });
   } catch {
     return jsonError("Serviço temporariamente indisponível.", 503);
   }
 }
+
