@@ -33,39 +33,32 @@ export async function POST(req: Request) {
       adminDb.from("admin_invites").select("name").eq("email", email).eq("active", true).maybeSingle(),
     ]);
     if (entitlementError || inviteError) return jsonError("Não foi possível validar o acesso agora.", 503);
-    if (!entitlement && !invite) {
-      return jsonError("O cadastro é liberado após a confirmação da compra ou de um convite administrativo.", 403);
-    }
+    if (!entitlement && !invite) return jsonError("Não foi possível concluir o cadastro com os dados informados.", 403);
 
     const { data: listed } = await adminDb.auth.admin.listUsers({ page: 1, perPage: 1000 });
-    let user = listed?.users.find((candidate) => candidate.email?.toLowerCase() === email);
-    if (user) {
-      const updated = await adminDb.auth.admin.updateUserById(user.id, {
-        password,
-        email_confirm: true,
-        user_metadata: { ...user.user_metadata, ...(name ? { name } : {}) },
-      });
-      if (updated.error) return jsonError("Não foi possível atualizar o cadastro.", 503);
-      user = updated.data.user;
-    } else {
-      const created = await adminDb.auth.admin.createUser({
-        email,
-        password,
-        email_confirm: true,
-        user_metadata: { name: name || invite?.name || "Aluno" },
-      });
-      if (created.error || !created.data.user) return jsonError("Não foi possível criar o cadastro.", 503);
-      user = created.data.user;
+    const existing = listed?.users.find((candidate) => candidate.email?.toLowerCase() === email);
+    if (existing) {
+      return jsonError("Este e-mail já possui cadastro. Use a entrada ou a recuperação de senha.", 409);
     }
 
-    const { data: signedIn, error: signInError } = await db.auth.signInWithPassword({ email, password });
-    if (signInError || !signedIn.user) {
-      return NextResponse.json({ message: "Cadastro criado. Entre novamente com sua nova senha." });
+    const { data: signedUp, error: signUpError } = await db.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name: name || invite?.name || "Aluno" },
+        emailRedirectTo: `${appUrl}/entrar`,
+      },
+    });
+    if (signUpError || !signedUp.user) return jsonError("Não foi possível criar o cadastro.", 503);
+
+    if (signedUp.session) {
+      const { data: profile } = await db.from("profiles").select("role").eq("id", signedUp.user.id).maybeSingle();
+      return NextResponse.json({ redirect: `${appUrl}${profile?.role === "admin" ? "/admin" : "/aluno"}` });
     }
-    const { data: profile } = await db.from("profiles").select("role").eq("id", signedIn.user.id).maybeSingle();
-    return NextResponse.json({ redirect: `${appUrl}${profile?.role === "admin" ? "/admin" : "/aluno"}` });
+    return NextResponse.json({
+      message: "Cadastro iniciado. Confirme seu e-mail para ativar o acesso e depois entre com sua senha.",
+    });
   } catch {
     return jsonError("Serviço temporariamente indisponível.", 503);
   }
 }
-
