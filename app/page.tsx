@@ -128,11 +128,11 @@ export default async function Home() {
                 próximo passo.
               </h2>
               <p>
-                Do essencial à revisão completa.
+                Escolha a profundidade da sua preparação.
                 <br />
-                Pagamento único. Materiais digitais.
+                Pagamento único. Acesso vitalício ao plano.
                 <br />
-                Sem promessa de nota ou aprovação.
+                Materiais independentes, sem promessa de nota ou aprovação.
               </p>
             </div>
             <div className="pricing-grid">
@@ -146,6 +146,11 @@ export default async function Home() {
                     {p.id === "premium" && <span>Mais completo</span>}
                   </div>
                   <p>{p.description}</p>
+                  <p className="plan-benefit">
+                    {p.id === "premium"
+                      ? "Para quem quer praticar mais, revisar com método e acompanhar a própria evolução."
+                      : "Para quem quer organizar a base, recuperar o ritmo e estudar com clareza."}
+                  </p>
                   <div className="price">
                     {money(p.cents)}
                     <small>pagamento único</small>
