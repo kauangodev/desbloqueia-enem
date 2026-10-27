@@ -11,10 +11,10 @@ export const plans = [
     cents: 1990,
     description: "Uma base clara para retomar o que importa.",
     features: [
-      "Resumos estratégicos por disciplina",
-      "Cronograma de estudos",
-      "40 exercícios comentados",
-      "Leitura na plataforma",
+      "Resumos estratégicos das quatro áreas do ENEM",
+      "Cronograma e mapa da revisão",
+      "40 exercícios comentados para fixação",
+      "Leitura online no celular, tablet ou computador",
     ],
   },
   {
@@ -29,7 +29,7 @@ export const plans = [
       "30 simulados com 600 questões",
       "60 listas de exercícios com 1.500 questões",
       "Preparação para redação",
-      "Biblioteca navegável com 1.800 referências",
+      "Biblioteca histórica com 1.800 questões de referência",
       "Fichas e checklists para a reta final",
     ],
   },
