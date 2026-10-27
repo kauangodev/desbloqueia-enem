@@ -3,6 +3,7 @@ import { sameOrigin, jsonError } from "../../../lib/http";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { questionBank, questionsFor, questionsForCollection } from "../../../data/question-bank";
+import { recordGamificationEvent } from "../../../lib/gamification";
 const inputSchema = z.object({
   activity: z.enum(["exercicios", "simulado-1", "simulado-2"]),
   collectionId: z.string().regex(/^[a-z0-9-]+$/).optional(),
@@ -27,7 +28,9 @@ export async function POST(req: Request) {
     (total, question) => total + (answers[question.id] === question.answer ? 1 : 0),
     0,
   );
+  const attemptId = crypto.randomUUID();
   const { error } = await who.db.from("assessment_attempts").insert({
+    id: attemptId,
     activity: parsed.data.activity,
     collection_id: parsed.data.collectionId || null,
     score,
@@ -36,6 +39,7 @@ export async function POST(req: Request) {
     user_id: who.user.id,
   });
   if (error) return jsonError("O resultado foi calculado, mas não pôde ser salvo no histórico. Tente novamente.", 503);
+  await recordGamificationEvent(who.user.id, "assessment_completed", attemptId);
   return NextResponse.json({ saved: true, score, total: questions.length });
 }
 
