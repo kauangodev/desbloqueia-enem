@@ -9,6 +9,12 @@ function required(name: string) {
   return value;
 }
 
+function requiredSecret(name: string) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Variável MySQL ausente: ${name}`);
+  return value;
+}
+
 export function mysqlConfigured() {
   return Boolean(
     process.env.HOSTINGER_MYSQL_HOST &&
@@ -26,7 +32,9 @@ export function mysqlPool() {
       port: Number(process.env.HOSTINGER_MYSQL_PORT || 3306),
       database: required("HOSTINGER_MYSQL_DATABASE"),
       user: required("HOSTINGER_MYSQL_USER"),
-      password: required("HOSTINGER_MYSQL_PASSWORD"),
+      // mysql2 receives structured credentials; URL percent-encoding is neither
+      // needed nor desirable here. Preserve the secret exactly as configured.
+      password: requiredSecret("HOSTINGER_MYSQL_PASSWORD"),
       waitForConnections: true,
       connectionLimit: 5,
       queueLimit: 0,
