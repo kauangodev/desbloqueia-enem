@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/payment.test.ts",
     "audit:questions": "tsx scripts/audit-question-bank.ts",
+    "admin:seed": "tsx scripts/setup-admin-user.ts",
     "test:e2e": "playwright test",
     "cakto:plan": "node scripts/cakto-provision.mjs",
     "cakto:provision": "node scripts/cakto-provision.mjs --apply"
