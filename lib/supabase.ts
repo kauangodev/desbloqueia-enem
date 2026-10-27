@@ -14,7 +14,7 @@ const scrypt = promisify(nodeScrypt);
 const SESSION_COOKIE = "godev_session";
 const RESET_TTL_MS = 30 * 60 * 1000;
 const memoryRateLimits = new Map<string, { count: number; expiresAt: number }>();
-type UserRow = { id: string; email: string; name: string; role: "student" | "admin"; password_hash?: string | null };
+type UserRow = { id: string; email: string; name: string; role: "student" | "admin"; password_hash?: string | null; must_change_password?: boolean };
 type QueryResult = { data: any; error: any; count?: number | null };
 
 function authSecret() { return requiredSessionSecret(); }
@@ -26,6 +26,14 @@ function userFromToken(token: string | undefined): { id: string; iat: number } |
   if (!token) return null; const [payload, signature] = token.split("."); if (!payload || !signature) return null;
   const expected = sign(payload); if (signature.length !== expected.length || !timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null;
   try { const data = JSON.parse(decode(payload)) as { id: string; iat: number; exp: number }; return data.exp > Date.now() && Number.isFinite(data.iat) ? { id: data.id, iat: data.iat } : null; } catch { return null; }
+}
+async function mustChangePassword(id: string) {
+  try {
+    const [rows] = await mysqlPool().query<any[]>("SELECT must_change_password FROM users WHERE id = ? LIMIT 1", [id]);
+    return Boolean(rows[0]?.must_change_password);
+  } catch {
+    return false;
+  }
 }
 async function passwordHash(password: string) { const salt = randomBytes(16).toString("hex"); const derived = (await scrypt(password, salt, 64)) as Buffer; return `scrypt$${salt}$${derived.toString("hex")}`; }
 async function passwordMatches(password: string, stored: string | null | undefined) {
@@ -100,16 +108,16 @@ class QueryBuilder implements PromiseLike<QueryResult> {
 }
 
 function userRecord(row: any): UserRow { return { id: row.id, email: row.email, name: row.name || "", role: row.role === "admin" ? "admin" : "student", password_hash: row.password_hash }; }
-async function currentUser() { const jar = await cookies(); const tokenUser = userFromToken(jar.get(SESSION_COOKIE)?.value); if (!tokenUser) return null; const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at,updated_at FROM users WHERE id = ? LIMIT 1", [tokenUser.id]); const row = rows[0]; if (!row || !row.email_verified_at || (row.updated_at && new Date(row.updated_at).getTime() > tokenUser.iat)) return null; return userRecord(row); }
+async function currentUser() { const jar = await cookies(); const tokenUser = userFromToken(jar.get(SESSION_COOKIE)?.value); if (!tokenUser) return null; const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at,updated_at FROM users WHERE id = ? LIMIT 1", [tokenUser.id]); const row = rows[0]; if (!row || !row.email_verified_at || (row.updated_at && new Date(row.updated_at).getTime() > tokenUser.iat)) return null; return { ...userRecord(row), must_change_password: await mustChangePassword(row.id) }; }
 async function setSession(user: UserRow | null) { const jar = await cookies(); if (!user) { jar.delete(SESSION_COOKIE); return; } try { jar.set(SESSION_COOKIE, tokenFor(user), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 }); } catch { /* server component */ } }
 
 function createAuth() {
   return {
     async getUser() { const user = await currentUser(); return { data: { user }, error: user ? null : { message: "not_authenticated" } }; },
-    async signInWithPassword(input: { email: string; password: string }) { const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); const user = rows[0]?.email_verified_at && await passwordMatches(input.password, rows[0].password_hash) ? userRecord(rows[0]) : null; if (!user) return { data: { user: null }, error: { message: "Invalid login credentials", status: 401 } }; await setSession(user); return { data: { user }, error: null }; },
+    async signInWithPassword(input: { email: string; password: string }) { const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); const user = rows[0]?.email_verified_at && await passwordMatches(input.password, rows[0].password_hash) ? { ...userRecord(rows[0]), must_change_password: await mustChangePassword(rows[0].id) } : null; if (!user) return { data: { user: null }, error: { message: "Invalid login credentials", status: 401 } }; await setSession(user); return { data: { user }, error: null }; },
     async signUp(input: { email: string; password: string; options?: { data?: { name?: string } } }) { const [existing] = await mysqlPool().query<any[]>("SELECT id FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); if (existing.length) return { data: { user: null, session: null }, error: { message: "User already registered", status: 409 } }; const user: UserRow = { id: randomBytes(16).toString("hex"), email: input.email.toLowerCase(), name: input.options?.data?.name || "Aluno", role: "student" }; await mysqlPool().query("INSERT INTO users (id,email,name,password_hash,role,email_verified_at) VALUES (?,?,?,?,?,NULL)", [user.id, user.email, user.name, await passwordHash(input.password), user.role]); const resetError = await issueResetEmail(user.email); if (resetError) { await mysqlPool().query("DELETE FROM users WHERE id = ?", [user.id]); return { data: { user: null, session: null }, error: resetError }; } return { data: { user, session: null }, error: null }; },
     async signOut() { await setSession(null); return { error: null }; },
-    async updateUser(input: { password: string }) { const user = await currentUser(); if (!user) return { error: { message: "session expired" } }; await mysqlPool().query("UPDATE users SET password_hash = ? WHERE id = ?", [await passwordHash(input.password), user.id]); return { error: null }; },
+    async updateUser(input: { password: string }) { const user = await currentUser(); if (!user) return { error: { message: "session expired" } }; await mysqlPool().query("UPDATE users SET password_hash = ? WHERE id = ?", [await passwordHash(input.password), user.id]); try { await mysqlPool().query("UPDATE users SET must_change_password = FALSE WHERE id = ?", [user.id]); } catch { /* migration ainda não aplicada */ } return { error: null }; },
     async resetPasswordForEmail(email: string) { return { error: await issueResetEmail(email) }; },
     admin: { async listUsers() { const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role FROM users ORDER BY created_at LIMIT 1000"); return { data: { users: rows }, error: null }; }, async createUser(input: { email: string; user_metadata?: { name?: string } }) { const user: UserRow = { id: randomBytes(16).toString("hex"), email: input.email.toLowerCase(), name: input.user_metadata?.name || "Aluno", role: "student" }; try { await mysqlPool().query("INSERT INTO users (id,email,name,role,email_verified_at) VALUES (?,?,?,?,NULL)", [user.id,user.email,user.name,user.role]); return { data: { user }, error: null }; } catch (error) { return { data: { user: null }, error }; } } },
   };
@@ -157,3 +165,4 @@ export function serviceClient() { if (!mysqlConfigured()) throw new Error("Banco
 export function publicClient() { return mysqlConfigured() ? { auth: createAuth() } as any : null; }
 export async function identity() { const db = await sessionClient(); if (!db) return null; const { data: user } = await db.auth.getUser(); if (!user) return null; const { data: profile } = await db.from("profiles").select("id,name,role").eq("id", user.id).maybeSingle(); return { db, user, profile }; }
 export async function canAccess(plan: string) { const who = await identity(); if (!who) return null; if (who.profile?.role === "admin") return who; const { data } = await who.db.from("entitlements").select("plan").eq("user_id", who.user.id).eq("active", true); return data?.some((e: { plan: string }) => e.plan === "premium" || e.plan === plan) ? who : null; }
+
