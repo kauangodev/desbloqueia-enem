@@ -10,6 +10,7 @@ O código local passou pelos testes automatizados disponíveis e recebeu uma cor
 
 - Sessões, tokens de upload e redefinição agora exigem `AUTH_SESSION_SECRET` dedicado com pelo menos 32 caracteres.
 - O sistema não usa mais a senha do MySQL nem uma chave temporária como fallback criptográfico.
+- Ofertas Cakto no painel administrativo agora são atualizadas com conflito idempotente por plano.
 - O essay correction tool, incluindo sua manutenção atual, permaneceu fora do escopo e inalterado.
 
 ## Inventário validado
@@ -28,6 +29,8 @@ O código local passou pelos testes automatizados disponíveis e recebeu uma cor
 - `pnpm build` — aprovado; rotas de API e páginas dinâmicas foram geradas.
 - ESLint — sem erros; permanece apenas o aviso de `<img>` no módulo de redação, explicitamente excluído deste trabalho.
 
+Uma execução paralela de `pnpm typecheck` foi descartada por concorrência com o build regenerando `.next`; a execução isolada posterior passou.
+
 ## Bloqueios externos
 
 - A Hostinger não tinha `AUTH_SESSION_SECRET` visível na lista de variáveis; ele precisa ser criado no painel antes do próximo deployment.
@@ -39,5 +42,6 @@ O código local passou pelos testes automatizados disponíveis e recebeu uma cor
 
 - `ac9f523` — exige segredo dedicado para sessões de produção.
 - `a76bc4b` — documenta a exigência no template de ambiente.
+- `19c5790` — corrige atualização idempotente de ofertas Cakto.
 
-O pacote `GoDev_Education_HOSTINGER_FINAL.zip` foi gerado a partir do commit local mais recente, sem `.git`, credenciais ou backups pessoais. O push desses dois commits para o GitHub ficou pendente por indisponibilidade da conexão de push.
+Os pacotes `GoDev_Education_HOSTINGER_FINAL.zip` e `GoDev_Education_FINAL_AUDITADO.zip` foram gerados a partir do commit local mais recente, sem `.git`, credenciais ou backups pessoais. O push dos commits recentes para o GitHub ficou pendente por indisponibilidade da conexão de push.
