@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { materials } from "../lib/config";
 export function Brand() {
   return (
-    <Link href="/" className="brand" aria-label="GoDev Education, início">
+    <Link href="/#kit" className="brand" aria-label="Voltar para a hero do GoDev Education">
       <b>
         GoDev<span>.</span>
       </b>
@@ -204,8 +204,8 @@ const faqs = [
     "Os materiais são digitais em PDF. A leitura acontece dentro do leitor protegido da área do aluno, com navegação, zoom e tela cheia; o download direto não fica disponível. As imagens desta página mostram as capas reais.",
   ],
   [
-    "A biblioteca tem 1.800 resoluções?",
-    "Não. São 1.800 posições de questões de 2016 a 2025, com links para provas oficiais e fontes externas. O acervo organiza 1.800 posições de questões com fontes externas e indica o que já foi resolvido; ele não representa 1.800 resoluções autorais.",
+    "A biblioteca tem 1.800 questões?",
+    "Sim. A biblioteca organiza 1.800 questões de referência, separadas por ano e área, com links para as fontes oficiais. Ela é um índice de estudo e não promete 1.800 resoluções autorais.",
   ],
   [
     "Preciso criar uma senha?",
