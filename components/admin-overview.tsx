@@ -95,13 +95,13 @@ export default function AdminOverview({
           <div className="overview-card-topline">
             <div>
               <span className="admin-eyebrow">Dados registrados</span>
-              <h2 id="overview-title">Visão geral das vendas</h2>
+              <h2 id="overview-title">Bem-vindo ao painel GoDev Education</h2>
             </div>
             <span className="overview-period">Base atual</span>
           </div>
           <div className="overview-total">
             <strong>{money(revenue)}</strong>
-            <span>receita bruta em pagamentos aprovados</span>
+            <span>Resumo operacional baseado nos pagamentos registrados</span>
           </div>
           <div className="overview-chart" aria-label="Receita bruta dos últimos sete dias">
             {chartDays.map((day) => (
