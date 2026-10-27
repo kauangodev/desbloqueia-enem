@@ -141,12 +141,12 @@
   bottom: auto;
   z-index: 2;
   transform: translateY(-50%);
-  color: #fff;
+  color: #f8f4e8;
   max-width: calc(100% - 28px);
   padding: 8px 11px 9px;
   border: 1px solid rgb(255 255 255 / 30%);
   border-radius: 12px;
-  background: rgb(3 32 24 / 66%);
+  background: rgb(14 34 48 / 78%);
   box-shadow: 0 8px 22px rgb(0 0 0 / 18%);
   backdrop-filter: blur(5px);
   font-size: 12px;
@@ -154,7 +154,7 @@
   letter-spacing: -0.03em;
   line-height: 1;
   text-align: center;
-  text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
+  text-shadow: 0 1px 5px rgb(0 0 0 / 58%);
 }
 .coverTitle::before {
   content: "";
@@ -163,15 +163,15 @@
   height: 3px;
   margin: 0 auto 7px;
   border-radius: 99px;
-  background: #d9e8c7;
+  background: #ead7ad;
 }
 
 .card figcaption {
   position: absolute;
   inset: auto 0 0;
   padding: 30px 15px 14px;
-  color: #fff;
-  background: linear-gradient(transparent, rgb(8 38 26 / 85%));
+  color: #f8f4e8;
+  background: linear-gradient(transparent, rgb(14 34 48 / 90%));
   line-height: 1.2;
 }
 
