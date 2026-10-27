@@ -193,7 +193,7 @@ const faqs = [
   ],
   [
     "Qual é a diferença entre os planos?",
-    "O Essencial reúne revisão, cronograma e exercícios. O Premium acrescenta simulados, redação e a biblioteca histórica. Compare os itens na seção de planos.",
+    "O Essencial reúne revisão, cronograma e exercícios. O Premium acrescenta simulados, repertório e a biblioteca histórica. Compare os itens na seção de planos.",
   ],
   [
     "Posso estudar pelo celular?",

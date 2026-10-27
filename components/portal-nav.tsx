@@ -7,7 +7,7 @@ export const links = [
   ["materiais", "Meus materiais", "▤"],
   ["exercicios", "Exercícios", "✓"],
   ["simulados", "Simulados", "◈"],
-  ["redacao", "Redação", "✎"],
+  ["redacao", "Redação (em manutenção)", "✎"],
   ["cronograma", "Meu cronograma", "□"],
   ["checklists", "Fichas e checklists", "☷"],
   ["correcoes", "Minhas correções", "↗"],

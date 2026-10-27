@@ -8,10 +8,10 @@ import Link from "next/link";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import AssessmentPlayer from "../../../components/assessment-player";
-import EssayWorkspace from "../../../components/essay-workspace";
+import EssayMaintenance from "../../../components/essay-maintenance";
+import ActivityCatalog from "../../../components/activity-catalog";
 import { questionBank, questionsFor, questionsForCollection } from "../../../data/question-bank";
 import type { Question } from "../../../data/question-bank";
-import ActivityCatalog from "../../../components/activity-catalog";
 const sections: Record<string, [string, string]> = {
   materiais: ["Meus materiais", "Sua coleção, organizada por disciplina."],
   exercicios: [
@@ -19,7 +19,7 @@ const sections: Record<string, [string, string]> = {
     "Pratique com os cadernos disponibilizados para seu plano.",
   ],
   simulados: ["Simulados", "Reserve um tempo e coloque a revisão em prática."],
-  redacao: ["Redação", "Organize ideias, argumentos e repertório."],
+  redacao: ["Redação", "Recurso temporariamente indisponível."],
   checklists: ["Fichas e checklists", "Revise seus pontos de atenção antes da prova."],
   correcoes: ["Minhas correções", "Retome seus erros e transforme cada um em próximo passo."],
   cronograma: [
@@ -95,7 +95,7 @@ export default async function Section({
         </Link>
       </div>
     );
-  else if (section === "redacao") content = <EssayWorkspace />;
+  else if (section === "redacao") content = <EssayMaintenance />;
   else if (section === "correcoes") {
     const { data: attempts } = await who.db
       .from("assessment_attempts")
@@ -245,8 +245,6 @@ export default async function Section({
     if (section === "exercicios") query = query.eq("category", "Exercícios");
     if (section === "simulados") query = query.eq("category", "Simulados");
     if (section === "checklists") query = query.eq("category", "Checklists");
-    if (section === "redacao")
-      query = query.in("category", ["Redação", "Linguagens"]);
     const { data } = await query;
     content = <Resources items={data || []} />;
   }
