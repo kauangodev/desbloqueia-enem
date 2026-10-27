@@ -14,11 +14,24 @@ export async function POST(req: Request) {
   const key = createHash("sha256").update(email).digest("hex");
   const { data: allowed } = await adminDb.rpc("take_rate_limit", { p_key: `password:${key}`, p_limit: 3, p_seconds: 900 });
   if (!allowed) return jsonError("Aguarde alguns minutos antes de tentar novamente.", 429);
-  const [{ data: entitlement }, { data: invite }, { data: admin }] = await Promise.all([
+  let [{ data: entitlement }, { data: invite }, { data: admin }] = await Promise.all([
     adminDb.from("entitlements").select("user_id").eq("email", email).eq("active", true).limit(1).maybeSingle(),
     adminDb.from("admin_invites").select("name").eq("email", email).eq("active", true).maybeSingle(),
     adminDb.from("profiles").select("name,role").eq("email", email).eq("role", "admin").maybeSingle(),
   ]);
+  const bootstrapEmail = process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase();
+  if (process.env.ADMIN_BOOTSTRAP_ENABLED === "true" && bootstrapEmail === email && !entitlement && !invite && !admin) {
+    const { data: existing } = await adminDb.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    if (!existing.users.some((user) => user.email?.toLowerCase() === email)) {
+      const created = await adminDb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { name: "Kauan" } });
+      if (created.error && created.error.code !== "email_exists") return jsonError("Não foi possível preparar este acesso.", 503);
+    }
+    const { error: promotedError } = await adminDb.from("profiles").update({ role: "admin", email_verified_at: new Date() }).eq("email", email);
+    const { error: inviteError } = await adminDb.from("admin_invites").upsert({ email, name: "Kauan", active: true }, { onConflict: "email" });
+    if (promotedError || inviteError) return jsonError("Não foi possível preparar este acesso.", 503);
+    invite = { name: "Kauan" };
+    admin = { name: "Kauan", role: "admin" };
+  }
   if (!entitlement && !invite && !admin)
     return NextResponse.json({ message: "Se este e-mail tem uma compra aprovada ou convite, enviaremos as instruções de senha." });
   if ((invite || admin) && !entitlement) {
