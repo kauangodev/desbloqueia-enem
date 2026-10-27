@@ -23,7 +23,8 @@ export async function POST(req: Request) {
   if (process.env.ADMIN_BOOTSTRAP_ENABLED === "true" && bootstrapEmail === email && !entitlement && !invite && !admin) {
     try {
       const created = await adminDb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { name: "Kauan" } });
-      const duplicate = ["email_exists", "ER_DUP_ENTRY", "ER_DUPLICATE_ENTRY"].includes(String(created.error?.code || ""));
+      const duplicateCode = String(created.error?.code || "").toUpperCase();
+      const duplicate = ["EMAIL_EXISTS", "ER_DUP_ENTRY", "ER_DUPLICATE_ENTRY", "1062"].includes(duplicateCode) || Number((created.error as { errno?: number } | null)?.errno) === 1062;
       if (created.error && !duplicate) return jsonError("Não foi possível preparar este acesso.", 503);
       const { error: promotedError } = await adminDb.from("profiles").update({ role: "admin", email_verified_at: new Date() }).eq("email", email);
       const { error: inviteError } = await adminDb.from("admin_invites").upsert({ email, name: "Kauan", active: true }, { onConflict: "email" });
@@ -50,3 +51,4 @@ export async function POST(req: Request) {
   if (error) return jsonError("Não foi possível enviar as instruções de senha agora.", 503);
   return NextResponse.json({ message: "Enviamos as instruções para criar ou trocar sua senha. Confira sua caixa de entrada e o spam." });
 }
+
