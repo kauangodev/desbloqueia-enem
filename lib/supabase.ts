@@ -37,15 +37,22 @@ async function issueResetEmail(email: string) {
   const [result] = await mysqlPool().query<any>("UPDATE users SET reset_token_hash = ?, reset_token_expires_at = ? WHERE email = ?", [createHash("sha256").update(token).digest("hex"), new Date(Date.now() + RESET_TTL_MS), email.toLowerCase()]);
   if (!result.affectedRows) return null;
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM;
+  const configuredFrom = process.env.EMAIL_FROM?.trim();
+  const from = configuredFrom && !/@(?:gmail|googlemail|outlook|hotmail|yahoo)\./i.test(configuredFrom)
+    ? configuredFrom
+    : "GoDev Education <noreply@godeveducation.com.br>";
   if (!apiKey || !from) {
+    console.error("password_reset_email_config_missing", { apiKey: Boolean(apiKey), from: Boolean(from) });
     await mysqlPool().query("UPDATE users SET reset_token_hash = NULL, reset_token_expires_at = NULL WHERE email = ?", [email.toLowerCase()]);
     return { message: "Entrega de e-mail indisponível" };
   }
   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://godeveducation.com.br"}/auth/callback?token=${token}`;
   try {
     const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" }, body: JSON.stringify({ from, to: email, subject: "Configure sua senha | GoDev Education", html: `<p>Configure sua senha por este link: <a href="${resetUrl}">${resetUrl}</a></p>` }) });
-    if (!response.ok) throw new Error("email_delivery_failed");
+    if (!response.ok) {
+      console.error("password_reset_email_rejected", { status: response.status });
+      throw new Error("email_delivery_failed");
+    }
   } catch {
     await mysqlPool().query("UPDATE users SET reset_token_hash = NULL, reset_token_expires_at = NULL WHERE email = ?", [email.toLowerCase()]);
     return { message: "Não foi possível enviar o e-mail" };
