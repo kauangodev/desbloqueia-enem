@@ -1,6 +1,7 @@
 import { identity } from "../../lib/supabase";
 import Resources from "../../components/resources";
 import Link from "next/link";
+import GamificationPanel from "../../components/gamification-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -176,6 +177,8 @@ export default async function Dashboard() {
           </div>
         </aside>
       </div>
+      <GamificationPanel />
     </div>
   );
 }
+
