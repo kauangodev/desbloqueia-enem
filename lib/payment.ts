@@ -1,5 +1,19 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
+import { caktoFallbackOffers } from "./config";
+
+export function configuredCaktoOffer(productId: unknown, offerId: unknown) {
+  return Object.entries(caktoFallbackOffers).find(([, offer]) => offer.productId === productId && offer.offerId === offerId) || null;
+}
+
+export function nextMysqlOrderStatus(current: string | null | undefined, event: string, incoming: string | null | undefined) {
+  if (current === "refunded" || current === "chargedback") return current;
+  if (event === "refund") return "refunded";
+  if (event === "chargeback") return "chargedback";
+  if (current === "paid" || incoming === "paid" || event === "purchase_approved" || ["subscription_created", "subscription_renewed", "subscription_resumed", "subscription_late_recovered"].includes(event)) return "paid";
+  if (event === "purchase_refused" || incoming === "refused") return "refused";
+  return "pending";
+}
 export function verifySignature(
   raw: string,
   timestamp: string | null,

@@ -8,6 +8,8 @@ import {
   verifyWebhookSecret,
   eventSchema,
   nextStatus,
+  configuredCaktoOffer,
+  nextMysqlOrderStatus,
 } from "../lib/payment";
 import { welcomeEmail } from "../lib/email";
 import { checkoutConfigured } from "../lib/readiness";
@@ -346,6 +348,17 @@ test("e-mail de acesso usa marca e não envia senha", () => {
   assert.ok(html.includes("GoDev"));
   assert.ok(html.includes("https://example.test/entrar"));
   assert.ok(!html.includes("password="));
+});
+
+test("ofertas Cakto desconhecidas não recebem plano implícito", () => {
+  assert.equal(configuredCaktoOffer("6ff97951-a03a-4bed-bbe5-62c88031c0fc", "3biievb")?.[0], "essencial");
+  assert.equal(configuredCaktoOffer("produto-desconhecido", "oferta-desconhecida"), null);
+});
+
+test("estado MySQL preserva reembolso e chargeback", () => {
+  assert.equal(nextMysqlOrderStatus("refunded", "purchase_approved", "paid"), "refunded");
+  assert.equal(nextMysqlOrderStatus("chargedback", "subscription_renewed", "paid"), "chargedback");
+  assert.equal(nextMysqlOrderStatus("pending", "purchase_approved", "paid"), "paid");
 });
 
 

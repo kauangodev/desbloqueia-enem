@@ -9,6 +9,7 @@ import type { RowDataPacket } from "mysql2/promise";
 import { requiredSessionSecret } from "../../../lib/security";
 
 const root = () => join(process.cwd(), "private", "materials");
+const MAX_PDF_BYTES = 50 * 1024 * 1024;
 type MaterialRow = RowDataPacket & { plan: string };
 const fileFor = (path: string) => join(root(), basename(path));
 const secret = () => requiredSessionSecret();
@@ -38,7 +39,10 @@ export async function PUT(req: Request) {
   if (!path.startsWith("private/") || path.includes("..") || !validUploadToken(path, token)) return jsonError("Upload inválido", 403);
   const who = await identity();
   if (who?.profile?.role !== "admin") return jsonError("Não autorizado", 403);
+  const contentLength = Number(req.headers.get("content-length") || 0);
+  if (contentLength > MAX_PDF_BYTES) return jsonError("O PDF excede o limite de 50 MB", 413);
   const bytes = Buffer.from(await req.arrayBuffer());
+  if (bytes.length > MAX_PDF_BYTES) return jsonError("O PDF excede o limite de 50 MB", 413);
   if (bytes.subarray(0, 5).toString() !== "%PDF-") return jsonError("O arquivo não é um PDF válido", 400);
   await mkdir(root(), { recursive: true });
   await writeFile(fileFor(path), bytes);
