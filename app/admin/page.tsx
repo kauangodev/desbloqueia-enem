@@ -1,6 +1,5 @@
 import { identity, serviceClient } from "../../lib/supabase";
 import { redirect } from "next/navigation";
-import { Header, Footer } from "../../components/site";
 import AdminEditor from "../../components/admin-editor";
 import Link from "next/link";
 import { money } from "../../lib/config";
@@ -337,6 +336,163 @@ export default async function Admin({
                   .filter((order) => order.status === "paid")
                   .reduce((total, order) => total + Number(order.amount) * 100, 0);
                 return (
+                  <tr key={customer.email}>
+                    <td>
+                      <strong>{customer.name || "Nome não informado"}</strong>
+                      <a href={`mailto:${customer.email}`}>{customer.email}</a>
+                      <details className="crm-user-details">
+                        <summary>Ver atividade</summary>
+                        <p><b>{customer.attempts.length}</b> sessão(ões) · <b>{customer.essays.length}</b> redação(ões)</p>
+                        {customer.attempts.slice(0, 3).map((attempt) => <small key={`${attempt.user_id}-${attempt.completed_at}`}>{attempt.collection_id || attempt.activity} · {attempt.score}/{attempt.total} · {date(attempt.completed_at)}</small>)}
+                        {!customer.attempts.length && <small>Nenhuma sessão registrada.</small>}
+                      </details>
+                    </td>
+                    <td>
+                      <span className={`crm-badge ${active.length ? "success" : "muted"}`}>
+                        {plan}
+                      </span>
+                      <small>{active.length ? "Liberado" : "Inativo"}</small>
+                    </td>
+                    <td>
+                      <strong>{orderStatus[lastOrder?.status] || "Sem pedido"}</strong>
+                      <small>
+                        {customer.orders.length} pedido(s)
+                        {paidTotal ? ` · ${money(paidTotal)}` : ""}
+                      </small>
+                    </td>
+                    <td>
+                      <span
+                        className={`crm-badge ${customer.profile ? "success" : "pending"}`}
+                      >
+                        {customer.profile ? "Criada" : "Aguardando acesso"}
+                      </span>
+                      <small>
+                        {customer.deliveries[0]?.status === "failed"
+                          ? "Boas-vindas com falha"
+                          : customer.profile
+                            ? "Cadastro disponível com senha"
+                            : "Cadastro após pagamento aprovado"}
+                      </small>
+                    </td>
+                    <td>
+                      <strong>{customer.attempts.length} sessão(ões)</strong>
+                      <small>{customer.essays.length ? `${customer.essays.length} redação(ões)` : "Sem redações"}</small>
+                    </td>
+                    <td>{date(lastOrder?.created_at)}</td>
+                  </tr>
+                );
+              })}
+              {!rows.length ? (
+                <tr>
+                  <td colSpan={6}>Nenhum contato encontrado.</td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </>
+    );
+  } else if (tab === "entregas") {
+    const { data } = await db
+      .from("email_deliveries")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    content = (
+      <>
+        <p>
+          A Cakto confirma o pagamento ao comprador. Este histórico registra
+          apenas a preparação da conta e o e-mail opcional de boas-vindas do
+          site. “accepted” não confirma leitura ou chegada na caixa de entrada.
+        </p>
+        {data?.map((d) => (
+          <div key={d.id}>
+            <p>
+              {d.email} · {d.status} · {d.attempts} tentativa(s) ·{" "}
+              {d.last_error || "Sem erro registrado"}
+            </p>
+            <AdminEditor
+              action="resend"
+              title="Reenviar instruções"
+              initial={{ id: d.id }}
+            />
+          </div>
+        ))}
+      </>
+    );
+  } else if (tab === "integracoes") {
+    const items = [
+      [
+        "Área de alunos e autenticação",
+        !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+          !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      ],
+      [
+        "Cakto — pagamentos e webhook",
+        process.env.CAKTO_WEBHOOK_ENABLED === "true" &&
+          !!process.env.CAKTO_WEBHOOK_SECRET,
+      ],
+      ["Envio de login homologado (SMTP)", process.env.AUTH_EMAIL_READY === "true"],
+      ["Compras liberadas", checkoutConfigured()],
+      [
+        "Boas-vindas por e-mail (opcional)",
+        !!process.env.RESEND_API_KEY && !!process.env.EMAIL_FROM,
+      ],
+      ["Automação de boas-vindas (opcional)", !!process.env.CRON_SECRET],
+      ["Meta Pixel", !!process.env.NEXT_PUBLIC_META_PIXEL_ID],
+      ["Google Analytics", !!process.env.NEXT_PUBLIC_GA_ID],
+      ["Correção de redação (OpenAI)", !!process.env.OPENAI_API_KEY],
+      ["Auditoria de acesso por hash", !!process.env.ACCESS_FINGERPRINT_SALT],
+    ];
+    content = (
+      <>
+        <p>
+          Configuração presente não substitui homologação de ponta a ponta. As
+          credenciais são definidas no ambiente do servidor.
+        </p>
+        <ul className="task-list">
+          {items.map(([name, ready]) => (
+            <li key={String(name)}>
+              <span>{name}</span>
+              <b>{ready ? "Configuração presente" : "Pendente"}</b>
+            </li>
+          ))}
+        </ul>
+      </>
+    );
+  } else if (tab === "tickets") {
+    const { data, error } = await db.from("support_tickets").select("id,email,subject,message,status,priority,admin_note,created_at,updated_at").order("updated_at", { ascending: false }).limit(100);
+    content = error ? <p className="status-message">O sistema de tickets ainda precisa da migração do banco para ser ativado.</p> : <TicketManager tickets={data || []} />;
+  } else {
+    const [{ data: overviewOrders }, stats] = await Promise.all([
+      db
+        .from("orders")
+        .select("id,email,name,plan,amount,status,created_at")
+        .order("created_at", { ascending: false })
+        .limit(200),
+      Promise.all(
+        [
+          "profiles",
+          "orders",
+          "entitlements",
+          "materials",
+          "email_deliveries",
+          "assessment_attempts",
+          "essay_submissions",
+          "account_access_fingerprints",
+        ].map(async (table) => {
+          let query = db.from(table).select("*", { count: "exact", head: true });
+          if (table === "entitlements") query = query.eq("active", true);
+          if (table === "materials") query = query.eq("published", true);
+          if (table === "email_deliveries") query = query.eq("status", "failed");
+          const { count, error } = await query;
+          return { table, count: error ? null : count };
+        }),
+      ),
+    ]);
+    content = <AdminOverview stats={stats} orders={overviewOrders || []} />;
+  }
+  return (
     <main id="conteudo" className="admin-app">
       <aside className="admin-sidebar" aria-label="Navegação administrativa">
         <Link href="/admin?tab=visao" className="admin-brand" aria-label="GoDev Education, visão geral">
