@@ -79,6 +79,7 @@ export default async function Admin({
 }) {
   const who = await identity();
   if (!who) redirect("/entrar");
+  if (who.user.must_change_password) redirect("/definir-senha?first=1");
   if (who.profile?.role !== "admin") redirect("/aluno");
   const { tab = "visao", q = "" } = await searchParams;
   const db = serviceClient();
@@ -562,3 +563,4 @@ export default async function Admin({
     </main>
   );
 }
+
