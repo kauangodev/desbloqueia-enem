@@ -101,7 +101,7 @@ export async function POST(req: Request) {
         (!v.cakto_product_id || !v.cakto_offer_id || !v.checkout_url)
       )
         throw new Error("Preencha os identificadores e o checkout.");
-      const { error } = await db.from("offers").upsert(v);
+      const { error } = await db.from("offers").upsert(v, { onConflict: "plan" });
       if (error) throw error;
       target = v.plan;
     } else if (input.action === "material") {
