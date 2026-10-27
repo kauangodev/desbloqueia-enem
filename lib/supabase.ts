@@ -79,8 +79,9 @@ function quoteColumns(columns?: string) { if (!columns || columns.trim() === "*"
 class QueryBuilder implements PromiseLike<QueryResult> {
   private mode: "select" | "insert" | "update" | "delete" = "select";
   private values: Record<string, any>[] = []; private filters: Array<[string, any]> = []; private columns = "*"; private orderBy: [string, "ASC" | "DESC"] | null = null; private limitValue: number | null = null; private singleMode: "single" | "maybe" | null = null; private conflict: string | null = null;
+  private returningColumns: string | null = null;
   constructor(private readonly table: string) {}
-  select(columns = "*", options?: any) { void options; this.mode = "select"; this.columns = columns; return this; }
+  select(columns = "*", options?: any) { void options; if (this.mode === "insert" || this.mode === "update") this.returningColumns = columns; else { this.mode = "select"; this.columns = columns; } return this; }
   insert(values: Record<string, any> | Record<string, any>[]) { this.mode = "insert"; this.values = (Array.isArray(values) ? values : [values]).map((v) => denormalizeValues({ ...v, __table: this.table })); return this; }
   update(values: Record<string, any>) { this.mode = "update"; this.values = [denormalizeValues({ ...values, __table: this.table })]; return this; }
   delete() { this.mode = "delete"; return this; }
@@ -101,7 +102,9 @@ class QueryBuilder implements PromiseLike<QueryResult> {
       }
       if (this.mode === "delete") { const where = this.filters.length ? ` WHERE ${this.filters.map(([column]) => `\`${column}\` = ?`).join(" AND ")}` : ""; await pool.query(`DELETE FROM \`${table}\`${where}`, this.filters.map(([, value]) => value)); return { data: null, error: null }; }
       if (this.mode === "update") { const values = this.values[0] || {}; const entries = Object.entries(values); const where = this.filters.length ? ` WHERE ${this.filters.map(([column]) => `\`${column}\` = ?`).join(" AND ")}` : ""; await pool.query(`UPDATE \`${table}\` SET ${entries.map(([key]) => `\`${columnName(key)}\` = ?`).join(", ")}${where}`, [...entries.map(([, value]) => value), ...this.filters.map(([, value]) => value)]); return { data: null, error: null }; }
-      for (const values of this.values) { const entries = Object.entries(values); const keys = entries.map(([key]) => columnName(key)); let sql = `INSERT INTO \`${table}\` (${keys.map((key) => `\`${key}\``).join(",")}) VALUES (${keys.map(() => "?").join(",")})`; if (this.conflict) { const conflictColumns = this.conflict.split(",").map(columnName); const updates = entries.filter(([key]) => !conflictColumns.includes(columnName(key))).map(([key]) => `\`${columnName(key)}\` = VALUES(\`${columnName(key)}\`)`); if (updates.length) sql += ` ON DUPLICATE KEY UPDATE ${updates.join(", ")}`; } await pool.query(sql, entries.map(([, value]) => typeof value === "object" && value !== null ? JSON.stringify(value) : value)); }
+      const returned: any[] = [];
+      for (const values of this.values) { const entries = Object.entries(values); const keys = entries.map(([key]) => columnName(key)); let sql = `INSERT INTO \`${table}\` (${keys.map((key) => `\`${key}\``).join(",")}) VALUES (${keys.map(() => "?").join(",")})`; if (this.conflict) { const conflictColumns = this.conflict.split(",").map(columnName); const updates = entries.filter(([key]) => !conflictColumns.includes(columnName(key))).map(([key]) => `\`${columnName(key)}\` = VALUES(\`${columnName(key)}\`)`); if (updates.length) sql += ` ON DUPLICATE KEY UPDATE ${updates.join(", ")}`; } await pool.query(sql, entries.map(([, value]) => typeof value === "object" && value !== null ? JSON.stringify(value) : value)); if (this.returningColumns && values.id) { const [rows] = await pool.query<any[]>(`SELECT ${quoteColumns(this.returningColumns)} FROM \`${table}\` WHERE \`id\` = ? LIMIT 1`, [values.id]); returned.push(...rows.map(normalizeRow)); } }
+      if (this.returningColumns) { if (this.singleMode && returned.length !== 1) return { data: this.singleMode === "maybe" ? null : null, error: this.singleMode === "maybe" ? null : { message: "expected one row" } }; return { data: this.singleMode ? returned[0] : returned, error: null, count: returned.length }; }
       return { data: null, error: null };
     } catch (error) { return { data: null, error }; }
   }
@@ -110,12 +113,12 @@ class QueryBuilder implements PromiseLike<QueryResult> {
 function normalizedRole(value: unknown): "student" | "admin" { return String(value || "").trim().toLowerCase() === "admin" ? "admin" : "student"; }
 function userRecord(row: any): UserRow { return { id: row.id, email: row.email, name: row.name || "", role: normalizedRole(row.role), password_hash: row.password_hash }; }
 async function currentUser() { const jar = await cookies(); const tokenUser = userFromToken(jar.get(SESSION_COOKIE)?.value); if (!tokenUser) return null; const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at,updated_at FROM users WHERE id = ? LIMIT 1", [tokenUser.id]); const row = rows[0]; if (!row || !row.email_verified_at || (row.updated_at && new Date(row.updated_at).getTime() > tokenUser.iat)) return null; return { ...userRecord(row), must_change_password: await mustChangePassword(row.id) }; }
-async function setSession(user: UserRow | null) { const jar = await cookies(); if (!user) { jar.delete(SESSION_COOKIE); return; } try { jar.set(SESSION_COOKIE, tokenFor(user), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 }); } catch { /* server component */ } }
+async function setSession(user: UserRow | null) { const jar = await cookies(); if (!user) { jar.delete(SESSION_COOKIE); return true; } try { jar.set(SESSION_COOKIE, tokenFor(user), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 }); return true; } catch { return false; } }
 
 function createAuth() {
   return {
     async getUser() { const user = await currentUser(); return { data: { user }, error: user ? null : { message: "not_authenticated" } }; },
-    async signInWithPassword(input: { email: string; password: string }) { const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); const user = rows[0]?.email_verified_at && await passwordMatches(input.password, rows[0].password_hash) ? { ...userRecord(rows[0]), must_change_password: await mustChangePassword(rows[0].id) } : null; if (!user) return { data: { user: null }, error: { message: "Invalid login credentials", status: 401 } }; await setSession(user); return { data: { user }, error: null }; },
+    async signInWithPassword(input: { email: string; password: string }) { const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); const user = rows[0]?.email_verified_at && await passwordMatches(input.password, rows[0].password_hash) ? { ...userRecord(rows[0]), must_change_password: await mustChangePassword(rows[0].id) } : null; if (!user) return { data: { user: null }, error: { message: "Invalid login credentials", status: 401 } }; if (!await setSession(user)) return { data: { user: null }, error: { message: "Não foi possível iniciar a sessão", status: 503 } }; return { data: { user }, error: null }; },
     async signUp(input: { email: string; password: string; options?: { data?: { name?: string } } }) { const [existing] = await mysqlPool().query<any[]>("SELECT id FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); if (existing.length) return { data: { user: null, session: null }, error: { message: "User already registered", status: 409 } }; const user: UserRow = { id: randomBytes(16).toString("hex"), email: input.email.toLowerCase(), name: input.options?.data?.name || "Aluno", role: "student" }; await mysqlPool().query("INSERT INTO users (id,email,name,password_hash,role,email_verified_at) VALUES (?,?,?,?,?,NULL)", [user.id, user.email, user.name, await passwordHash(input.password), user.role]); const resetError = await issueResetEmail(user.email); if (resetError) { await mysqlPool().query("DELETE FROM users WHERE id = ?", [user.id]); return { data: { user: null, session: null }, error: resetError }; } return { data: { user, session: null }, error: null }; },
     async signOut() { await setSession(null); return { error: null }; },
     async updateUser(input: { password: string }) { const user = await currentUser(); if (!user) return { error: { message: "session expired" } }; await mysqlPool().query("UPDATE users SET password_hash = ? WHERE id = ?", [await passwordHash(input.password), user.id]); try { await mysqlPool().query("UPDATE users SET must_change_password = FALSE WHERE id = ?", [user.id]); } catch { /* migration ainda não aplicada */ } return { error: null }; },
@@ -142,12 +145,27 @@ async function rpcHandler(name: string, args: Record<string, any> = {}): Promise
     return { data: rows.map((row) => ({ ...row, attempts: Number(row.attempts || 0) + 1 })), error: null };
   }
   if (name === "receive_payment") {
-    const event = String(args.p_event || ""); const data = args.p_data || {}; const id = String(data.id || data.order_id || randomBytes(16).toString("hex")); const matched = configuredCaktoOffer(data.product?.id, data.offer?.id); if (!matched) return { data: null, error: { message: "Oferta Cakto não configurada" } }; const plan = matched[0]; const customer = data.customer || {}; const email = String(customer.email || "").toLowerCase(); const [existingRows] = await mysqlPool().query<any[]>("SELECT status FROM orders WHERE id = ? LIMIT 1", [id]); const currentStatus = existingRows[0]?.status as string | undefined; const status = nextMysqlOrderStatus(currentStatus, event, data.status);
-    await new QueryBuilder("orders").upsert({ id, email, name: customer.name || "", plan, amount: Number(data.amount || 0), status }, { onConflict: "id" });
-    await new QueryBuilder("payment_events").upsert({ id: `${id}:${event}`, order_id: id, event, data }, { onConflict: "id" });
-    await new QueryBuilder("entitlements").upsert({ order_id: id, email, plan, active: status === "paid" }, { onConflict: "order_id" });
-    await new QueryBuilder("email_deliveries").upsert({ id: randomBytes(16).toString("hex"), order_id: id, email, status: "pending" }, { onConflict: "order_id" });
-    return { data: id, error: null };
+    if (args.p_event === "healthcheck") return { data: true, error: null };
+    const event = String(args.p_event || ""); const data = args.p_data || {}; const id = String(data.id || data.order_id || randomBytes(16).toString("hex")); const matched = configuredCaktoOffer(data.product?.id, data.offer?.id); if (!matched) return { data: null, error: { message: "Oferta Cakto não configurada" } }; const plan = matched[0]; const customer = data.customer || {}; const email = String(customer.email || "").trim().toLowerCase();
+    const [offerRows] = await mysqlPool().query<any[]>("SELECT plan FROM offers WHERE plan = ? AND cakto_product_id = ? AND cakto_offer_id = ? AND enabled = TRUE LIMIT 1", [plan, matched[1].productId, matched[1].offerId]);
+    if (!offerRows[0]) return { data: null, error: { message: "Oferta Cakto não está ativa" } };
+    const connection = await mysqlPool().getConnection();
+    try {
+      await connection.beginTransaction();
+      const [existingRows] = await connection.query<any[]>("SELECT status FROM orders WHERE id = ? FOR UPDATE", [id]);
+      const currentStatus = existingRows[0]?.status as string | undefined;
+      const status = nextMysqlOrderStatus(currentStatus, event, data.status);
+      const amount = Number(data.amount ?? data.baseAmount ?? 0);
+      await connection.query("INSERT INTO orders (id,email,name,plan,amount,status) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE email=VALUES(email),name=VALUES(name),plan=VALUES(plan),amount=VALUES(amount),status=VALUES(status)", [id, email, String(customer.name || ""), plan, amount, status]);
+      await connection.query("INSERT IGNORE INTO payment_events (id,order_id,event,data) VALUES (?,?,?,?)", [`${id}:${event}`, id, event, JSON.stringify(data)]);
+      await connection.query("INSERT INTO entitlements (order_id,user_id,email,plan,active) VALUES (?,?,?, ?,?) ON DUPLICATE KEY UPDATE email=VALUES(email),plan=VALUES(plan),active=VALUES(active)", [id, null, email, plan, status === "paid"]);
+      await connection.query("INSERT INTO email_deliveries (id,order_id,email,status) VALUES (?,?,?,'pending') ON DUPLICATE KEY UPDATE email=VALUES(email),status=IF(email_deliveries.status IN ('accepted','access_ready'),email_deliveries.status,'pending'),last_error=NULL,leased_until=NULL", [randomBytes(16).toString("hex"), id, email]);
+      await connection.commit();
+      return { data: id, error: null };
+    } catch (error) {
+      await connection.rollback();
+      return { data: null, error };
+    } finally { connection.release(); }
   }
   return { data: null, error: { message: `RPC não suportada: ${name}` } };
 }
@@ -170,7 +188,11 @@ export async function identity() {
   const { data, error } = await db.auth.getUser();
   const user = data?.user;
   if (error || !user) return null;
-  const { data: profile } = await db.from("profiles").select("id,name,role").eq("id", user.id).maybeSingle();
+  const { data: profile, error: profileError } = await db.from("profiles").select("id,name,role").eq("id", user.id).maybeSingle();
+  if (profileError) {
+    console.error("auth_profile_lookup_failed", { code: profileError.code || profileError.errno || "unknown" });
+    return null;
+  }
   return { db, user, profile: profile ? { ...profile, role: normalizedRole(profile.role) } : profile };
 }
 export async function canAccess(plan: string) { const who = await identity(); if (!who) return null; if (who.profile?.role === "admin") return who; const { data } = await who.db.from("entitlements").select("plan").eq("user_id", who.user.id).eq("active", true); return data?.some((e: { plan: string }) => e.plan === "premium" || e.plan === plan) ? who : null; }

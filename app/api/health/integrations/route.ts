@@ -20,8 +20,8 @@ export async function GET(request: Request) {
     const actual = offers?.find((item) => item.plan === plan);
     return [plan, Boolean(actual && actual.enabled && actual.cakto_product_id === expectedOffer.product && actual.cakto_offer_id === expectedOffer.offer)];
   }));
-  const { error: rpcError } = await db.rpc("receive_payment", { p_event: "healthcheck", p_data: {} });
-  const rpcAvailable = Boolean(rpcError && /unsupported event/i.test(rpcError.message)) || !rpcError;
+  const { data: rpcProbe, error: rpcError } = await db.rpc("receive_payment", { p_event: "healthcheck", p_data: {} });
+  const rpcAvailable = rpcProbe === true && !rpcError;
   const mysql = !offersError && rpcAvailable && Object.values(offerStatus).every(Boolean);
   return NextResponse.json({ ok: mysql && checkoutConfigured(), checkout: checkoutConfigured(), mysql, receivePaymentFunction: rpcAvailable, offers: offerStatus, webhook: process.env.CAKTO_WEBHOOK_ENABLED === "true" && Boolean(process.env.CAKTO_WEBHOOK_SECRET) }, { status: mysql && checkoutConfigured() ? 200 : 503, headers: { "cache-control": "no-store" } });
 }
