@@ -140,7 +140,11 @@ export function CurvedMaterialCarousel() {
       previousTimeRef.current = time;
 
       const pageVisible = document.visibilityState === "visible";
-      if ((motion.visible || pageVisible) && !motion.hidden && !motion.reduced) {
+      // Keep the hero loop running whenever the page is visible. The
+      // previous intersection gate could leave desktop cards frozen after the
+      // first layout/visibility race; reduced-motion and hidden-tab safeguards
+      // remain respected.
+      if (pageVisible && !motion.hidden && !motion.reduced && motion.width > 0) {
         if (!motion.dragging) {
           if (Math.abs(motion.velocity) > 5) {
             motion.offset += motion.velocity * delta;
