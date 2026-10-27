@@ -813,9 +813,36 @@ textarea {
   margin-top: 13px;
 }
 .premium {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background: var(--navy);
   color: white;
   border-color: var(--navy);
+  box-shadow: 0 24px 64px rgb(16 42 76 / 24%), 0 0 0 1px rgb(214 242 124 / 16%);
+}
+.premium::before {
+  content: "";
+  position: absolute;
+  inset: -35% -20% auto;
+  height: 58%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse, rgb(214 242 124 / 22%), transparent 68%);
+  animation: premium-glow 7s ease-in-out infinite;
+}
+.premium::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -35%;
+  width: 28%;
+  height: 150%;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 11%), transparent);
+  transform: rotate(18deg);
+  animation: premium-sheen 8s ease-in-out infinite;
 }
 .premium > p,
 .premium .price small,
@@ -824,6 +851,14 @@ textarea {
 }
 .premium li svg {
   color: var(--lime);
+}
+@keyframes premium-glow {
+  0%, 100% { opacity: .55; transform: translate3d(0, 0, 0) scale(1); }
+  50% { opacity: 1; transform: translate3d(5%, 8px, 0) scale(1.08); }
+}
+@keyframes premium-sheen {
+  0%, 35% { transform: translateX(-220%) rotate(18deg); }
+  70%, 100% { transform: translateX(520%) rotate(18deg); }
 }
 .guarantee {
   max-width: 970px;
