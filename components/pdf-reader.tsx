@@ -38,7 +38,7 @@ export default function PdfReader({
         const result = await res.json();
         if (!res.ok) throw new Error(result.error);
         const pdf = await import("pdfjs-dist");
-        pdf.GlobalWorkerOptions.workerSrc = "/vendor/pdf.worker.min.mjs";
+        pdf.GlobalWorkerOptions.workerSrc = "/vendor/pdf.worker.min.js";
         // Download once while the short-lived URL is valid. Subsequent page
         // changes must not depend on expired HTTP range requests.
         const file = await fetch(result.url);
@@ -193,3 +193,4 @@ export default function PdfReader({
     </div>
   );
 }
+
