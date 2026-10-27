@@ -769,6 +769,15 @@ textarea {
   font-size: 14px;
   margin-top: 16px;
 }
+.plan-benefit {
+  min-height: 48px;
+  color: #3f5c4d;
+  font-size: 13px !important;
+  line-height: 1.45;
+}
+.premium .plan-benefit {
+  color: #dce8d3;
+}
 .price {
   font-size: 48px;
   font-weight: 500;
