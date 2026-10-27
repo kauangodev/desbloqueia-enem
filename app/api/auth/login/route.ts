@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         "Aguarde alguns minutos antes de tentar novamente.",
         429,
       );
-    const [{ data: entitlement, error: entitlementError }, { data: invite, error: inviteError }] = await Promise.all([
+    const [{ data: entitlement, error: entitlementError }, { data: invite, error: inviteError }, { data: admin, error: adminError }] = await Promise.all([
       adminDb
         .from("entitlements")
         .select("order_id")
@@ -49,10 +49,16 @@ export async function POST(req: Request) {
         .eq("email", normalizedEmail)
         .eq("active", true)
         .maybeSingle(),
+      adminDb
+        .from("profiles")
+        .select("name,role")
+        .eq("email", normalizedEmail)
+        .eq("role", "admin")
+        .maybeSingle(),
     ]);
-    if (entitlementError || inviteError)
+    if (entitlementError || inviteError || adminError)
       return jsonError("Não foi possível verificar o acesso. Tente novamente mais tarde.", 503);
-    if (!entitlement && !invite)
+    if (!entitlement && !invite && !admin)
       return jsonError("E-mail ou senha inválidos.", 401);
     const { data: signedIn, error } = await db.auth.signInWithPassword({ email: normalizedEmail, password });
     if (error) {

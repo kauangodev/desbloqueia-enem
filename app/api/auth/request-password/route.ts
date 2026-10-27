@@ -14,16 +14,17 @@ export async function POST(req: Request) {
   const key = createHash("sha256").update(email).digest("hex");
   const { data: allowed } = await adminDb.rpc("take_rate_limit", { p_key: `password:${key}`, p_limit: 3, p_seconds: 900 });
   if (!allowed) return jsonError("Aguarde alguns minutos antes de tentar novamente.", 429);
-  const [{ data: entitlement }, { data: invite }] = await Promise.all([
+  const [{ data: entitlement }, { data: invite }, { data: admin }] = await Promise.all([
     adminDb.from("entitlements").select("user_id").eq("email", email).eq("active", true).limit(1).maybeSingle(),
     adminDb.from("admin_invites").select("name").eq("email", email).eq("active", true).maybeSingle(),
+    adminDb.from("profiles").select("name,role").eq("email", email).eq("role", "admin").maybeSingle(),
   ]);
-  if (!entitlement && !invite)
+  if (!entitlement && !invite && !admin)
     return NextResponse.json({ message: "Se este e-mail tem uma compra aprovada ou convite, enviaremos as instruções de senha." });
-  if (invite && !entitlement) {
+  if ((invite || admin) && !entitlement) {
     const { data: existing } = await adminDb.auth.admin.listUsers({ page: 1, perPage: 1000 });
     if (!existing.users.some((user) => user.email?.toLowerCase() === email)) {
-      const created = await adminDb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { name: invite.name || "Administrador" } });
+      const created = await adminDb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { name: invite?.name || admin?.name || "Administrador" } });
       if (created.error && created.error.code !== "email_exists") return jsonError("Não foi possível preparar este acesso.", 503);
     }
   }
