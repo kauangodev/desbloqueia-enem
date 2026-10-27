@@ -16,8 +16,6 @@
     "cakto:provision": "node scripts/cakto-provision.mjs --apply"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.118.0",
     "mysql2": "^3.14.4",
     "next": "16.4.2",
     "pdfjs-dist": "^6.4.299",

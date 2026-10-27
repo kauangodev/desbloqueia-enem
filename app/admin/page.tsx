@@ -4,6 +4,7 @@ import AdminEditor from "../../components/admin-editor";
 import Link from "next/link";
 import { money } from "../../lib/config";
 import { checkoutConfigured } from "../../lib/readiness";
+import { mysqlConfigured } from "../../lib/mysql";
 import TicketManager from "../../components/ticket-manager";
 import AdminOverview from "../../components/admin-overview";
 export const dynamic = "force-dynamic";
@@ -424,8 +425,7 @@ export default async function Admin({
     const items = [
       [
         "Área de alunos e autenticação",
-        !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
-          !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+        mysqlConfigured(),
       ],
       [
         "Cakto — pagamentos e webhook",

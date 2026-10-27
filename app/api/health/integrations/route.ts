@@ -12,9 +12,9 @@ export async function GET(request: Request) {
   const expected = process.env.INTEGRATION_HEALTH_SECRET;
   const supplied = request.headers.get("x-integration-health-secret");
   if (!expected || supplied !== expected) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  if (!serviceClient() || !checkoutConfigured()) return NextResponse.json({ ok: false, checkout: checkoutConfigured(), supabase: false }, { status: 503 });
+  if (!serviceClient() || !checkoutConfigured()) return NextResponse.json({ ok: false, checkout: checkoutConfigured(), mysql: false }, { status: 503 });
   const db = serviceClient();
-  if (!db) return NextResponse.json({ ok: false, checkout: false, supabase: false }, { status: 503 });
+  if (!db) return NextResponse.json({ ok: false, checkout: false, mysql: false }, { status: 503 });
   const { data: offers, error: offersError } = await db.from("offers").select("plan,cakto_product_id,cakto_offer_id,enabled");
   const offerStatus = Object.fromEntries(Object.entries(officialOffers).map(([plan, expectedOffer]) => {
     const actual = offers?.find((item) => item.plan === plan);
@@ -22,6 +22,6 @@ export async function GET(request: Request) {
   }));
   const { error: rpcError } = await db.rpc("receive_payment", { p_event: "healthcheck", p_data: {} });
   const rpcAvailable = Boolean(rpcError && /unsupported event/i.test(rpcError.message)) || !rpcError;
-  const supabase = !offersError && rpcAvailable && Object.values(offerStatus).every(Boolean);
-  return NextResponse.json({ ok: supabase && checkoutConfigured(), checkout: checkoutConfigured(), supabase, receivePaymentFunction: rpcAvailable, offers: offerStatus, webhook: process.env.CAKTO_WEBHOOK_ENABLED === "true" && Boolean(process.env.CAKTO_WEBHOOK_SECRET) }, { status: supabase && checkoutConfigured() ? 200 : 503, headers: { "cache-control": "no-store" } });
+  const mysql = !offersError && rpcAvailable && Object.values(offerStatus).every(Boolean);
+  return NextResponse.json({ ok: mysql && checkoutConfigured(), checkout: checkoutConfigured(), mysql, receivePaymentFunction: rpcAvailable, offers: offerStatus, webhook: process.env.CAKTO_WEBHOOK_ENABLED === "true" && Boolean(process.env.CAKTO_WEBHOOK_SECRET) }, { status: mysql && checkoutConfigured() ? 200 : 503, headers: { "cache-control": "no-store" } });
 }
