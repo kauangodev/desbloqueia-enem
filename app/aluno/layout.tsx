@@ -23,7 +23,7 @@ export default async function StudentLayout({
       <main className="workspace" id="conteudo">
         <div className="workspace-bar">
           <span>Desbloqueia ENEM 2026</span>
-          <span>{who.profile?.name || "Seu espaço de estudo"}</span>
+          <span>Área protegida</span>
         </div>
         {children}
       </main>
