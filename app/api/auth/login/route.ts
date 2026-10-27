@@ -14,6 +14,7 @@ export async function POST(req: Request) {
   const input = await req.json().catch(() => null);
   const email = typeof input?.email === "string" ? input.email.trim().toLowerCase() : null;
   const password = typeof input?.password === "string" ? input.password : null;
+  const requestedRedirect = typeof input?.redirect === "string" ? input.redirect : "";
   if (
     typeof email !== "string" ||
     email.length > 254 ||
@@ -77,8 +78,10 @@ export async function POST(req: Request) {
     await adminDb.rpc("clear_rate_limit", { p_key: `login:${hash}` });
     const { data: profile } = await db.from("profiles").select("role").eq("id", signedIn.user.id).maybeSingle();
     const role = String(profile?.role || signedIn.user.role || "").trim().toLowerCase();
+    const safeRedirect = /^\/(?:admin|aluno)(?:[/?#]|$)/.test(requestedRedirect) ? requestedRedirect : "";
+    const destination = role === "admin" && safeRedirect ? safeRedirect : role === "admin" ? "/admin" : "/aluno";
     return NextResponse.json({
-      redirect: `${appUrl}${signedIn.user.must_change_password ? "/definir-senha?first=1" : role === "admin" ? "/admin" : "/aluno"}`,
+      redirect: `${appUrl}${signedIn.user.must_change_password ? `/definir-senha?first=1${safeRedirect ? `&redirect=${encodeURIComponent(safeRedirect)}` : ""}` : destination}`,
     });
   } catch {
     return jsonError("Serviço temporariamente indisponível.", 503);
