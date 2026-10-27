@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     answers,
     user_id: who.user.id,
   });
-  if (error) return NextResponse.json({ saved: false, score, total: questions.length, message: "Resultado calculado nesta sessão, mas não foi salvo no histórico." });
+  if (error) return jsonError("O resultado foi calculado, mas não pôde ser salvo no histórico. Tente novamente.", 503);
   return NextResponse.json({ saved: true, score, total: questions.length });
 }
 
