@@ -20,11 +20,13 @@ export async function POST(req: Request) {
     adminDb.from("profiles").select("name,role").eq("email", email).eq("role", "admin").maybeSingle(),
   ]);
   const bootstrapEmail = process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase();
-  if (process.env.ADMIN_BOOTSTRAP_ENABLED === "true" && bootstrapEmail === email && !entitlement && !invite && !admin) {
+  let bootstrapped = false;
+  if (process.env.ADMIN_BOOTSTRAP_ENABLED === "true" && bootstrapEmail === email && !entitlement) {
     try {
       const { error: promotedError } = await adminDb.from("users").upsert({ id: randomBytes(16).toString("hex"), email, name: "Kauan", role: "admin", email_verified_at: new Date() }, { onConflict: "email" });
       const { error: inviteError } = await adminDb.from("admin_invites").upsert({ email, name: "Kauan", active: true }, { onConflict: "email" });
       if (promotedError || inviteError) return jsonError("Não foi possível preparar este acesso.", 503);
+      bootstrapped = true;
       invite = { name: "Kauan" };
       admin = { name: "Kauan", role: "admin" };
     } catch (error) {
@@ -34,7 +36,7 @@ export async function POST(req: Request) {
   }
   if (!entitlement && !invite && !admin)
     return NextResponse.json({ message: "Se este e-mail tem uma compra aprovada ou convite, enviaremos as instruções de senha." });
-  if ((invite || admin) && !entitlement) {
+  if (!bootstrapped && (invite || admin) && !entitlement) {
     const { data: existing } = await adminDb.auth.admin.listUsers({ page: 1, perPage: 1000 });
     if (!existing.users.some((user) => user.email?.toLowerCase() === email)) {
       const created = await adminDb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { name: invite?.name || admin?.name || "Administrador" } });
