@@ -15,7 +15,7 @@ const policies: Record<
       ],
       [
         "Pagamento e serviços contratados",
-        "O pagamento será processado pela Cakto quando as vendas forem abertas. A plataforma não coleta nem armazena dados completos de cartão. Autenticação e armazenamento usam Supabase quando configurado; o envio transacional usa o provedor de e-mail contratado. Esses serviços podem processar dados em outros países, conforme seus contratos e políticas.",
+        "O pagamento será processado pela Cakto quando as vendas forem abertas. A plataforma não coleta nem armazena dados completos de cartão. Autenticação e dados operacionais usam a infraestrutura MySQL contratada na Hostinger; o envio transacional usa o provedor de e-mail contratado quando configurado. Esses serviços podem processar dados em outros países, conforme seus contratos e políticas.",
       ],
       [
         "Cookies e métricas",

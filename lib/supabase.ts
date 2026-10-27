@@ -84,8 +84,27 @@ function createAuth() {
 async function rpcHandler(name: string, args: Record<string, any> = {}): Promise<QueryResult> {
   if (name === "take_rate_limit") { const key = String(args.p_key || ""); const now = Date.now(); const current = memoryRateLimits.get(key); if (!current || current.expiresAt <= now) { memoryRateLimits.set(key, { count: 1, expiresAt: now + Number(args.p_seconds || 900) * 1000 }); return { data: true, error: null }; } if (current.count >= Number(args.p_limit || 3)) return { data: false, error: null }; current.count += 1; return { data: true, error: null }; }
   if (name === "record_access_fingerprint") { await new QueryBuilder("account_access_fingerprints").upsert({ user_id: args.p_user_id, fingerprint_hash: args.p_fingerprint_hash, user_agent: String(args.p_user_agent || "").slice(0, 500) }, { onConflict: "user_id,fingerprint_hash" }); return { data: null, error: null }; }
-  if (name === "claim_emails") return { data: [], error: null };
-  if (name === "receive_payment") { const event = String(args.p_event || ""); const data = args.p_data || {}; const id = String(data.id || data.order_id || randomBytes(16).toString("hex")); const plan = data.offer?.id === "3biievb" ? "essencial" : "premium"; const customer = data.customer || {}; await new QueryBuilder("orders").upsert({ id, email: customer.email || "", name: customer.name || "", plan, amount: Number(data.amount || 0), status: data.status === "paid" ? "paid" : "pending" }, { onConflict: "id" }); await new QueryBuilder("payment_events").upsert({ id: `${id}:${event}`, order_id: id, event, data }, { onConflict: "id" }); await new QueryBuilder("entitlements").upsert({ order_id: id, email: customer.email || "", plan, active: data.status === "paid" }, { onConflict: "order_id" }); return { data: id, error: null }; }
+  if (name === "claim_emails") {
+    const leaseUntil = new Date(Date.now() + 10 * 60 * 1000);
+    const [rows] = await mysqlPool().query<any[]>(
+      "SELECT id,order_id,email,attempts FROM email_deliveries WHERE status = 'pending' AND next_attempt <= CURRENT_TIMESTAMP(3) AND (leased_until IS NULL OR leased_until < CURRENT_TIMESTAMP(3)) ORDER BY created_at LIMIT 25",
+    );
+    for (const row of rows) {
+      await mysqlPool().query(
+        "UPDATE email_deliveries SET status = 'processing', attempts = attempts + 1, leased_until = ? WHERE id = ? AND status = 'pending' AND (leased_until IS NULL OR leased_until < CURRENT_TIMESTAMP(3))",
+        [leaseUntil, row.id],
+      );
+    }
+    return { data: rows.map((row) => ({ ...row, attempts: Number(row.attempts || 0) + 1 })), error: null };
+  }
+  if (name === "receive_payment") {
+    const event = String(args.p_event || ""); const data = args.p_data || {}; const id = String(data.id || data.order_id || randomBytes(16).toString("hex")); const plan = data.offer?.id === "3biievb" ? "essencial" : "premium"; const customer = data.customer || {}; const email = String(customer.email || "").toLowerCase();
+    await new QueryBuilder("orders").upsert({ id, email, name: customer.name || "", plan, amount: Number(data.amount || 0), status: data.status === "paid" ? "paid" : "pending" }, { onConflict: "id" });
+    await new QueryBuilder("payment_events").upsert({ id: `${id}:${event}`, order_id: id, event, data }, { onConflict: "id" });
+    await new QueryBuilder("entitlements").upsert({ order_id: id, email, plan, active: data.status === "paid" }, { onConflict: "order_id" });
+    await new QueryBuilder("email_deliveries").upsert({ id: randomBytes(16).toString("hex"), order_id: id, email, status: "pending" }, { onConflict: "order_id" });
+    return { data: id, error: null };
+  }
   return { data: null, error: { message: `RPC não suportada: ${name}` } };
 }
 const storageHandler = { from: (_bucket: string) => ({ createSignedUrl: async (path: string) => ({ data: { signedUrl: `/api/storage?path=${encodeURIComponent(path)}` }, error: null }), upload: async () => ({ data: null, error: { message: "Armazenamento local ainda não configurado" } }) }) };
