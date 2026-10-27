@@ -164,5 +164,13 @@ export const authConfigured = () => mysqlConfigured();
 export async function sessionClient() { return mysqlConfigured() ? { auth: createAuth(), from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any : null; }
 export function serviceClient() { if (!mysqlConfigured()) throw new Error("Banco MySQL não configurado"); return { auth: { admin: createAuth().admin }, from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any; }
 export function publicClient() { return mysqlConfigured() ? { auth: createAuth() } as any : null; }
-export async function identity() { const db = await sessionClient(); if (!db) return null; const { data: user } = await db.auth.getUser(); if (!user) return null; const { data: profile } = await db.from("profiles").select("id,name,role").eq("id", user.id).maybeSingle(); return { db, user, profile: profile ? { ...profile, role: normalizedRole(profile.role) } : profile }; }
+export async function identity() {
+  const db = await sessionClient();
+  if (!db) return null;
+  const { data, error } = await db.auth.getUser();
+  const user = data?.user;
+  if (error || !user) return null;
+  const { data: profile } = await db.from("profiles").select("id,name,role").eq("id", user.id).maybeSingle();
+  return { db, user, profile: profile ? { ...profile, role: normalizedRole(profile.role) } : profile };
+}
 export async function canAccess(plan: string) { const who = await identity(); if (!who) return null; if (who.profile?.role === "admin") return who; const { data } = await who.db.from("entitlements").select("plan").eq("user_id", who.user.id).eq("active", true); return data?.some((e: { plan: string }) => e.plan === "premium" || e.plan === plan) ? who : null; }
