@@ -6,6 +6,7 @@ import Link from "next/link";
 import { money } from "../../lib/config";
 import { checkoutConfigured } from "../../lib/readiness";
 import TicketManager from "../../components/ticket-manager";
+import AdminOverview from "../../components/admin-overview";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
@@ -336,214 +337,72 @@ export default async function Admin({
                   .filter((order) => order.status === "paid")
                   .reduce((total, order) => total + Number(order.amount) * 100, 0);
                 return (
-                  <tr key={customer.email}>
-                    <td>
-                      <strong>{customer.name || "Nome não informado"}</strong>
-                      <a href={`mailto:${customer.email}`}>{customer.email}</a>
-                      <details className="crm-user-details">
-                        <summary>Ver atividade</summary>
-                        <p><b>{customer.attempts.length}</b> sessão(ões) · <b>{customer.essays.length}</b> redação(ões)</p>
-                        {customer.attempts.slice(0, 3).map((attempt) => <small key={`${attempt.user_id}-${attempt.completed_at}`}>{attempt.collection_id || attempt.activity} · {attempt.score}/{attempt.total} · {date(attempt.completed_at)}</small>)}
-                        {!customer.attempts.length && <small>Nenhuma sessão registrada.</small>}
-                      </details>
-                    </td>
-                    <td>
-                      <span className={`crm-badge ${active.length ? "success" : "muted"}`}>
-                        {plan}
-                      </span>
-                      <small>{active.length ? "Liberado" : "Inativo"}</small>
-                    </td>
-                    <td>
-                      <strong>{orderStatus[lastOrder?.status] || "Sem pedido"}</strong>
-                      <small>
-                        {customer.orders.length} pedido(s)
-                        {paidTotal ? ` · ${money(paidTotal)}` : ""}
-                      </small>
-                    </td>
-                    <td>
-                      <span
-                        className={`crm-badge ${customer.profile ? "success" : "pending"}`}
-                      >
-                        {customer.profile ? "Criada" : "Aguardando acesso"}
-                      </span>
-                      <small>
-                        {customer.deliveries[0]?.status === "failed"
-                          ? "Boas-vindas com falha"
-                          : customer.profile
-                            ? "Cadastro disponível com senha"
-                            : "Cadastro após pagamento aprovado"}
-                      </small>
-                    </td>
-                    <td>
-                      <strong>{customer.attempts.length} sessão(ões)</strong>
-                      <small>{customer.essays.length ? `${customer.essays.length} redação(ões)` : "Sem redações"}</small>
-                    </td>
-                    <td>{date(lastOrder?.created_at)}</td>
-                  </tr>
-                );
-              })}
-              {!rows.length ? (
-                <tr>
-                  <td colSpan={6}>Nenhum contato encontrado.</td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </div>
-      </>
-    );
-  } else if (tab === "entregas") {
-    const { data } = await db
-      .from("email_deliveries")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(50);
-    content = (
-      <>
-        <p>
-          A Cakto confirma o pagamento ao comprador. Este histórico registra
-          apenas a preparação da conta e o e-mail opcional de boas-vindas do
-          site. “accepted” não confirma leitura ou chegada na caixa de entrada.
-        </p>
-        {data?.map((d) => (
-          <div key={d.id}>
-            <p>
-              {d.email} · {d.status} · {d.attempts} tentativa(s) ·{" "}
-              {d.last_error || "Sem erro registrado"}
-            </p>
-            <AdminEditor
-              action="resend"
-              title="Reenviar instruções"
-              initial={{ id: d.id }}
-            />
-          </div>
-        ))}
-      </>
-    );
-  } else if (tab === "integracoes") {
-    const items = [
-      [
-        "Área de alunos e autenticação",
-        !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
-          !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-      ],
-      [
-        "Cakto — pagamentos e webhook",
-        process.env.CAKTO_WEBHOOK_ENABLED === "true" &&
-          !!process.env.CAKTO_WEBHOOK_SECRET,
-      ],
-      ["Envio de login homologado (SMTP)", process.env.AUTH_EMAIL_READY === "true"],
-      ["Compras liberadas", checkoutConfigured()],
-      [
-        "Boas-vindas por e-mail (opcional)",
-        !!process.env.RESEND_API_KEY && !!process.env.EMAIL_FROM,
-      ],
-      ["Automação de boas-vindas (opcional)", !!process.env.CRON_SECRET],
-      ["Meta Pixel", !!process.env.NEXT_PUBLIC_META_PIXEL_ID],
-      ["Google Analytics", !!process.env.NEXT_PUBLIC_GA_ID],
-      ["Correção de redação (OpenAI)", !!process.env.OPENAI_API_KEY],
-      ["Auditoria de acesso por hash", !!process.env.ACCESS_FINGERPRINT_SALT],
-    ];
-    content = (
-      <>
-        <p>
-          Configuração presente não substitui homologação de ponta a ponta. As
-          credenciais são definidas no ambiente do servidor.
-        </p>
-        <ul className="task-list">
-          {items.map(([name, ready]) => (
-            <li key={String(name)}>
-              <span>{name}</span>
-              <b>{ready ? "Configuração presente" : "Pendente"}</b>
-            </li>
-          ))}
-        </ul>
-      </>
-    );
-  } else if (tab === "tickets") {
-    const { data, error } = await db.from("support_tickets").select("id,email,subject,message,status,priority,admin_note,created_at,updated_at").order("updated_at", { ascending: false }).limit(100);
-    content = error ? <p className="status-message">O sistema de tickets ainda precisa da migração do banco para ser ativado.</p> : <TicketManager tickets={data || []} />;
-  } else {
-    const stats = await Promise.all(
-      [
-        "profiles",
-        "orders",
-        "entitlements",
-        "materials",
-        "email_deliveries",
-        "assessment_attempts",
-        "essay_submissions",
-        "account_access_fingerprints",
-      ].map(async (table) => {
-        let query = db.from(table).select("*", { count: "exact", head: true });
-        if (table === "entitlements") query = query.eq("active", true);
-        if (table === "materials") query = query.eq("published", true);
-        if (table === "email_deliveries") query = query.eq("status", "failed");
-        const { count, error } = await query;
-        return { table, count: error ? null : count };
-      }),
-    );
-    const labels: Record<string, string> = {
-      profiles: "Alunos",
-      orders: "Pedidos",
-      entitlements: "Acessos ativos",
-      materials: "Materiais publicados",
-      email_deliveries: "Falhas de entrega",
-      assessment_attempts: "Sessões concluídas",
-      essay_submissions: "Redações enviadas",
-      account_access_fingerprints: "Dispositivos observados",
-    };
-    content = (
-      <div className="stat-grid">
-        {stats.map((s) => (
-          <div className="stat" key={s.table}>
-            <strong>{s.count ?? "Indisponível"}</strong>
-            <span>{labels[s.table]}</span>
-          </div>
-        ))}
-      </div>
-    );
-  }
-  return (
-    <>
-      <Header />
-      <main id="conteudo" className="container section admin-shell">
-        <div className="admin-hero">
-          <div>
-            <span className="eyebrow">Central de gestão</span>
-            <h1 className="page-title">Administração</h1>
-            <p>Veja o que está acontecendo no produto, nos acessos e na jornada dos alunos.</p>
-          </div>
-          <span className="admin-live-indicator"><i /> Ambiente conectado</span>
-        </div>
-        <div className="admin-actions">
-          <Link className="button secondary" href="/aluno">Abrir área do aluno</Link>
-          <form action="/api/auth/logout" method="post"><button className="button secondary">Sair da conta</button></form>
-        </div>
-        <nav className="admin-tabs" aria-label="Administração">
+    <main id="conteudo" className="admin-app">
+      <aside className="admin-sidebar" aria-label="Navegação administrativa">
+        <Link href="/admin?tab=visao" className="admin-brand" aria-label="GoDev Education, visão geral">
+          <span>GoDev<span>.</span></span>
+          <small>EDUCATION / ADMIN</small>
+        </Link>
+        <div className="admin-sidebar-label">Workspace</div>
+        <nav className="admin-side-nav">
           {[
-            ["visao", "Visão geral"],
-            ["produtos", "Produtos"],
-            ["materiais", "Materiais"],
-            ["alunos", "CRM de alunos"],
-            ["entregas", "Entregas"],
-            ["suporte", "WhatsApp e Atendimento"],
-            ["integracoes", "Integrações"],
-            ["tickets", "Tickets"],
-          ].map(([id, label]) => (
-            <Link
-              key={id}
-              href={`/admin?tab=${id}`}
-              aria-current={tab === id ? "page" : undefined}
-            >
-              {label}
+            ["visao", "Visão geral", "⌂"],
+            ["alunos", "CRM de alunos", "◎"],
+            ["produtos", "Produtos e planos", "◈"],
+            ["materiais", "Materiais", "▤"],
+            ["entregas", "Entregas e acessos", "↗"],
+          ].map(([id, label, icon]) => (
+            <Link className="admin-side-link" key={id} href={`/admin?tab=${id}`} aria-current={tab === id ? "page" : undefined}>
+              <span className="admin-side-icon" aria-hidden="true">{icon}</span>
+              <span>{label}</span>
             </Link>
           ))}
         </nav>
-        {content}
-      </main>
-      <Footer />
-    </>
+        <div className="admin-sidebar-label">Atendimento</div>
+        <nav className="admin-side-nav">
+          {[
+            ["tickets", "Tickets", "◌"],
+            ["suporte", "WhatsApp e suporte", "◉"],
+            ["integracoes", "Integrações", "⚙"],
+          ].map(([id, label, icon]) => (
+            <Link className="admin-side-link" key={id} href={`/admin?tab=${id}`} aria-current={tab === id ? "page" : undefined}>
+              <span className="admin-side-icon" aria-hidden="true">{icon}</span>
+              <span>{label}</span>
+            </Link>
+          ))}
+        </nav>
+        <div className="admin-sidebar-footer">
+          <div className="admin-profile">
+            <span className="admin-avatar" aria-hidden="true">{(who.profile?.name || "A").slice(0, 1).toUpperCase()}</span>
+            <span><strong>{who.profile?.name || "Administrador"}</strong><small>Administrador</small></span>
+          </div>
+          <form action="/api/auth/logout" method="post">
+            <button className="admin-logout" aria-label="Sair da conta">↪</button>
+          </form>
+        </div>
+      </aside>
+      <section className="admin-workspace">
+        <header className="admin-topbar">
+          <div>
+            <span className="admin-topbar-kicker">GoDev Education · Operação</span>
+            <strong>Painel de controle</strong>
+          </div>
+          <div className="admin-topbar-actions">
+            <Link className="admin-open-student" href="/aluno">Abrir área do aluno</Link>
+            <span className="admin-live-indicator"><i /> Dados conectados</span>
+          </div>
+        </header>
+        <div className="admin-content">
+          <div className="admin-hero">
+            <div>
+              <span className="eyebrow">Central de gestão</span>
+              <h1 className="page-title">Administração</h1>
+              <p>Veja o que está acontecendo no produto, nos acessos e na jornada dos alunos.</p>
+            </div>
+          </div>
+          {content}
+        </div>
+      </section>
+    </main>
   );
 }
-
