@@ -36,6 +36,9 @@ importers:
       '@electric-sql/pglite':
         specifier: ^0.5.10
         version: 0.5.10
+      '@next/swc-wasm-nodejs':
+        specifier: 16.4.2
+        version: 16.4.2
       '@playwright/test':
         specifier: ^1.64.1
         version: 1.64.1
@@ -679,6 +682,9 @@ packages:
     cpu: [x64]
     os: [linux]
     libc: [musl]
+
+  '@next/swc-wasm-nodejs@16.4.2':
+    resolution: {integrity: sha512-GW89XFIz6Bmm064REK4DT6oCQH5RjJ4Erm/MWEranFCsdIvqSoRIaT0xstiaFYk8g5z8YVdMOjpi4UcArYcF7g==}
 
   '@next/swc-win32-arm64-msvc@16.4.2':
     resolution: {integrity: sha512-j/ArWRIHpMMB6wYLMhr2puTguBt70lNU/Cmjl9p6dTDE8DGknYJMP9PdwPk2dqpCNL/KIX9yfngDvIesxJPmsg==}
@@ -2635,6 +2641,8 @@ snapshots:
 
   '@next/swc-linux-x64-musl@16.4.2':
     optional: true
+
+  '@next/swc-wasm-nodejs@16.4.2': {}
 
   '@next/swc-win32-arm64-msvc@16.4.2':
     optional: true

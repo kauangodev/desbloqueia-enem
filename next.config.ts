@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Hostinger's current Node runtime may expose an older glibc than the
+  // native Next SWC binary expects. Keep the build portable by using the
+  // official WASM compiler fallback bundled with the same Next release.
+  experimental: { useWasmBinary: true },
   poweredByHeader: false,
   outputFileTracingIncludes: { "/aluno/[section]": ["./data/library.json"] },
   async headers() {
