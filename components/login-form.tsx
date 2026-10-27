@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-export default function LoginForm({ configured }: { configured: boolean }) {
+export default function LoginForm({ configured, redirect }: { configured: boolean; redirect?: string }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -23,6 +23,7 @@ export default function LoginForm({ configured }: { configured: boolean }) {
             email: data.get("email"),
             password,
             name: data.get("name"),
+            redirect,
           };
           const res = await fetch(mode === "register" ? "/api/auth/register" : "/api/auth/login", {
             method: "POST",

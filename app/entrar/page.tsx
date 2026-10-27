@@ -8,9 +8,9 @@ export const metadata = {
 export default async function Login({
   searchParams,
 }: {
-  searchParams: Promise<{ erro?: string }>;
+  searchParams: Promise<{ erro?: string; redirect?: string }>;
 }) {
-  const { erro } = await searchParams;
+  const { erro, redirect } = await searchParams;
   return (
     <>
       <Header />
@@ -31,7 +31,7 @@ export default async function Login({
                   : "Não foi possível validar este acesso. Solicite uma nova configuração de senha abaixo."}
             </p>
           )}
-          <LoginForm configured={authConfigured()} />
+          <LoginForm configured={authConfigured()} redirect={redirect} />
         </div>
       </main>
       <Footer />

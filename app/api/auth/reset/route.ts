@@ -17,6 +17,7 @@ export async function POST(req: Request) {
   const input = await req.json().catch(() => null);
   const token = typeof input?.token === "string" ? input.token : "";
   const password = typeof input?.password === "string" ? input.password : "";
+  const requestedRedirect = typeof input?.redirect === "string" ? input.redirect : "";
   if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) return jsonError("Use uma senha com letras e números.");
   let userId = "";
   if (token) {
@@ -46,7 +47,8 @@ export async function POST(req: Request) {
   if (!result.affectedRows) return jsonError("Este acesso de senha expirou. Solicite outro.", 410);
   const [users] = await mysqlPool().query<RowDataPacket[]>("SELECT role FROM users WHERE id = ? LIMIT 1", [userId]);
   const role = String(users[0]?.role || "").trim().toLowerCase();
-  const redirect = role === "admin" ? "/admin" : "/aluno";
+  const safeRedirect = /^\/(?:admin|aluno)(?:[/?#]|$)/.test(requestedRedirect) ? requestedRedirect : "";
+  const redirect = role === "admin" && safeRedirect ? safeRedirect : role === "admin" ? "/admin" : "/aluno";
   const response = NextResponse.json({ redirect });
   response.cookies.set("godev_session", sessionToken(userId, role, false), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 });
   return response;
