@@ -33,8 +33,8 @@ Uma execução paralela de `pnpm typecheck` foi descartada por concorrência com
 
 ## Bloqueios externos
 
-- A Hostinger não tinha `AUTH_SESSION_SECRET` visível na lista de variáveis; ele precisa ser criado no painel antes do próximo deployment.
-- A URL pública ainda respondeu `404 {"error":"not_found"}` para `/api/health/mysql` e `/api/health/integrations`, apesar de o build local conter essas rotas. Isso exige ajuste/verificação de roteamento no runtime Node.js da Hostinger.
+- A Hostinger não tinha `AUTH_SESSION_SECRET` visível na lista de variáveis; ele precisa ser criado no painel antes do próximo deployment e antes do primeiro login administrativo.
+- `/api/health/mysql` e `/api/health/integrations` respondem 404 sem o header secreto por desenho de segurança. `/api/auth/login` responde 405 para GET e `/api/checkout/premium` responde 503 enquanto checkout está desativado; esses comportamentos confirmam que as rotas estão publicadas, não ausentes.
 - `EMAIL_FROM` e `RESEND_API_KEY` aparecem cadastrados, mas a entrega real depende de remetente/domínio verificado no provedor.
 - A homologação real da Cakto continua dependente do segredo do webhook configurado no ambiente de produção.
 
@@ -43,5 +43,7 @@ Uma execução paralela de `pnpm typecheck` foi descartada por concorrência com
 - `ac9f523` — exige segredo dedicado para sessões de produção.
 - `a76bc4b` — documenta a exigência no template de ambiente.
 - `19c5790` — corrige atualização idempotente de ofertas Cakto.
+
+O banco confirma `kauango.dev@gmail.com` como `admin`, com convite ativo e sem senha definida. O fluxo oficial de recuperação foi acionado para esse endereço; a conclusão do primeiro acesso depende de `AUTH_SESSION_SECRET` configurado no ambiente de produção.
 
 Os pacotes `GoDev_Education_HOSTINGER_FINAL.zip` e `GoDev_Education_FINAL_AUDITADO.zip` foram gerados a partir do commit local mais recente, sem `.git`, credenciais ou backups pessoais. O push dos commits recentes para o GitHub ficou pendente por indisponibilidade da conexão de push.
