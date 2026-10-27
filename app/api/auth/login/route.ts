@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const hash = createHash("sha256").update(normalizedEmail).digest("hex");
     const { data: allowed, error: limitError } = await adminDb.rpc(
       "take_rate_limit",
-      { p_key: `login:${hash}`, p_limit: 3, p_seconds: 900 },
+      { p_key: `login:${hash}`, p_limit: 5, p_seconds: 300 },
     );
     if (limitError || !allowed)
       return jsonError(
@@ -74,6 +74,7 @@ export async function POST(req: Request) {
         error.status === 429 ? 429 : 401,
       );
     }
+    await adminDb.rpc("clear_rate_limit", { p_key: `login:${hash}` });
     const { data: profile } = await db.from("profiles").select("role").eq("id", signedIn.user.id).maybeSingle();
     return NextResponse.json({
       redirect: `${appUrl}${profile?.role === "admin" ? "/admin" : "/aluno"}`,

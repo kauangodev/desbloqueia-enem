@@ -117,6 +117,7 @@ function createAuth() {
 
 async function rpcHandler(name: string, args: Record<string, any> = {}): Promise<QueryResult> {
   if (name === "take_rate_limit") { const key = String(args.p_key || ""); const now = Date.now(); const current = memoryRateLimits.get(key); if (!current || current.expiresAt <= now) { memoryRateLimits.set(key, { count: 1, expiresAt: now + Number(args.p_seconds || 900) * 1000 }); return { data: true, error: null }; } if (current.count >= Number(args.p_limit || 3)) return { data: false, error: null }; current.count += 1; return { data: true, error: null }; }
+  if (name === "clear_rate_limit") { memoryRateLimits.delete(String(args.p_key || "")); return { data: true, error: null }; }
   if (name === "record_access_fingerprint") { await new QueryBuilder("account_access_fingerprints").upsert({ user_id: args.p_user_id, fingerprint_hash: args.p_fingerprint_hash, user_agent: String(args.p_user_agent || "").slice(0, 500) }, { onConflict: "user_id,fingerprint_hash" }); return { data: null, error: null }; }
   if (name === "claim_emails") {
     const leaseUntil = new Date(Date.now() + 10 * 60 * 1000);
