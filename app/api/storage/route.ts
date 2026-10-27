@@ -5,10 +5,13 @@ import { canAccess, identity } from "../../../lib/supabase";
 import { mysqlPool } from "../../../lib/mysql";
 import { jsonError } from "../../../lib/http";
 import { NextResponse } from "next/server";
+import type { RowDataPacket } from "mysql2/promise";
+import { requiredSessionSecret } from "../../../lib/security";
 
 const root = () => join(process.cwd(), "private", "materials");
+type MaterialRow = RowDataPacket & { plan: string };
 const fileFor = (path: string) => join(root(), basename(path));
-const secret = () => process.env.AUTH_SESSION_SECRET || process.env.HOSTINGER_MYSQL_PASSWORD || "temporary-hostinger-session-secret";
+const secret = () => requiredSessionSecret();
 const validUploadToken = (path: string, token: string) => {
   const expected = createHmac("sha256", secret()).update(`upload:${path}`).digest("base64url");
   return token.length === expected.length && timingSafeEqual(Buffer.from(token), Buffer.from(expected));
@@ -19,7 +22,7 @@ export async function GET(req: Request) {
   if (!path.startsWith("private/") || path.includes("..")) return jsonError("Arquivo inválido", 400);
   const who = await identity();
   if (!who) return jsonError("Entre para acessar.", 401);
-  const [rows] = await mysqlPool().query<any[]>("SELECT plan FROM materials WHERE storage_path = ? AND published = 1 LIMIT 1", [path]);
+  const [rows] = await mysqlPool().query<MaterialRow[]>("SELECT plan FROM materials WHERE storage_path = ? AND published = 1 LIMIT 1", [path]);
   const material = rows[0];
   if (!material || !(await canAccess(material.plan))) return jsonError("Material não disponível para esta conta.", 403);
   try {

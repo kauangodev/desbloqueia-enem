@@ -1,10 +1,13 @@
 import "server-only";
+/* Dynamic row/value shapes are intentional in this compatibility adapter. */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cookies } from "next/headers";
 import { createHmac, createHash, randomBytes, scrypt as nodeScrypt, timingSafeEqual } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { promisify } from "node:util";
 import { mysqlConfigured, mysqlPool } from "./mysql";
+import { requiredSessionSecret } from "./security";
 
 const scrypt = promisify(nodeScrypt);
 const SESSION_COOKIE = "godev_session";
@@ -13,7 +16,7 @@ const memoryRateLimits = new Map<string, { count: number; expiresAt: number }>()
 type UserRow = { id: string; email: string; name: string; role: "student" | "admin"; password_hash?: string | null };
 type QueryResult = { data: any; error: any; count?: number | null };
 
-function authSecret() { return process.env.AUTH_SESSION_SECRET || process.env.HOSTINGER_MYSQL_PASSWORD || "temporary-hostinger-session-secret"; }
+function authSecret() { return requiredSessionSecret(); }
 function encode(value: string) { return Buffer.from(value).toString("base64url"); }
 function decode(value: string) { return Buffer.from(value, "base64url").toString("utf8"); }
 function sign(payload: string) { return createHmac("sha256", authSecret()).update(payload).digest("base64url"); }
@@ -40,7 +43,7 @@ class QueryBuilder implements PromiseLike<QueryResult> {
   private mode: "select" | "insert" | "update" | "delete" = "select";
   private values: Record<string, any>[] = []; private filters: Array<[string, any]> = []; private columns = "*"; private orderBy: [string, "ASC" | "DESC"] | null = null; private limitValue: number | null = null; private singleMode: "single" | "maybe" | null = null; private conflict: string | null = null;
   constructor(private readonly table: string) {}
-  select(columns = "*", _options?: any) { this.mode = "select"; this.columns = columns; return this; }
+  select(columns = "*", options?: any) { void options; this.mode = "select"; this.columns = columns; return this; }
   insert(values: Record<string, any> | Record<string, any>[]) { this.mode = "insert"; this.values = (Array.isArray(values) ? values : [values]).map((v) => denormalizeValues({ ...v, __table: this.table })); return this; }
   update(values: Record<string, any>) { this.mode = "update"; this.values = [denormalizeValues({ ...values, __table: this.table })]; return this; }
   delete() { this.mode = "delete"; return this; }
@@ -111,12 +114,12 @@ async function rpcHandler(name: string, args: Record<string, any> = {}): Promise
 }
 const storageRoot = () => join(process.cwd(), "private", "materials");
 const storageFile = (path: string) => join(storageRoot(), basename(path));
-const storageHandler = { from: (_bucket: string) => ({
+const storageHandler = { from: (bucket: string) => { void bucket; return {
   createSignedUrl: async (path: string) => ({ data: { signedUrl: `/api/storage?path=${encodeURIComponent(path)}` }, error: null }),
   download: async (path: string) => { try { const file = await readFile(storageFile(path)); return { data: new Blob([file], { type: "application/pdf" }), error: null }; } catch { return { data: null, error: { message: "Arquivo não encontrado" } }; } },
   createSignedUploadUrl: async (path: string) => { await mkdir(storageRoot(), { recursive: true }); return { data: { path, token: sign(`upload:${path}`), signedUrl: `/api/storage?path=${encodeURIComponent(path)}&token=${encodeURIComponent(sign(`upload:${path}`))}&upload=1` }, error: null }; },
   upload: async (path: string, body: Buffer | Uint8Array) => { try { await mkdir(storageRoot(), { recursive: true }); await writeFile(storageFile(path), body); return { data: { path }, error: null }; } catch (error) { return { data: null, error }; } },
-}) };
+}; } };
 
 export const authConfigured = () => mysqlConfigured();
 export async function sessionClient() { return mysqlConfigured() ? { auth: createAuth(), from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any : null; }
