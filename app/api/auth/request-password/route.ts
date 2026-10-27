@@ -21,16 +21,19 @@ export async function POST(req: Request) {
   ]);
   const bootstrapEmail = process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase();
   if (process.env.ADMIN_BOOTSTRAP_ENABLED === "true" && bootstrapEmail === email && !entitlement && !invite && !admin) {
-    const { data: existing } = await adminDb.auth.admin.listUsers({ page: 1, perPage: 1000 });
-    if (!existing.users.some((user) => user.email?.toLowerCase() === email)) {
+    try {
       const created = await adminDb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { name: "Kauan" } });
-      if (created.error && created.error.code !== "email_exists") return jsonError("Não foi possível preparar este acesso.", 503);
+      const duplicate = ["email_exists", "ER_DUP_ENTRY", "ER_DUPLICATE_ENTRY"].includes(String(created.error?.code || ""));
+      if (created.error && !duplicate) return jsonError("Não foi possível preparar este acesso.", 503);
+      const { error: promotedError } = await adminDb.from("profiles").update({ role: "admin", email_verified_at: new Date() }).eq("email", email);
+      const { error: inviteError } = await adminDb.from("admin_invites").upsert({ email, name: "Kauan", active: true }, { onConflict: "email" });
+      if (promotedError || inviteError) return jsonError("Não foi possível preparar este acesso.", 503);
+      invite = { name: "Kauan" };
+      admin = { name: "Kauan", role: "admin" };
+    } catch (error) {
+      console.error("admin_bootstrap_failed", { code: (error as { code?: string })?.code });
+      return jsonError("Não foi possível preparar este acesso.", 503);
     }
-    const { error: promotedError } = await adminDb.from("profiles").update({ role: "admin", email_verified_at: new Date() }).eq("email", email);
-    const { error: inviteError } = await adminDb.from("admin_invites").upsert({ email, name: "Kauan", active: true }, { onConflict: "email" });
-    if (promotedError || inviteError) return jsonError("Não foi possível preparar este acesso.", 503);
-    invite = { name: "Kauan" };
-    admin = { name: "Kauan", role: "admin" };
   }
   if (!entitlement && !invite && !admin)
     return NextResponse.json({ message: "Se este e-mail tem uma compra aprovada ou convite, enviaremos as instruções de senha." });
