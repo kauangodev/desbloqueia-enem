@@ -1,6 +1,8 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { createHmac, createHash, randomBytes, scrypt as nodeScrypt, timingSafeEqual } from "node:crypto";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { promisify } from "node:util";
 import { mysqlConfigured, mysqlPool } from "./mysql";
 
@@ -107,7 +109,14 @@ async function rpcHandler(name: string, args: Record<string, any> = {}): Promise
   }
   return { data: null, error: { message: `RPC não suportada: ${name}` } };
 }
-const storageHandler = { from: (_bucket: string) => ({ createSignedUrl: async (path: string) => ({ data: { signedUrl: `/api/storage?path=${encodeURIComponent(path)}` }, error: null }), upload: async () => ({ data: null, error: { message: "Armazenamento local ainda não configurado" } }) }) };
+const storageRoot = () => join(process.cwd(), "private", "materials");
+const storageFile = (path: string) => join(storageRoot(), basename(path));
+const storageHandler = { from: (_bucket: string) => ({
+  createSignedUrl: async (path: string) => ({ data: { signedUrl: `/api/storage?path=${encodeURIComponent(path)}` }, error: null }),
+  download: async (path: string) => { try { const file = await readFile(storageFile(path)); return { data: new Blob([file], { type: "application/pdf" }), error: null }; } catch { return { data: null, error: { message: "Arquivo não encontrado" } }; } },
+  createSignedUploadUrl: async (path: string) => { await mkdir(storageRoot(), { recursive: true }); return { data: { path, token: sign(`upload:${path}`), signedUrl: `/api/storage/upload?path=${encodeURIComponent(path)}&token=${encodeURIComponent(sign(`upload:${path}`))}` }, error: null }; },
+  upload: async (path: string, body: Buffer | Uint8Array) => { try { await mkdir(storageRoot(), { recursive: true }); await writeFile(storageFile(path), body); return { data: { path }, error: null }; } catch (error) { return { data: null, error }; } },
+}) };
 
 export const authConfigured = () => mysqlConfigured();
 export async function sessionClient() { return mysqlConfigured() ? { auth: createAuth(), from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any : null; }

@@ -4,7 +4,7 @@ const nextConfig = {
   // native Next SWC binary expects. Use the official WASM compiler fallback.
   experimental: { useWasmBinary: true },
   poweredByHeader: false,
-  outputFileTracingIncludes: { "/aluno/[section]": ["./data/library.json"] },
+  outputFileTracingIncludes: { "/*": ["./data/library.json", "./private/materials/**/*"] },
   async headers() {
     return [
       {
