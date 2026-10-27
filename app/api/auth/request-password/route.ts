@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { appUrl } from "../../../../lib/config";
 import { sameOrigin, jsonError } from "../../../../lib/http";
 import { publicClient, serviceClient } from "../../../../lib/supabase";
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 
 export async function POST(req: Request) {
   if (!sameOrigin(req)) return jsonError("Origem inválida", 403);
@@ -22,11 +22,7 @@ export async function POST(req: Request) {
   const bootstrapEmail = process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase();
   if (process.env.ADMIN_BOOTSTRAP_ENABLED === "true" && bootstrapEmail === email && !entitlement && !invite && !admin) {
     try {
-      const created = await adminDb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { name: "Kauan" } });
-      const duplicateCode = String(created.error?.code || "").toUpperCase();
-      const duplicate = ["EMAIL_EXISTS", "ER_DUP_ENTRY", "ER_DUPLICATE_ENTRY", "1062"].includes(duplicateCode) || Number((created.error as { errno?: number } | null)?.errno) === 1062;
-      if (created.error && !duplicate) return jsonError("Não foi possível preparar este acesso.", 503);
-      const { error: promotedError } = await adminDb.from("profiles").update({ role: "admin", email_verified_at: new Date() }).eq("email", email);
+      const { error: promotedError } = await adminDb.from("users").upsert({ id: randomBytes(16).toString("hex"), email, name: "Kauan", role: "admin", email_verified_at: new Date() }, { onConflict: "email" });
       const { error: inviteError } = await adminDb.from("admin_invites").upsert({ email, name: "Kauan", active: true }, { onConflict: "email" });
       if (promotedError || inviteError) return jsonError("Não foi possível preparar este acesso.", 503);
       invite = { name: "Kauan" };
