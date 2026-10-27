@@ -25,7 +25,10 @@ export async function POST(req: Request) {
     try {
       const { error: promotedError } = await adminDb.from("users").upsert({ id: randomBytes(16).toString("hex"), email, name: "Kauan", role: "admin", email_verified_at: new Date() }, { onConflict: "email" });
       const { error: inviteError } = await adminDb.from("admin_invites").upsert({ email, name: "Kauan", active: true }, { onConflict: "email" });
-      if (promotedError || inviteError) return jsonError("Não foi possível preparar este acesso.", 503);
+      if (promotedError || inviteError) {
+        console.error("admin_bootstrap_write_failed", { promoted: (promotedError as { code?: string; errno?: number } | null)?.code || (promotedError as { errno?: number } | null)?.errno || null, invite: (inviteError as { code?: string; errno?: number } | null)?.code || (inviteError as { errno?: number } | null)?.errno || null });
+        return jsonError("Não foi possível preparar este acesso.", 503);
+      }
       bootstrapped = true;
       invite = { name: "Kauan" };
       admin = { name: "Kauan", role: "admin" };
