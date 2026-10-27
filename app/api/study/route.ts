@@ -2,6 +2,7 @@ import { canAccess } from "../../../lib/supabase";
 import { sameOrigin, jsonError } from "../../../lib/http";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { recordGamificationEvent } from "../../../lib/gamification";
 async function mutate(req: Request) {
   if (!sameOrigin(req)) return jsonError("Origem inválida", 403);
   const who = await canAccess("essencial");
@@ -36,6 +37,8 @@ async function mutate(req: Request) {
     else return jsonError("Estado inválido");
   }
   if (error) return jsonError("Não foi possível salvar. Tente novamente.", 503);
+  if (req.method === "PATCH" && input?.done === true)
+    await recordGamificationEvent(who.user.id, "study_task_completed", String(input.id));
   const { data: tasks } = await who.db
     .from("study_progress")
     .select("*")

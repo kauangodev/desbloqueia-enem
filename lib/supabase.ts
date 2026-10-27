@@ -69,7 +69,7 @@ async function issueResetEmail(email: string) {
 }
 
 const tableAliases: Record<string, string> = { profiles: "users" };
-const tableNames = new Set(["users", "profiles", "admin_invites", "products", "offers", "orders", "payment_events", "entitlements", "materials", "reading_progress", "study_progress", "support_settings", "audit_logs", "storage_files", "assessment_attempts", "essay_submissions", "account_access_fingerprints", "support_tickets", "email_deliveries"]);
+const tableNames = new Set(["users", "profiles", "admin_invites", "products", "offers", "orders", "payment_events", "entitlements", "materials", "reading_progress", "study_progress", "support_settings", "audit_logs", "storage_files", "assessment_attempts", "essay_submissions", "account_access_fingerprints", "support_tickets", "email_deliveries", "gamification_events", "gamification_goals"]);
 function tableName(table: string) { if (!tableNames.has(table)) throw new Error("Tabela não permitida"); return tableAliases[table] || table; }
 function columnName(column: string) { if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(column)) throw new Error("Coluna inválida"); return column === "date" ? "date_value" : column; }
 function normalizeRow(row: any) { if (row && Object.prototype.hasOwnProperty.call(row, "date_value")) { row.date = row.date_value; delete row.date_value; } return row; }
