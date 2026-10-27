@@ -22,7 +22,7 @@ Ambiente publicado: `https://desbloqueia-enem.vercel.app`
 
 ## Pendências de produção
 
-- Ativar `CHECKOUT_ENABLED`, `AUTH_EMAIL_READY`, `CAKTO_WEBHOOK_ENABLED` e o segredo do webhook somente após homologar os dois produtos e URLs na conta Cakto.
+- Ativar `CHECKOUT_ENABLED`, `CAKTO_WEBHOOK_ENABLED` e o segredo do webhook somente após homologar os dois produtos e URLs na conta Cakto. `AUTH_EMAIL_READY` é legado e não bloqueia mais o checkout.
 - Confirmar no painel Cakto o formato real dos eventos e fazer um teste aprovado, um pendente e um reembolso com IDs reais.
 - Configurar Supabase, e-mail transacional e job cron no ambiente de produção.
 - O repositório não contém cliente MySQL, variáveis Hostinger nem migração para Hostinger.
