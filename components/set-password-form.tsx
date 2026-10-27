@@ -16,7 +16,8 @@ export default function SetPasswordForm() {
       if (password !== confirmation) return setMessage("As senhas não coincidem.");
       setBusy(true); setMessage("");
       const token = new URLSearchParams(window.location.search).get("token") || "";
-      const response = await fetch("/api/auth/reset", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token, password }) });
+      const redirect = new URLSearchParams(window.location.search).get("redirect") || "";
+      const response = await fetch("/api/auth/reset", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token, password, redirect }) });
       const result = await response.json().catch(() => ({}));
       setBusy(false);
       if (!response.ok) return setMessage(result.error || "Não foi possível salvar sua senha agora. Tente novamente.");
@@ -29,3 +30,4 @@ export default function SetPasswordForm() {
     </form>
   );
 }
+
