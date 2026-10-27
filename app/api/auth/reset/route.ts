@@ -10,7 +10,7 @@ import { sessionClient } from "../../../../lib/supabase";
 const scrypt = promisify(nodeScrypt);
 type ResetRow = RowDataPacket & { id: string };
 async function hashPassword(password: string) { const salt = randomBytes(16).toString("hex"); const derived = (await scrypt(password, salt, 64)) as Buffer; return `scrypt$${salt}$${derived.toString("hex")}`; }
-function sessionToken(id: string) { const iat = Date.now(); const payload = Buffer.from(JSON.stringify({ id, iat, exp: iat + 7 * 86400000 })).toString("base64url"); return `${payload}.${createHmac("sha256", requiredSessionSecret()).update(payload).digest("base64url")}`; }
+function sessionToken(id: string, role: string, mustChangePassword: boolean) { const iat = Date.now(); const payload = Buffer.from(JSON.stringify({ id, role: role.toLowerCase() === "admin" ? "admin" : "student", must_change_password: mustChangePassword, iat, exp: iat + 7 * 86400000 })).toString("base64url"); return `${payload}.${createHmac("sha256", requiredSessionSecret()).update(payload).digest("base64url")}`; }
 
 export async function POST(req: Request) {
   if (!sameOrigin(req)) return jsonError("Origem inválida", 403);
@@ -45,8 +45,9 @@ export async function POST(req: Request) {
   }
   if (!result.affectedRows) return jsonError("Este acesso de senha expirou. Solicite outro.", 410);
   const [users] = await mysqlPool().query<RowDataPacket[]>("SELECT role FROM users WHERE id = ? LIMIT 1", [userId]);
-  const redirect = users[0]?.role === "admin" ? "/admin" : "/aluno";
+  const role = String(users[0]?.role || "").trim().toLowerCase();
+  const redirect = role === "admin" ? "/admin" : "/aluno";
   const response = NextResponse.json({ redirect });
-  response.cookies.set("godev_session", sessionToken(userId), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 });
+  response.cookies.set("godev_session", sessionToken(userId, role, false), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 });
   return response;
 }

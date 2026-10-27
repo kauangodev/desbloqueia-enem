@@ -53,7 +53,6 @@ export async function POST(req: Request) {
         .from("profiles")
         .select("name,role")
         .eq("email", normalizedEmail)
-        .eq("role", "admin")
         .maybeSingle(),
     ]);
     if (entitlementError || inviteError || adminError) {
@@ -64,7 +63,8 @@ export async function POST(req: Request) {
       });
       return jsonError("Não foi possível verificar o acesso. Tente novamente mais tarde.", 503);
     }
-    if (!entitlement && !invite && !admin)
+    const isAdmin = String(admin?.role || "").trim().toLowerCase() === "admin";
+    if (!entitlement && !invite && !isAdmin)
       return jsonError("E-mail ou senha inválidos.", 401);
     const { data: signedIn, error } = await db.auth.signInWithPassword({ email: normalizedEmail, password });
     if (error) {
@@ -76,8 +76,9 @@ export async function POST(req: Request) {
     }
     await adminDb.rpc("clear_rate_limit", { p_key: `login:${hash}` });
     const { data: profile } = await db.from("profiles").select("role").eq("id", signedIn.user.id).maybeSingle();
+    const role = String(profile?.role || signedIn.user.role || "").trim().toLowerCase();
     return NextResponse.json({
-      redirect: `${appUrl}${signedIn.user.must_change_password ? "/definir-senha?first=1" : profile?.role === "admin" ? "/admin" : "/aluno"}`,
+      redirect: `${appUrl}${signedIn.user.must_change_password ? "/definir-senha?first=1" : role === "admin" ? "/admin" : "/aluno"}`,
     });
   } catch {
     return jsonError("Serviço temporariamente indisponível.", 503);

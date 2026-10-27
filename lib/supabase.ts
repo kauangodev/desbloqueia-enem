@@ -21,7 +21,7 @@ function authSecret() { return requiredSessionSecret(); }
 function encode(value: string) { return Buffer.from(value).toString("base64url"); }
 function decode(value: string) { return Buffer.from(value, "base64url").toString("utf8"); }
 function sign(payload: string) { return createHmac("sha256", authSecret()).update(payload).digest("base64url"); }
-function tokenFor(user: UserRow) { const iat = Date.now(); const payload = encode(JSON.stringify({ id: user.id, iat, exp: iat + 7 * 86400000 })); return `${payload}.${sign(payload)}`; }
+function tokenFor(user: UserRow) { const iat = Date.now(); const payload = encode(JSON.stringify({ id: user.id, role: user.role, must_change_password: Boolean(user.must_change_password), iat, exp: iat + 7 * 86400000 })); return `${payload}.${sign(payload)}`; }
 function userFromToken(token: string | undefined): { id: string; iat: number } | null {
   if (!token) return null; const [payload, signature] = token.split("."); if (!payload || !signature) return null;
   const expected = sign(payload); if (signature.length !== expected.length || !timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null;
@@ -107,7 +107,8 @@ class QueryBuilder implements PromiseLike<QueryResult> {
   }
 }
 
-function userRecord(row: any): UserRow { return { id: row.id, email: row.email, name: row.name || "", role: row.role === "admin" ? "admin" : "student", password_hash: row.password_hash }; }
+function normalizedRole(value: unknown): "student" | "admin" { return String(value || "").trim().toLowerCase() === "admin" ? "admin" : "student"; }
+function userRecord(row: any): UserRow { return { id: row.id, email: row.email, name: row.name || "", role: normalizedRole(row.role), password_hash: row.password_hash }; }
 async function currentUser() { const jar = await cookies(); const tokenUser = userFromToken(jar.get(SESSION_COOKIE)?.value); if (!tokenUser) return null; const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at,updated_at FROM users WHERE id = ? LIMIT 1", [tokenUser.id]); const row = rows[0]; if (!row || !row.email_verified_at || (row.updated_at && new Date(row.updated_at).getTime() > tokenUser.iat)) return null; return { ...userRecord(row), must_change_password: await mustChangePassword(row.id) }; }
 async function setSession(user: UserRow | null) { const jar = await cookies(); if (!user) { jar.delete(SESSION_COOKIE); return; } try { jar.set(SESSION_COOKIE, tokenFor(user), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 }); } catch { /* server component */ } }
 
@@ -163,5 +164,5 @@ export const authConfigured = () => mysqlConfigured();
 export async function sessionClient() { return mysqlConfigured() ? { auth: createAuth(), from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any : null; }
 export function serviceClient() { if (!mysqlConfigured()) throw new Error("Banco MySQL não configurado"); return { auth: { admin: createAuth().admin }, from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any; }
 export function publicClient() { return mysqlConfigured() ? { auth: createAuth() } as any : null; }
-export async function identity() { const db = await sessionClient(); if (!db) return null; const { data: user } = await db.auth.getUser(); if (!user) return null; const { data: profile } = await db.from("profiles").select("id,name,role").eq("id", user.id).maybeSingle(); return { db, user, profile }; }
+export async function identity() { const db = await sessionClient(); if (!db) return null; const { data: user } = await db.auth.getUser(); if (!user) return null; const { data: profile } = await db.from("profiles").select("id,name,role").eq("id", user.id).maybeSingle(); return { db, user, profile: profile ? { ...profile, role: normalizedRole(profile.role) } : profile }; }
 export async function canAccess(plan: string) { const who = await identity(); if (!who) return null; if (who.profile?.role === "admin") return who; const { data } = await who.db.from("entitlements").select("plan").eq("user_id", who.user.id).eq("active", true); return data?.some((e: { plan: string }) => e.plan === "premium" || e.plan === plan) ? who : null; }
