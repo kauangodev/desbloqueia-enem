@@ -31,7 +31,11 @@ export async function POST(req: Request) {
   let bootstrapped = false;
   if (process.env.ADMIN_BOOTSTRAP_ENABLED === "true" && bootstrapEmail === email && !entitlement) {
     try {
-      const { error: promotedError } = await adminDb.from("users").upsert({ id: randomBytes(16).toString("hex"), email, name: "Kauan", role: "admin", email_verified_at: new Date() }, { onConflict: "email" });
+      const { data: existingUser } = await adminDb.from("users").select("id").eq("email", email).maybeSingle();
+      const promoted = existingUser
+        ? await adminDb.from("users").update({ name: "Kauan", role: "admin", email_verified_at: new Date() }).eq("id", existingUser.id)
+        : await adminDb.from("users").insert({ id: randomBytes(16).toString("hex"), email, name: "Kauan", role: "admin", email_verified_at: new Date() });
+      const promotedError = promoted.error;
       const { error: inviteError } = await adminDb.from("admin_invites").upsert({ email, name: "Kauan", active: true }, { onConflict: "email" });
       if (promotedError || inviteError) {
         console.error("admin_bootstrap_write_failed", { promoted: (promotedError as { code?: string; errno?: number } | null)?.code || (promotedError as { errno?: number } | null)?.errno || null, invite: (inviteError as { code?: string; errno?: number } | null)?.code || (inviteError as { errno?: number } | null)?.errno || null });
