@@ -1,12 +1,12 @@
 # GoDev Education — ativação
 
-O site reutiliza `kauangodev/desbloqueia-enem`, branch `main`, projeto Vercel `desbloqueia-enem`.
-URL confirmada para este projeto: https://desbloqueia-enem.vercel.app. O endereço sem hífen pertence ao projeto `desbloqueiaenem`; não foi transferido nem declarado canônico.
+O site reutiliza `kauangodev/desbloqueia-enem`, branch `main`, com publicação alvo na Hostinger.
+URL canônica planejada para este projeto: https://godeveducation.com.br.
 
 ## 1. Banco, autenticação e arquivos (Supabase)
 
 1. O projeto Supabase de produção `Desbloqueia ENEM` (`gkomnwosoiozjjyckcvl`, São Paulo) foi criado em 23/10/2026. As migrations `001` a `005` já foram aplicadas; a última restringe as funções privilegiadas e adiciona os índices recomendados pelo advisor.
-2. Configure as três variáveis Supabase de `.env.example` no Vercel. Somente URL e chave anônima são públicas. Nunca exponha service_role.
+2. Configure as variáveis de produção de `.env.example` na Hostinger. Somente URL e chave anônima são públicas. Nunca exponha service_role.
 3. Em Auth, configure Site URL para o domínio acima e permita o callback `/auth/callback`. Configure SMTP de produção para os links de acesso. Desative cadastros públicos; contas são criadas pelo fulfillment e convites administrativos.
 4. Crie o proprietário por convite no Supabase Auth. Promova somente seu UUID com `update public.profiles set role='admin' where id='<UUID conferido>';`. Nenhum cadastro público recebe papel administrativo.
 5. Entre em `/admin`. Em Materiais, envie os PDFs privados e publique os respectivos itens. O bucket `materials` é privado; não há política pública de leitura. O servidor verifica plano e emite URL de 60 segundos.
@@ -24,7 +24,7 @@ Referências consultadas: https://docs.cakto.com.br/conceitos/webhooks e https:/
 - Para conferir o plano sem alterar a conta, execute `npm run cakto:plan`. Para provisionar, use localmente `CAKTO_CLIENT_ID` e `CAKTO_CLIENT_SECRET` com escopos mínimos de leitura/escrita para produtos, ofertas e webhooks, então execute `npm run cakto:provision`. O script reutiliza produtos com o mesmo nome, cria os ausentes, atualiza as ofertas, vincula as capas e cadastra o webhook.
 - O resultado fica somente em `private/cakto-provision-result.json`, pasta ignorada pelo Git. Ele contém IDs, links dos checkouts e o secret do webhook; não publique esse arquivo.
 - Preencha os IDs exatos e checkout em `/admin?tab=produtos`. Domínio permitido: `https://pay.cakto.com.br`.
-- Webhook: `https://desbloqueia-enem.vercel.app/api/webhooks/cakto`.
+- Webhook: `https://godeveducation.com.br/api/webhooks/cakto`.
 - Secret em `CAKTO_WEBHOOK_SECRET`; ativação separada em `CAKTO_WEBHOOK_ENABLED=true`. O receptor prefere a assinatura HMAC dos headers e aceita, como compatibilidade oficial da Cakto, o mesmo secret no corpo com comparação em tempo constante.
 - Assinatura oficial: HMAC SHA-256 de `timestamp.corpo_original`, headers `X-Cakto-Timestamp` e `X-Cakto-Signature: v1=...`; tolerância de cinco minutos. Não usar um segredo enviado pelo cliente como autorização.
 - São processados purchase_approved (somente status paid), purchase_refused, refund, chargeback e geração pendente. V1 e lista V2 são aceitas. Só ofertas cadastradas são aceitas. Fixtures usam IDs `product-*` de teste e nunca são cadastradas na produção.

@@ -5,7 +5,7 @@
 ## Situação atual
 
 - Frontend e rotas server-side: Next.js 16.
-- Publicação verificada: Vercel, projeto `desbloqueia-enem`.
+- Fonte de código: GitHub `kauangodev/desbloqueia-enem`, branch `main`.
 - Backend atual: Supabase Auth, Postgres, RLS e Storage.
 - Pagamentos: fluxo Cakto configurado no código; homologação de compra real e webhook ainda devem ser executados em ambiente controlado.
 - Conteúdo local: 2.100 questões autorais, 30 simulados de 20 questões e 60 listas de exercícios. A biblioteca histórica possui 1.800 referências; apenas as resoluções efetivamente cadastradas devem ser anunciadas como resolvidas.
@@ -32,7 +32,7 @@ Não copie valores reais de `.env` para o ZIP ou para o GitHub.
 5. Configurar SMTP, webhook Cakto, segredo de assinatura, idempotência e replay protection.
 6. Configurar variáveis de ambiente apenas no painel do provedor.
 7. Rodar build limpo, testes unitários, E2E autenticado e teste de compra em sandbox.
-8. Fazer troca gradual de DNS mantendo a Vercel como rollback.
+8. Fazer a troca de DNS somente após homologar o domínio e as integrações de produção.
 
 ## Variáveis obrigatórias
 

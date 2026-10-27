@@ -1,7 +1,7 @@
 {
-  "salesPage": "https://desbloqueia-enem.vercel.app/#planos",
-  "accessPage": "https://desbloqueia-enem.vercel.app/entrar",
-  "webhookUrl": "https://desbloqueia-enem.vercel.app/api/webhooks/cakto",
+  "salesPage": "https://godeveducation.com.br/#planos",
+  "accessPage": "https://godeveducation.com.br/entrar",
+  "webhookUrl": "https://godeveducation.com.br/api/webhooks/cakto",
   "products": [
     {
       "plan": "essencial",
@@ -10,7 +10,7 @@
       "productId": "6ff97951-a03a-4bed-bbe5-62c88031c0fc",
       "offerId": "3biievb",
       "checkoutUrl": "https://pay.cakto.com.br/3biievb_1233750",
-      "coverUrl": "https://desbloqueia-enem.vercel.app/products/desbloqueia-enem-essencial.png",
+      "coverUrl": "https://godeveducation.com.br/products/desbloqueia-enem-essencial.png",
       "description": "Material digital para revisão do ENEM 2026 com resumos estratégicos das quatro áreas, cronograma e mapa da revisão, além de 40 exercícios comentados para fixação. Leitura pela plataforma em celular, tablet ou computador.",
       "benefits": [
         "Resumos estratégicos das quatro áreas do ENEM",
@@ -26,7 +26,7 @@
       "productId": "e1fc994d-6000-41d4-9b08-5af47ec3ce07",
       "offerId": "3fq7t2s",
       "checkoutUrl": "https://pay.cakto.com.br/3fq7t2s_1233753",
-      "coverUrl": "https://desbloqueia-enem.vercel.app/products/desbloqueia-enem-premium.png",
+      "coverUrl": "https://godeveducation.com.br/products/desbloqueia-enem-premium.png",
       "description": "A revisão completa para praticar mais, organizar a rotina e acompanhar a própria evolução. Reúne o Essencial, kit de revisão com 87 páginas, 2.100 questões autorais no estilo ENEM, 30 simulados, 60 listas de exercícios, preparação para redação e uma biblioteca histórica com 1.800 questões de referência.",
       "benefits": [
         "Tudo do Essencial",

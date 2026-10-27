@@ -3,7 +3,7 @@ export const brand = {
   product: "Desbloqueia ENEM 2026",
 };
 export const appUrl =
-  process.env.NEXT_PUBLIC_APP_URL || "https://desbloqueia-enem.vercel.app";
+  process.env.NEXT_PUBLIC_APP_URL || "https://godeveducation.com.br";
 export const plans = [
   {
     id: "essencial",
