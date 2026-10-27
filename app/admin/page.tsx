@@ -432,7 +432,7 @@ export default async function Admin({
         process.env.CAKTO_WEBHOOK_ENABLED === "true" &&
           !!process.env.CAKTO_WEBHOOK_SECRET,
       ],
-      ["Envio de login homologado (SMTP)", process.env.AUTH_EMAIL_READY === "true"],
+      ["E-mail transacional opcional", !!process.env.RESEND_API_KEY && !!process.env.EMAIL_FROM],
       ["Compras liberadas", checkoutConfigured()],
       [
         "Boas-vindas por e-mail (opcional)",
