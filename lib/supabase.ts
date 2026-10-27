@@ -2,7 +2,7 @@ import "server-only";
 /* Dynamic row/value shapes are intentional in this compatibility adapter. */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { cookies } from "next/headers";
-import { createHmac, createHash, randomBytes, scrypt as nodeScrypt, timingSafeEqual } from "node:crypto";
+import { createHmac, createHash, randomBytes, randomUUID, scrypt as nodeScrypt, timingSafeEqual } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { promisify } from "node:util";
@@ -73,15 +73,15 @@ const tableNames = new Set(["users", "profiles", "admin_invites", "products", "o
 function tableName(table: string) { if (!tableNames.has(table)) throw new Error("Tabela não permitida"); return tableAliases[table] || table; }
 function columnName(column: string) { if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(column)) throw new Error("Coluna inválida"); return column === "date" ? "date_value" : column; }
 function normalizeRow(row: any) { if (row && Object.prototype.hasOwnProperty.call(row, "date_value")) { row.date = row.date_value; delete row.date_value; } return row; }
-function denormalizeValues(values: Record<string, any>) { const result = { ...values }; if (Object.prototype.hasOwnProperty.call(result, "date")) { result.date_value = result.date; delete result.date; } if (!result.id && ["study_progress", "email_deliveries", "essay_submissions", "support_tickets", "assessment_attempts"].includes(String(result.__table))) result.id = randomBytes(16).toString("hex"); delete result.__table; return result; }
+function denormalizeValues(values: Record<string, any>) { const result = { ...values }; if (Object.prototype.hasOwnProperty.call(result, "date")) { result.date_value = result.date; delete result.date; } if (!result.id && ["study_progress", "email_deliveries", "essay_submissions", "support_tickets", "assessment_attempts"].includes(String(result.__table))) result.id = randomUUID(); delete result.__table; return result; }
 function quoteColumns(columns?: string) { if (!columns || columns.trim() === "*") return "*"; return columns.split(",").map((column) => `\`${columnName(column.trim())}\``).join(","); }
 
 class QueryBuilder implements PromiseLike<QueryResult> {
   private mode: "select" | "insert" | "update" | "delete" = "select";
   private values: Record<string, any>[] = []; private filters: Array<[string, any]> = []; private columns = "*"; private orderBy: [string, "ASC" | "DESC"] | null = null; private limitValue: number | null = null; private singleMode: "single" | "maybe" | null = null; private conflict: string | null = null;
-  private returningColumns: string | null = null;
+  private returningColumns: string | null = null; private countOnly = false;
   constructor(private readonly table: string) {}
-  select(columns = "*", options?: any) { void options; if (this.mode === "insert" || this.mode === "update") this.returningColumns = columns; else { this.mode = "select"; this.columns = columns; } return this; }
+  select(columns = "*", options?: any) { if (this.mode === "insert" || this.mode === "update") this.returningColumns = columns; else { this.mode = "select"; this.columns = columns; this.countOnly = options?.head === true && options?.count === "exact"; } return this; }
   insert(values: Record<string, any> | Record<string, any>[]) { this.mode = "insert"; this.values = (Array.isArray(values) ? values : [values]).map((v) => denormalizeValues({ ...v, __table: this.table })); return this; }
   update(values: Record<string, any>) { this.mode = "update"; this.values = [denormalizeValues({ ...values, __table: this.table })]; return this; }
   delete() { this.mode = "delete"; return this; }
@@ -97,11 +97,12 @@ class QueryBuilder implements PromiseLike<QueryResult> {
       const table = tableName(this.table); const pool = mysqlPool();
       if (this.mode === "select") {
         const where = this.filters.length ? ` WHERE ${this.filters.map(([column]) => `\`${column}\` = ?`).join(" AND ")}` : ""; const order = this.orderBy ? ` ORDER BY \`${this.orderBy[0]}\` ${this.orderBy[1]}` : ""; const limit = this.limitValue == null ? "" : ` LIMIT ${Math.max(0, Math.floor(this.limitValue))}`;
+        if (this.countOnly) { const [countRows] = await pool.query<any[]>(`SELECT COUNT(*) AS count FROM \`${table}\`${where}`, this.filters.map(([, value]) => value)); return { data: null, error: null, count: Number(countRows[0]?.count || 0) }; }
         const [rows] = await pool.query<any[]>(`SELECT ${quoteColumns(this.columns)} FROM \`${table}\`${where}${order}${limit}`, this.filters.map(([, value]) => value)); const data = rows.map(normalizeRow);
         if (this.singleMode && data.length !== 1) return { data: this.singleMode === "maybe" ? null : null, error: this.singleMode === "maybe" ? null : { message: "expected one row" } }; return { data: this.singleMode ? data[0] : data, error: null, count: data.length };
       }
       if (this.mode === "delete") { const where = this.filters.length ? ` WHERE ${this.filters.map(([column]) => `\`${column}\` = ?`).join(" AND ")}` : ""; await pool.query(`DELETE FROM \`${table}\`${where}`, this.filters.map(([, value]) => value)); return { data: null, error: null }; }
-      if (this.mode === "update") { const values = this.values[0] || {}; const entries = Object.entries(values); const where = this.filters.length ? ` WHERE ${this.filters.map(([column]) => `\`${column}\` = ?`).join(" AND ")}` : ""; await pool.query(`UPDATE \`${table}\` SET ${entries.map(([key]) => `\`${columnName(key)}\` = ?`).join(", ")}${where}`, [...entries.map(([, value]) => value), ...this.filters.map(([, value]) => value)]); return { data: null, error: null }; }
+      if (this.mode === "update") { const values = this.values[0] || {}; const entries = Object.entries(values); const where = this.filters.length ? ` WHERE ${this.filters.map(([column]) => `\`${column}\` = ?`).join(" AND ")}` : ""; const filterValues = this.filters.map(([, value]) => value); await pool.query(`UPDATE \`${table}\` SET ${entries.map(([key]) => `\`${columnName(key)}\` = ?`).join(", ")}${where}`, [...entries.map(([, value]) => value), ...filterValues]); if (this.returningColumns) { const [rows] = await pool.query<any[]>(`SELECT ${quoteColumns(this.returningColumns)} FROM \`${table}\`${where} LIMIT 1`, filterValues); const data = rows.map(normalizeRow); if (this.singleMode && data.length !== 1) return { data: this.singleMode === "maybe" ? null : null, error: this.singleMode === "maybe" ? null : { message: "expected one row" } }; return { data: this.singleMode ? data[0] : data, error: null, count: data.length }; } return { data: null, error: null }; }
       const returned: any[] = [];
       for (const values of this.values) { const entries = Object.entries(values); const keys = entries.map(([key]) => columnName(key)); let sql = `INSERT INTO \`${table}\` (${keys.map((key) => `\`${key}\``).join(",")}) VALUES (${keys.map(() => "?").join(",")})`; if (this.conflict) { const conflictColumns = this.conflict.split(",").map(columnName); const updates = entries.filter(([key]) => !conflictColumns.includes(columnName(key))).map(([key]) => `\`${columnName(key)}\` = VALUES(\`${columnName(key)}\`)`); if (updates.length) sql += ` ON DUPLICATE KEY UPDATE ${updates.join(", ")}`; } await pool.query(sql, entries.map(([, value]) => typeof value === "object" && value !== null ? JSON.stringify(value) : value)); if (this.returningColumns && values.id) { const [rows] = await pool.query<any[]>(`SELECT ${quoteColumns(this.returningColumns)} FROM \`${table}\` WHERE \`id\` = ? LIMIT 1`, [values.id]); returned.push(...rows.map(normalizeRow)); } }
       if (this.returningColumns) { if (this.singleMode && returned.length !== 1) return { data: this.singleMode === "maybe" ? null : null, error: this.singleMode === "maybe" ? null : { message: "expected one row" } }; return { data: this.singleMode ? returned[0] : returned, error: null, count: returned.length }; }
@@ -119,11 +120,11 @@ function createAuth() {
   return {
     async getUser() { const user = await currentUser(); return { data: { user }, error: user ? null : { message: "not_authenticated" } }; },
     async signInWithPassword(input: { email: string; password: string }) { const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); const user = rows[0]?.email_verified_at && await passwordMatches(input.password, rows[0].password_hash) ? { ...userRecord(rows[0]), must_change_password: await mustChangePassword(rows[0].id) } : null; if (!user) return { data: { user: null }, error: { message: "Invalid login credentials", status: 401 } }; if (!await setSession(user)) return { data: { user: null }, error: { message: "Não foi possível iniciar a sessão", status: 503 } }; return { data: { user }, error: null }; },
-    async signUp(input: { email: string; password: string; options?: { data?: { name?: string } } }) { const [existing] = await mysqlPool().query<any[]>("SELECT id FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); if (existing.length) return { data: { user: null, session: null }, error: { message: "User already registered", status: 409 } }; const user: UserRow = { id: randomBytes(16).toString("hex"), email: input.email.toLowerCase(), name: input.options?.data?.name || "Aluno", role: "student" }; await mysqlPool().query("INSERT INTO users (id,email,name,password_hash,role,email_verified_at) VALUES (?,?,?,?,?,NULL)", [user.id, user.email, user.name, await passwordHash(input.password), user.role]); const resetError = await issueResetEmail(user.email); if (resetError) { await mysqlPool().query("DELETE FROM users WHERE id = ?", [user.id]); return { data: { user: null, session: null }, error: resetError }; } return { data: { user, session: null }, error: null }; },
+    async signUp(input: { email: string; password: string; options?: { data?: { name?: string } } }) { const [existing] = await mysqlPool().query<any[]>("SELECT id FROM users WHERE email = ? LIMIT 1", [input.email.toLowerCase()]); if (existing.length) return { data: { user: null, session: null }, error: { message: "User already registered", status: 409 } }; const user: UserRow = { id: randomUUID(), email: input.email.toLowerCase(), name: input.options?.data?.name || "Aluno", role: "student" }; await mysqlPool().query("INSERT INTO users (id,email,name,password_hash,role,email_verified_at) VALUES (?,?,?,?,?,NULL)", [user.id, user.email, user.name, await passwordHash(input.password), user.role]); const resetError = await issueResetEmail(user.email); if (resetError) { await mysqlPool().query("DELETE FROM users WHERE id = ?", [user.id]); return { data: { user: null, session: null }, error: resetError }; } return { data: { user, session: null }, error: null }; },
     async signOut() { await setSession(null); return { error: null }; },
     async updateUser(input: { password: string }) { const user = await currentUser(); if (!user) return { error: { message: "session expired" } }; await mysqlPool().query("UPDATE users SET password_hash = ? WHERE id = ?", [await passwordHash(input.password), user.id]); try { await mysqlPool().query("UPDATE users SET must_change_password = FALSE WHERE id = ?", [user.id]); } catch { /* migration ainda não aplicada */ } return { error: null }; },
     async resetPasswordForEmail(email: string) { return { error: await issueResetEmail(email) }; },
-    admin: { async listUsers() { const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role FROM users ORDER BY created_at LIMIT 1000"); return { data: { users: rows }, error: null }; }, async createUser(input: { email: string; user_metadata?: { name?: string } }) { const user: UserRow = { id: randomBytes(16).toString("hex"), email: input.email.toLowerCase(), name: input.user_metadata?.name || "Aluno", role: "student" }; try { await mysqlPool().query("INSERT INTO users (id,email,name,role,email_verified_at) VALUES (?,?,?,?,NULL)", [user.id,user.email,user.name,user.role]); return { data: { user }, error: null }; } catch (error) { return { data: { user: null }, error }; } } },
+    admin: { async listUsers() { const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role FROM users ORDER BY created_at LIMIT 1000"); return { data: { users: rows }, error: null }; }, async createUser(input: { email: string; user_metadata?: { name?: string } }) { const user: UserRow = { id: randomUUID(), email: input.email.toLowerCase(), name: input.user_metadata?.name || "Aluno", role: "student" }; try { await mysqlPool().query("INSERT INTO users (id,email,name,role,email_verified_at) VALUES (?,?,?,?,NULL)", [user.id,user.email,user.name,user.role]); return { data: { user }, error: null }; } catch (error) { return { data: { user: null }, error }; } } },
   };
 }
 
@@ -134,32 +135,39 @@ async function rpcHandler(name: string, args: Record<string, any> = {}): Promise
   if (name === "claim_emails") {
     const leaseUntil = new Date(Date.now() + 10 * 60 * 1000);
     const [rows] = await mysqlPool().query<any[]>(
-      "SELECT id,order_id,email,attempts FROM email_deliveries WHERE status = 'pending' AND next_attempt <= CURRENT_TIMESTAMP(3) AND (leased_until IS NULL OR leased_until < CURRENT_TIMESTAMP(3)) ORDER BY created_at LIMIT 25",
+      "SELECT id,order_id,email,attempts FROM email_deliveries WHERE status IN ('pending','failed') AND next_attempt <= CURRENT_TIMESTAMP(3) AND (leased_until IS NULL OR leased_until < CURRENT_TIMESTAMP(3)) ORDER BY created_at LIMIT 25",
     );
+    const claimed: any[] = [];
     for (const row of rows) {
-      await mysqlPool().query(
-        "UPDATE email_deliveries SET status = 'processing', attempts = attempts + 1, leased_until = ? WHERE id = ? AND status = 'pending' AND (leased_until IS NULL OR leased_until < CURRENT_TIMESTAMP(3))",
+      const [result] = await mysqlPool().query<any>(
+        "UPDATE email_deliveries SET status = 'processing', attempts = attempts + 1, leased_until = ? WHERE id = ? AND status IN ('pending','failed') AND (leased_until IS NULL OR leased_until < CURRENT_TIMESTAMP(3))",
         [leaseUntil, row.id],
       );
+      if (result.affectedRows === 1) claimed.push({ ...row, attempts: Number(row.attempts || 0) + 1 });
     }
-    return { data: rows.map((row) => ({ ...row, attempts: Number(row.attempts || 0) + 1 })), error: null };
+    return { data: claimed, error: null };
   }
   if (name === "receive_payment") {
     if (args.p_event === "healthcheck") return { data: true, error: null };
     const event = String(args.p_event || ""); const data = args.p_data || {}; const id = String(data.id || data.order_id || randomBytes(16).toString("hex")); const matched = configuredCaktoOffer(data.product?.id, data.offer?.id); if (!matched) return { data: null, error: { message: "Oferta Cakto não configurada" } }; const plan = matched[0]; const customer = data.customer || {}; const email = String(customer.email || "").trim().toLowerCase();
     const [offerRows] = await mysqlPool().query<any[]>("SELECT plan FROM offers WHERE plan = ? AND cakto_product_id = ? AND cakto_offer_id = ? AND enabled = TRUE LIMIT 1", [plan, matched[1].productId, matched[1].offerId]);
-    if (!offerRows[0]) return { data: null, error: { message: "Oferta Cakto não está ativa" } };
     const connection = await mysqlPool().getConnection();
     try {
       await connection.beginTransaction();
-      const [existingRows] = await connection.query<any[]>("SELECT status FROM orders WHERE id = ? FOR UPDATE", [id]);
+      const [existingRows] = await connection.query<any[]>("SELECT status,email FROM orders WHERE id = ? FOR UPDATE", [id]);
       const currentStatus = existingRows[0]?.status as string | undefined;
+      if (existingRows[0] && String(existingRows[0].email || "").trim().toLowerCase() !== email) { await connection.rollback(); return { data: null, error: { message: "E-mail não corresponde ao pedido" } }; }
+      const historicalEvent = ["refund", "refund_requested", "chargeback", "dispute_defense_requested", "purchase_email_failed", "subscription_renewal_refused", "subscription_paused", "subscription_late", "subscription_canceled"].includes(event);
+      if (!offerRows[0] && (!historicalEvent || !existingRows[0])) return { data: null, error: { message: "Oferta Cakto não está ativa ou pedido histórico não existe" } };
+      const [users] = await connection.query<any[]>("SELECT id FROM users WHERE email = ? LIMIT 1", [email]);
+      const userId = users[0]?.id || null;
+      const [eventResult] = await connection.query<any>("INSERT IGNORE INTO payment_events (id,order_id,event,data) VALUES (?,?,?,?)", [`${id}:${event}`, id, event, JSON.stringify(data)]);
+      if (eventResult.affectedRows === 0) { await connection.commit(); return { data: id, error: null }; }
       const status = nextMysqlOrderStatus(currentStatus, event, data.status);
       const amount = Number(data.amount ?? data.baseAmount ?? 0);
       await connection.query("INSERT INTO orders (id,email,name,plan,amount,status) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE email=VALUES(email),name=VALUES(name),plan=VALUES(plan),amount=VALUES(amount),status=VALUES(status)", [id, email, String(customer.name || ""), plan, amount, status]);
-      await connection.query("INSERT IGNORE INTO payment_events (id,order_id,event,data) VALUES (?,?,?,?)", [`${id}:${event}`, id, event, JSON.stringify(data)]);
-      await connection.query("INSERT INTO entitlements (order_id,user_id,email,plan,active) VALUES (?,?,?, ?,?) ON DUPLICATE KEY UPDATE email=VALUES(email),plan=VALUES(plan),active=VALUES(active)", [id, null, email, plan, status === "paid"]);
-      await connection.query("INSERT INTO email_deliveries (id,order_id,email,status) VALUES (?,?,?,'pending') ON DUPLICATE KEY UPDATE email=VALUES(email),status=IF(email_deliveries.status IN ('accepted','access_ready'),email_deliveries.status,'pending'),last_error=NULL,leased_until=NULL", [randomBytes(16).toString("hex"), id, email]);
+      await connection.query("INSERT INTO entitlements (order_id,user_id,email,plan,active) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE user_id=COALESCE(VALUES(user_id),entitlements.user_id),email=VALUES(email),plan=VALUES(plan),active=VALUES(active)", [id, userId, email, plan, status === "paid"]);
+      await connection.query("INSERT INTO email_deliveries (id,order_id,email,status) VALUES (?,?,?,'pending') ON DUPLICATE KEY UPDATE email=VALUES(email)", [randomUUID(), id, email]);
       await connection.commit();
       return { data: id, error: null };
     } catch (error) {
