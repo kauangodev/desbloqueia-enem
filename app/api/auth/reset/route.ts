@@ -5,6 +5,7 @@ import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { mysqlPool } from "../../../../lib/mysql";
 import { jsonError, sameOrigin } from "../../../../lib/http";
 import { requiredSessionSecret } from "../../../../lib/security";
+import { sessionClient } from "../../../../lib/supabase";
 
 const scrypt = promisify(nodeScrypt);
 type ResetRow = RowDataPacket & { id: string };
@@ -17,11 +18,35 @@ export async function POST(req: Request) {
   const token = typeof input?.token === "string" ? input.token : "";
   const password = typeof input?.password === "string" ? input.password : "";
   if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) return jsonError("Use uma senha com letras e números.");
-  const [rows] = await mysqlPool().query<ResetRow[]>("SELECT id FROM users WHERE reset_token_hash = ? AND reset_token_expires_at > CURRENT_TIMESTAMP(3) LIMIT 1", [createHash("sha256").update(token).digest("hex")]);
-  if (!rows[0]) return jsonError("Este link de senha expirou. Solicite outro.", 410);
-  const [result] = await mysqlPool().query<ResultSetHeader>("UPDATE users SET password_hash = ?, email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP(3)), reset_token_hash = NULL, reset_token_expires_at = NULL WHERE id = ? AND reset_token_hash = ? AND reset_token_expires_at > CURRENT_TIMESTAMP(3)", [await hashPassword(password), rows[0].id, createHash("sha256").update(token).digest("hex")]);
-  if (!result.affectedRows) return jsonError("Este link de senha expirou. Solicite outro.", 410);
-  const response = NextResponse.json({ redirect: "/aluno" });
-  response.cookies.set("godev_session", sessionToken(rows[0].id), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 });
+  let userId = "";
+  if (token) {
+    const [rows] = await mysqlPool().query<ResetRow[]>("SELECT id FROM users WHERE reset_token_hash = ? AND reset_token_expires_at > CURRENT_TIMESTAMP(3) LIMIT 1", [createHash("sha256").update(token).digest("hex")]);
+    if (!rows[0]) return jsonError("Este link de senha expirou. Solicite outro.", 410);
+    userId = rows[0].id;
+  } else {
+    const db = await sessionClient();
+    const { data: current } = db ? await db.auth.getUser() : { data: { user: null } };
+    if (!current.user) return jsonError("Sessão de primeiro acesso ausente.", 401);
+    let rows: ResetRow[] = [];
+    try {
+      [rows] = await mysqlPool().query<ResetRow[]>("SELECT id FROM users WHERE id = ? AND must_change_password = TRUE LIMIT 1", [current.user.id]);
+    } catch {
+      return jsonError("A configuração de primeiro acesso ainda não foi aplicada.", 503);
+    }
+    if (!rows[0]) return jsonError("Este acesso não exige troca de senha.", 400);
+    userId = rows[0].id;
+  }
+  let result: ResultSetHeader;
+  try {
+    [result] = await mysqlPool().query<ResultSetHeader>("UPDATE users SET password_hash = ?, email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP(3)), must_change_password = FALSE, reset_token_hash = NULL, reset_token_expires_at = NULL WHERE id = ? AND (reset_token_hash = ? OR (? = '' AND must_change_password = TRUE))", [await hashPassword(password), userId, createHash("sha256").update(token).digest("hex"), token]);
+  } catch {
+    if (!token) return jsonError("A configuração de primeiro acesso ainda não foi aplicada.", 503);
+    [result] = await mysqlPool().query<ResultSetHeader>("UPDATE users SET password_hash = ?, email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP(3)), reset_token_hash = NULL, reset_token_expires_at = NULL WHERE id = ? AND reset_token_hash = ? AND reset_token_expires_at > CURRENT_TIMESTAMP(3)", [await hashPassword(password), userId, createHash("sha256").update(token).digest("hex")]);
+  }
+  if (!result.affectedRows) return jsonError("Este acesso de senha expirou. Solicite outro.", 410);
+  const [users] = await mysqlPool().query<RowDataPacket[]>("SELECT role FROM users WHERE id = ? LIMIT 1", [userId]);
+  const redirect = users[0]?.role === "admin" ? "/admin" : "/aluno";
+  const response = NextResponse.json({ redirect });
+  response.cookies.set("godev_session", sessionToken(userId), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 });
   return response;
 }

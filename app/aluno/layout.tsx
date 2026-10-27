@@ -11,6 +11,7 @@ export default async function StudentLayout({
 }) {
   const who = await identity();
   if (!who) redirect("/entrar");
+  if (who.user.must_change_password) redirect("/definir-senha?first=1");
   return (
     <div className="portal">
       <aside className="sidebar">
