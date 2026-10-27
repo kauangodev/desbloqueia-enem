@@ -70,6 +70,9 @@ export async function POST(req: Request) {
     const { data: signedIn, error } = await db.auth.signInWithPassword({ email: normalizedEmail, password });
     if (error) {
       console.error("auth_email_failed", { code: error.code, status: error.status });
+      if (error.status === 503) {
+        return jsonError("Serviço de autenticação temporariamente indisponível. Tente novamente em instantes.", 503);
+      }
       return jsonError(
         error.status === 429 ? "Muitas tentativas. Aguarde alguns minutos." : "E-mail ou senha inválidos.",
         error.status === 429 ? 429 : 401,
