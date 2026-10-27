@@ -42,7 +42,7 @@ export default function LoginForm({ configured }: { configured: boolean }) {
       {mode === "register" && (
         <label className="field">
           Seu nome
-          <input name="name" type="text" autoComplete="name" maxLength={120} placeholder="Kauan" />
+          <input name="name" type="text" autoComplete="name" maxLength={120} placeholder="Seu nome" />
         </label>
       )}
       <label className="field">
