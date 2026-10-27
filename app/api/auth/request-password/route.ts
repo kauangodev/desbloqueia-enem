@@ -14,11 +14,19 @@ export async function POST(req: Request) {
   const key = createHash("sha256").update(email).digest("hex");
   const { data: allowed } = await adminDb.rpc("take_rate_limit", { p_key: `password:${key}`, p_limit: 3, p_seconds: 900 });
   if (!allowed) return jsonError("Aguarde alguns minutos antes de tentar novamente.", 429);
-  let [{ data: entitlement }, { data: invite }, { data: admin }] = await Promise.all([
+  let [{ data: entitlement, error: entitlementError }, { data: invite, error: inviteError }, { data: admin, error: adminError }] = await Promise.all([
     adminDb.from("entitlements").select("user_id").eq("email", email).eq("active", true).limit(1).maybeSingle(),
     adminDb.from("admin_invites").select("name").eq("email", email).eq("active", true).maybeSingle(),
     adminDb.from("profiles").select("name,role").eq("email", email).eq("role", "admin").maybeSingle(),
   ]);
+  if (entitlementError || inviteError || adminError) {
+    console.error("auth_access_lookup_failed", {
+      entitlement: (entitlementError as { code?: string; errno?: number } | null)?.code || (entitlementError as { errno?: number } | null)?.errno || null,
+      invite: (inviteError as { code?: string; errno?: number } | null)?.code || (inviteError as { errno?: number } | null)?.errno || null,
+      admin: (adminError as { code?: string; errno?: number } | null)?.code || (adminError as { errno?: number } | null)?.errno || null,
+    });
+    return jsonError("Não foi possível verificar o acesso agora.", 503);
+  }
   const bootstrapEmail = process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase();
   let bootstrapped = false;
   if (process.env.ADMIN_BOOTSTRAP_ENABLED === "true" && bootstrapEmail === email && !entitlement) {

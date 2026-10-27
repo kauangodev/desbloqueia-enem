@@ -56,8 +56,14 @@ export async function POST(req: Request) {
         .eq("role", "admin")
         .maybeSingle(),
     ]);
-    if (entitlementError || inviteError || adminError)
+    if (entitlementError || inviteError || adminError) {
+      console.error("auth_access_lookup_failed", {
+        entitlement: (entitlementError as { code?: string; errno?: number } | null)?.code || (entitlementError as { errno?: number } | null)?.errno || null,
+        invite: (inviteError as { code?: string; errno?: number } | null)?.code || (inviteError as { errno?: number } | null)?.errno || null,
+        admin: (adminError as { code?: string; errno?: number } | null)?.code || (adminError as { errno?: number } | null)?.errno || null,
+      });
       return jsonError("Não foi possível verificar o acesso. Tente novamente mais tarde.", 503);
+    }
     if (!entitlement && !invite && !admin)
       return jsonError("E-mail ou senha inválidos.", 401);
     const { data: signedIn, error } = await db.auth.signInWithPassword({ email: normalizedEmail, password });
