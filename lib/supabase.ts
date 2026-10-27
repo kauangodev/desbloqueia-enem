@@ -114,7 +114,7 @@ const storageFile = (path: string) => join(storageRoot(), basename(path));
 const storageHandler = { from: (_bucket: string) => ({
   createSignedUrl: async (path: string) => ({ data: { signedUrl: `/api/storage?path=${encodeURIComponent(path)}` }, error: null }),
   download: async (path: string) => { try { const file = await readFile(storageFile(path)); return { data: new Blob([file], { type: "application/pdf" }), error: null }; } catch { return { data: null, error: { message: "Arquivo não encontrado" } }; } },
-  createSignedUploadUrl: async (path: string) => { await mkdir(storageRoot(), { recursive: true }); return { data: { path, token: sign(`upload:${path}`), signedUrl: `/api/storage/upload?path=${encodeURIComponent(path)}&token=${encodeURIComponent(sign(`upload:${path}`))}` }, error: null }; },
+  createSignedUploadUrl: async (path: string) => { await mkdir(storageRoot(), { recursive: true }); return { data: { path, token: sign(`upload:${path}`), signedUrl: `/api/storage?path=${encodeURIComponent(path)}&token=${encodeURIComponent(sign(`upload:${path}`))}&upload=1` }, error: null }; },
   upload: async (path: string, body: Buffer | Uint8Array) => { try { await mkdir(storageRoot(), { recursive: true }); await writeFile(storageFile(path), body); return { data: { path }, error: null }; } catch (error) { return { data: null, error }; } },
 }) };
 
