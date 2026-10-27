@@ -3,8 +3,16 @@ import mysql, { type Pool, type RowDataPacket } from "mysql2/promise";
 
 let pool: Pool | null = null;
 
+function envValue(...names: string[]) {
+  for (const name of names) {
+    const value = process.env[name]?.trim();
+    if (value) return value;
+  }
+  return undefined;
+}
+
 function required(name: string) {
-  const value = process.env[name]?.trim();
+  const value = envValue(name);
   if (!value) throw new Error(`Variável MySQL ausente: ${name}`);
   return value;
 }
@@ -15,26 +23,39 @@ function requiredSecret(name: string) {
   return value;
 }
 
+function mysqlPassword() {
+  return process.env.HOSTINGER_MYSQL_PASSWORD ?? process.env.DB_PASSWORD ?? requiredSecret("HOSTINGER_MYSQL_PASSWORD");
+}
+
 export function mysqlConfigured() {
   return Boolean(
-    process.env.HOSTINGER_MYSQL_HOST &&
-      process.env.HOSTINGER_MYSQL_DATABASE &&
-      process.env.HOSTINGER_MYSQL_USER &&
-      process.env.HOSTINGER_MYSQL_PASSWORD,
+    envValue("HOSTINGER_MYSQL_HOST", "DB_HOST") &&
+      envValue("HOSTINGER_MYSQL_DATABASE", "DB_NAME") &&
+      envValue("HOSTINGER_MYSQL_USER", "DB_USER") &&
+      (process.env.HOSTINGER_MYSQL_PASSWORD ?? process.env.DB_PASSWORD),
   );
+}
+
+function mysqlHost() {
+  return envValue("HOSTINGER_MYSQL_HOST", "DB_HOST") || "localhost";
+}
+
+function mysqlPort() {
+  return Number(envValue("HOSTINGER_MYSQL_PORT", "DB_PORT") || 3306);
 }
 
 export function mysqlPool() {
   if (!mysqlConfigured()) throw new Error("Banco MySQL não configurado");
   if (!pool) {
     pool = mysql.createPool({
-      host: required("HOSTINGER_MYSQL_HOST"),
-      port: Number(process.env.HOSTINGER_MYSQL_PORT || 3306),
-      database: required("HOSTINGER_MYSQL_DATABASE"),
-      user: required("HOSTINGER_MYSQL_USER"),
+      host: mysqlHost(),
+      port: mysqlPort(),
+      database: envValue("HOSTINGER_MYSQL_DATABASE", "DB_NAME") || required("HOSTINGER_MYSQL_DATABASE"),
+      user: envValue("HOSTINGER_MYSQL_USER", "DB_USER") || required("HOSTINGER_MYSQL_USER"),
       // mysql2 receives structured credentials; URL percent-encoding is neither
       // needed nor desirable here. Preserve the secret exactly as configured.
-      password: requiredSecret("HOSTINGER_MYSQL_PASSWORD"),
+      password: mysqlPassword(),
+      connectTimeout: 10_000,
       waitForConnections: true,
       connectionLimit: 5,
       queueLimit: 0,
