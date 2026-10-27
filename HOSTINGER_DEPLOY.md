@@ -41,3 +41,11 @@ Use `.env.example` como contrato. Os valores reais devem ser definidos no ambien
 ## Critério de aceite
 
 A migração só deve ser marcada como concluída quando um usuário de teste conseguir: criar conta, confirmar/recuperar senha, receber entitlement após webhook válido, acessar apenas o plano comprado, abrir arquivos protegidos, realizar atividade e ver seu resultado; e quando um administrador conseguir consultar CRM, auditoria, tickets e métricas sem contornar autorização.
+
+## Evidência da conta GoDevEducation (27/10/2026)
+
+O domínio está associado no hPanel ao plano exibido como **Unlimited Web Hosting**. A seção **Web Apps** existe, mas o botão **Criar site** aparece desabilitado e o painel oferece upgrade para **Cloud Startup**. O domínio atual foi criado como site comum; o diretório public_html está vazio.
+
+Isso não é uma incompatibilidade do Next.js. É uma diferença de tipo de site: a Hostinger informa que um site PHP/HTML já criado não pode ser convertido em Node.js no mesmo registro. O procedimento seguro é criar uma nova Web App Node.js, conectar o GitHub e testar em um endereço temporário/subdomínio. Somente após o build e os fluxos autenticados passarem, remover o site comum ou substituir o vínculo do domínio.
+
+Não aprovar upgrade, remoção ou troca de domínio automaticamente: essas ações podem gerar cobrança ou indisponibilidade. O plano compatível e a disponibilidade do botão devem ser confirmados no hPanel antes da etapa de publicação.
