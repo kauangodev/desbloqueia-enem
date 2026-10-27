@@ -1,9 +1,7 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // Hostinger's current Node runtime may expose an older glibc than the
-  // native Next SWC binary expects. Keep the build portable by using the
-  // official WASM compiler fallback bundled with the same Next release.
+  // native Next SWC binary expects. Use the official WASM compiler fallback.
   experimental: { useWasmBinary: true },
   poweredByHeader: false,
   outputFileTracingIncludes: { "/aluno/[section]": ["./data/library.json"] },
@@ -24,4 +22,5 @@ const nextConfig: NextConfig = {
     ];
   },
 };
+
 export default nextConfig;
