@@ -18,7 +18,7 @@ Nenhuma amostra interior foi designada como pública: a landing usa apenas as ca
 
 Referências consultadas: https://docs.cakto.com.br/conceitos/webhooks e https://www.cakto.com.br/api.
 
-- O catálogo de lançamento está em `config/cakto-products.json`: Essencial por R$ 19,90 e Premium por R$ 39,90, ambos em pagamento único. As descrições e benefícios refletem somente os materiais existentes.
+- O catálogo de lançamento está em `config/cakto-products.json`: Essencial por R$ 19,90 e Premium por R$ 32,90, ambos em pagamento único. As descrições e benefícios refletem somente os materiais existentes.
 - Os produtos de produção foram criados na Cakto em 23/10/2026. A migration `004_cakto_live_offers.sql` registra os IDs e links oficiais, mantendo as ofertas desativadas até a homologação completa da entrega.
 - As capas quadradas de checkout estão em `public/products/`. Depois de publicar o site, os arquivos ficam nos endereços definidos no catálogo e podem ser aplicados às ofertas.
 - Para conferir o plano sem alterar a conta, execute `npm run cakto:plan`. Para provisionar, use localmente `CAKTO_CLIENT_ID` e `CAKTO_CLIENT_SECRET` com escopos mínimos de leitura/escrita para produtos, ofertas e webhooks, então execute `npm run cakto:provision`. O script reutiliza produtos com o mesmo nome, cria os ausentes, atualiza as ofertas, vincula as capas e cadastra o webhook.
@@ -34,7 +34,7 @@ Referências consultadas: https://docs.cakto.com.br/conceitos/webhooks e https:/
 
 ## 3. E-mail e fila
 
-O acesso não depende de Resend: após um webhook pago, o comprador usa o mesmo e-mail da Cakto e o Supabase Auth envia um link seguro. `RESEND_API_KEY`, `EMAIL_FROM` (domínio verificado) e `CRON_SECRET` são opcionais e servem apenas para uma mensagem de boas-vindas personalizada. Se usados, configure um agendador para chamar `GET /api/jobs/fulfillment` com `Authorization: Bearer <CRON_SECRET>` a cada 5 minutos.
+O acesso não depende de Resend nem de um link recorrente: após um webhook pago, o comprador usa o mesmo e-mail da Cakto e pode definir uma senha no próprio site. SMTP/Resend são opcionais apenas para mensagens de boas-vindas ou recuperação. `RESEND_API_KEY`, `EMAIL_FROM` (domínio verificado) e `CRON_SECRET` são opcionais e servem apenas para uma mensagem de boas-vindas personalizada. Se usados, configure um agendador para chamar `GET /api/jobs/fulfillment` com `Authorization: Bearer <CRON_SECRET>` a cada 5 minutos.
 
 O worker cria/vincula a conta, liga direitos ao usuário e envia instruções. O login em si usa Supabase Auth/SMTP e PKCE. E-mail transacional contém link para `/entrar`, nunca senha. Fila persistente, lease de cinco minutos, backoff e limite de oito tentativas. Admin pode reenfileirar. `accepted` significa aceitação pelo Resend, não entrega comprovada. Monitore falhas e configure alertas operacionais no provedor. O Resend deduplica por ID de entrega; após sua janela de retenção, retry pode gerar nova mensagem.
 
@@ -48,7 +48,7 @@ O suporte foi iniciado com responsável `Kauan` e `kauango.dev@gmail.com`. Ainda
 
 Meta Pixel e GA opcionais, carregados após consentimento; IDs em `.env.example`. ViewContent e InitiateCheckout são preparados. Não há evento Purchase no navegador. Configure Purchase na Cakto como única fonte; se migrar para CAPI, utilize ID do pedido e desative a outra fonte antes. As UTMs são guardadas apenas após consentimento. Não há credencial de marketing no backend.
 
-Somente após validar compra de homologação, link de login, leitor, upload, cancelamento e privilégios em um Supabase configurado, ative ofertas e `CHECKOUT_ENABLED=true`. A API exige Supabase, secret do webhook, oferta e dados de suporte; e-mail de boas-vindas e worker são opcionais. A flag não é atestado de homologação.
+Somente após validar compra de homologação, criação de senha, leitor, upload, cancelamento e privilégios em um Supabase configurado, ative ofertas e `CHECKOUT_ENABLED=true`. A API exige Supabase, secret do webhook, oferta e dados de suporte; e-mail de boas-vindas e worker são opcionais. A flag não é atestado de homologação.
 
 ## Validação e limites da entrega
 
