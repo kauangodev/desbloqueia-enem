@@ -53,15 +53,6 @@ export async function POST(req: Request) {
         return jsonError("Estado incompatível", 422);
       const fallback = configuredCaktoOffer(order.product.id, order.offer.id);
       if (!fallback) return jsonError("Produto ou oferta Cakto não configurado", 422);
-      {
-        await db.from("offers").upsert({
-          plan: fallback[0],
-          cakto_product_id: fallback[1].productId,
-          cakto_offer_id: fallback[1].offerId,
-          checkout_url: fallback[1].checkoutUrl,
-          enabled: true,
-        }, { onConflict: "plan" });
-      }
       const { error } = await db.rpc("receive_payment", {
         p_event: payload.event,
         p_data: order,
@@ -77,5 +68,6 @@ export async function POST(req: Request) {
     return jsonError("Banco indisponível; reenvie pelo painel Cakto", 503);
   }
 }
+
 
 
