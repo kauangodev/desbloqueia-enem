@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "node scripts/ensure-runtime-deps.mjs",
     "dev": "node scripts/pdf-worker.mjs && next dev",
     "build": "node scripts/pdf-worker.mjs && next build --webpack",
     "start": "next start",
