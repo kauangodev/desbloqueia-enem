@@ -18,7 +18,12 @@ export async function publicPlans() {
       name: p.name,
       description: p.description,
       cents: legacyPremium && configured ? configured.cents : p.price_cents,
-      features: legacyPremium && configured ? [...configured.features] : (p.features as string[]),
+      features: (legacyPremium && configured ? [...configured.features] : (p.features as string[])).map((feature) =>
+        feature.replace(
+          "Biblioteca navegável com 1.800 referências",
+          "Biblioteca histórica com 1.800 questões de referência",
+        ),
+      ),
     };
   });
 }
