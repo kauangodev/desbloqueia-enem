@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "GoDev Education",
-    images: ["/covers/kit.png"],
+    images: ["/covers/enem-2026/16-redacao.png"],
   },
 };
 

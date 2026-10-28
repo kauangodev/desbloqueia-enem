@@ -1,3 +1,5 @@
+import { ebookMaterials } from "./ebook-catalog";
+
 export const brand = {
   name: "GoDev Education",
   product: "Desbloqueia ENEM 2026",
@@ -11,7 +13,7 @@ export const plans = [
     cents: 1990,
     description: "Uma base clara para retomar o que importa.",
     features: [
-      "Resumos estratégicos das quatro áreas do ENEM",
+      "E-books essenciais de Linguagens, Humanas, Natureza e Matemática",
       "Cronograma e mapa da revisão",
       "40 exercícios comentados para fixação",
       "Leitura online no celular, tablet ou computador",
@@ -24,11 +26,11 @@ export const plans = [
     description: "Mais prática. Mais repertório. Tudo conectado.",
     features: [
       "Tudo do Essencial",
-      "Kit completo de revisão com 87 páginas",
+      "Coleção completa com 16 e-books didáticos de 34 páginas",
       "2.100 questões autorais no estilo ENEM",
       "30 simulados com 600 questões",
       "60 listas de exercícios com 1.500 questões",
-      "Preparação para redação",
+      "E-book de Redação; correção automática em manutenção",
       "Biblioteca histórica com 1.800 questões de referência",
       "Fichas e checklists para a reta final",
     ],
@@ -49,60 +51,5 @@ export const caktoFallbackOffers = {
 export type Plan = "essencial" | "premium";
 export const money = (cents: number) =>
   (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-export const materials = [
-  {
-    id: "guia",
-    title: "Mapa da revisão",
-    category: "Cronograma",
-    description: "Prioridades de estudo e curadoria pedagógica.",
-    pages: 12,
-    plan: "essencial",
-    cover: "/covers/editorial-v3/guia.jpg",
-  },
-  {
-    id: "linguagens",
-    title: "Linguagens & Redação",
-    category: "Linguagens",
-    description: "Leitura, interpretação e construção de argumentos.",
-    pages: 13,
-    plan: "essencial",
-    cover: "/covers/editorial-v3/linguagens.jpg",
-  },
-  {
-    id: "humanas",
-    title: "Ciências Humanas",
-    category: "Humanas",
-    description: "Contextos, conceitos e conexões para sua revisão.",
-    pages: 15,
-    plan: "essencial",
-    cover: "/covers/editorial-v3/humanas.jpg",
-  },
-  {
-    id: "natureza",
-    title: "Ciências da Natureza",
-    category: "Natureza",
-    description: "Fundamentos, exemplos resolvidos e alertas de prova.",
-    pages: 15,
-    plan: "essencial",
-    cover: "/covers/editorial-v3/natureza.jpg",
-  },
-  {
-    id: "matematica",
-    title: "Matemática",
-    category: "Matemática",
-    description: "Raciocínio e prática, uma etapa de cada vez.",
-    pages: 14,
-    plan: "essencial",
-    cover: "/covers/editorial-v3/matematica.jpg",
-  },
-  {
-    id: "kit",
-    title: "Kit completo de revisão",
-    category: "Simulados",
-    description: "Revisão, exercícios, simulados e redação em um volume.",
-    pages: 87,
-    plan: "premium",
-    cover: "/covers/editorial-v3/kit.jpg",
-  },
-] as const;
+export const materials = ebookMaterials;
 

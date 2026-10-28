@@ -53,23 +53,23 @@ export default async function Home() {
                 para aprender.
               </h2>
               <p>
-                Conheça as capas dos materiais reais.
+                Conheça as capas dos 16 e-books didáticos reais.
                 <br />
                 Uma coleção organizada por área,
                 <br />
-                com conteúdo para consultar no seu ritmo.
+                com 34 páginas por disciplina para consultar no seu ritmo.
               </p>
             </div>
             <MaterialPreview />
             <div className="library-note">
               <span>2016 — 2025</span>
               <p>
-                <b>A história da prova também ensina.</b> O Premium inclui a
-                biblioteca navegável de referências do ENEM, com filtros, fontes
-                oficiais e indicação do que já foi resolvido.
+                <b>Conteúdo didático e prática ficam separados.</b> Os e-books
+                apresentam a teoria; exercícios, simulados e histórico continuam
+                nos módulos interativos da plataforma.
               </p>
               <span>
-                2.100 questões autorais
+                16 e-books didáticos
                 <br />30 simulados · 60 listas
                 <br />1.800 questões de referência
               </span>

@@ -11,4 +11,4 @@ Next.js existente. Planos Essencial R$19,90 e Premium R$32,90. Integrações ext
 ## Brand Commitments
 GoDev Education é a empresa; Desbloqueia ENEM 2026 é o produto. Logo oficial não localizado nos arquivos recebidos; identificação textual provisória.
 ## Evidence on Hand
-Seis capas reais de PDFs. Biblioteca histórica com 1.800 posições e sete resoluções autorais. PDFs pagos nunca em public/.
+Dezesseis capas reais de e-books didáticos de 34 páginas. A biblioteca histórica com 1.800 referências e os exercícios ficam em módulos próprios. PDFs pagos nunca em public/.
