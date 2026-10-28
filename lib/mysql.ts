@@ -72,3 +72,4 @@ export async function mysqlHealth() {
   const [rows] = await mysqlPool().query<RowDataPacket[]>("select 1 as ok");
   return rows[0]?.ok === 1;
 }
+

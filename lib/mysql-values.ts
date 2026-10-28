@@ -30,3 +30,4 @@ export const mysqlPrimaryKeys: Record<string, string> = {
   offers: "plan",
   admin_invites: "email",
 };
+

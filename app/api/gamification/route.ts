@@ -42,3 +42,4 @@ export async function POST(request: Request) {
     return jsonError("Gamificação indisponível no momento.", 503);
   }
 }
+

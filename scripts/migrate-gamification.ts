@@ -44,3 +44,4 @@ async function main() {
   }
 }
 main().catch(() => { console.error("Não foi possível verificar/aplicar a migração. Confira acesso, permissões e schema no servidor; credenciais não são registradas."); process.exitCode = 1; }).finally(() => pool.end());
+

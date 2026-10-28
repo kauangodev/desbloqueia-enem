@@ -205,3 +205,4 @@ export async function identity() {
   return { db, user, profile: profile ? { ...profile, role: normalizedRole(profile.role) } : profile };
 }
 export async function canAccess(plan: string) { const who = await identity(); if (!who) return null; if (who.profile?.role === "admin") return who; const { data } = await who.db.from("entitlements").select("plan").eq("user_id", who.user.id).eq("active", true); return data?.some((e: { plan: string }) => e.plan === "premium" || e.plan === plan) ? who : null; }
+

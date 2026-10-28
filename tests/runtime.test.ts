@@ -38,3 +38,4 @@ test("leitor e build publicam o mesmo worker PDF.js", () => {
   assert.ok(reader.includes('/vendor/pdf.worker.min.js'));
   assert.ok(generator.includes('public/vendor/pdf.worker.min.mjs'));
 });
+

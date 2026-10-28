@@ -49,3 +49,4 @@ async function mutate(req: Request) {
 export const POST = mutate;
 export const PATCH = mutate;
 export const DELETE = mutate;
+

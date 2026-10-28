@@ -20,3 +20,4 @@ export function summarizeStudyDays(days: string[], today: string) {
   }
   return { studyDays: unique.length, streak };
 }
+

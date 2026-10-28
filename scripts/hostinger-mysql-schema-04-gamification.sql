@@ -22,3 +22,4 @@ create table if not exists gamification_goals (
   updated_at datetime(3) not null default current_timestamp(3) on update current_timestamp(3),
   constraint gamification_goals_user_fk foreign key (user_id) references users(id) on delete cascade
 ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
+

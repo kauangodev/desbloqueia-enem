@@ -70,3 +70,4 @@ export async function POST(req: Request) {
   return NextResponse.json({ message: "Enviamos as instruções para criar ou trocar sua senha. Confira sua caixa de entrada e o spam." });
 }
 
+

@@ -25,3 +25,4 @@ export async function GET(request: Request) {
   const mysql = !offersError && rpcAvailable && Object.values(offerStatus).every(Boolean);
   return NextResponse.json({ ok: mysql && checkoutConfigured(), checkout: checkoutConfigured(), mysql, receivePaymentFunction: rpcAvailable, offers: offerStatus, webhook: process.env.CAKTO_WEBHOOK_ENABLED === "true" && Boolean(process.env.CAKTO_WEBHOOK_SECRET) }, { status: mysql && checkoutConfigured() ? 200 : 503, headers: { "cache-control": "no-store" } });
 }
+

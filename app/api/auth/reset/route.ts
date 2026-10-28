@@ -53,3 +53,4 @@ export async function POST(req: Request) {
   response.cookies.set("godev_session", sessionToken(userId, role, false), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 });
   return response;
 }
+
