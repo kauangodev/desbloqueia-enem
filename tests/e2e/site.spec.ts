@@ -69,7 +69,23 @@ for (const viewport of viewports)
       ),
     ).toBeTruthy();
     if (viewport.width <= 760) {
-      await page.getByRole("button", { name: "Abrir menu" }).click();
+      const menu = page.getByRole("button", { name: "Abrir menu" });
+      const menuBox = await menu.boundingBox();
+      expect(menuBox?.width).toBeGreaterThanOrEqual(43.5);
+      expect(menuBox?.height).toBeGreaterThanOrEqual(43.5);
+      const loginBox = await page.getByRole("link", { name: "Entrar" }).boundingBox();
+      expect(loginBox?.height).toBeGreaterThanOrEqual(43.5);
+      for (const control of await page.locator(".hero .actions a").all()) {
+        const box = await control.boundingBox();
+        expect(box?.height).toBeGreaterThanOrEqual(43.5);
+        expect(box?.width).toBeGreaterThan(0);
+      }
+      for (const control of await page.locator(".catalog-arrow").all()) {
+        const box = await control.boundingBox();
+        expect(box?.width).toBeGreaterThanOrEqual(43.5);
+        expect(box?.height).toBeGreaterThanOrEqual(43.5);
+      }
+      await menu.click();
       await page
         .locator(".nav")
         .getByRole("link", { name: "Materiais", exact: true })
@@ -213,3 +229,4 @@ test("políticas e suporte têm rotas reais", async ({ page }) => {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   }
 });
+
