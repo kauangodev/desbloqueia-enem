@@ -12,10 +12,12 @@ import ActivityCatalog from "../../../components/activity-catalog";
 import Resources, { type Material } from "../../../components/resources";
 import { questionBank, questionsFor, questionsForCollection } from "../../../data/question-bank";
 import type { Question } from "../../../data/question-bank";
+import { officialMaterials } from "../../../data/official-exams";
 type Identity = NonNullable<Awaited<ReturnType<typeof identity>>>;
 async function officialMaterialsFor(who: Identity, day: 1 | 2): Promise<Material[]> {
   const { data } = await who.db.from("materials").select("*").eq("published", true).eq("category", "Provas oficiais");
-  return (data || []).filter((item: Material) => item.title.includes(`${day === 1 ? "1º" : "2º"} dia`));
+  const databaseItems = (data || []).filter((item: Material) => item.title.includes(`${day === 1 ? "1º" : "2º"} dia`));
+  return databaseItems.length ? databaseItems : officialMaterials.filter((item) => item.title.includes(`${day === 1 ? "1º" : "2º"} dia`));
 }
 function OfficialMaterials({ group, materials }: { group: string; materials: Material[] }) {
   if (!materials.length) return null;
@@ -246,7 +248,7 @@ export default async function Section({
     const entries = JSON.parse(
       await readFile(path.join(process.cwd(), "data/library.json"), "utf8"),
     );
-    const { data: officialMaterials } = await who.db
+    const { data: officialDatabaseMaterials } = await who.db
       .from("materials")
       .select("*")
       .eq("published", true)
@@ -262,7 +264,7 @@ export default async function Section({
             <p>Abra o caderno e, logo abaixo, o gabarito correspondente ao mesmo ano e dia.</p>
           </div>
         </div>
-        <Resources items={officialMaterials || []} />
+        <Resources items={officialDatabaseMaterials?.length ? officialDatabaseMaterials : officialMaterials} />
       </section>
     </>;
   } else if (section === "cronograma") {

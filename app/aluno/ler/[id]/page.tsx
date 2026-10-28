@@ -1,6 +1,7 @@
 import { identity, canAccess } from "../../../../lib/supabase";
 import { notFound } from "next/navigation";
 import PdfReader from "../../../../components/pdf-reader";
+import { officialMaterials } from "../../../../data/official-exams";
 export default async function Read({
   params,
 }: {
@@ -15,7 +16,8 @@ export default async function Read({
     .eq("id", id)
     .eq("published", true)
     .maybeSingle();
-  if (!m || !(await canAccess(m.plan))) notFound();
+  const material = m || officialMaterials.find((item) => item.id === id);
+  if (!material || !(await canAccess(material.plan))) notFound();
   const { data: p } = await who.db
     .from("reading_progress")
     .select("page")
@@ -24,12 +26,12 @@ export default async function Read({
     .maybeSingle();
   return (
     <>
-      <h1 className="page-title">{m.title}</h1>
-      <p>{m.description}</p>
+      <h1 className="page-title">{material.title}</h1>
+      <p>{material.description}</p>
       <PdfReader
         id={id}
         initialPage={p?.page || 1}
-        downloadable={m.downloadable}
+        downloadable={material.downloadable}
       />
     </>
   );

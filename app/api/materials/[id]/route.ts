@@ -2,6 +2,7 @@ import { identity, canAccess, serviceClient } from "../../../../lib/supabase";
 import { jsonError, sameOrigin } from "../../../../lib/http";
 import { NextResponse } from "next/server";
 import { recordGamificationEvent } from "../../../../lib/gamification";
+import { officialMaterials } from "../../../../data/official-exams";
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -15,16 +16,17 @@ export async function GET(
     .eq("id", id)
     .eq("published", true)
     .maybeSingle();
-  if (!m || !(await canAccess(m.plan)))
+  const material = m || officialMaterials.find((item) => item.id === id);
+  if (!material || !(await canAccess(material.plan)))
     return jsonError("Material não disponível para esta conta.", 403);
-  if (!m.storage_path) return jsonError("Arquivo ainda não publicado.", 404);
+  if (!material.storage_path) return jsonError("Arquivo ainda não publicado.", 404);
   const download = new URL(req.url).searchParams.get("download") === "1";
   if (download)
     return jsonError("O material é disponibilizado exclusivamente no leitor da plataforma.", 403);
   const { data, error } = await serviceClient()
     .storage.from("materials")
-    .createSignedUrl(m.storage_path, 60, {
-      download: download ? `${m.id}.pdf` : false,
+    .createSignedUrl(material.storage_path, 60, {
+      download: download ? `${material.id}.pdf` : false,
     });
   if (error || !data)
     return jsonError("Não foi possível abrir o arquivo. Tente novamente.", 503);
@@ -43,14 +45,16 @@ export async function POST(
   const { id } = await params;
   const { data: m } = await who.db
     .from("materials")
-    .select("pages,plan")
+      .select("pages,plan")
     .eq("id", id)
     .eq("published", true)
     .maybeSingle();
-  if (!m || !(await canAccess(m.plan))) return jsonError("Não autorizado", 403);
+  const material = m || officialMaterials.find((item) => item.id === id);
+  if (!material || !(await canAccess(material.plan))) return jsonError("Não autorizado", 403);
   const { page } = await req.json().catch(() => ({}));
-  if (!Number.isInteger(page) || page < 1 || page > m.pages)
+  if (!Number.isInteger(page) || page < 1 || page > material.pages)
     return jsonError("Página inválida");
+  if (!m) return NextResponse.json({ saved: false, catalogFallback: true });
   const { error } = await who.db
     .from("reading_progress")
     .upsert({
@@ -59,7 +63,7 @@ export async function POST(
       page,
       updated_at: new Date().toISOString(),
     });
-  if (!error && page === m.pages) await recordGamificationEvent(who.user.id, "reading_completed", id);
+  if (!error && page === material.pages) await recordGamificationEvent(who.user.id, "reading_completed", id);
   return error
     ? jsonError("Não foi possível salvar.", 503)
     : NextResponse.json({ saved: true });
