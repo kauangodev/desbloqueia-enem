@@ -220,67 +220,6 @@
   letter-spacing: -0.02em;
 }
 
-.annotations {
-  position: absolute;
-  inset: 0;
-  z-index: 110;
-  pointer-events: none;
-  opacity: 0.78;
-}
-
-.annotation {
-  position: absolute;
-  color: var(--forest);
-  font-family: var(--font-caveat), cursive;
-  font-size: clamp(20px, 1.7vw, 28px);
-  font-weight: 600;
-  line-height: 1;
-  animation: noteIn 460ms 980ms ease both;
-}
-
-.annotation span {
-  display: block;
-  white-space: nowrap;
-}
-
-.annotation svg {
-  display: block;
-  overflow: visible;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
-}
-
-.annotation svg path {
-  stroke-dasharray: 160;
-  stroke-dashoffset: 160;
-  animation: draw 900ms 1.08s cubic-bezier(0.5, 0, 0.2, 1) forwards;
-}
-
-.annotationLeft {
-  left: clamp(30px, 7vw, 118px);
-  top: 16px;
-  transform: rotate(-7deg);
-}
-
-.annotationLeft svg {
-  width: 92px;
-  margin: 5px 0 0 58px;
-}
-
-.annotationRight {
-  right: clamp(30px, 6vw, 106px);
-  top: 3px;
-  transform: rotate(4deg);
-}
-
-.annotationRight svg {
-  width: 102px;
-  margin: 4px 0 0 12px;
-}
-
 .actions {
   position: relative;
   z-index: 4;
@@ -362,16 +301,6 @@
   transform: rotate(-4deg);
 }
 
-.supportLine {
-  position: relative;
-  z-index: 3;
-  margin: 24px auto 0;
-  color: var(--color-text-secondary);
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  text-align: center;
-}
-
 @keyframes lineIn {
   from { opacity: 0; filter: blur(5px); transform: translateY(30px); }
   to { opacity: 1; filter: blur(0); transform: translateY(0); }
@@ -380,15 +309,6 @@
 @keyframes riseIn {
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes noteIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes draw {
-  to { stroke-dashoffset: 0; }
 }
 
 @keyframes ctaIn {
@@ -436,21 +356,6 @@
 
   .arrow { width: 38px; height: 38px; font-size: 26px; }
 
-  .annotationLeft {
-    left: 20px;
-    top: 9px;
-    font-size: 19px;
-  }
-
-  .annotationLeft svg {
-    width: 66px;
-    margin-left: 38px;
-  }
-
-  .annotationRight {
-    display: none;
-  }
-
   .actions {
     flex-direction: column;
     gap: 10px;
@@ -469,10 +374,6 @@
     display: none;
   }
 
-  .supportLine {
-    width: calc(100% - 40px);
-    margin-top: 18px;
-  }
 }
 
 @media (max-width: 430px) {
@@ -487,15 +388,6 @@
 
   .intro > p {
     max-width: 358px;
-  }
-
-  .annotationLeft {
-    top: 5px;
-    font-size: 17px;
-  }
-
-  .annotationLeft svg {
-    width: 54px;
   }
 
   .card figcaption {
@@ -525,14 +417,8 @@
   .intro h1 span,
   .intro > p,
   .stage,
-  .annotation,
-  .annotation svg path,
   .actions {
     animation: none;
-  }
-
-  .annotation svg path {
-    stroke-dashoffset: 0;
   }
 
   .carousel {

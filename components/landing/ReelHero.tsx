@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { CurvedMaterialCarousel } from "./CurvedMaterialCarousel";
-import { HeroAnnotations } from "./HeroAnnotations";
 import styles from "./reel-hero.module.css";
 
 export function ReelHero() {
@@ -20,7 +19,6 @@ export function ReelHero() {
       </div>
 
       <div className={styles.stage}>
-        <HeroAnnotations />
         <CurvedMaterialCarousel />
       </div>
 
@@ -37,9 +35,6 @@ export function ReelHero() {
           Estude no seu ritmo
         </span>
       </div>
-      <p className={styles.supportLine}>
-        Materiais digitais para estudar do celular ao computador.
-      </p>
     </section>
   );
 }

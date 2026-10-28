@@ -214,16 +214,6 @@ export default async function Home() {
           </div>
           <FAQ />
         </section>
-        <section className="closing container">
-          <h2>
-            Um próximo passo.
-            <br />
-            Uma revisão mais organizada.
-          </h2>
-          <Link href="#planos" className="button primary">
-            Encontrar meu plano
-          </Link>
-        </section>
       </main>
       <Footer />
     </>
