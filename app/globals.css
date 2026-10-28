@@ -3143,3 +3143,111 @@ th {
   .student-secondary-action,
   .student-dashboard .resource { transition: none; }
 }
+
+/* GoDev Education visual system v2: dark study-room surfaces, restrained neon, clear focus. */
+:root {
+  --bg: #070b09;
+  --surface: #101a14;
+  --ink: #f4f8f2;
+  --muted: #a9bbb0;
+  --navy: #b7ff3c;
+  --blue: #32d583;
+  --teal: #32d583;
+  --lime: #b7ff3c;
+  --line: rgb(183 255 60 / 16%);
+  --radius: 16px;
+}
+body { background: var(--bg); color: var(--ink); }
+p { color: var(--muted); }
+h1, h2, h3 { color: var(--ink); }
+::selection { background: var(--lime); color: #071009; }
+:focus-visible { outline-color: var(--lime); }
+.container { width: min(1240px, calc(100% - 40px)); }
+.site-header { background: rgb(7 11 9 / 86%); border-bottom-color: rgb(183 255 60 / 14%); backdrop-filter: blur(18px); }
+.brand { color: var(--ink); }
+.brand b > span { color: var(--lime); }
+.brand-sub { border-left-color: rgb(244 248 242 / 24%); color: var(--muted); }
+.nav { border-color: rgb(183 255 60 / 16%); background: rgb(16 26 20 / 76%); box-shadow: 0 10px 30px rgb(0 0 0 / 18%); }
+.nav a { color: #dff7e5; }
+.nav a:hover, .nav a:focus-visible { background: rgb(183 255 60 / 14%); color: var(--lime); }
+.login-link { background: var(--lime); color: #071009; box-shadow: 0 10px 28px rgb(183 255 60 / 16%); }
+.login-link:hover, .login-link:focus-visible { background: #d2ff79; color: #071009; }
+.menu-button { color: var(--ink); }
+.discipline-strip { border-color: var(--line); background: #0b120e; }
+.discipline-group span { color: #c9e5d0; }
+.intro-section, .study-section, .faq-section { color: var(--ink); }
+.intro-section .benefit-lines p, .outline-top, .outline-row { border-color: var(--line); }
+.benefit-lines b, .outline-row b, .outline-top b { color: var(--ink); }
+.materials-section { background: #0b120e; }
+.section-heading p, .library-note > span, .library-note p { color: var(--muted); }
+.material-index-heading, .material-index-heading small { color: #b7ff3c; }
+.material-index button { border-color: rgb(183 255 60 / 14%); background: rgb(16 26 20 / 88%); color: var(--muted); }
+.material-index button > span:first-child { background: rgb(183 255 60 / 12%); color: var(--lime); }
+.material-index button[aria-selected="true"] { border-color: var(--lime); background: var(--lime); color: #071009; }
+.material-index button[aria-selected="true"] > span:first-child { background: #071009; color: var(--lime); }
+.material-index button[aria-selected="true"] small { color: #071009; }
+.material-index button:hover:not([aria-selected="true"]) { border-color: rgb(183 255 60 / 34%); background: #15231a; }
+.material-stage { background: #101a14; border: 1px solid var(--line); }
+.preview-paper img { box-shadow: 8px 14px 26px rgb(0 0 0 / 38%); }
+.preview-caption b, .library-note b { color: var(--ink); }
+.library-note { border-color: var(--line); }
+.study-outline, .price-card, .faq-list details { background: var(--surface); border-color: var(--line); box-shadow: 0 18px 42px rgb(0 0 0 / 20%); }
+.pricing-section { background: #070b09; }
+.plan-title > span { background: var(--lime); color: #071009; }
+.price-card > p, .plan-benefit { color: var(--muted); }
+.price-card ul li { color: #dff7e5; }
+.button.primary { background: var(--lime); color: #071009; }
+.button.primary:hover { background: #d2ff79; }
+.button.secondary { border-color: rgb(183 255 60 / 28%); background: transparent; color: var(--lime); }
+.button.lime { background: var(--lime); color: #071009; }
+.button.secondary:hover { background: rgb(183 255 60 / 10%); }
+.guarantee { border-color: var(--line); background: #101a14; }
+.faq-list details summary { color: var(--ink); }
+.faq-list details p { color: var(--muted); }
+.site-footer { border-top-color: var(--line); background: #050806; color: var(--ink); }
+.site-footer p, .footer-bottom { color: var(--muted); }
+.site-footer a { color: #dff7e5; }
+.site-footer a:hover { color: var(--lime); }
+.portal { background: #070b09; }
+.portal .sidebar { background: #0b120e; border-right-color: var(--line); }
+.portal .sidebar .brand { color: var(--ink); }
+.portal .sidebar nav a { color: #b7c9bc; }
+.portal .sidebar nav a:hover, .portal .sidebar nav a:focus-visible { background: rgb(183 255 60 / 10%); color: var(--lime); }
+.portal .sidebar nav a[aria-current="page"] { background: var(--lime); color: #071009; }
+.portal .sidebar nav a[aria-current="page"] .portal-nav-icon { background: #071009; color: var(--lime); }
+.portal .sidebar .portal-admin-link { color: var(--lime); border-top-color: var(--line); }
+.portal .workspace { background: #070b09; }
+.portal .workspace-bar { border-color: var(--line); color: var(--muted); }
+.portal .workspace-bar span:first-child { color: var(--lime); }
+.student-welcome, .student-stat-card, .student-continue-card, .student-profile-card, .student-context-section, .student-dashboard .resource { background: var(--surface); border-color: var(--line); box-shadow: 0 18px 42px rgb(0 0 0 / 20%); }
+.student-welcome { background: linear-gradient(120deg, #101a14, #16251b); }
+.student-welcome h1, .student-stat-card strong, .student-section-heading h2, .student-continue-copy h3, .student-profile-card strong, .student-context-heading, .student-next-list strong { color: var(--ink); }
+.student-welcome p, .student-stat-card > span, .student-stat-card small, .student-next-list small, .student-context-empty { color: var(--muted); }
+.student-welcome-art, .student-continue-cover { background: radial-gradient(circle at 50% 30%, rgb(183 255 60 / 24%), transparent 34%), #0b3a25; }
+.student-primary-action { background: var(--lime); color: #071009; }
+.student-secondary-action { border-color: rgb(183 255 60 / 30%); background: transparent; color: var(--lime); }
+.student-stat-card.accent, .student-context-note, .student-empty-card { background: rgb(183 255 60 / 8%); border-color: rgb(183 255 60 / 24%); }
+.student-stat-card.accent strong, .student-context-note strong, .student-inline-action, .student-section-heading > a { color: var(--lime); }
+.student-status-pill, .student-count { background: rgb(183 255 60 / 12%); color: var(--lime); }
+.student-avatar { background: var(--lime); color: #071009; }
+.student-dashboard .resource:hover { border-color: rgb(183 255 60 / 44%); }
+.admin-app { background: #070b09; color: var(--ink); }
+.admin-sidebar { background: #0b120e; border-right-color: var(--line); }
+.admin-brand, .admin-sidebar-label, .admin-topbar-kicker, .admin-hero p { color: var(--muted); }
+.admin-brand > span, .admin-brand > span > span, .admin-hero h1, .admin-topbar strong { color: var(--ink); }
+.admin-side-link { color: #b7c9bc; }
+.admin-side-link:hover, .admin-side-link:focus-visible { background: rgb(183 255 60 / 10%); color: var(--lime); }
+.admin-side-link[aria-current="page"] { background: var(--lime); color: #071009; }
+.admin-side-link[aria-current="page"] .admin-side-icon { background: #071009; color: var(--lime); }
+.admin-workspace, .admin-topbar { background: #070b09; }
+.admin-topbar { border-bottom-color: var(--line); }
+.admin-live-indicator { color: var(--lime); }
+.admin-content > article, .admin-content > section, .admin-content > div:not(.admin-hero), .admin-content table, .admin-content form { border-color: var(--line); }
+.admin-content table, .admin-content .card, .admin-content .panel, .admin-content .admin-card { background: var(--surface); color: var(--ink); }
+.admin-content th, .admin-content td { border-color: var(--line); }
+.admin-open-student { border-color: rgb(183 255 60 / 28%); color: var(--lime); }
+@media (max-width: 760px) {
+  .site-header .nav { background: #101a14; border-radius: 18px; }
+  .site-header .nav.open { padding: 8px; }
+  .portal .sidebar { background: #0b120e; }
+}
