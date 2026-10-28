@@ -3660,3 +3660,27 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="dark"] .site-footer a:not(.brand),
 :root[data-theme="dark"] .site-footer .footer-bottom { color: #b9c8bd; }
 
+/* Pricing section theme boundary: keep the section surface and its heading
+   tokens in the same contrast plane. Previously the light pricing surface
+   could remain white while dark-theme heading tokens were inherited, making
+   the title and supporting copy nearly disappear. */
+:root[data-theme="light"] .landing-main .pricing-section {
+  background: #f6f8f5;
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main .pricing-section .section-heading h2 {
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main .pricing-section .section-heading p {
+  color: #47564a;
+}
+:root[data-theme="dark"] .landing-main .pricing-section {
+  background: #070b09;
+  color: #f4f8f2;
+}
+:root[data-theme="dark"] .landing-main .pricing-section .section-heading h2 {
+  color: #f4f8f2;
+}
+:root[data-theme="dark"] .landing-main .pricing-section .section-heading p {
+  color: #b4c1b4;
+}
