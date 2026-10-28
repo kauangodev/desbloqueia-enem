@@ -3351,6 +3351,70 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="light"] .manual-access-form input, :root[data-theme="light"] .manual-access-form select { background: #fff; color: #142018; border-color: #71826f; }
 :root[data-theme="light"] .manual-access-form label { color: #47564a; }
 :root[data-theme="light"] .manual-access-form > p { color: #246033; }
+
+/* Pricing cards: keep every text layer readable in both themes. The premium
+   card used to inherit presentation-only white text after switching to light. */
+.landing-main .price-card.premium,
+.price-card.premium {
+  color: var(--color-text);
+}
+.landing-main .price-card.premium h3,
+.price-card.premium h3,
+.price-card.premium .price {
+  color: var(--color-text);
+}
+.landing-main .price-card.premium > p,
+.landing-main .price-card.premium .plan-benefit,
+.landing-main .price-card.premium .price small,
+.landing-main .price-card.premium li,
+.landing-main .price-card.premium .plan-note,
+.price-card.premium > p,
+.price-card.premium .plan-benefit,
+.price-card.premium .price small,
+.price-card.premium li,
+.price-card.premium .plan-note {
+  color: var(--color-text-secondary);
+}
+.price-card.premium li svg { color: var(--color-accent-secondary); }
+
+:root[data-theme="light"] .landing-main .price-card.premium,
+:root[data-theme="light"] .price-card.premium {
+  background: #fff;
+  color: #142018;
+  border-color: #71826f;
+  box-shadow: 0 14px 30px rgb(20 32 24 / 10%);
+}
+:root[data-theme="light"] .landing-main .price-card.premium h3,
+:root[data-theme="light"] .price-card.premium h3,
+:root[data-theme="light"] .price-card.premium .price {
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main .price-card.premium > p,
+:root[data-theme="light"] .landing-main .price-card.premium .plan-benefit,
+:root[data-theme="light"] .landing-main .price-card.premium .price small,
+:root[data-theme="light"] .landing-main .price-card.premium li,
+:root[data-theme="light"] .landing-main .price-card.premium .plan-note,
+:root[data-theme="light"] .price-card.premium > p,
+:root[data-theme="light"] .price-card.premium .plan-benefit,
+:root[data-theme="light"] .price-card.premium .price small,
+:root[data-theme="light"] .price-card.premium li,
+:root[data-theme="light"] .price-card.premium .plan-note {
+  color: #47564a;
+}
+:root[data-theme="light"] .price-card.premium li svg {
+  color: #237342;
+}
+:root[data-theme="light"] .landing-main .price-card.premium .lime,
+:root[data-theme="light"] .price-card.premium .lime {
+  background: #b7ff3c;
+  color: #142018;
+  border-color: #b7ff3c;
+}
+:root[data-theme="light"] .landing-main .price-card.premium .lime:hover,
+:root[data-theme="light"] .price-card.premium .lime:hover {
+  background: #a8eb31;
+  color: #142018;
+}
 @media (max-width: 760px) {
   .site-header .nav { background: #101a14; border-radius: 18px; }
   .site-header .nav.open { padding: 8px; }
