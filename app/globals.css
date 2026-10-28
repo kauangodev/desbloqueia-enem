@@ -2809,6 +2809,15 @@ th {
 }
 
 
+/* Team management */
+.team-manager { display: grid; gap: 18px; }
+.team-invite-form { display: grid; grid-template-columns: 1.2fr 1.2fr 1fr auto; align-items: end; gap: 12px; padding: 18px; border: 1px solid #dfead8; border-radius: 18px; background: #f8fbf5; }
+.team-invite-form h3 { grid-column: 1 / -1; margin: 0; color: #101410; }
+.team-invite-form .field { margin: 0; }
+.team-table select { max-width: 190px; }
+.team-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.button.ghost { border: 1px solid #cfdccc; background: transparent; color: #2e5b43; }
+@media (max-width: 760px) { .team-invite-form { grid-template-columns: 1fr; } .team-invite-form h3 { grid-column: auto; } .team-table { min-width: 680px; } }
 /* Student dashboard 3.0 */
 .portal {
   grid-template-columns: 246px minmax(0, 1fr);

@@ -15,7 +15,7 @@ const scrypt = promisify(nodeScrypt);
 const SESSION_COOKIE = "godev_session";
 const RESET_TTL_MS = 30 * 60 * 1000;
 const memoryRateLimits = new Map<string, { count: number; expiresAt: number }>();
-type UserRow = { id: string; email: string; name: string; role: "student" | "admin"; password_hash?: string | null; must_change_password?: boolean };
+type UserRow = { id: string; email: string; name: string; role: "student" | "admin"; password_hash?: string | null; must_change_password?: boolean; admin_role?: string; account_status?: string };
 type QueryResult = { data: any; error: any; count?: number | null };
 
 function authSecret() { return requiredSessionSecret(); }
@@ -37,6 +37,7 @@ async function mustChangePassword(id: string) {
   }
 }
 async function passwordHash(password: string) { const salt = randomBytes(16).toString("hex"); const derived = (await scrypt(password, salt, 64)) as Buffer; return `scrypt$${salt}$${derived.toString("hex")}`; }
+export async function hashUserPassword(password: string) { return passwordHash(password); }
 async function passwordMatches(password: string, stored: string | null | undefined) {
   if (!stored?.startsWith("scrypt$")) return false; const [, salt, hex] = stored.split("$"); const derived = (await scrypt(password, salt, 64)) as Buffer; const expected = Buffer.from(hex, "hex"); return expected.length === derived.length && timingSafeEqual(expected, derived);
 }
@@ -113,8 +114,14 @@ class QueryBuilder implements PromiseLike<QueryResult> {
 }
 
 function normalizedRole(value: unknown): "student" | "admin" { return String(value || "").trim().toLowerCase() === "admin" ? "admin" : "student"; }
-function userRecord(row: any): UserRow { return { id: row.id, email: row.email, name: row.name || "", role: normalizedRole(row.role), password_hash: row.password_hash }; }
-async function currentUser() { const jar = await cookies(); const tokenUser = userFromToken(jar.get(SESSION_COOKIE)?.value); if (!tokenUser) return null; const [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at,updated_at FROM users WHERE id = ? LIMIT 1", [tokenUser.id]); const row = rows[0]; if (!row || !row.email_verified_at || (row.updated_at && new Date(row.updated_at).getTime() > tokenUser.iat)) return null; return { ...userRecord(row), must_change_password: await mustChangePassword(row.id) }; }
+function userRecord(row: any): UserRow { return { id: row.id, email: row.email, name: row.name || "", role: normalizedRole(row.role), password_hash: row.password_hash, admin_role: row.admin_role || (normalizedRole(row.role) === "admin" ? "administrator" : undefined), account_status: row.account_status || "active" }; }
+async function currentUser() {
+  const jar = await cookies(); const tokenUser = userFromToken(jar.get(SESSION_COOKIE)?.value); if (!tokenUser) return null;
+  let rows: any[] = [];
+  try { [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at,updated_at,admin_role,account_status FROM users WHERE id = ? LIMIT 1", [tokenUser.id]); }
+  catch { [rows] = await mysqlPool().query<any[]>("SELECT id,email,name,role,password_hash,email_verified_at,updated_at FROM users WHERE id = ? LIMIT 1", [tokenUser.id]); }
+  const row = rows[0]; if (!row || !row.email_verified_at || row.account_status === "suspended" || (row.updated_at && new Date(row.updated_at).getTime() > tokenUser.iat)) return null; return { ...userRecord(row), must_change_password: await mustChangePassword(row.id) };
+}
 async function setSession(user: UserRow | null) { const jar = await cookies(); if (!user) { jar.delete(SESSION_COOKIE); return true; } try { jar.set(SESSION_COOKIE, tokenFor(user), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 }); return true; } catch { return false; } }
 
 function createAuth() {
@@ -202,7 +209,7 @@ export async function identity() {
     console.error("auth_profile_lookup_failed", { code: profileError.code || profileError.errno || "unknown" });
     return null;
   }
-  return { db, user, profile: profile ? { ...profile, role: normalizedRole(profile.role) } : profile };
+  return { db, user, profile: profile ? { ...profile, role: normalizedRole(profile.role), admin_role: user.admin_role, account_status: user.account_status } : profile };
 }
 export async function canAccess(plan: string) { const who = await identity(); if (!who) return null; if (who.profile?.role === "admin") return who; const { data } = await who.db.from("entitlements").select("plan").eq("user_id", who.user.id).eq("active", true); return data?.some((e: { plan: string }) => e.plan === "premium" || e.plan === plan) ? who : null; }
 

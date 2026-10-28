@@ -6,6 +6,9 @@ create table if not exists users (
   name varchar(160) not null default '',
   password_hash varchar(255) null,
   role enum('student','admin') not null default 'student',
+  admin_role varchar(32) not null default 'administrator',
+  account_status varchar(16) not null default 'active',
+  suspended_at datetime(3) null,
   email_verified_at datetime(3) null,
   reset_token_hash char(64) null unique,
   reset_token_expires_at datetime(3) null,
@@ -17,6 +20,14 @@ create table if not exists admin_invites (
   email varchar(254) primary key,
   name varchar(160) not null default '',
   active boolean not null default true,
+  token_hash char(64) null unique,
+  expires_at datetime(3) null,
+  role varchar(32) not null default 'administrator',
+  status varchar(24) not null default 'pending',
+  invited_by char(36) null,
+  accepted_at datetime(3) null,
+  last_sent_at datetime(3) null,
+  updated_at datetime(3) not null default current_timestamp(3) on update current_timestamp(3),
   created_at datetime(3) not null default current_timestamp(3)
 ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
 

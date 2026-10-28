@@ -7,6 +7,7 @@ import { checkoutConfigured } from "../../lib/readiness";
 import { mysqlConfigured } from "../../lib/mysql";
 import TicketManager from "../../components/ticket-manager";
 import AdminOverview from "../../components/admin-overview";
+import TeamManager from "../../components/team-manager";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
@@ -461,6 +462,8 @@ export default async function Admin({
         </ul>
       </>
     );
+  } else if (tab === "equipe") {
+    content = <TeamManager />;
   } else if (tab === "tickets") {
     const { data, error } = await db.from("support_tickets").select("id,email,subject,message,status,priority,admin_note,created_at,updated_at").order("updated_at", { ascending: false }).limit(100);
     content = error ? <p className="status-message">O sistema de tickets ainda precisa da migração do banco para ser ativado.</p> : <TicketManager tickets={data || []} />;
@@ -508,6 +511,7 @@ export default async function Admin({
             ["produtos", "Produtos e planos", "◈"],
             ["materiais", "Materiais", "▤"],
             ["entregas", "Entregas e acessos", "↗"],
+            ["equipe", "Equipe e permissões", "♙"],
           ].map(([id, label, icon]) => (
             <Link className="admin-side-link" key={id} href={`/admin?tab=${id}`} aria-current={tab === id ? "page" : undefined}>
               <span className="admin-side-icon" aria-hidden="true">{icon}</span>
