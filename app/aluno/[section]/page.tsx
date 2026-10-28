@@ -19,7 +19,7 @@ const sections: Record<string, [string, string]> = {
     "Pratique com os cadernos disponibilizados para seu plano.",
   ],
   simulados: ["Simulados", "Reserve um tempo e coloque a revisão em prática."],
-  redacao: ["Redação", "Recurso temporariamente indisponível."],
+  redacao: ["Redação", "Em manutenção — correção automática de redações em desenvolvimento."],
   checklists: ["Fichas e checklists", "Revise seus pontos de atenção antes da prova."],
   correcoes: ["Minhas correções", "Retome seus erros e transforme cada um em próximo passo."],
   cronograma: [
@@ -231,7 +231,25 @@ export default async function Section({
     const entries = JSON.parse(
       await readFile(path.join(process.cwd(), "data/library.json"), "utf8"),
     );
-    content = <Library entries={entries} />;
+    const { data: officialMaterials } = await who.db
+      .from("materials")
+      .select("*")
+      .eq("published", true)
+      .eq("category", "Provas oficiais")
+      .order("title");
+    content = <>
+      <Library entries={entries} />
+      <section className="official-exams" aria-labelledby="official-exams-title">
+        <div className="section-intro-row">
+          <div>
+            <span className="eyebrow">Questões com gabarito</span>
+            <h2 id="official-exams-title">Provas oficiais · caderno azul</h2>
+            <p>Abra o caderno e, logo abaixo, o gabarito correspondente ao mesmo ano e dia.</p>
+          </div>
+        </div>
+        <Resources items={officialMaterials || []} />
+      </section>
+    </>;
   } else if (section === "cronograma") {
     const { data } = await who.db
       .from("study_progress")

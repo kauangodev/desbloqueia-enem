@@ -1262,6 +1262,9 @@ textarea {
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
+
+.official-exams { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid #dbe7dc; }
+.official-exams .section-intro-row p { max-width: 58ch; color: #3c5a4c; }
 .library-entry {
   background: white;
   padding: 24px;
