@@ -2481,6 +2481,12 @@ th {
   font-size: 15px;
   line-height: 1;
 }
+.admin-side-icon svg,
+.admin-logout svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
 .admin-sidebar-footer {
   display: flex;
   align-items: center;
@@ -2519,6 +2525,7 @@ th {
 }
 .admin-logout:hover,
 .admin-logout:focus-visible { background: rgb(255 255 255 / 14%); }
+.admin-logout { display: grid; place-items: center; }
 .admin-workspace {
   min-width: 0;
   overflow: hidden;
@@ -2789,6 +2796,7 @@ th {
   .admin-side-link > span:last-child,
   .admin-profile > span:last-child { display: none; }
   .admin-side-link { justify-content: center; padding-inline: 7px; }
+  .admin-side-link { min-width: 52px; }
   .admin-side-icon { width: 36px; height: 36px; flex-basis: 36px; }
   .admin-profile { justify-content: center; }
   .admin-sidebar-footer { justify-content: center; }
@@ -2806,6 +2814,7 @@ th {
     align-items: center;
     gap: 10px;
     overflow-x: auto;
+    scrollbar-width: thin;
     padding: 10px 14px;
     border-radius: 0;
   }
@@ -2815,6 +2824,7 @@ th {
   .admin-sidebar-label,
   .admin-sidebar-footer { display: none; }
   .admin-side-link { min-height: 40px; padding: 5px; border-radius: 11px; }
+  .admin-side-link { min-width: 40px; }
   .admin-side-link > span:last-child { display: none; }
   .admin-side-icon { width: 30px; height: 30px; flex-basis: 30px; font-size: 13px; }
   .admin-workspace { border-radius: 0; }
@@ -2855,6 +2865,12 @@ th {
 .team-table select { max-width: 190px; }
 .team-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .button.ghost { border: 1px solid #cfdccc; background: transparent; color: #2e5b43; }
+.manual-access-message[hidden],
+.status-message[hidden] { display: none; }
+.manual-access-message.success { border: 1px solid #b8ddc6; background: #edf9f1; color: #155b35; }
+.manual-access-message.error { border: 1px solid #e7b8b8; background: #fff1f1; color: #8b2727; }
+.admin-loading-state { display: flex; min-height: 88px; align-items: center; justify-content: center; gap: 10px; border: 1px dashed #cfdccc; border-radius: 14px; background: #fbfdf9; color: #4f6656; font-size: 13px; }
+.loading-dot { width: 8px; height: 8px; border-radius: 50%; background: #2e7d57; box-shadow: 0 0 0 5px #e2f0e2; }
 @media (max-width: 760px) { .team-invite-form { grid-template-columns: 1fr; } .team-invite-form h3 { grid-column: auto; } .team-table { min-width: 680px; } }
 @media (max-width: 560px) { .team-invite-fallback { grid-template-columns: 1fr; } }
 /* Student dashboard 3.0 */
@@ -3462,7 +3478,8 @@ h1, h2, h3 { color: var(--ink); }
 .material-index button small { margin-left: 0; font-size: 10px; }
 .material-index button[aria-selected="true"] { transform: translateY(-3px); }
 .material-index button:hover:not([aria-selected="true"]) { transform: translateY(-2px); }
-.catalog-arrow { position: absolute; top: 42%; z-index: 3; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid var(--color-border); border-radius: 50%; background: color-mix(in srgb, var(--color-surface) 94%, transparent); color: var(--color-text); font-size: 28px; line-height: 1; box-shadow: 0 8px 20px rgb(0 0 0 / 16%); transform: translateY(-50%); }
+.catalog-arrow { position: absolute; top: 42%; z-index: 3; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid var(--color-border); border-radius: 50%; background: color-mix(in srgb, var(--color-surface) 94%, transparent); color: var(--color-text); box-shadow: 0 8px 20px rgb(0 0 0 / 16%); transform: translateY(-50%); }
+.catalog-arrow svg, .arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .catalog-arrow:hover, .catalog-arrow:focus-visible { background: var(--color-accent); color: var(--color-accent-ink); }
 .catalog-arrow-previous { left: -14px; }
 .catalog-arrow-next { right: -14px; }

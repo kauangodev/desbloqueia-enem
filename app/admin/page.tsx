@@ -76,6 +76,20 @@ const orderStatus: Record<string, string> = {
   refunded: "Reembolsado",
   chargedback: "Chargeback",
 };
+function AdminIcon({ name }: { name: string }) {
+  const paths: Record<string, string> = {
+    overview: "M3 12 12 3l9 9M5 10v10h14V10M9 20v-6h6v6",
+    students: "M16 20v-1.5a4.5 4.5 0 0 0-9 0V20M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M18 8a2.5 2.5 0 0 1 0 5M20 20v-1a3.5 3.5 0 0 0-2.5-3.35",
+    products: "M4 5.5 12 3l8 2.5v13L12 21l-8-2.5v-13ZM4 5.5l8 2.5 8-2.5M12 8v13",
+    materials: "M5 3h14v18H5zM8 7h8M8 11h8M8 15h5",
+    deliveries: "M4 12h15M13 6l6 6-6 6",
+    team: "M16 20v-1.5a4.5 4.5 0 0 0-9 0V20M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M18 8a2.5 2.5 0 0 1 0 5",
+    tickets: "M4 5h16v11H8l-4 4V5ZM8 9h8M8 12h5",
+    support: "M5 5h14v11H9l-4 3V5ZM8 9h8M8 12h5",
+    integrations: "M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+  };
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name] || paths.overview} /></svg>;
+}
 export default async function Admin({
   searchParams,
 }: {
@@ -508,30 +522,30 @@ export default async function Admin({
           <small>EDUCATION / ADMIN</small>
         </Link>
         <div className="admin-sidebar-label">Workspace</div>
-        <nav className="admin-side-nav">
+        <nav className="admin-side-nav" aria-label="Workspace">
           {[
-            ["visao", "Visão geral", "⌂"],
-            ["alunos", "CRM de alunos", "◎"],
-            ["produtos", "Produtos e planos", "◈"],
-            ["materiais", "Materiais", "▤"],
-            ["entregas", "Entregas e acessos", "↗"],
-            ["equipe", "Equipe e permissões", "♙"],
+            ["visao", "Visão geral", "overview"],
+            ["alunos", "CRM de alunos", "students"],
+            ["produtos", "Produtos e planos", "products"],
+            ["materiais", "Materiais", "materials"],
+            ["entregas", "Entregas e acessos", "deliveries"],
+            ["equipe", "Equipe e permissões", "team"],
           ].map(([id, label, icon]) => (
-            <Link className="admin-side-link" key={id} href={`/admin?tab=${id}`} aria-current={tab === id ? "page" : undefined}>
-              <span className="admin-side-icon" aria-hidden="true">{icon}</span>
+            <Link className="admin-side-link" key={id} href={`/admin?tab=${id}`} aria-label={label} title={label} aria-current={tab === id ? "page" : undefined}>
+              <span className="admin-side-icon"><AdminIcon name={icon} /></span>
               <span>{label}</span>
             </Link>
           ))}
         </nav>
         <div className="admin-sidebar-label">Atendimento</div>
-        <nav className="admin-side-nav">
+        <nav className="admin-side-nav" aria-label="Atendimento">
           {[
-            ["tickets", "Tickets", "◌"],
-            ["suporte", "WhatsApp e suporte", "◉"],
-            ["integracoes", "Integrações", "⚙"],
+            ["tickets", "Tickets", "tickets"],
+            ["suporte", "WhatsApp e suporte", "support"],
+            ["integracoes", "Integrações", "integrations"],
           ].map(([id, label, icon]) => (
-            <Link className="admin-side-link" key={id} href={`/admin?tab=${id}`} aria-current={tab === id ? "page" : undefined}>
-              <span className="admin-side-icon" aria-hidden="true">{icon}</span>
+            <Link className="admin-side-link" key={id} href={`/admin?tab=${id}`} aria-label={label} title={label} aria-current={tab === id ? "page" : undefined}>
+              <span className="admin-side-icon"><AdminIcon name={icon} /></span>
               <span>{label}</span>
             </Link>
           ))}
@@ -542,7 +556,7 @@ export default async function Admin({
             <span><strong>{who.profile?.name || "Administrador"}</strong><small>Administrador</small></span>
           </div>
           <form action="/api/auth/logout" method="post">
-            <button className="admin-logout" aria-label="Sair da conta">↪</button>
+            <button className="admin-logout" aria-label="Sair da conta" title="Sair da conta"><AdminIcon name="deliveries" /></button>
           </form>
         </div>
       </aside>
