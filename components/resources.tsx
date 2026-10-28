@@ -22,9 +22,6 @@ export default function Resources({ items }: { items: Material[] }) {
               height={283}
               alt={`Capa: ${m.title}`}
             />
-            <span className="cover-title" aria-hidden="true">
-              {m.title}
-            </span>
           </div>
           <div className="resource-info">
             <h3>{m.title}</h3>

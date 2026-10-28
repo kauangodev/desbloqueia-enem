@@ -7,7 +7,7 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
     /Sua reta final,\s*mais leve e organizada\./,
   );
   await expect(page.getByText("DESBLOQUEIA ENEM 2026", { exact: true })).toHaveCount(0);
-  await expect(page.locator("[data-carousel-card]")).toHaveCount(12);
+  await expect(page.locator("[data-carousel-card]")).toHaveCount(32);
   await expect(
     page.getByRole("heading", { name: "Essencial", exact: true }),
   ).toBeVisible();
@@ -22,8 +22,8 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await expect(page.getByRole("tab").first()).toHaveAttribute("aria-selected", "true");
   await page.getByText("A biblioteca tem 1.800 questões?").click();
   await expect(page.locator("details[open]")).toContainText("Sim.");
-  const planLink = page.getByRole("link", { name: "Escolher Premium", exact: true });
-  await expect(planLink).toHaveAttribute("href", "/api/checkout/premium");
+  const planLink = page.getByRole("link", { name: "Receber orientação", exact: true }).last();
+  await expect(planLink).toHaveAttribute("href", "/suporte");
 });
 
 test("faixa de matérias corre suavemente da esquerda para a direita", async ({

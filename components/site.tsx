@@ -100,10 +100,13 @@ export function Footer() {
 }
 export function MaterialPreview() {
   const [active, setActive] = useState(0);
+  const [expanded, setExpanded] = useState(false);
   const tabs = useRef<HTMLDivElement>(null);
   const material = materials[active];
-  function selectTab(index: number, focus = false) {
-    setActive(index);
+  const featuredMaterials = [0, 1, 2, 3, 7, 8, 11, 14].map((index) => materials[index]);
+  const visibleMaterials = expanded ? materials : featuredMaterials;
+  function selectTab(index: number, focus = false, materialIndex = index) {
+    setActive(materialIndex);
     const container = tabs.current;
     const tab = container?.querySelectorAll<HTMLButtonElement>("[role=tab]")[index];
     if (!container || !tab) return;
@@ -117,9 +120,9 @@ export function MaterialPreview() {
     <div className="material-explorer">
       <div className="material-index-shell">
         <div className="material-index-heading">
-          <span>Explore por área</span>
+          <span>Catálogo didático</span>
           <small>
-            {String(active + 1).padStart(2, "0")} / {String(materials.length).padStart(2, "0")}
+            {visibleMaterials.length} de {materials.length} materiais
           </small>
         </div>
         <div
@@ -129,32 +132,39 @@ export function MaterialPreview() {
           aria-label="Cadernos de estudo"
           onKeyDown={(event) => {
             let next = active;
-            if (["ArrowRight", "ArrowDown"].includes(event.key)) next = (active + 1) % materials.length;
-            else if (["ArrowLeft", "ArrowUp"].includes(event.key)) next = (active - 1 + materials.length) % materials.length;
+            const currentPosition = Math.max(0, visibleMaterials.findIndex((item) => item.id === material.id));
+            if (["ArrowRight", "ArrowDown"].includes(event.key)) next = (currentPosition + 1) % visibleMaterials.length;
+            else if (["ArrowLeft", "ArrowUp"].includes(event.key)) next = (currentPosition - 1 + visibleMaterials.length) % visibleMaterials.length;
             else if (event.key === "Home") next = 0;
-            else if (event.key === "End") next = materials.length - 1;
+            else if (event.key === "End") next = visibleMaterials.length - 1;
             else return;
             event.preventDefault();
-            selectTab(next, true);
+            selectTab(next, true, materials.findIndex((item) => item.id === visibleMaterials[next].id));
           }}
         >
-          {materials.map((item, i) => (
+          {visibleMaterials.map((item, i) => (
             <button
               role="tab"
               id={`tab-${item.id}`}
               aria-controls="material-panel"
-              aria-selected={active === i}
-              aria-current={active === i ? "true" : undefined}
-              tabIndex={active === i ? 0 : -1}
+              aria-selected={active === materials.findIndex((materialEntry) => materialEntry.id === item.id)}
+              aria-current={active === materials.findIndex((materialEntry) => materialEntry.id === item.id) ? "true" : undefined}
+              tabIndex={active === materials.findIndex((materialEntry) => materialEntry.id === item.id) ? 0 : -1}
               key={item.id}
-              onClick={() => selectTab(i)}
+              onClick={() => selectTab(i, false, materials.findIndex((materialEntry) => materialEntry.id === item.id))}
             >
+              <Image src={item.cover} width={160} height={226} alt="" aria-hidden="true" />
               <span>{String(i + 1).padStart(2, "0")}</span>
               <b>{item.title}</b>
               <small>{item.category}</small>
             </button>
           ))}
         </div>
+        {!expanded && (
+          <button className="catalog-expand" type="button" onClick={() => setExpanded(true)}>
+            Ver os {materials.length} materiais
+          </button>
+        )}
       </div>
       <div
         className="material-stage"
@@ -169,9 +179,6 @@ export function MaterialPreview() {
             height={467}
             alt={`Capa real: ${material.title}`}
           />
-          <span className="cover-title preview-cover-title" aria-hidden="true">
-            {material.title}
-          </span>
         </div>
         <div className="preview-caption">
           <div>

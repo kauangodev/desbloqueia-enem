@@ -246,9 +246,6 @@ export function CurvedMaterialCarousel() {
                 draggable={false}
                 priority={index < 7}
               />
-              <span className={styles.coverTitle} aria-hidden="true">
-                {material.title}
-              </span>
             </div>
             <figcaption>
               <span>{material.subject}</span>
