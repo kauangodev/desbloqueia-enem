@@ -34,9 +34,11 @@ const orderTone: Record<string, string> = {
 export default function AdminOverview({
   stats,
   orders,
+  adSpendCents = 0,
 }: {
   stats: AdminStat[];
   orders: OverviewOrder[];
+  adSpendCents?: number;
 }) {
   const paidOrders = orders.filter((order) => order.status === "paid");
   const revenue = paidOrders.reduce(
@@ -87,6 +89,8 @@ export default function AdminOverview({
   ];
   const recent = orders.slice(0, 6);
   const totalPlans = Math.max(1, premiumOrders + essentialOrders);
+  const trackedAccesses = statValue(stats, "account_access_fingerprints");
+  const roi = adSpendCents > 0 ? ((revenue - adSpendCents) / adSpendCents) * 100 : null;
 
   return (
     <section className="admin-overview" aria-labelledby="overview-title">
@@ -156,6 +160,22 @@ export default function AdminOverview({
             </div>
           </article>
         ))}
+        <article className="overview-metric overview-metric-tracking">
+          <span className="overview-metric-icon" aria-hidden="true">◉</span>
+          <div>
+            <strong>{trackedAccesses}</strong>
+            <span>Acessos registrados</span>
+            <small>dispositivos com atividade identificada</small>
+          </div>
+        </article>
+        <article className="overview-metric overview-metric-roi">
+          <span className="overview-metric-icon" aria-hidden="true">%</span>
+          <div>
+            <strong>{roi === null ? "—" : `${roi.toFixed(1)}%`}</strong>
+            <span>ROI de mídia</span>
+            <small>{roi === null ? "Informe o investimento para calcular" : "receita líquida sobre investimento"}</small>
+          </div>
+        </article>
       </div>
 
       <div className="overview-lower-grid">

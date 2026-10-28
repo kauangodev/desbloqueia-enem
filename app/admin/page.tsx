@@ -512,7 +512,8 @@ export default async function Admin({
         }),
       ),
     ]);
-    content = <AdminOverview stats={stats} orders={overviewOrders || []} />;
+    const adSpendCents = Number(process.env.META_AD_SPEND_CENTS || 0);
+    content = <AdminOverview stats={stats} orders={overviewOrders || []} adSpendCents={Number.isFinite(adSpendCents) ? adSpendCents : 0} />;
   }
   return (
     <main id="conteudo" className="admin-app">
