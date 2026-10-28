@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { materials } from "../lib/config";
+import ThemeToggle from "./theme-toggle";
 export function Brand() {
   return (
     <Link href="/#kit" className="brand" aria-label="Voltar para a hero do GoDev Education">
@@ -35,6 +36,7 @@ export function Header() {
           ))}
         </nav>
         <div className="header-actions">
+          <ThemeToggle />
           <Link href="/entrar" className="login-link">
             Entrar
           </Link>

@@ -44,6 +44,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${inter.variable} ${interTight.variable} ${caveat.variable}`}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{const c=localStorage.getItem('godev-theme')||'system';const d=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.themeChoice=c;document.documentElement.dataset.theme=c==='system'?d:c}catch(e){document.documentElement.dataset.theme='light';document.documentElement.dataset.themeChoice='system'}`,
+          }}
+        />
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo
         </a>

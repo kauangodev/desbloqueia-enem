@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { identity } from "../../lib/supabase";
 import { Brand } from "../../components/site";
 import PortalNav from "../../components/portal-nav";
+import ThemeToggle from "../../components/theme-toggle";
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
 export default async function StudentLayout({
@@ -24,7 +25,7 @@ export default async function StudentLayout({
       <main className="workspace" id="conteudo">
         <div className="workspace-bar">
           <span>Desbloqueia ENEM 2026</span>
-          <span>Área protegida</span>
+          <span className="workspace-bar-tools"><ThemeToggle /><span>Área protegida</span></span>
         </div>
         {children}
       </main>
