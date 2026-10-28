@@ -2001,7 +2001,8 @@ th {
     flex: 1;
   }
   .guarantee .text-link {
-    margin-left: 78px;
+    margin-left: 0;
+    flex-basis: 100%;
   }
   .guarantee h3 {
     font-size: 18px;
@@ -2098,6 +2099,28 @@ th {
     grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
   }
 }
+
+/* Structural tablet breakpoint: keep the reading order intact before the
+   narrow mobile breakpoint and prevent the desktop two-column scaffold from
+   compressing at 768px. */
+@media (min-width: 761px) and (max-width: 840px) {
+  .intro-section,
+  .study-section,
+  .faq-section { grid-template-columns: 1fr; gap: 34px; }
+  .intro-section .benefit-lines { max-width: 720px; }
+  .study-section { align-items: start; }
+  .faq-section { gap: 28px; }
+  .material-stage { grid-template-columns: minmax(128px, 164px) 1fr; }
+  .pricing-grid { gap: 14px; }
+  .price-card { padding: 24px; }
+}
+
+/* Plan cards read as a decision first, with the detailed list supporting it. */
+.pricing-grid .price-card { display: flex; flex-direction: column; }
+.pricing-grid .price { margin-block: 20px 14px; }
+.pricing-grid .price-card ul { margin-block: 20px; }
+.pricing-grid .price-card .button { margin-top: auto; }
+.pricing-grid .plan-title > span { flex-shrink: 0; }
 @media (max-width: 360px) {
   .container {
     width: calc(100% - 32px);
@@ -3420,9 +3443,11 @@ h1, h2, h3 { color: var(--ink); }
    titles printed into the covers remain unobstructed. */
 .material-explorer { display: block; }
 .material-carousel-shell { position: relative; min-width: 0; }
-.material-index { display: flex; gap: 14px; min-width: 0; overflow-x: auto; padding: 8px 2px 12px; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.material-index { display: flex; flex-direction: row; gap: 14px; min-width: 0; overflow-x: auto; overflow-y: hidden; padding: 8px 2px 12px; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .material-index::-webkit-scrollbar { display: none; }
-.material-index button { display: grid; grid-template-columns: 1fr; flex: 0 0 clamp(128px, 10.5vw, 156px); gap: 7px; min-width: 0; min-height: 0; padding: 8px; border-radius: 14px; transform: none; text-align: left; overflow-wrap: anywhere; scroll-snap-align: start; }
+.material-index button { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; flex: 0 0 clamp(128px, 10.5vw, 156px); width: auto; gap: 7px; min-width: 0; min-height: 0; padding: 8px; border-radius: 14px; transform: none; text-align: left; overflow: hidden; overflow-wrap: anywhere; scroll-snap-align: start; }
+.material-index button:focus-visible,
+.material-index button[aria-selected="true"] { z-index: 2; }
 .material-index button > img { width: 100%; height: auto; aspect-ratio: 2 / 2.82; object-fit: cover; border-radius: 9px; }
 .material-index button > span:first-of-type { width: 28px; height: 28px; flex-basis: 28px; }
 .material-index button b, .material-index button small { min-width: 0; overflow-wrap: anywhere; }
