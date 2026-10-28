@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Caveat, Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { appUrl } from "../lib/config";
@@ -47,7 +48,9 @@ export default function RootLayout({
           Pular para o conteúdo
         </a>
         {children}
-        <Analytics />
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   );

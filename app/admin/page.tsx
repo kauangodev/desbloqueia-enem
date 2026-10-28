@@ -5,6 +5,7 @@ import Link from "next/link";
 import { money } from "../../lib/config";
 import { checkoutConfigured } from "../../lib/readiness";
 import { mysqlConfigured } from "../../lib/mysql";
+import { META_PIXEL_ID } from "../../lib/meta-pixel";
 import TicketManager from "../../components/ticket-manager";
 import AdminOverview from "../../components/admin-overview";
 import TeamManager from "../../components/team-manager";
@@ -441,7 +442,7 @@ export default async function Admin({
         !!process.env.RESEND_API_KEY && !!process.env.EMAIL_FROM,
       ],
       ["Automação de boas-vindas (opcional)", !!process.env.CRON_SECRET],
-      ["Meta Pixel", !!process.env.NEXT_PUBLIC_META_PIXEL_ID],
+      ["Meta Pixel", /^\d+$/.test(META_PIXEL_ID)],
       ["Google Analytics", !!process.env.NEXT_PUBLIC_GA_ID],
       ["Correção de redação (OpenAI) — em manutenção", false],
       ["Auditoria de acesso por hash", !!process.env.ACCESS_FINGERPRINT_SALT],
