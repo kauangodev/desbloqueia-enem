@@ -3468,3 +3468,40 @@ h1, h2, h3 { color: var(--ink); }
   .site-header .menu-button { display: flex; }
   .site-header .header-actions { min-width: 0; margin-left: auto; }
 }
+
+/* Dark system preference: keep the landing content on the same contrast
+   plane as the header. These selectors repair the older light-only landing
+   layer without affecting the protected student/admin surfaces. */
+:root[data-theme="dark"] .site-header .brand,
+:root[data-theme="dark"] .site-header .brand b { color: #f4f8f2; }
+:root[data-theme="dark"] .site-header .brand-sub { color: #b4c1b4; border-left-color: rgb(244 248 242 / 28%); }
+:root[data-theme="dark"] .landing-main,
+:root[data-theme="dark"] .landing-main .intro-section,
+:root[data-theme="dark"] .landing-main .study-section,
+:root[data-theme="dark"] .landing-main .faq-section,
+:root[data-theme="dark"] .landing-main .closing { background: #0b0d10; color: #f9fafb; }
+:root[data-theme="dark"] .landing-main h2,
+:root[data-theme="dark"] .landing-main h3,
+:root[data-theme="dark"] .landing-main .benefit-lines b,
+:root[data-theme="dark"] .landing-main .outline-row b,
+:root[data-theme="dark"] .landing-main .outline-top b { color: #f9fafb; }
+:root[data-theme="dark"] .landing-main h2 span { color: #b7c5d1; }
+:root[data-theme="dark"] .landing-main .benefit-lines p,
+:root[data-theme="dark"] .landing-main .section-heading p,
+:root[data-theme="dark"] .landing-main .faq-section > div > p,
+:root[data-theme="dark"] .landing-main .outline-row p,
+:root[data-theme="dark"] .landing-main .faq-list details p { color: #cbd5e1; }
+:root[data-theme="dark"] .landing-main .study-outline,
+:root[data-theme="dark"] .landing-main .faq-list details,
+:root[data-theme="dark"] .landing-main .guarantee { background: #15181d; border-color: #374151; }
+:root[data-theme="dark"] .landing-main .guarantee h3,
+:root[data-theme="dark"] .landing-main .guarantee p,
+:root[data-theme="dark"] .landing-main .guarantee .text-link { color: #f9fafb; }
+:root[data-theme="dark"] .landing-main .guarantee-number { color: #b7ff3c; }
+:root[data-theme="dark"] .landing-main .text-link,
+:root[data-theme="dark"] .landing-main .outline-row > span { color: #b7ff3c; }
+:root[data-theme="dark"] .landing-main .materials-section { background: #0f1318; }
+:root[data-theme="dark"] .landing-main .library-note,
+:root[data-theme="dark"] .landing-main .material-stage { background: #15181d; border-color: #374151; }
+:root[data-theme="dark"] .landing-main .library-note p,
+:root[data-theme="dark"] .landing-main .library-note > span { color: #cbd5e1; }

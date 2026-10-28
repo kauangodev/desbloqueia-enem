@@ -209,6 +209,13 @@ export function CurvedMaterialCarousel() {
     }
   };
 
+  const nudge = (direction: -1 | 1) => {
+    const motion = motionRef.current;
+    motion.offset += direction * 180;
+    motion.velocity = direction * 420;
+    renderCards();
+  };
+
   return (
     <div
       ref={viewportRef}
@@ -254,6 +261,24 @@ export function CurvedMaterialCarousel() {
           </figure>
         );
       })}
+      <button
+        className={`${styles.arrow} ${styles.arrowPrevious}`}
+        type="button"
+        aria-label="Materiais anteriores"
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={() => nudge(-1)}
+      >
+        ‹
+      </button>
+      <button
+        className={`${styles.arrow} ${styles.arrowNext}`}
+        type="button"
+        aria-label="Próximos materiais"
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={() => nudge(1)}
+      >
+        ›
+      </button>
     </div>
   );
 }
