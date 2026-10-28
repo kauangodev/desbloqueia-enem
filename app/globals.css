@@ -3462,7 +3462,8 @@ h1, h2, h3 { color: var(--ink); }
 .material-index button small { margin-left: 0; font-size: 10px; }
 .material-index button[aria-selected="true"] { transform: translateY(-3px); }
 .material-index button:hover:not([aria-selected="true"]) { transform: translateY(-2px); }
-.catalog-arrow { position: absolute; top: 42%; z-index: 3; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid var(--color-border); border-radius: 50%; background: color-mix(in srgb, var(--color-surface) 94%, transparent); color: var(--color-text); font-size: 28px; line-height: 1; box-shadow: 0 8px 20px rgb(0 0 0 / 16%); transform: translateY(-50%); }
+.catalog-arrow { position: absolute; top: 42%; z-index: 3; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid var(--color-border); border-radius: 50%; background: color-mix(in srgb, var(--color-surface) 94%, transparent); color: var(--color-text); box-shadow: 0 8px 20px rgb(0 0 0 / 16%); transform: translateY(-50%); }
+.catalog-arrow svg, .arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .catalog-arrow:hover, .catalog-arrow:focus-visible { background: var(--color-accent); color: var(--color-accent-ink); }
 .catalog-arrow-previous { left: -14px; }
 .catalog-arrow-next { right: -14px; }
