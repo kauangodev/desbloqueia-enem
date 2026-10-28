@@ -36,6 +36,24 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'admin_invites' AND column_name = 'updated_at') THEN
     ALTER TABLE admin_invites ADD COLUMN updated_at datetime(3) NOT NULL DEFAULT current_timestamp(3) ON UPDATE current_timestamp(3);
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'admin_invites' AND column_name = 'delivery_status') THEN
+    ALTER TABLE admin_invites ADD COLUMN delivery_status varchar(32) NOT NULL DEFAULT 'not_attempted';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'admin_invites' AND column_name = 'delivery_attempts') THEN
+    ALTER TABLE admin_invites ADD COLUMN delivery_attempts int unsigned NOT NULL DEFAULT 0;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'admin_invites' AND column_name = 'last_attempt_at') THEN
+    ALTER TABLE admin_invites ADD COLUMN last_attempt_at datetime(3) NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'admin_invites' AND column_name = 'last_error_kind') THEN
+    ALTER TABLE admin_invites ADD COLUMN last_error_kind varchar(32) NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'admin_invites' AND column_name = 'last_attempt_id') THEN
+    ALTER TABLE admin_invites ADD COLUMN last_attempt_id char(36) NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'admin_invites' AND column_name = 'provider_message_id') THEN
+    ALTER TABLE admin_invites ADD COLUMN provider_message_id varchar(160) NULL;
+  END IF;
   IF NOT EXISTS (SELECT 1 FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'admin_invites' AND index_name = 'admin_invites_token_hash_uq') THEN
     ALTER TABLE admin_invites ADD UNIQUE KEY admin_invites_token_hash_uq (token_hash);
   END IF;

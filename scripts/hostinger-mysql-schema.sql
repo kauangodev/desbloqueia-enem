@@ -27,6 +27,12 @@ create table if not exists admin_invites (
   invited_by char(36) null,
   accepted_at datetime(3) null,
   last_sent_at datetime(3) null,
+  delivery_status varchar(32) not null default 'not_attempted',
+  delivery_attempts int unsigned not null default 0,
+  last_attempt_at datetime(3) null,
+  last_error_kind varchar(32) null,
+  last_attempt_id char(36) null,
+  provider_message_id varchar(160) null,
   updated_at datetime(3) not null default current_timestamp(3) on update current_timestamp(3),
   created_at datetime(3) not null default current_timestamp(3)
 ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
