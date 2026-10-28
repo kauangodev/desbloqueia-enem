@@ -55,12 +55,12 @@ export function CurvedMaterialCarousel() {
     const spacing = mobile
       ? Math.max(118, Math.min(150, motion.width * 0.36))
       : Math.max(164, Math.min(196, motion.width * 0.136));
-    const centerWidth = mobile
-      ? Math.max(122, Math.min(142, motion.width * 0.34))
-      : 170;
-    const centerHeight = mobile ? 210 : 280;
-    const extraWidth = mobile ? 30 : 48;
-    const extraHeight = mobile ? 48 : 92;
+      const centerWidth = mobile
+      ? Math.max(112, Math.min(132, motion.width * 0.31))
+      : 152;
+    const centerHeight = mobile ? 188 : 228;
+    const extraWidth = mobile ? 24 : 34;
+    const extraHeight = mobile ? 34 : 62;
     const radius = Math.max(motion.width * 0.5, 1);
     const total = carouselItems.length * spacing;
     const centerY = motion.height * (mobile ? 0.51 : 0.53);
