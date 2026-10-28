@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { identity, canAccess } from "../../../lib/supabase";
-import Resources from "../../../components/resources";
 import Library from "../../../components/library";
 import Schedule from "../../../components/schedule";
 import Support from "../../../components/support";
@@ -10,8 +9,18 @@ import path from "node:path";
 import AssessmentPlayer from "../../../components/assessment-player";
 import EssayMaintenance from "../../../components/essay-maintenance";
 import ActivityCatalog from "../../../components/activity-catalog";
+import Resources, { type Material } from "../../../components/resources";
 import { questionBank, questionsFor, questionsForCollection } from "../../../data/question-bank";
 import type { Question } from "../../../data/question-bank";
+type Identity = NonNullable<Awaited<ReturnType<typeof identity>>>;
+async function officialMaterialsFor(who: Identity, day: 1 | 2): Promise<Material[]> {
+  const { data } = await who.db.from("materials").select("*").eq("published", true).eq("category", "Provas oficiais");
+  return (data || []).filter((item: Material) => item.title.includes(`${day === 1 ? "1º" : "2º"} dia`));
+}
+function OfficialMaterials({ group, materials }: { group: string; materials: Material[] }) {
+  if (!materials.length) return null;
+  return <section className="official-exams" aria-label={`Provas oficiais do ${group}`}><div className="section-intro-row"><div><span className="eyebrow">Questões oficiais com gabarito</span><h2>{group}</h2><p>Atividade documental com o caderno original e o gabarito correspondente.</p></div></div><Resources items={materials} /></section>;
+}
 const sections: Record<string, [string, string]> = {
   materiais: ["Meus materiais", "Sua coleção, organizada por disciplina."],
   exercicios: [
@@ -163,16 +172,17 @@ export default async function Section({
         <AssessmentPlayer questions={selectedQuestions} collectionId={selectedCollectionId} title={selectedCollectionId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva no seu ritmo. Ao finalizar, a correção detalhada ficará salva no seu histórico." />
       </>
     ) : (
-      <ActivityCatalog
-        kind="exercicios"
-        filters={[
-          { label: "Todas", href: "/aluno/exercicios", active: !search.area },
-          { label: "Linguagens", href: "/aluno/exercicios?area=linguagens", active: search.area === "linguagens" },
-          { label: "Ciências Humanas", href: "/aluno/exercicios?area=humanas", active: search.area === "humanas" },
-          { label: "Ciências da Natureza", href: "/aluno/exercicios?area=natureza", active: search.area === "natureza" },
-          { label: "Matemática", href: "/aluno/exercicios?area=matematica", active: search.area === "matematica" },
-        ]}
-        items={search.area ? exerciseCollections.map((id) => {
+      <>
+        <ActivityCatalog
+          kind="exercicios"
+          filters={[
+            { label: "Todas", href: "/aluno/exercicios", active: !search.area },
+            { label: "Linguagens", href: "/aluno/exercicios?area=linguagens", active: search.area === "linguagens" },
+            { label: "Ciências Humanas", href: "/aluno/exercicios?area=humanas", active: search.area === "humanas" },
+            { label: "Ciências da Natureza", href: "/aluno/exercicios?area=natureza", active: search.area === "natureza" },
+            { label: "Matemática", href: "/aluno/exercicios?area=matematica", active: search.area === "matematica" },
+          ]}
+          items={search.area ? exerciseCollections.map((id) => {
           const collectionQuestions = questionsForCollection(id);
           const visibleQuestions = collectionQuestions.filter((question) => question.area === exerciseArea);
           if (!visibleQuestions.length) return null;
@@ -196,8 +206,10 @@ export default async function Section({
             eyebrow: "Área de exercícios",
             supportingText: "Abra os exercícios desta matéria e avance por listas temáticas.",
           };
-        })}
-      />
+          })}
+        />
+        <OfficialMaterials group="1º dia · cadernos e gabaritos" materials={await officialMaterialsFor(who, 1)} />
+      </>
     );
   } else if (section === "simulados") {
     const selectedSimulation = search.simulado && /^simulado-(?:[1-9]|[12][0-9]|30)$/.test(search.simulado) ? search.simulado : undefined;
@@ -211,9 +223,10 @@ export default async function Section({
         <AssessmentPlayer questions={selectedQuestions} collectionId={selectedSimulationId} title={selectedSimulationId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva todas as questões. A correção detalhada aparece ao finalizar." />
       </>
     ) : (
-      <ActivityCatalog
-        kind="simulados"
-        items={simulationCollections.map((id) => {
+      <>
+        <ActivityCatalog
+          kind="simulados"
+          items={simulationCollections.map((id) => {
           const collectionQuestions = questionsForCollection(id);
           return {
             id,
@@ -224,8 +237,10 @@ export default async function Section({
             eyebrow: "Simulado ENEM",
             supportingText: "20 questões mescladas para medir seu desempenho geral.",
           };
-        })}
-      />
+          })}
+        />
+        <OfficialMaterials group="2º dia · cadernos e gabaritos" materials={await officialMaterialsFor(who, 2)} />
+      </>
     );
   } else if (section === "biblioteca") {
     const entries = JSON.parse(

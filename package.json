@@ -12,6 +12,7 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "audit:ebooks": "node scripts/audit-ebooks.mjs",
     "audit:official-exams": "tsx scripts/audit-official-exams.ts",
+    "extract:official-questions": "tsx scripts/extract-official-questions.ts",
     "audit:questions": "tsx scripts/audit-question-bank.ts",
     "admin:seed": "tsx scripts/setup-admin-user.ts",
     "test:e2e": "playwright test",
