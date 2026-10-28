@@ -268,7 +268,7 @@ export function CurvedMaterialCarousel() {
         onPointerDown={(event) => event.stopPropagation()}
         onClick={() => nudge(-1)}
       >
-        ‹
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
       </button>
       <button
         className={`${styles.arrow} ${styles.arrowNext}`}
@@ -277,10 +277,11 @@ export function CurvedMaterialCarousel() {
         onPointerDown={(event) => event.stopPropagation()}
         onClick={() => nudge(1)}
       >
-        ›
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
       </button>
     </div>
   );
 }
+
 
 
