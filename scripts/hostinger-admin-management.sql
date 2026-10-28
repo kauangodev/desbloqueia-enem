@@ -45,4 +45,6 @@ CALL godev_add_column_if_missing();
 DROP PROCEDURE godev_add_column_if_missing;
 
 UPDATE users SET admin_role = 'owner' WHERE role = 'admin' AND (admin_role IS NULL OR admin_role = '');
+-- The existing owner account is kept explicit; other administrators remain operational admins.
+UPDATE users SET admin_role = 'owner' WHERE email = 'kauango.dev@gmail.com' AND role = 'admin';
 UPDATE admin_invites SET status = CASE WHEN active = 1 THEN 'pending' ELSE 'revoked' END WHERE status IS NULL OR status = '';
