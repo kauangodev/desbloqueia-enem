@@ -1,80 +1,59 @@
 import "server-only";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { mysqlPool } from "./mysql";
-import type { RowDataPacket } from "mysql2/promise";
+import { studyDate, levelFor, summarizeStudyDays } from "./gamification-rules";
+import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 
-export const GAMIFICATION_RULE_VERSION = "2026-10-27";
-const XP_BY_EVENT = {
-  assessment_completed: 25,
-  reading_completed: 10,
-  study_task_completed: 15,
-} as const;
+export const GAMIFICATION_RULE_VERSION = "2026-10-27-v2";
+const XP_BY_EVENT = { assessment_completed: 25, reading_completed: 10, study_task_completed: 15 } as const;
 export type GamificationEventType = keyof typeof XP_BY_EVENT;
+export type RewardResult = "awarded" | "duplicate" | "ineligible" | "unavailable";
 
-function localDate(value: Date) {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Sao_Paulo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(value);
-}
-
-export async function recordGamificationEvent(
-  userId: string,
-  type: GamificationEventType,
-  sourceId: string,
-) {
-  if (!sourceId) return false;
+/** Revalidates completion server-side; a client request never proves eligibility. */
+export async function recordGamificationEvent(userId: string, type: GamificationEventType, sourceId: string): Promise<RewardResult> {
+  if (!sourceId) return "ineligible";
   try {
     const pool = mysqlPool();
-    const eventKey = `${type}:${sourceId}`;
-    const [result] = await pool.query(
-      `insert ignore into gamification_events
-       (id,user_id,event_key,event_type,source_id,xp,rule_version)
-       values (?,?,?,?,?,?,?)`,
-      [randomUUID(), userId, eventKey, type, sourceId, XP_BY_EVENT[type], GAMIFICATION_RULE_VERSION],
+    const checks = {
+      assessment_completed: "SELECT collection_id,activity,completed_at FROM assessment_attempts WHERE id=? AND user_id=? AND total>0 LIMIT 1",
+      reading_completed: "SELECT p.material_id FROM reading_progress p JOIN materials m ON m.id=p.material_id WHERE p.material_id=? AND p.user_id=? AND p.page>=m.pages AND m.published=TRUE LIMIT 1",
+      study_task_completed: "SELECT id FROM study_progress WHERE id=? AND user_id=? AND done=TRUE LIMIT 1",
+    };
+    const [rows] = await pool.query<RowDataPacket[]>(checks[type], [sourceId, userId]);
+    if (!rows[0]) return "ineligible";
+    const rewardSource = type === "assessment_completed"
+      ? `${rows[0].collection_id || rows[0].activity}:${studyDate(new Date(rows[0].completed_at))}`
+      : type === "study_task_completed" ? studyDate(new Date()) : sourceId;
+    const key = `${type}:${createHash("sha256").update(rewardSource).digest("hex")}`;
+    const [legacy] = await pool.query<RowDataPacket[]>("SELECT id FROM gamification_events WHERE user_id=? AND event_key=? LIMIT 1", [userId, `${type}:${sourceId}`]);
+    if (legacy.length) return "duplicate";
+    const [result] = await pool.query<ResultSetHeader>(
+      "INSERT IGNORE INTO gamification_events (id,user_id,event_key,event_type,source_id,xp,rule_version) VALUES (?,?,?,?,?,?,?)",
+      [randomUUID(), userId, key, type, sourceId, XP_BY_EVENT[type], GAMIFICATION_RULE_VERSION],
     );
-    return Number((result as { affectedRows?: number }).affectedRows || 0) === 1;
-  } catch {
-    // A migration that has not yet been applied must not break study flows.
-    return false;
+    return result.affectedRows === 1 ? "awarded" : "duplicate";
+  } catch (error) {
+    console.error("gamification_event_unavailable", { code: (error as { code?: string }).code || "unknown" });
+    return "unavailable";
   }
 }
 
-type SummaryRow = RowDataPacket & { xp: number; events: number; studyDays: number };
-type GoalRow = RowDataPacket & { daily_target: number; weekly_target: number };
-
 export async function gamificationSummary(userId: string) {
-  const empty = { xp: 0, level: 1, nextLevelXp: 100, events: 0, studyDays: 0, activeDays: 0, dailyTarget: 1, weeklyTarget: 5 };
+  const today = studyDate(new Date());
+  const empty = { available: false, xp: 0, level: 1, nextLevelXp: 100, events: 0, studyDays: 0, activeDays: 0, streak: 0, dailyTarget: 1, weeklyTarget: 5, todayEvents: 0, weekEvents: 0, today, ruleVersion: GAMIFICATION_RULE_VERSION };
   try {
     const pool = mysqlPool();
-    const [rows] = await pool.query<SummaryRow[]>(
-      `select coalesce(sum(xp),0) xp, count(*) events,
-       count(distinct date(convert_tz(occurred_at,'+00:00','-03:00'))) studyDays
-       from gamification_events where user_id = ?`,
-      [userId],
-    );
-    const [goals] = await pool.query<GoalRow[]>(
-      "select daily_target, weekly_target from gamification_goals where user_id = ? limit 1",
-      [userId],
-    );
-    const xp = Number(rows[0]?.xp || 0);
-    const level = Math.floor(xp / 100) + 1;
-    const studyDays = Number(rows[0]?.studyDays || 0);
-    return {
-      xp,
-      level,
-      nextLevelXp: level * 100,
-      events: Number(rows[0]?.events || 0),
-      studyDays,
-      activeDays: studyDays,
-      dailyTarget: Number(goals[0]?.daily_target || 1),
-      weeklyTarget: Number(goals[0]?.weekly_target || 5),
-      today: localDate(new Date()),
-      ruleVersion: GAMIFICATION_RULE_VERSION,
-    };
-  } catch {
+    const [totals] = await pool.query<RowDataPacket[]>("SELECT COALESCE(SUM(xp),0) xp,COUNT(*) events FROM gamification_events WHERE user_id=?", [userId]);
+    const [dates] = await pool.query<RowDataPacket[]>("SELECT DATE_FORMAT(CONVERT_TZ(occurred_at,'+00:00','-03:00'),'%Y-%m-%d') day,COUNT(*) events FROM gamification_events WHERE user_id=? GROUP BY day", [userId]);
+    const [goals] = await pool.query<RowDataPacket[]>("SELECT daily_target,weekly_target FROM gamification_goals WHERE user_id=? LIMIT 1", [userId]);
+    const xp = Number(totals[0]?.xp || 0);
+    const days = summarizeStudyDays(dates.map((row) => String(row.day)), today);
+    const weekStart = new Date(`${today}T12:00:00Z`);
+    weekStart.setUTCDate(weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7));
+    const monday = weekStart.toISOString().slice(0, 10);
+    return { ...empty, available: true, xp, ...levelFor(xp), events: Number(totals[0]?.events || 0), ...days, activeDays: days.studyDays, dailyTarget: Number(goals[0]?.daily_target || 1), weeklyTarget: Number(goals[0]?.weekly_target || 5), todayEvents: dates.filter((row) => String(row.day) === today).reduce((sum, row) => sum + Number(row.events), 0), weekEvents: dates.filter((row) => String(row.day) >= monday && String(row.day) <= today).reduce((sum, row) => sum + Number(row.events), 0) };
+  } catch (error) {
+    console.error("gamification_summary_unavailable", { code: (error as { code?: string }).code || "unknown" });
     return empty;
   }
 }

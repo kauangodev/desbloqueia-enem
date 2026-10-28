@@ -60,6 +60,7 @@ export function mysqlPool() {
       connectionLimit: 5,
       queueLimit: 0,
       timezone: "Z",
+      dateStrings: ["DATE"],
       charset: "utf8mb4",
     });
   }
@@ -71,3 +72,4 @@ export async function mysqlHealth() {
   const [rows] = await mysqlPool().query<RowDataPacket[]>("select 1 as ok");
   return rows[0]?.ok === 1;
 }
+

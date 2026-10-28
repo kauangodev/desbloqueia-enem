@@ -1,6 +1,7 @@
 import { identity, canAccess, serviceClient } from "../../../../lib/supabase";
 import { jsonError, sameOrigin } from "../../../../lib/http";
 import { NextResponse } from "next/server";
+import { recordGamificationEvent } from "../../../../lib/gamification";
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -58,7 +59,9 @@ export async function POST(
       page,
       updated_at: new Date().toISOString(),
     });
+  if (!error && page === m.pages) await recordGamificationEvent(who.user.id, "reading_completed", id);
   return error
     ? jsonError("Não foi possível salvar.", 503)
     : NextResponse.json({ saved: true });
 }
+

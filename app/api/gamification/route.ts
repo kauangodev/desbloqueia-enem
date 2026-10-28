@@ -14,7 +14,8 @@ const eventSchema = z.object({
 export async function GET() {
   const who = await identity();
   if (!who) return jsonError("Sessão expirada.", 401);
-  return NextResponse.json(await gamificationSummary(who.user.id));
+  const summary = await gamificationSummary(who.user.id);
+  return NextResponse.json(summary, { status: summary.available ? 200 : 503, headers: { "Cache-Control": "private, no-store" } });
 }
 
 export async function POST(request: Request) {
@@ -33,7 +34,9 @@ export async function POST(request: Request) {
     };
     const [rows] = await pool.query<Array<RowDataPacket & { id: string }>>(checks[type], [sourceId, who.user.id]);
     if (!rows[0]) return jsonError("A atividade ainda não pode gerar progresso.", 409);
-    await recordGamificationEvent(who.user.id, type as GamificationEventType, sourceId);
+    const reward = await recordGamificationEvent(who.user.id, type as GamificationEventType, sourceId);
+    if (reward === "ineligible") return jsonError("Conclua a atividade antes de receber progresso.", 409);
+    if (reward === "unavailable") return jsonError("Gamificação indisponível. Seu estudo continua salvo.", 503);
     return NextResponse.json(await gamificationSummary(who.user.id));
   } catch {
     return jsonError("Gamificação indisponível no momento.", 503);
