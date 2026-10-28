@@ -32,10 +32,10 @@ async function deliverInvite(pool: Pool, email: string, name: string, role: Admi
   });
   if (result.ok) {
     await pool.query("UPDATE admin_invites SET delivery_status='accepted',delivery_attempts=delivery_attempts+1,last_attempt_at=CURRENT_TIMESTAMP(3),last_sent_at=CURRENT_TIMESTAMP(3),last_error_kind=NULL,last_attempt_id=?,provider_message_id=? WHERE email=?", [result.attemptId, result.providerId, email]);
-    return { delivery: "sent", attemptId: result.attemptId };
+    return { delivery: "sent", attemptId: result.attemptId, inviteUrl: url };
   }
   await pool.query("UPDATE admin_invites SET delivery_status=?,delivery_attempts=delivery_attempts+1,last_attempt_at=CURRENT_TIMESTAMP(3),last_sent_at=CURRENT_TIMESTAMP(3),last_error_kind=?,last_attempt_id=?,provider_message_id=NULL WHERE email=?", [result.kind, result.kind, result.attemptId, email]);
-  return { delivery: "failed", attemptId: result.attemptId };
+  return { delivery: "failed", attemptId: result.attemptId, inviteUrl: url };
 }
 
 export async function GET() {
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
       await pool.query("INSERT INTO admin_invites (email,name,active,token_hash,expires_at,role,status,invited_by,delivery_status,delivery_attempts,last_error_kind,last_attempt_id,provider_message_id,accepted_at) VALUES (?,?,1,?,?,?,'pending',?,'pending',0,NULL,NULL,NULL,NULL) ON DUPLICATE KEY UPDATE name=VALUES(name),active=1,token_hash=VALUES(token_hash),expires_at=VALUES(expires_at),role=VALUES(role),status='pending',invited_by=VALUES(invited_by),delivery_status='pending',delivery_attempts=0,last_error_kind=NULL,last_attempt_id=NULL,provider_message_id=NULL,accepted_at=NULL", [email, name, hash(token), expires, role, who.user.id]);
       const result = await deliverInvite(pool, email, name, role, token, `invite-${email}-${expires.getTime()}`);
       await pool.query("INSERT INTO audit_logs (actor,action,target) VALUES (?,?,?)", [who.user.id, "team_invite_created", email]);
-      return NextResponse.json({ saved: true, delivery: result.delivery, attemptId: result.attemptId });
+      return NextResponse.json({ saved: true, delivery: result.delivery, attemptId: result.attemptId, inviteUrl: result.inviteUrl });
     }
     if (input.action === "resend-invite") {
       const email = String(input.email || "").trim().toLowerCase();
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
       await pool.query("UPDATE admin_invites SET active=1,token_hash=?,expires_at=?,status='pending',delivery_status='pending',last_error_kind=NULL,last_attempt_id=NULL,provider_message_id=NULL WHERE email=?", [hash(token), expires, email]);
       const result = await deliverInvite(pool, email, String(invite.name || ""), normalizeAdminRole(invite.role) as AdminRole, token, `invite-${email}-${expires.getTime()}`);
       await pool.query("INSERT INTO audit_logs (actor,action,target) VALUES (?,?,?)", [who.user.id, "team_invite_resent", email]);
-      return NextResponse.json({ saved: true, delivery: result.delivery, attemptId: result.attemptId });
+      return NextResponse.json({ saved: true, delivery: result.delivery, attemptId: result.attemptId, inviteUrl: result.inviteUrl });
     }
     if (input.action === "revoke-invite") {
       const email = String(input.email || "").trim().toLowerCase();

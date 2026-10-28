@@ -2814,10 +2814,15 @@ th {
 .team-invite-form { display: grid; grid-template-columns: 1.2fr 1.2fr 1fr auto; align-items: end; gap: 12px; padding: 18px; border: 1px solid #dfead8; border-radius: 18px; background: #f8fbf5; }
 .team-invite-form h3 { grid-column: 1 / -1; margin: 0; color: #101410; }
 .team-invite-form .field { margin: 0; }
+.team-invite-fallback { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; margin: 16px 0; padding: 16px; border: 1px solid #dfead8; border-radius: 14px; background: #f8fbf5; }
+.team-invite-fallback strong, .team-invite-fallback small { grid-column: 1 / -1; }
+.team-invite-fallback input { min-width: 0; width: 100%; padding: 10px 12px; border: 1px solid #cfdcc8; border-radius: 10px; background: #fff; color: #243224; font-size: 13px; }
+.team-invite-fallback small { color: #5c6d5b; }
 .team-table select { max-width: 190px; }
 .team-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .button.ghost { border: 1px solid #cfdccc; background: transparent; color: #2e5b43; }
 @media (max-width: 760px) { .team-invite-form { grid-template-columns: 1fr; } .team-invite-form h3 { grid-column: auto; } .team-table { min-width: 680px; } }
+@media (max-width: 560px) { .team-invite-fallback { grid-template-columns: 1fr; } }
 /* Student dashboard 3.0 */
 .portal {
   grid-template-columns: 246px minmax(0, 1fr);
