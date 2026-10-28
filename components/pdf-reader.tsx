@@ -87,8 +87,10 @@ export default function PdfReader({
         c.height = viewport.height * ratio;
         c.style.width = `${viewport.width}px`;
         c.style.height = `${viewport.height}px`;
+        const canvasContext = c.getContext("2d");
+        if (!canvasContext) throw new Error("Não foi possível preparar o canvas do leitor.");
         task = pdfPage.render({
-          canvas: c,
+          canvasContext,
           viewport,
           transform: ratio !== 1 ? [ratio, 0, 0, ratio, 0, 0] : undefined,
         });
