@@ -230,3 +230,5 @@ test("políticas e suporte têm rotas reais", async ({ page }) => {
   }
 });
 
+
+// Mobile layout coverage is part of the release gate.
