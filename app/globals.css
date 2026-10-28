@@ -3684,3 +3684,273 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="dark"] .landing-main .pricing-section .section-heading p {
   color: #b4c1b4;
 }
+
+/* Final theme contract: every product surface owns its foreground colors.
+   Older components still contain presentation colors from the first visual
+   system, so relying on inherited body text makes them disappear when the
+   browser preference changes. Keep these rules scoped to real surfaces and
+   leave branded accent cards (Premium, welcome art and the sidebar) intact. */
+:root[data-theme="light"] body,
+:root[data-theme="light"] .landing-main,
+:root[data-theme="light"] .portal,
+:root[data-theme="light"] .admin-app {
+  background: #f6f8f5;
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main .intro-section,
+:root[data-theme="light"] .landing-main .study-section,
+:root[data-theme="light"] .landing-main .faq-section,
+:root[data-theme="light"] .landing-main .closing,
+:root[data-theme="light"] .landing-main .pricing-section {
+  background: #f6f8f5;
+}
+:root[data-theme="light"] .landing-main p,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy,
+:root[data-theme="light"] .landing-main .benefit-lines p,
+:root[data-theme="light"] .landing-main .outline-row p,
+:root[data-theme="light"] .landing-main .faq-list details p {
+  color: #47564a;
+}
+:root[data-theme="light"] .landing-main h1,
+:root[data-theme="light"] .landing-main h2,
+:root[data-theme="light"] .landing-main h3,
+:root[data-theme="light"] .landing-main .benefit-lines b,
+:root[data-theme="light"] .landing-main .outline-row b,
+:root[data-theme="light"] .landing-main .outline-top b {
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main h2 span {
+  color: #246033;
+}
+:root[data-theme="light"] .landing-main .study-outline,
+:root[data-theme="light"] .landing-main .faq-list details,
+:root[data-theme="light"] .landing-main .library-note,
+:root[data-theme="light"] .landing-main .material-stage {
+  background: #fff;
+  border-color: #c4d0c1;
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main .library-note p,
+:root[data-theme="light"] .landing-main .library-note > span,
+:root[data-theme="light"] .landing-main .outline-top > span,
+:root[data-theme="light"] .landing-main .outline-row > span {
+  color: #47564a;
+}
+:root[data-theme="light"] .landing-main .discipline-strip {
+  background: #edf3ea;
+  border-color: #c4d0c1;
+}
+:root[data-theme="light"] .landing-main .discipline-strip * {
+  color: #246033;
+}
+:root[data-theme="light"] .landing-main .faq-list summary {
+  color: #142018;
+}
+
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .landing-main,
+:root[data-theme="dark"] .portal,
+:root[data-theme="dark"] .admin-app {
+  background: #0b0d10;
+  color: #f4f8f2;
+}
+:root[data-theme="dark"] .landing-main p,
+:root[data-theme="dark"] .landing-main .section-heading p,
+:root[data-theme="dark"] .landing-main .large-copy,
+:root[data-theme="dark"] .landing-main .benefit-lines p,
+:root[data-theme="dark"] .landing-main .outline-row p,
+:root[data-theme="dark"] .landing-main .faq-list details p {
+  color: #cbd5e1;
+}
+:root[data-theme="dark"] .landing-main h1,
+:root[data-theme="dark"] .landing-main h2,
+:root[data-theme="dark"] .landing-main h3,
+:root[data-theme="dark"] .landing-main .benefit-lines b,
+:root[data-theme="dark"] .landing-main .outline-row b,
+:root[data-theme="dark"] .landing-main .outline-top b,
+:root[data-theme="dark"] .landing-main .faq-list summary {
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .landing-main h2 span {
+  color: #b7c5d1;
+}
+:root[data-theme="dark"] .landing-main .study-outline,
+:root[data-theme="dark"] .landing-main .faq-list details,
+:root[data-theme="dark"] .landing-main .library-note,
+:root[data-theme="dark"] .landing-main .material-stage {
+  background: #15181d;
+  border-color: #374151;
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .landing-main .library-note p,
+:root[data-theme="dark"] .landing-main .library-note > span,
+:root[data-theme="dark"] .landing-main .outline-top > span,
+:root[data-theme="dark"] .landing-main .outline-row > span {
+  color: #cbd5e1;
+}
+
+:root[data-theme="light"] .portal .workspace,
+:root[data-theme="light"] .admin-workspace,
+:root[data-theme="light"] .admin-topbar,
+:root[data-theme="light"] .admin-content {
+  background: #f6f8f5;
+  color: #142018;
+}
+:root[data-theme="light"] .student-section-block,
+:root[data-theme="light"] .student-context-section,
+:root[data-theme="light"] .student-continue-card,
+:root[data-theme="light"] .student-empty-card,
+:root[data-theme="light"] .student-profile-card,
+:root[data-theme="light"] .student-dashboard .resource,
+:root[data-theme="light"] .official-exams,
+:root[data-theme="light"] .assessment,
+:root[data-theme="light"] .question-card,
+:root[data-theme="light"] .form-card,
+:root[data-theme="light"] .library-entry,
+:root[data-theme="light"] .activity-card {
+  background: #fff;
+  border-color: #c4d0c1;
+  color: #142018;
+}
+:root[data-theme="light"] .student-section-block p,
+:root[data-theme="light"] .student-context-section p,
+:root[data-theme="light"] .student-continue-copy p,
+:root[data-theme="light"] .student-dashboard .resource p,
+:root[data-theme="light"] .assessment p,
+:root[data-theme="light"] .question-card p,
+:root[data-theme="light"] .activity-card p {
+  color: #47564a;
+}
+:root[data-theme="light"] .student-section-block h2,
+:root[data-theme="light"] .student-section-block h3,
+:root[data-theme="light"] .student-context-section strong,
+:root[data-theme="light"] .student-continue-copy h3,
+:root[data-theme="light"] .student-dashboard .resource strong,
+:root[data-theme="light"] .assessment h2,
+:root[data-theme="light"] .assessment h3,
+:root[data-theme="light"] .question-card h3,
+:root[data-theme="light"] .activity-card h3 {
+  color: #142018;
+}
+:root[data-theme="light"] .subtle,
+:root[data-theme="light"] .student-stat-card > span,
+:root[data-theme="light"] .student-stat-card small,
+:root[data-theme="light"] .student-next-list small,
+:root[data-theme="light"] .student-context-empty,
+:root[data-theme="light"] .assessment-source {
+  color: #47564a;
+}
+
+:root[data-theme="dark"] .portal .workspace,
+:root[data-theme="dark"] .admin-workspace,
+:root[data-theme="dark"] .admin-topbar,
+:root[data-theme="dark"] .admin-content {
+  background: #0b0d10;
+  color: #f4f8f2;
+}
+:root[data-theme="dark"] .student-section-block,
+:root[data-theme="dark"] .student-context-section,
+:root[data-theme="dark"] .student-continue-card,
+:root[data-theme="dark"] .student-empty-card,
+:root[data-theme="dark"] .student-profile-card,
+:root[data-theme="dark"] .student-dashboard .resource,
+:root[data-theme="dark"] .official-exams,
+:root[data-theme="dark"] .assessment,
+:root[data-theme="dark"] .question-card,
+:root[data-theme="dark"] .form-card,
+:root[data-theme="dark"] .library-entry,
+:root[data-theme="dark"] .activity-card {
+  background: #15181d;
+  border-color: #374151;
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .student-section-block p,
+:root[data-theme="dark"] .student-context-section p,
+:root[data-theme="dark"] .student-continue-copy p,
+:root[data-theme="dark"] .student-dashboard .resource p,
+:root[data-theme="dark"] .assessment p,
+:root[data-theme="dark"] .question-card p,
+:root[data-theme="dark"] .activity-card p,
+:root[data-theme="dark"] .subtle,
+:root[data-theme="dark"] .student-stat-card > span,
+:root[data-theme="dark"] .student-stat-card small,
+:root[data-theme="dark"] .student-next-list small,
+:root[data-theme="dark"] .student-context-empty,
+:root[data-theme="dark"] .assessment-source {
+  color: #cbd5e1;
+}
+:root[data-theme="dark"] .student-section-block h2,
+:root[data-theme="dark"] .student-section-block h3,
+:root[data-theme="dark"] .student-context-section strong,
+:root[data-theme="dark"] .student-continue-copy h3,
+:root[data-theme="dark"] .student-dashboard .resource strong,
+:root[data-theme="dark"] .assessment h2,
+:root[data-theme="dark"] .assessment h3,
+:root[data-theme="dark"] .question-card h3,
+:root[data-theme="dark"] .activity-card h3 {
+  color: #f9fafb;
+}
+
+:root[data-theme="light"] .admin-content .overview-white-card,
+:root[data-theme="light"] .admin-content .overview-activity-card,
+:root[data-theme="light"] .admin-content .overview-metric,
+:root[data-theme="light"] .admin-content .crm-table,
+:root[data-theme="light"] .admin-content .stat,
+:root[data-theme="light"] .admin-content .task-list,
+:root[data-theme="light"] .admin-content .admin-form,
+:root[data-theme="light"] .admin-content .table-wrap {
+  background: #fff;
+  border-color: #c4d0c1;
+  color: #142018;
+}
+:root[data-theme="light"] .admin-content .overview-white-card h2,
+:root[data-theme="light"] .admin-content .overview-activity-card h2,
+:root[data-theme="light"] .admin-content .overview-metric strong,
+:root[data-theme="light"] .admin-content .activity-copy strong,
+:root[data-theme="light"] .admin-content .plan-distribution-row,
+:root[data-theme="light"] .admin-content .overview-quick-actions strong,
+:root[data-theme="light"] .admin-content th,
+:root[data-theme="light"] .admin-content td {
+  color: #142018;
+}
+:root[data-theme="light"] .admin-content .overview-white-card p,
+:root[data-theme="light"] .admin-content .overview-activity-card p,
+:root[data-theme="light"] .admin-content .activity-copy small,
+:root[data-theme="light"] .admin-content .overview-quick-actions span,
+:root[data-theme="light"] .admin-content .overview-metric span,
+:root[data-theme="light"] .admin-content .overview-metric small {
+  color: #47564a;
+}
+:root[data-theme="dark"] .admin-content .overview-white-card,
+:root[data-theme="dark"] .admin-content .overview-activity-card,
+:root[data-theme="dark"] .admin-content .overview-metric,
+:root[data-theme="dark"] .admin-content .crm-table,
+:root[data-theme="dark"] .admin-content .stat,
+:root[data-theme="dark"] .admin-content .task-list,
+:root[data-theme="dark"] .admin-content .admin-form,
+:root[data-theme="dark"] .admin-content .table-wrap {
+  background: #15181d;
+  border-color: #374151;
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .admin-content .overview-white-card h2,
+:root[data-theme="dark"] .admin-content .overview-activity-card h2,
+:root[data-theme="dark"] .admin-content .overview-metric strong,
+:root[data-theme="dark"] .admin-content .activity-copy strong,
+:root[data-theme="dark"] .admin-content .plan-distribution-row,
+:root[data-theme="dark"] .admin-content .overview-quick-actions strong,
+:root[data-theme="dark"] .admin-content th,
+:root[data-theme="dark"] .admin-content td {
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .admin-content .overview-white-card p,
+:root[data-theme="dark"] .admin-content .overview-activity-card p,
+:root[data-theme="dark"] .admin-content .activity-copy small,
+:root[data-theme="dark"] .admin-content .overview-quick-actions span,
+:root[data-theme="dark"] .admin-content .overview-metric span,
+:root[data-theme="dark"] .admin-content .overview-metric small {
+  color: #cbd5e1;
+}
+.overview-metric-tracking .overview-metric-icon { color: #34d399; }
+.overview-metric-roi .overview-metric-icon { color: #fbbf24; }
