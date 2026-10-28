@@ -47,17 +47,10 @@ export default async function Home() {
         <section className="materials-section" id="materiais">
           <div className="container section">
             <div className="section-heading">
-              <h2>
-                Abra espaço
-                <br />
-                para aprender.
-              </h2>
+              <h2>Explore os materiais</h2>
               <p>
-                Conheça as capas dos 16 e-books didáticos reais.
-                <br />
-                Uma coleção organizada por área,
-                <br />
-                com 34 páginas por disciplina para consultar no seu ritmo.
+                16 e-books organizados para sua revisão, com capas reais e
+                navegação por disciplina.
               </p>
             </div>
             <MaterialPreview />
