@@ -175,11 +175,11 @@ export default async function Home() {
                   </ul>
                   <Link
                     className={`button ${p.id === "premium" ? "lime" : "secondary"}`}
-                    href={`/api/checkout/${p.id}`}
+                    href={checkoutReady ? `/api/checkout/${p.id}` : "/suporte"}
                   >
-                    Escolher {p.name}
+                    {checkoutReady ? `Escolher ${p.name}` : "Receber orientação"}
                   </Link>
-                  <small className="plan-note">{checkoutReady ? "Pagamento seguro pela Cakto · acesso liberado após confirmação" : "Vendas em preparação"}</small>
+                  <small className="plan-note">{checkoutReady ? "Pagamento seguro pela Cakto · acesso liberado após confirmação" : "Checkout em preparação · consulte o atendimento"}</small>
                 </article>
               ))}
             </div>
