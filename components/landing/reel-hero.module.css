@@ -1,5 +1,5 @@
 .hero {
-  --forest: var(--color-accent);
+  --forest: var(--color-link);
   --mint: var(--color-accent-secondary);
   --paper: var(--color-bg);
   --headline: var(--color-text);

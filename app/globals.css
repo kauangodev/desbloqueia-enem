@@ -3306,6 +3306,7 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="light"] body { background: var(--color-bg); color: var(--color-text); }
 :root[data-theme="light"] .site-header { background: rgb(246 248 245 / 90%); border-bottom-color: #d5ded2; }
 :root[data-theme="light"] .brand { color: var(--color-text); }
+:root[data-theme="light"] .brand b > span { color: #246033; }
 :root[data-theme="light"] .brand-sub { border-left-color: #a8b6a5; color: var(--color-text-secondary); }
 :root[data-theme="light"] .nav { background: rgb(255 255 255 / 92%); border-color: #c4d0c1; }
 :root[data-theme="light"] .nav a { color: #246033; }
@@ -3333,6 +3334,18 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="light"] .student-welcome { background: linear-gradient(120deg, #fff, #edf3ea); }
 :root[data-theme="light"] .student-welcome h1, :root[data-theme="light"] .student-stat-card strong, :root[data-theme="light"] .student-section-heading h2, :root[data-theme="light"] .student-continue-copy h3, :root[data-theme="light"] .student-profile-card strong, :root[data-theme="light"] .student-context-heading, :root[data-theme="light"] .student-next-list strong, :root[data-theme="light"] .admin-hero h1, :root[data-theme="light"] .admin-topbar strong { color: #142018; }
 :root[data-theme="light"] .student-welcome p, :root[data-theme="light"] .student-stat-card > span, :root[data-theme="light"] .student-stat-card small, :root[data-theme="light"] .student-next-list small, :root[data-theme="light"] .student-context-empty, :root[data-theme="light"] .admin-hero p, :root[data-theme="light"] .admin-topbar-kicker { color: #47564a; }
+:root[data-theme="light"] .student-eyebrow, :root[data-theme="light"] .admin-eyebrow, :root[data-theme="light"] .admin-live-indicator, :root[data-theme="light"] .material-index-heading, :root[data-theme="light"] .material-index-heading small { color: #246033; }
+:root[data-theme="light"] .student-stat-card.accent strong, :root[data-theme="light"] .student-context-note strong, :root[data-theme="light"] .student-inline-action, :root[data-theme="light"] .student-section-heading > a, :root[data-theme="light"] .student-status-pill, :root[data-theme="light"] .student-count { color: #246033; }
+:root[data-theme="light"] .student-status-pill, :root[data-theme="light"] .student-count { background: #e4f0df; }
+:root[data-theme="light"] .student-primary-action, :root[data-theme="light"] .button.primary, :root[data-theme="light"] .button.lime { background: #b7ff3c; color: #142018; }
+:root[data-theme="light"] .student-primary-action:hover, :root[data-theme="light"] .button.primary:hover, :root[data-theme="light"] .button.lime:hover { background: #a8eb31; color: #142018; }
+:root[data-theme="light"] .student-context-note strong { color: #246033; }
+:root[data-theme="light"] .admin-sidebar-label { color: #b7d6b9; }
+:root[data-theme="light"] .admin-side-link[aria-current="page"] { background: #b7ff3c; color: #142018; }
+:root[data-theme="light"] .admin-side-link[aria-current="page"] .admin-side-icon { background: #142018; color: #b7ff3c; }
+:root[data-theme="light"] .portal .sidebar nav a[aria-current="page"] { background: #b7ff3c; color: #142018; }
+:root[data-theme="light"] .portal .sidebar nav a[aria-current="page"] .portal-nav-icon { background: #142018; color: #b7ff3c; }
+:root[data-theme="light"] .status-message, :root[data-theme="light"] .admin-content small, :root[data-theme="light"] .admin-content label { color: #47564a; }
 :root[data-theme="light"] .student-secondary-action { border-color: #71826f; color: #246033; background: #fff; }
 :root[data-theme="light"] .student-inline-action, :root[data-theme="light"] .student-section-heading > a, :root[data-theme="light"] .student-context-note strong { color: #246033; }
 :root[data-theme="light"] .manual-access-form input, :root[data-theme="light"] .manual-access-form select { background: #fff; color: #142018; border-color: #71826f; }
