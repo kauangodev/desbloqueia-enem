@@ -35,7 +35,7 @@ test("nível respeita limite e não aceita XP negativo", () => {
 test("leitor e build publicam o mesmo worker PDF.js", () => {
   const reader = readFileSync("components/pdf-reader.tsx", "utf8");
   const generator = readFileSync("scripts/pdf-worker.mjs", "utf8");
-  assert.ok(reader.includes('/vendor/pdf.worker.min.js'));
+  assert.ok(reader.includes('/vendor/pdf.worker.min.mjs'));
   assert.ok(generator.includes('public/vendor/pdf.worker.min.mjs'));
 });
 

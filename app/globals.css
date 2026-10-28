@@ -2813,6 +2813,7 @@ th {
 .team-manager { display: grid; gap: 18px; }
 .team-invite-form { display: grid; grid-template-columns: 1.2fr 1.2fr 1fr auto; align-items: end; gap: 12px; padding: 18px; border: 1px solid #dfead8; border-radius: 18px; background: #f8fbf5; }
 .team-invite-form h3 { grid-column: 1 / -1; margin: 0; color: #101410; }
+.team-form-note { grid-column: 1 / -1; margin: -4px 0 4px; color: #5c6d5b; font-size: 13px; }
 .team-invite-form .field { margin: 0; }
 .team-invite-fallback { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; margin: 16px 0; padding: 16px; border: 1px solid #dfead8; border-radius: 14px; background: #f8fbf5; }
 .team-invite-fallback strong, .team-invite-fallback small { grid-column: 1 / -1; }

@@ -43,7 +43,7 @@ export async function GET() {
   if (!who || !hasAdminPermission(who.adminRole, "team.read")) return jsonError("Acesso à equipe não autorizado", 403);
   try {
     const [members] = await mysqlPool().query<TeamRow[]>("SELECT id,name,email,admin_role,account_status,created_at,updated_at FROM users WHERE role = 'admin' ORDER BY name,email");
-    const [invites] = await mysqlPool().query<TeamRow[]>("SELECT email,name,role,status,expires_at,last_sent_at,delivery_status,delivery_attempts,last_attempt_at,last_error_kind,last_attempt_id,provider_message_id,created_at,accepted_at FROM admin_invites ORDER BY updated_at DESC, created_at DESC");
+    const [invites] = await mysqlPool().query<TeamRow[]>("SELECT email,name,role,status,expires_at,last_sent_at,delivery_status,delivery_attempts,last_attempt_at,last_error_kind,last_attempt_id,provider_message_id,created_at,accepted_at FROM admin_invites WHERE status='pending' AND active=1 ORDER BY updated_at DESC, created_at DESC");
     return NextResponse.json({ members, invites, roles: adminRoleLabels });
   } catch (error) {
     const errorId = randomBytes(8).toString("hex");
@@ -60,6 +60,20 @@ export async function POST(req: Request) {
   if (!input?.action) return jsonError("Ação inválida");
   const pool = mysqlPool();
   try {
+    if (input.action === "create-member") {
+      const email = String(input.email || "").trim().toLowerCase();
+      const name = String(input.name || "").trim().slice(0, 160);
+      const role = normalizeAdminRole(input.role) as AdminRole;
+      if (!emailPattern.test(email) || email.length > 254 || !name) return jsonError("Informe nome e e-mail válidos.");
+      if (!allowedRoles.has(role) || !canGrantRole(who.adminRole, role)) return jsonError("Você não pode conceder essa função.", 403);
+      const [existing] = await pool.query<TeamRow[] | Array<TeamRow & { role?: string }>>("SELECT id,role FROM users WHERE email = ? LIMIT 1", [email]);
+      if (existing[0]?.role === "admin") return jsonError("Este e-mail já é membro da equipe.", 409);
+      const token = randomBytes(32).toString("hex");
+      const expires = new Date(Date.now() + 7 * 86400000);
+      await pool.query("INSERT INTO admin_invites (email,name,active,token_hash,expires_at,role,status,invited_by,delivery_status,delivery_attempts,last_error_kind,last_attempt_id,provider_message_id,accepted_at) VALUES (?,?,1,?,?,?,'pending',?,'not_attempted',0,NULL,NULL,NULL,NULL) ON DUPLICATE KEY UPDATE name=VALUES(name),active=1,token_hash=VALUES(token_hash),expires_at=VALUES(expires_at),role=VALUES(role),status='pending',invited_by=VALUES(invited_by),delivery_status='not_attempted',delivery_attempts=0,last_error_kind=NULL,last_attempt_id=NULL,provider_message_id=NULL,accepted_at=NULL", [email, name, hash(token), expires, role, who.user.id]);
+      await pool.query("INSERT INTO audit_logs (actor,action,target) VALUES (?,?,?)", [who.user.id, "team_activation_created", email]);
+      return NextResponse.json({ saved: true, activation: "created", inviteUrl: `${appUrl}/convite?token=${encodeURIComponent(token)}` });
+    }
     if (input.action === "invite") {
       const email = String(input.email || "").trim().toLowerCase();
       const name = String(input.name || "").trim().slice(0, 160);
