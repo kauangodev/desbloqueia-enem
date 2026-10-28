@@ -99,5 +99,16 @@ console.log(
     2,
   ),
 );
-if (invalid.length || pedagogicalInvalid.length || invalidBatchIds.length || Object.keys(batchCounts).length !== 21) process.exitCode = 1;
+// A contagem bruta não é suficiente: uma questão repetida em outra coleção
+// não representa conteúdo único. O gate de homologação precisa falhar até
+// que cada identidade normalizada tenha sido revisada, substituída ou
+// explicitamente arquivada fora do acervo publicado.
+const uniqueContentGatePassed = duplicateContentGroups.length === 0;
+if (
+  invalid.length ||
+  pedagogicalInvalid.length ||
+  invalidBatchIds.length ||
+  Object.keys(batchCounts).length !== 21 ||
+  !uniqueContentGatePassed
+) process.exitCode = 1;
 

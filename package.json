@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "node scripts/ensure-runtime-deps.mjs",
     "dev": "node scripts/pdf-worker.mjs && next dev",
-    "build": "node scripts/pdf-worker.mjs && next build --webpack",
+    "build": "node scripts/pdf-worker.mjs && node scripts/write-build-info.mjs && next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
