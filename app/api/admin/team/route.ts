@@ -46,8 +46,9 @@ export async function GET() {
     const [invites] = await mysqlPool().query<TeamRow[]>("SELECT email,name,role,status,expires_at,last_sent_at,delivery_status,delivery_attempts,last_attempt_at,last_error_kind,last_attempt_id,provider_message_id,created_at,accepted_at FROM admin_invites ORDER BY updated_at DESC, created_at DESC");
     return NextResponse.json({ members, invites, roles: adminRoleLabels });
   } catch (error) {
-    console.error("admin_team_list_failed", { code: (error as { code?: string }).code || "unknown" });
-    return jsonError("O módulo de equipe ainda precisa da migração administrativa no banco.", 503);
+    const errorId = randomBytes(8).toString("hex");
+    console.error("admin_team_list_failed", { errorId, code: (error as { code?: string }).code || "unknown" });
+    return NextResponse.json({ error: "Não foi possível carregar a equipe agora.", errorId }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 }
 
@@ -125,7 +126,8 @@ export async function POST(req: Request) {
     }
     return jsonError("Ação desconhecida");
   } catch (error) {
-    console.error("admin_team_write_failed", { code: (error as { code?: string }).code || "unknown" });
-    return jsonError("Não foi possível concluir a operação. Verifique a migração administrativa.", 503);
+    const errorId = randomBytes(8).toString("hex");
+    console.error("admin_team_write_failed", { errorId, code: (error as { code?: string }).code || "unknown" });
+    return NextResponse.json({ error: "Não foi possível concluir a operação agora.", errorId }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 }
