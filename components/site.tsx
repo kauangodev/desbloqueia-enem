@@ -116,6 +116,21 @@ export function MaterialPreview() {
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
     }
   }
+  function moveCatalog(direction: -1 | 1) {
+    const container = tabs.current;
+    if (!container) return;
+    const max = container.scrollWidth - container.clientWidth;
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    if (direction > 0 && container.scrollLeft >= max - 8) {
+      container.scrollTo({ left: 0, behavior });
+      return;
+    }
+    if (direction < 0 && container.scrollLeft <= 8) {
+      container.scrollTo({ left: max, behavior });
+      return;
+    }
+    container.scrollBy({ left: direction * Math.max(container.clientWidth * 0.78, 220), behavior });
+  }
   return (
     <div className="material-explorer">
       <div className="material-index-shell">
@@ -125,12 +140,14 @@ export function MaterialPreview() {
             {visibleMaterials.length} de {materials.length} materiais
           </small>
         </div>
-        <div
-          className="material-index"
-          ref={tabs}
-          role="tablist"
-          aria-label="Cadernos de estudo"
-          onKeyDown={(event) => {
+        <div className="material-carousel-shell">
+          <button className="catalog-arrow catalog-arrow-previous" type="button" aria-label="Materiais anteriores" onClick={() => moveCatalog(-1)}>‹</button>
+          <div
+            className="material-index"
+            ref={tabs}
+            role="tablist"
+            aria-label="Cadernos de estudo"
+            onKeyDown={(event) => {
             let next = active;
             const currentPosition = Math.max(0, visibleMaterials.findIndex((item) => item.id === material.id));
             if (["ArrowRight", "ArrowDown"].includes(event.key)) next = (currentPosition + 1) % visibleMaterials.length;
@@ -140,9 +157,9 @@ export function MaterialPreview() {
             else return;
             event.preventDefault();
             selectTab(next, true, materials.findIndex((item) => item.id === visibleMaterials[next].id));
-          }}
-        >
-          {visibleMaterials.map((item, i) => (
+            }}
+          >
+            {visibleMaterials.map((item, i) => (
             <button
               role="tab"
               id={`tab-${item.id}`}
@@ -158,7 +175,9 @@ export function MaterialPreview() {
               <b>{item.title}</b>
               <small>{item.category}</small>
             </button>
-          ))}
+            ))}
+          </div>
+          <button className="catalog-arrow catalog-arrow-next" type="button" aria-label="Próximos materiais" onClick={() => moveCatalog(1)}>›</button>
         </div>
         {!expanded && (
           <button className="catalog-expand" type="button" onClick={() => setExpanded(true)}>
