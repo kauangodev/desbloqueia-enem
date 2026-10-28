@@ -14,11 +14,16 @@ export async function POST(req: Request) {
   const key = createHash("sha256").update(email).digest("hex");
   const { data: allowed } = await adminDb.rpc("take_rate_limit", { p_key: `password:${key}`, p_limit: 3, p_seconds: 900 });
   if (!allowed) return jsonError("Aguarde alguns minutos antes de tentar novamente.", 429);
-  let [{ data: entitlement, error: entitlementError }, { data: invite, error: inviteError }, { data: admin, error: adminError }] = await Promise.all([
+  const [entitlementResult, inviteResult, adminResult] = await Promise.all([
     adminDb.from("entitlements").select("user_id").eq("email", email).eq("active", true).limit(1).maybeSingle(),
     adminDb.from("admin_invites").select("name").eq("email", email).eq("active", true).maybeSingle(),
     adminDb.from("profiles").select("name,role").eq("email", email).eq("role", "admin").maybeSingle(),
   ]);
+  const { data: entitlement, error: entitlementError } = entitlementResult;
+  const { error: inviteError } = inviteResult;
+  const { error: adminError } = adminResult;
+  let invite = inviteResult.data;
+  let admin = adminResult.data;
   if (entitlementError || inviteError || adminError) {
     console.error("auth_access_lookup_failed", {
       entitlement: (entitlementError as { code?: string; errno?: number } | null)?.code || (entitlementError as { errno?: number } | null)?.errno || null,

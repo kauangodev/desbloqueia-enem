@@ -33,8 +33,8 @@ async function main() {
     if (apply) {
       try {
         await connection.query("ALTER TABLE users ADD COLUMN must_change_password BOOLEAN NOT NULL DEFAULT FALSE");
-      } catch (error: any) {
-        if (error?.code !== "ER_DUP_FIELDNAME") throw error;
+      } catch (error: unknown) {
+        if ((error as { code?: string })?.code !== "ER_DUP_FIELDNAME") throw error;
       }
       await connection.beginTransaction();
       if (existing) {
