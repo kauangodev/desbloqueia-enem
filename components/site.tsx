@@ -141,7 +141,9 @@ export function MaterialPreview() {
           </small>
         </div>
         <div className="material-carousel-shell">
-          <button className="catalog-arrow catalog-arrow-previous" type="button" aria-label="Materiais anteriores" onClick={() => moveCatalog(-1)}>‹</button>
+          <button className="catalog-arrow catalog-arrow-previous" type="button" aria-label="Materiais anteriores" onClick={() => moveCatalog(-1)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+          </button>
           <div
             className="material-index"
             ref={tabs}
@@ -177,7 +179,9 @@ export function MaterialPreview() {
             </button>
             ))}
           </div>
-          <button className="catalog-arrow catalog-arrow-next" type="button" aria-label="Próximos materiais" onClick={() => moveCatalog(1)}>›</button>
+          <button className="catalog-arrow catalog-arrow-next" type="button" aria-label="Próximos materiais" onClick={() => moveCatalog(1)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
         </div>
         {!expanded && (
           <button className="catalog-expand" type="button" onClick={() => setExpanded(true)}>
@@ -263,5 +267,6 @@ export function FAQ() {
     </div>
   );
 }
+
 
 
