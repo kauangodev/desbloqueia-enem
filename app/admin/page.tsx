@@ -9,6 +9,7 @@ import { META_PIXEL_ID } from "../../lib/meta-pixel";
 import TicketManager from "../../components/ticket-manager";
 import AdminOverview from "../../components/admin-overview";
 import TeamManager from "../../components/team-manager";
+import ManualAccessForm from "../../components/manual-access-form";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
@@ -313,6 +314,7 @@ export default async function Admin({
           />
           <button className="button primary">Buscar</button>
         </form>
+        <ManualAccessForm />
         <div className="table-wrap">
           <table className="crm-table">
             <thead>
@@ -444,7 +446,7 @@ export default async function Admin({
       ["Automação de boas-vindas (opcional)", !!process.env.CRON_SECRET],
       ["Meta Pixel", /^\d+$/.test(META_PIXEL_ID)],
       ["Google Analytics", !!process.env.NEXT_PUBLIC_GA_ID],
-      ["Correção de redação (OpenAI) — em manutenção", false],
+      ["Em manutenção — correção automática de redações em desenvolvimento.", false],
       ["Auditoria de acesso por hash", !!process.env.ACCESS_FINGERPRINT_SALT],
     ];
     content = (

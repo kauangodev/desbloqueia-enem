@@ -45,6 +45,10 @@ export async function POST(req: Request) {
     [result] = await mysqlPool().query<ResultSetHeader>("UPDATE users SET password_hash = ?, email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP(3)), reset_token_hash = NULL, reset_token_expires_at = NULL WHERE id = ? AND reset_token_hash = ? AND reset_token_expires_at > CURRENT_TIMESTAMP(3)", [await hashPassword(password), userId, createHash("sha256").update(token).digest("hex")]);
   }
   if (!result.affectedRows) return jsonError("Este acesso de senha expirou. Solicite outro.", 410);
+  await mysqlPool().query(
+    "UPDATE entitlements SET user_id = ? WHERE LOWER(email) = LOWER(?) AND active = TRUE AND (user_id IS NULL OR user_id = ?)",
+    [userId, userId, userId],
+  );
   const [users] = await mysqlPool().query<RowDataPacket[]>("SELECT role FROM users WHERE id = ? LIMIT 1", [userId]);
   const role = String(users[0]?.role || "").trim().toLowerCase();
   const safeRedirect = /^\/(?:admin|aluno)(?:[/?#]|$)/.test(requestedRedirect) ? requestedRedirect : "";

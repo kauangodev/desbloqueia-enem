@@ -2,6 +2,7 @@ import { identity, serviceClient } from "../../../lib/supabase";
 import { sameOrigin, jsonError } from "../../../lib/http";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { randomUUID } from "node:crypto";
 const plan = z.enum(["essencial", "premium"]);
 const support = z.object({
   name: z.string().max(100),
@@ -56,6 +57,11 @@ const offer = z.object({
   cakto_offer_id: z.string().max(120).nullable(),
   checkout_url: z.string().max(500).nullable(),
   enabled: z.boolean(),
+});
+const manualAccess = z.object({
+  email: z.email().max(254),
+  name: z.string().max(160).optional().default(""),
+  plan,
 });
 export async function POST(req: Request) {
   if (!sameOrigin(req)) return jsonError("Origem inválida", 403);
@@ -166,6 +172,28 @@ export async function POST(req: Request) {
         .eq("id", id);
       if (error) throw error;
       target = id;
+    } else if (input.action === "grant_access") {
+      const v = manualAccess.parse(input.data);
+      const email = v.email.trim().toLowerCase();
+      const { data: existing } = await db.from("profiles").select("id,name").eq("email", email).maybeSingle();
+      let userId = existing?.id;
+      if (!userId) {
+        const created = await db.auth.admin.createUser({ email, user_metadata: { name: v.name || "Aluno" } });
+        if (created.error && !String(created.error.code || "").includes("exists")) throw new Error("Não foi possível criar o acesso.");
+        userId = created.data?.user?.id;
+        if (!userId) {
+          const { data: raced } = await db.from("profiles").select("id").eq("email", email).single();
+          userId = raced?.id;
+        }
+      }
+      if (!userId) throw new Error("Não foi possível identificar a conta.");
+      const { data: product } = await db.from("products").select("price_cents").eq("id", v.plan).single();
+      const orderId = `manual-${randomUUID()}`;
+      const { error: orderError } = await db.from("orders").insert({ id: orderId, email, name: v.name || existing?.name || "Aluno", plan: v.plan, amount: Number(product?.price_cents || 0) / 100, status: "paid" });
+      if (orderError) throw orderError;
+      const { error: entitlementError } = await db.from("entitlements").upsert({ order_id: orderId, user_id: userId, email, plan: v.plan, active: true }, { onConflict: "order_id" });
+      if (entitlementError) throw entitlementError;
+      target = `${email}:${v.plan}`;
     } else return jsonError("Ação desconhecida");
     await db
       .from("audit_logs")
