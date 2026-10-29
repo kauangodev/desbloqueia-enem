@@ -1,8 +1,10 @@
 import { identity, serviceClient } from "../../../lib/supabase";
+import { mysqlPool } from "../../../lib/mysql";
 import { sameOrigin, jsonError } from "../../../lib/http";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
+import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 const plan = z.enum(["essencial", "premium"]);
 const support = z.object({
   name: z.string().max(100),
@@ -63,6 +65,7 @@ const manualAccess = z.object({
   name: z.string().max(160).optional().default(""),
   plan,
 });
+const deleteUser = z.object({ userId: z.string().uuid() });
 export async function POST(req: Request) {
   if (!sameOrigin(req)) return jsonError("Origem inválida", 403);
   const who = await identity();
@@ -172,6 +175,28 @@ export async function POST(req: Request) {
         .eq("id", id);
       if (error) throw error;
       target = id;
+    } else if (input.action === "delete_user") {
+      const v = deleteUser.parse(input.data);
+      if (v.userId === who.user.id) return jsonError("Por segurança, você não pode excluir a própria conta.", 400);
+      const connection = await mysqlPool().getConnection();
+      try {
+        await connection.beginTransaction();
+        const [rows] = await connection.query<Array<{ id: string; email: string; role: string } & RowDataPacket>>("SELECT id,email,role FROM users WHERE id=? LIMIT 1 FOR UPDATE", [v.userId]);
+        const user = rows[0];
+        if (!user) throw new Error("Conta não encontrada.");
+        if (user.role === "admin") throw new Error("Contas administrativas devem ser excluídas pela aba Equipe e permissões.");
+        await connection.query("UPDATE entitlements SET user_id=NULL WHERE user_id=?", [v.userId]);
+        await connection.query("DELETE FROM admin_invites WHERE email=?", [String(user.email).toLowerCase()]);
+        const [result] = await connection.query<ResultSetHeader>("DELETE FROM users WHERE id=? AND role='student'", [v.userId]);
+        if (Number(result.affectedRows || 0) !== 1) throw new Error("A conta não pôde ser excluída.");
+        await connection.commit();
+        target = String(user.email);
+      } catch (error) {
+        await connection.rollback();
+        throw error;
+      } finally {
+        connection.release();
+      }
     } else if (input.action === "grant_access") {
       const v = manualAccess.parse(input.data);
       const email = v.email.trim().toLowerCase();
@@ -210,3 +235,4 @@ export async function POST(req: Request) {
     );
   }
 }
+
