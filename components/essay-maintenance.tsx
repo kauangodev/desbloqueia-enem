@@ -2,7 +2,7 @@ export default function EssayMaintenance() {
   return (
     <section className="empty-state" aria-labelledby="essay-maintenance-title">
       <span className="eyebrow">Recurso em manutenção</span>
-      <h2 id="essay-maintenance-title">A correção de redações está temporariamente indisponível.</h2>
+      <h2 id="essay-maintenance-title">Em manutenção — correção automática de redações em desenvolvimento.</h2>
       <p>
         Estamos concluindo a conexão e os testes da ferramenta de correção por
         inteligência artificial. Ela será ativada novamente quando estiver
@@ -12,3 +12,4 @@ export default function EssayMaintenance() {
     </section>
   );
 }
+
