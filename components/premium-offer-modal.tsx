@@ -6,8 +6,6 @@ import { useEffect, useRef, useState } from "react";
 type PremiumOfferModalProps = {
   enabled: boolean;
   delayMs: number;
-  cooldownHours: number;
-  campaignId: string;
   checkoutHref: string;
   plan: {
     name: string;
@@ -17,17 +15,6 @@ type PremiumOfferModalProps = {
   };
 };
 
-const SESSION_KEY_PREFIX = "godev-premium-offer-session:";
-const STORAGE_KEY_PREFIX = "godev-premium-offer-seen:";
-
-function readStorage(key: string) {
-  try { return window.localStorage.getItem(key); } catch { return null; }
-}
-
-function markStorage(key: string, value: string) {
-  try { window.localStorage.setItem(key, value); } catch { /* fallback em memória */ }
-}
-
 function hasInteractionBlocker() {
   return Boolean(document.querySelector('[role="dialog"], .consent, .nav.open, form:focus-within, [data-modal-open="true"]'));
 }
@@ -36,36 +23,25 @@ function formatMoney(cents: number) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-export default function PremiumOfferModal({ enabled, delayMs, cooldownHours, campaignId, checkoutHref, plan }: PremiumOfferModalProps) {
+export default function PremiumOfferModal({ enabled, delayMs, checkoutHref, plan }: PremiumOfferModalProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const activeMsRef = useRef(0);
   const lastTickRef = useRef<number | null>(null);
-  const sessionShownRef = useRef(false);
+  const shownRef = useRef(false);
   const eligibilityCheckedRef = useRef(false);
   const eligibleRef = useRef(false);
   const pendingRef = useRef(false);
 
   useEffect(() => {
     if (!enabled || pathname !== "/") return;
-    const sessionKey = `${SESSION_KEY_PREFIX}${campaignId}`;
-    const storageKey = `${STORAGE_KEY_PREFIX}${campaignId}`;
-    try { sessionShownRef.current = sessionStorage.getItem(sessionKey) === "1"; } catch { sessionShownRef.current = false; }
-    const seenAt = Number(readStorage(storageKey) || 0);
-    if (seenAt && Date.now() - seenAt < cooldownHours * 60 * 60 * 1000) {
-      sessionShownRef.current = true;
-      return;
-    }
-
     let cancelled = false;
-    const canOpen = () => !cancelled && document.visibilityState === "visible" && pathname === "/" && !sessionShownRef.current && eligibleRef.current && !hasInteractionBlocker();
+    const canOpen = () => !cancelled && document.visibilityState === "visible" && pathname === "/" && !shownRef.current && eligibleRef.current && !hasInteractionBlocker();
     const markShown = () => {
-      sessionShownRef.current = true;
+      shownRef.current = true;
       pendingRef.current = false;
-      markStorage(storageKey, String(Date.now()));
-      try { sessionStorage.setItem(sessionKey, "1"); } catch { /* fallback em memória */ }
     };
     const attemptOpen = () => {
       if (activeMsRef.current < delayMs || !eligibilityCheckedRef.current) return;
@@ -106,7 +82,7 @@ export default function PremiumOfferModal({ enabled, delayMs, cooldownHours, cam
       document.removeEventListener("focusin", onInteraction);
       document.removeEventListener("click", onInteraction);
     };
-  }, [campaignId, cooldownHours, delayMs, enabled, pathname]);
+  }, [delayMs, enabled, pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -155,3 +131,4 @@ export default function PremiumOfferModal({ enabled, delayMs, cooldownHours, cam
     </div>
   );
 }
+
