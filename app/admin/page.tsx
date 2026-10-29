@@ -11,6 +11,7 @@ import AdminOverview from "../../components/admin-overview";
 import TeamManager from "../../components/team-manager";
 import ManualAccessForm from "../../components/manual-access-form";
 import ThemeToggle from "../../components/theme-toggle";
+import DeleteUserButton from "../../components/delete-user-button";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
@@ -340,6 +341,7 @@ export default async function Admin({
                 <th>Conta no site</th>
                 <th>Atividade</th>
                 <th>Última compra</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -400,12 +402,13 @@ export default async function Admin({
                       <small>{customer.essays.length ? `${customer.essays.length} redação(ões)` : "Sem redações"}</small>
                     </td>
                     <td>{date(lastOrder?.created_at)}</td>
+                    <td>{customer.profile ? <DeleteUserButton userId={customer.profile.id} email={customer.email} /> : <small>Sem conta criada</small>}</td>
                   </tr>
                 );
               })}
               {!rows.length ? (
                 <tr>
-                  <td colSpan={6}>Nenhum contato encontrado.</td>
+                  <td colSpan={7}>Nenhum contato encontrado.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -587,5 +590,6 @@ export default async function Admin({
     </main>
   );
 }
+
 
 
