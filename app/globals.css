@@ -2170,10 +2170,13 @@ th {
 :root[data-theme="dark"],
 :root.dark {
   --lime: var(--brand-green);
+  --action-bg: #047857;
+  --action-bg-hover: #065f46;
+  --action-text: #ffffff;
   --color-link: var(--link);
-  --color-accent: var(--brand-green);
-  --color-accent-hover: var(--brand-green-hover);
-  --color-accent-ink: var(--btn-text);
+  --color-accent: var(--action-bg);
+  --color-accent-hover: var(--action-bg-hover);
+  --color-accent-ink: var(--action-text);
   --color-accent-secondary: var(--brand-green);
 }
 
@@ -3949,10 +3952,13 @@ h1, h2, h3 { color: var(--ink); }
   --color-text: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
+  --action-bg: #34d399;
+  --action-bg-hover: #6ee7b7;
+  --action-text: #022c22;
   --color-link: var(--link);
-  --color-accent: var(--brand-green);
-  --color-accent-hover: var(--brand-green-hover);
-  --color-accent-ink: var(--btn-text);
+  --color-accent: var(--action-bg);
+  --color-accent-hover: var(--action-bg-hover);
+  --color-accent-ink: var(--action-text);
   --color-accent-secondary: var(--brand-green);
   --color-border: var(--border-control);
   --bg: var(--bg-primary);
@@ -4117,9 +4123,9 @@ h1, h2, h3 { color: var(--ink); }
 .portal .sidebar nav a[aria-current="page"],
 .theme-toggle button[aria-pressed="true"],
 .material-index button[aria-selected="true"] {
-  background: var(--brand-green) !important;
-  border-color: var(--brand-green) !important;
-  color: var(--btn-text) !important;
+  background: var(--action-bg) !important;
+  border-color: var(--action-bg) !important;
+  color: var(--action-text) !important;
 }
 
 .button.primary:hover,
@@ -4130,9 +4136,9 @@ h1, h2, h3 { color: var(--ink); }
 .student-primary-action:focus-visible,
 .login-link:hover,
 .login-link:focus-visible {
-  background: var(--brand-green-hover) !important;
-  border-color: var(--brand-green-hover) !important;
-  color: var(--btn-text) !important;
+  background: var(--action-bg-hover) !important;
+  border-color: var(--action-bg-hover) !important;
+  color: var(--action-text) !important;
 }
 
 .button.secondary,
@@ -4873,4 +4879,3 @@ textarea::placeholder {
   .pricing-grid { grid-template-columns: 1fr; }
   .price-card { min-width: 0; }
 }
-
