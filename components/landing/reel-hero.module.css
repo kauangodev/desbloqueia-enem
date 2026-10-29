@@ -253,8 +253,8 @@
 .primaryCta {
   gap: 16px;
   padding: 13px 24px;
-  background: var(--forest);
-  color: var(--color-accent-ink);
+  background: var(--action-bg);
+  color: var(--action-text);
 }
 
 .primaryCta span {
@@ -279,7 +279,8 @@
 }
 
 .primaryCta:hover {
-  background: var(--color-accent-hover);
+  background: var(--action-bg-hover);
+  color: var(--action-text);
 }
 
 .secondaryCta:hover,
@@ -425,6 +426,5 @@
     cursor: grab;
   }
 }
-
 
 
