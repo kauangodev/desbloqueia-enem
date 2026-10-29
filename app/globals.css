@@ -5033,6 +5033,57 @@ textarea::placeholder {
   }
 }
 
+/* Local surface contract for the revenue hero. It intentionally owns its
+   foreground palette because the card remains dark in the light theme too. */
+.overview-revenue-card {
+  --overview-bg: #075c3b;
+  --overview-fg: #f8fafc;
+  --overview-muted: #d1fae5;
+  --overview-border: rgb(209 250 229 / 28%);
+  background: var(--overview-bg);
+  border: 1px solid var(--overview-border);
+  color: var(--overview-fg);
+}
+
+.overview-revenue-card h2,
+.overview-revenue-card strong,
+.overview-revenue-card .admin-eyebrow,
+.overview-revenue-card .overview-period,
+.overview-revenue-card .overview-total span,
+.overview-revenue-card .overview-chart-column small,
+.overview-revenue-card .overview-card-footer {
+  color: var(--overview-fg);
+}
+
+.overview-revenue-card .admin-eyebrow,
+.overview-revenue-card .overview-total span,
+.overview-revenue-card .overview-chart-column small,
+.overview-revenue-card .overview-card-footer {
+  color: var(--overview-muted);
+}
+
+.overview-revenue-card .overview-period {
+  border-color: var(--overview-border);
+  background: rgb(255 255 255 / 8%);
+}
+
+.overview-revenue-card .overview-chart {
+  border-top-color: var(--overview-border);
+}
+
+.overview-revenue-card .overview-chart-bar {
+  background: linear-gradient(180deg, #a7f3d0, #f0abcf);
+  box-shadow: 0 4px 12px rgb(240 171 207 / 25%);
+}
+
+.overview-revenue-card .status-dot.success { background: #86efac; }
+.overview-revenue-card .status-dot.warning { background: #fde68a; }
+.overview-revenue-card .status-dot.muted { background: #c4b5fd; }
+
+@media (prefers-reduced-motion: reduce) {
+  .overview-revenue-card .overview-chart-bar { transition: none; }
+}
+
 /* Admin and integration surfaces: final theme boundary. These rules are
    intentionally scoped so legacy dashboard styles cannot leak white surfaces
    and white text into the dark theme (or low-contrast green into the light one). */
