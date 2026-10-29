@@ -136,7 +136,7 @@ export default async function Home() {
                 >
                   <div className="plan-title">
                     <h3>{p.name}</h3>
-                    {p.id === "premium" && <span>Mais completo</span>}
+                    {p.id === "premium" && <span className="plan-badge">Mais completo</span>}
                   </div>
                   <p>{p.description}</p>
                   <p className="plan-benefit">
@@ -167,7 +167,7 @@ export default async function Home() {
                     ))}
                   </ul>
                   <Link
-                    className={`button ${p.id === "premium" ? "lime" : "secondary"}`}
+                    className={`button ${p.id === "premium" ? "lime premium-cta" : "secondary"}`}
                     href={checkoutReady ? `/api/checkout/${p.id}` : "/suporte"}
                   >
                     {checkoutReady ? `Escolher ${p.name}` : "Receber orientação"}

@@ -4879,3 +4879,157 @@ textarea::placeholder {
   .pricing-grid { grid-template-columns: 1fr; }
   .price-card { min-width: 0; }
 }
+
+/* Premium offer: a self-contained decision surface that remains readable
+   above the older landing-page rules and adapts cleanly on narrow screens. */
+.pricing-grid .price-card.premium {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(1.25rem, 2.4vw, 2.25rem);
+  border: 1px solid color-mix(in srgb, var(--brand-green) 72%, var(--border-control));
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+}
+
+.pricing-grid .price-card.premium .plan-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .75rem 1rem;
+  min-width: 0;
+}
+
+.pricing-grid .price-card.premium .plan-title h3 {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(1.45rem, 2.5vw, 2rem);
+  line-height: 1.1;
+}
+
+.pricing-grid .price-card.premium .plan-badge {
+  flex: 0 0 auto;
+  max-width: 100%;
+  padding: .35rem .7rem;
+  border: 1px solid color-mix(in srgb, var(--brand-green) 54%, transparent);
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--text-primary);
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pricing-grid .price-card.premium > p,
+.pricing-grid .price-card.premium .plan-benefit,
+.pricing-grid .price-card.premium .price small,
+.pricing-grid .price-card.premium li,
+.pricing-grid .price-card.premium .plan-note {
+  color: var(--text-secondary);
+}
+
+.pricing-grid .price-card.premium .price {
+  margin-block: clamp(1.25rem, 3vw, 2rem) .25rem;
+  color: var(--text-primary);
+  font-size: clamp(2.35rem, 6vw, 3.5rem);
+  line-height: .98;
+  white-space: nowrap;
+}
+
+.pricing-grid .price-card.premium .price small {
+  display: block;
+  margin-top: .55rem;
+  font-size: .8rem;
+  line-height: 1.3;
+  white-space: normal;
+}
+
+.pricing-grid .price-card.premium ul {
+  display: grid;
+  gap: .8rem;
+  min-height: 0;
+  margin-block: 1.5rem 1.75rem;
+}
+
+.pricing-grid .price-card.premium li {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.pricing-grid .price-card.premium li svg {
+  flex: 0 0 auto;
+  margin-top: .15rem;
+  color: var(--brand-green);
+}
+
+.pricing-grid .price-card.premium .premium-cta {
+  width: 100%;
+  min-height: 3.35rem;
+  margin-top: auto;
+  padding: .85rem 1.25rem;
+  border: 1px solid var(--action-bg);
+  border-radius: .85rem;
+  background: var(--action-bg) !important;
+  color: var(--action-text) !important;
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--action-bg) 28%, transparent);
+  font-weight: 800;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, opacity 180ms ease;
+}
+
+.pricing-grid .price-card.premium .premium-cta:hover,
+.pricing-grid .price-card.premium .premium-cta:focus-visible {
+  background: var(--action-bg-hover) !important;
+  border-color: var(--action-bg-hover);
+  color: var(--action-text) !important;
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px color-mix(in srgb, var(--action-bg-hover) 36%, transparent);
+}
+
+.pricing-grid .price-card.premium .premium-cta:active {
+  transform: translateY(0);
+  opacity: .92;
+}
+
+.pricing-grid .price-card.premium .plan-note {
+  display: block;
+  margin-top: .8rem;
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 560px) {
+  .pricing-grid .price-card.premium {
+    padding: 1.15rem;
+  }
+
+  .pricing-grid .price-card.premium .plan-title {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .pricing-grid .price-card.premium .plan-badge {
+    margin-left: auto;
+  }
+
+  .pricing-grid .price-card.premium .price {
+    font-size: clamp(2.2rem, 12vw, 3rem);
+  }
+
+  .pricing-grid .price-card.premium .premium-cta {
+    min-height: 3.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-grid .price-card.premium .premium-cta {
+    transition: none;
+  }
+}
