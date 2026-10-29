@@ -28,6 +28,14 @@ export const metadata: Metadata = {
   title: "Desbloqueia ENEM 2026 | GoDev Education",
   description:
     "Sua reta final do ENEM, organizada em um só lugar. Materiais, revisão e prática por GoDev Education.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "16x16 32x32 48x48" },
+      { url: "/icon-16.png", type: "image/png", sizes: "16x16" },
+      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+  },
   openGraph: {
     title: "Desbloqueia ENEM 2026 | GoDev Education",
     description: "Sua reta final, organizada em um só lugar.",
@@ -60,3 +68,4 @@ export default function RootLayout({
     </html>
   );
 }
+
