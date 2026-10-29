@@ -1,14 +1,71 @@
 :root {
-  --bg: #f7f8fa;
-  --surface: #fff;
-  --ink: #161c30;
-  --muted: #667085;
-  --navy: #102a4c;
-  --blue: #555ceb;
-  --teal: #18a6a6;
-  --lime: #d6f27c;
-  --line: #e7eaf0;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0fdf4;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --brand-green: #059669;
+  --brand-green-hover: #047857;
+  --brand-soft: #d1fae5;
+  --btn-text: #064e3b;
+  --link: #047857;
+  --border-subtle: #bbf7d0;
+  --border-control: #86efac;
+  --focus-ring: #047857;
+  --success-bg: #dcfce7;
+  --success-text: #166534;
+  --warning-bg: #fef3c7;
+  --warning-text: #92400e;
+  --error-bg: #fee2e2;
+  --error-text: #991b1b;
+  --selection-bg: #a7f3d0;
+  --selection-text: #064e3b;
+  /* Compatibility aliases for existing components. */
+  --bg: var(--bg-primary);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
   --radius: 10px;
+}
+:root[data-theme="dark"],
+:root.dark {
+  --bg-primary: #06150d;
+  --bg-secondary: #112a1d;
+  --surface: #101a14;
+  --surface-elevated: #16251c;
+  --text-primary: #f8fafc;
+  --text-secondary: #a7f3d0;
+  --text-muted: #94a3b8;
+  --brand-green: #34d399;
+  --brand-green-hover: #6ee7b7;
+  --brand-soft: #143c2b;
+  --btn-text: #022c22;
+  --link: #a7f3d0;
+  --border-subtle: #28533b;
+  --border-control: #4ade80;
+  --focus-ring: #6ee7b7;
+  --success-bg: #123b27;
+  --success-text: #bbf7d0;
+  --warning-bg: #422b0b;
+  --warning-text: #fde68a;
+  --error-bg: #451a1a;
+  --error-text: #fecaca;
+  --selection-bg: #14532d;
+  --selection-text: #d1fae5;
+  --bg: var(--bg-primary);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
 }
 * {
   box-sizing: border-box;
@@ -2107,6 +2164,247 @@ th {
   }
 }
 
+/* WCAG 2.1 AA theme contract: every shared surface owns its foreground. */
+:root,
+:root[data-theme="light"],
+:root[data-theme="dark"],
+:root.dark {
+  --lime: var(--brand-green);
+  --color-link: var(--link);
+  --color-accent: var(--brand-green);
+  --color-accent-hover: var(--brand-green-hover);
+  --color-accent-ink: var(--btn-text);
+  --color-accent-secondary: var(--brand-green);
+}
+
+body,
+.landing-main,
+.portal,
+.admin-app,
+.admin-workspace,
+.admin-content,
+.workspace {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+p,
+small,
+.subtle,
+.section-heading p,
+.large-copy,
+.landing-main .section-heading p,
+.landing-main .large-copy,
+.admin-content p,
+.admin-content small,
+.workspace p,
+.workspace small {
+  color: var(--text-secondary);
+}
+
+h1,
+h2,
+h3,
+h4,
+strong,
+label,
+th,
+td,
+.landing-main h1,
+.landing-main h2,
+.landing-main h3,
+.admin-content h1,
+.admin-content h2,
+.admin-content h3,
+.workspace h1,
+.workspace h2,
+.workspace h3 {
+  color: var(--text-primary);
+}
+
+a,
+.link,
+.landing-main a:not(.button):not(.brand),
+.admin-content a:not(.button),
+.workspace a:not(.button) {
+  color: var(--link);
+}
+
+a:hover,
+.link:hover,
+.landing-main a:not(.button):not(.brand):hover,
+.admin-content a:not(.button):hover,
+.workspace a:not(.button):hover {
+  color: var(--brand-green-hover);
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+:focus-visible {
+  outline-color: var(--focus-ring);
+}
+
+.site-header,
+.admin-topbar,
+.admin-sidebar,
+.portal .sidebar,
+.nav,
+.study-outline,
+.faq-list details,
+.library-note,
+.material-stage,
+.price-card,
+.guarantee,
+.student-section-block,
+.student-context-section,
+.student-continue-card,
+.student-empty-card,
+.student-profile-card,
+.student-dashboard .resource,
+.official-exams,
+.assessment,
+.question-card,
+.form-card,
+.library-entry,
+.activity-card,
+.overview-white-card,
+.overview-activity-card,
+.overview-metric,
+.crm-table,
+.stat,
+.task-list,
+.admin-form,
+.table-wrap {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+input,
+select,
+textarea {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-control);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 1;
+}
+
+button.primary,
+.button.primary,
+.button.lime,
+.student-primary-action,
+.login-link,
+.admin-side-link[aria-current="page"],
+.portal .sidebar nav a[aria-current="page"],
+.theme-toggle button[aria-pressed="true"],
+.material-index button[aria-selected="true"] {
+  background: var(--brand-green);
+  border-color: var(--brand-green);
+  color: var(--btn-text);
+}
+
+button.primary:hover,
+.button.primary:hover,
+.button.lime:hover,
+.student-primary-action:hover,
+.login-link:hover {
+  background: var(--brand-green-hover);
+  border-color: var(--brand-green-hover);
+  color: var(--btn-text);
+}
+
+.button.secondary,
+.student-secondary-action,
+.admin-open-student,
+.catalog-expand {
+  background: transparent;
+  border-color: var(--brand-green);
+  color: var(--link);
+}
+
+.button.secondary:hover,
+.student-secondary-action:hover,
+.admin-open-student:hover,
+.catalog-expand:hover,
+.admin-side-link:hover,
+.portal .sidebar nav a:hover,
+.theme-toggle button:hover {
+  background: var(--brand-soft);
+  color: var(--link);
+}
+
+.crm-badge.success,
+.status-success,
+.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.status-message.warning,
+.warning {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.status-message.error,
+.error,
+.form-error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.theme-toggle button,
+.material-index button,
+.admin-side-link,
+.portal .sidebar nav a {
+  color: var(--text-secondary);
+}
+
+.site-footer {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.site-footer p,
+.site-footer a:not(.brand),
+.site-footer .footer-bottom {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 760px) {
+  .container {
+    width: min(100% - 40px, 1200px);
+  }
+
+  .admin-content,
+  .workspace,
+  .landing-main {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .button,
+  button,
+  .theme-toggle button,
+  .menu-button {
+    min-height: 44px;
+  }
+}
+
 /* Structural tablet breakpoint: keep the reading order intact before the
    narrow mobile breakpoint and prevent the desktop two-column scaffold from
    compressing at 768px. */
@@ -3640,6 +3938,286 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="dark"] .landing-main .guarantee p,
 :root[data-theme="dark"] .landing-main .guarantee .text-link { color: #f9fafb; }
 :root[data-theme="dark"] .landing-main .guarantee-number { color: #b7ff3c; }
+
+/* Final theme contract: this block is intentionally last so legacy component
+   rules cannot reintroduce low-contrast neon text or washed-out surfaces. */
+:root,
+:root[data-theme="light"] {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-link: var(--link);
+  --color-accent: var(--brand-green);
+  --color-accent-hover: var(--brand-green-hover);
+  --color-accent-ink: var(--btn-text);
+  --color-accent-secondary: var(--brand-green);
+  --color-border: var(--border-control);
+  --bg: var(--bg-primary);
+  --surface: var(--surface);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
+}
+
+:root[data-theme="dark"],
+:root.dark {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-link: var(--link);
+  --color-accent: var(--brand-green);
+  --color-accent-hover: var(--brand-green-hover);
+  --color-accent-ink: var(--btn-text);
+  --color-accent-secondary: var(--brand-green);
+  --color-border: var(--border-control);
+  --bg: var(--bg-primary);
+  --surface: var(--surface);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
+}
+
+:root[data-theme="light"] .site-header,
+:root[data-theme="light"] .nav,
+:root[data-theme="light"] .landing-main,
+:root[data-theme="light"] .materials-section,
+:root[data-theme="light"] .pricing-section,
+:root[data-theme="light"] .faq-section,
+:root[data-theme="light"] .closing,
+:root[data-theme="light"] .site-footer {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+:root[data-theme="dark"] .site-header,
+:root[data-theme="dark"] .nav,
+:root[data-theme="dark"] .landing-main,
+:root[data-theme="dark"] .materials-section,
+:root[data-theme="dark"] .pricing-section,
+:root[data-theme="dark"] .faq-section,
+:root[data-theme="dark"] .closing,
+:root[data-theme="dark"] .site-footer {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+:root[data-theme="light"] .section-heading h2,
+:root[data-theme="light"] .section-heading p,
+:root[data-theme="light"] .pricing-section .section-heading h2,
+:root[data-theme="light"] .pricing-section .section-heading p,
+:root[data-theme="light"] .landing-main .section-heading h2,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy,
+:root[data-theme="light"] .landing-main .benefit-lines p,
+:root[data-theme="light"] .landing-main .faq-section > div > p {
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .pricing-section .section-heading p,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy,
+:root[data-theme="light"] .landing-main .benefit-lines p,
+:root[data-theme="light"] .landing-main .faq-section > div > p {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="dark"] .section-heading h2,
+:root[data-theme="dark"] .section-heading p,
+:root[data-theme="dark"] .pricing-section .section-heading h2,
+:root[data-theme="dark"] .pricing-section .section-heading p,
+:root[data-theme="dark"] .landing-main .section-heading h2,
+:root[data-theme="dark"] .landing-main .section-heading p,
+:root[data-theme="dark"] .landing-main .large-copy,
+:root[data-theme="dark"] .landing-main .benefit-lines p,
+:root[data-theme="dark"] .landing-main .faq-section > div > p {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="light"] .price-card:not(.premium),
+:root[data-theme="dark"] .price-card:not(.premium) {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+:root[data-theme="light"] .price-card:not(.premium) h3,
+:root[data-theme="light"] .price-card:not(.premium) .price,
+:root[data-theme="light"] .price-card:not(.premium) li,
+:root[data-theme="dark"] .price-card:not(.premium) h3,
+:root[data-theme="dark"] .price-card:not(.premium) .price,
+:root[data-theme="dark"] .price-card:not(.premium) li {
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .price-card:not(.premium) > p,
+:root[data-theme="light"] .price-card:not(.premium) .plan-benefit,
+:root[data-theme="light"] .price-card:not(.premium) .price small,
+:root[data-theme="light"] .price-card:not(.premium) .plan-note,
+:root[data-theme="dark"] .price-card:not(.premium) > p,
+:root[data-theme="dark"] .price-card:not(.premium) .plan-benefit,
+:root[data-theme="dark"] .price-card:not(.premium) .price small,
+:root[data-theme="dark"] .price-card:not(.premium) .plan-note {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="light"] .price-card.premium,
+:root[data-theme="dark"] .price-card.premium {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--brand-green);
+}
+
+:root[data-theme="light"] .price-card.premium h3,
+:root[data-theme="light"] .price-card.premium .price,
+:root[data-theme="light"] .price-card.premium > p,
+:root[data-theme="light"] .price-card.premium .plan-benefit,
+:root[data-theme="light"] .price-card.premium .price small,
+:root[data-theme="light"] .price-card.premium li,
+:root[data-theme="dark"] .price-card.premium h3,
+:root[data-theme="dark"] .price-card.premium .price,
+:root[data-theme="dark"] .price-card.premium > p,
+:root[data-theme="dark"] .price-card.premium .plan-benefit,
+:root[data-theme="dark"] .price-card.premium .price small,
+:root[data-theme="dark"] .price-card.premium li {
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .price-card.premium > p,
+:root[data-theme="light"] .price-card.premium .plan-benefit,
+:root[data-theme="light"] .price-card.premium .price small,
+:root[data-theme="light"] .price-card.premium li,
+:root[data-theme="dark"] .price-card.premium > p,
+:root[data-theme="dark"] .price-card.premium .plan-benefit,
+:root[data-theme="dark"] .price-card.premium .price small,
+:root[data-theme="dark"] .price-card.premium li {
+  color: var(--text-secondary);
+}
+
+.button.primary,
+.button.lime,
+.student-primary-action,
+.login-link,
+.admin-side-link[aria-current="page"],
+.portal .sidebar nav a[aria-current="page"],
+.theme-toggle button[aria-pressed="true"],
+.material-index button[aria-selected="true"] {
+  background: var(--brand-green) !important;
+  border-color: var(--brand-green) !important;
+  color: var(--btn-text) !important;
+}
+
+.button.primary:hover,
+.button.primary:focus-visible,
+.button.lime:hover,
+.button.lime:focus-visible,
+.student-primary-action:hover,
+.student-primary-action:focus-visible,
+.login-link:hover,
+.login-link:focus-visible {
+  background: var(--brand-green-hover) !important;
+  border-color: var(--brand-green-hover) !important;
+  color: var(--btn-text) !important;
+}
+
+.button.secondary,
+.student-secondary-action,
+.admin-open-student,
+.catalog-expand {
+  background: transparent !important;
+  border-color: var(--brand-green) !important;
+  color: var(--link) !important;
+}
+
+.button.secondary:hover,
+.button.secondary:focus-visible,
+.student-secondary-action:hover,
+.student-secondary-action:focus-visible,
+.admin-open-student:hover,
+.admin-open-student:focus-visible,
+.catalog-expand:hover,
+.catalog-expand:focus-visible {
+  background: var(--brand-soft) !important;
+  color: var(--text-primary) !important;
+}
+
+input,
+select,
+textarea {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-control) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 1;
+}
+
+.brand,
+.brand b,
+.brand-sub,
+.site-footer,
+.site-footer p,
+.site-footer a,
+.admin-content,
+.admin-content p,
+.admin-content small,
+.portal .sidebar,
+.portal .sidebar nav a,
+.admin-side-link {
+  color: var(--text-primary);
+}
+
+.brand b > span,
+.admin-brand > span > span,
+.portal .sidebar .brand b > span,
+.admin-live-indicator,
+.student-eyebrow,
+.admin-eyebrow,
+.student-inline-action,
+.student-section-heading > a,
+.site-footer a:hover {
+  color: var(--brand-green);
+}
+
+.site-footer p,
+.site-footer a:not(.brand),
+.footer-bottom,
+.admin-content p,
+.admin-content small,
+.admin-content label,
+.portal .sidebar nav a,
+.admin-side-link {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 760px) {
+  .container { width: min(100% - 32px, 1200px); }
+  .site-header .header-inner { min-height: 68px; }
+  .button,
+  .theme-toggle button,
+  .menu-button,
+  .catalog-arrow { min-height: 44px; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card { min-width: 0; }
+}
 :root[data-theme="dark"] .landing-main .text-link,
 :root[data-theme="dark"] .landing-main .outline-row > span { color: #b7ff3c; }
 :root[data-theme="dark"] .landing-main .materials-section { background: #0f1318; }
@@ -4102,5 +4680,197 @@ h1, h2, h3 { color: var(--ink); }
   .admin-topbar-actions {
     flex-wrap: wrap;
   }
+}
+
+/* Authoritative final overrides: keep theme aliases and high-risk text layers
+   on the WCAG palette after all legacy component rules. */
+:root,
+:root[data-theme="light"] {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-link: var(--link);
+  --color-accent: var(--brand-green);
+  --color-accent-hover: var(--brand-green-hover);
+  --color-accent-ink: var(--btn-text);
+  --color-accent-secondary: var(--brand-green);
+  --color-border: var(--border-control);
+  --bg: var(--bg-primary);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
+}
+
+:root[data-theme="dark"],
+:root.dark {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-link: var(--link);
+  --color-accent: var(--brand-green);
+  --color-accent-hover: var(--brand-green-hover);
+  --color-accent-ink: var(--btn-text);
+  --color-accent-secondary: var(--brand-green);
+  --color-border: var(--border-control);
+  --bg: var(--bg-primary);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
+}
+
+.button.primary,
+.button.lime,
+.student-primary-action,
+.login-link,
+.admin-side-link[aria-current="page"],
+.portal .sidebar nav a[aria-current="page"],
+.theme-toggle button[aria-pressed="true"],
+.material-index button[aria-selected="true"] {
+  background: var(--brand-green) !important;
+  border-color: var(--brand-green) !important;
+  color: var(--btn-text) !important;
+}
+
+.button.primary:hover,
+.button.primary:focus-visible,
+.button.lime:hover,
+.button.lime:focus-visible,
+.student-primary-action:hover,
+.student-primary-action:focus-visible,
+.login-link:hover,
+.login-link:focus-visible {
+  background: var(--brand-green-hover) !important;
+  border-color: var(--brand-green-hover) !important;
+  color: var(--btn-text) !important;
+}
+
+.button.secondary,
+.student-secondary-action,
+.admin-open-student,
+.catalog-expand {
+  background: transparent !important;
+  border-color: var(--brand-green) !important;
+  color: var(--link) !important;
+}
+
+.button.secondary:hover,
+.button.secondary:focus-visible,
+.student-secondary-action:hover,
+.student-secondary-action:focus-visible,
+.admin-open-student:hover,
+.admin-open-student:focus-visible,
+.catalog-expand:hover,
+.catalog-expand:focus-visible {
+  background: var(--brand-soft) !important;
+  color: var(--text-primary) !important;
+}
+
+input,
+select,
+textarea {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-control) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 1;
+}
+
+:root[data-theme="light"] .pricing-section .section-heading h2,
+:root[data-theme="light"] .pricing-section .section-heading p,
+:root[data-theme="light"] .landing-main .section-heading h2,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy {
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .pricing-section .section-heading p,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="light"] .price-card:not(.premium),
+:root[data-theme="dark"] .price-card:not(.premium),
+:root[data-theme="light"] .price-card.premium,
+:root[data-theme="dark"] .price-card.premium {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.price-card h3,
+.price-card .price,
+.price-card li {
+  color: var(--text-primary) !important;
+}
+
+.price-card > p,
+.price-card .plan-benefit,
+.price-card .price small,
+.price-card .plan-note {
+  color: var(--text-secondary) !important;
+}
+
+.site-footer,
+.site-footer p,
+.site-footer a,
+.admin-content,
+.admin-content p,
+.admin-content small,
+.portal .sidebar,
+.portal .sidebar nav a,
+.admin-side-link {
+  color: var(--text-primary);
+}
+
+.site-footer p,
+.site-footer a:not(.brand),
+.footer-bottom,
+.admin-content p,
+.admin-content small,
+.admin-content label,
+.portal .sidebar nav a,
+.admin-side-link {
+  color: var(--text-secondary);
+}
+
+.brand b > span,
+.admin-brand > span > span,
+.portal .sidebar .brand b > span,
+.admin-live-indicator,
+.student-eyebrow,
+.admin-eyebrow,
+.student-inline-action,
+.student-section-heading > a,
+.site-footer a:hover {
+  color: var(--brand-green);
+}
+
+@media (max-width: 760px) {
+  .container { width: min(100% - 32px, 1200px); }
+  .button,
+  .theme-toggle button,
+  .menu-button,
+  .catalog-arrow { min-height: 44px; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card { min-width: 0; }
 }
 
