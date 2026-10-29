@@ -5,6 +5,7 @@ import { DisciplineMarquee } from "../components/landing/DisciplineMarquee";
 import { money } from "../lib/config";
 import { publicPlans } from "../lib/catalog";
 import { checkoutConfigured } from "../lib/readiness";
+import PremiumOfferModal from "../components/premium-offer-modal";
 export const dynamic = "force-dynamic";
 export const metadata = { alternates: { canonical: "/" } };
 export default async function Home() {
@@ -216,6 +217,14 @@ export default async function Home() {
         </section>
       </main>
       <Footer />
+      <PremiumOfferModal
+        enabled
+        delayMs={10000}
+        cooldownHours={24}
+        campaignId="premium-offer-2026-10"
+        checkoutHref={checkoutReady ? "/api/checkout/premium" : "/suporte"}
+        plan={plans.find((plan) => plan.id === "premium") || plans[1]}
+      />
     </>
   );
 }

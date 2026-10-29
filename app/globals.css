@@ -5200,3 +5200,84 @@ textarea::placeholder {
     white-space: normal;
   }
 }
+/* Timed Premium offer: isolated surface contract for both themes. */
+.premium-offer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: rgb(3 12 8 / 58%);
+  backdrop-filter: blur(6px);
+  animation: premium-offer-fade 220ms ease-out both;
+}
+
+.premium-offer-dialog {
+  --offer-surface: color-mix(in srgb, var(--color-surface, #fff) 92%, transparent);
+  --offer-text: var(--color-text, #111827);
+  --offer-muted: var(--color-text-secondary, #475569);
+  --offer-line: var(--color-border, #cbd5e1);
+  --offer-accent: var(--color-accent, #b7ff3c);
+  --offer-accent-ink: var(--color-accent-ink, #142018);
+  position: relative;
+  width: min(100%, 500px);
+  max-height: min(700px, calc(100dvh - 32px));
+  overflow: auto;
+  padding: clamp(24px, 5vw, 36px);
+  border: 1px solid color-mix(in srgb, var(--offer-line) 80%, transparent);
+  border-radius: 20px;
+  background: #ffffff;
+  background: var(--offer-surface);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 28%), 0 0 0 1px rgb(255 255 255 / 12%) inset;
+  color: var(--offer-text);
+  backdrop-filter: blur(18px);
+  animation: premium-offer-rise 260ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+:root[data-theme="dark"] .premium-offer-dialog {
+  --offer-surface: rgb(17 42 29 / 96%);
+  --offer-text: #f8fafc;
+  --offer-muted: #d1fae5;
+  --offer-line: #4b7862;
+  --offer-accent: #b7ff3c;
+  --offer-accent-ink: #142018;
+}
+
+.premium-offer-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid var(--offer-line);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--offer-surface) 82%, var(--offer-text));
+  color: var(--offer-text);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.premium-offer-close:hover,
+.premium-offer-close:focus-visible { background: var(--offer-text); color: var(--offer-surface); }
+.premium-offer-kicker { margin: 0 48px 12px 0; color: var(--offer-muted); font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.premium-offer-dialog h2 { max-width: 15ch; margin: 0; color: var(--offer-text); font-size: clamp(1.65rem, 4vw, 2.3rem); line-height: 1.08; letter-spacing: -.03em; }
+.premium-offer-description { margin: 16px 0 0; color: var(--offer-muted); font-size: 1rem; line-height: 1.55; }
+.premium-offer-benefits { display: grid; gap: 10px; margin: 24px 0; padding: 0; list-style: none; color: var(--offer-text); }
+.premium-offer-benefits li { position: relative; padding-left: 24px; line-height: 1.45; }
+.premium-offer-benefits li::before { position: absolute; top: .25em; left: 0; content: "✓"; color: var(--offer-accent-ink); font-weight: 900; }
+.premium-offer-price { display: grid; gap: 4px; padding-top: 20px; border-top: 1px solid var(--offer-line); }
+.premium-offer-price strong { color: var(--offer-text); font-size: clamp(2rem, 7vw, 2.8rem); line-height: 1; letter-spacing: -.04em; }
+.premium-offer-price span { color: var(--offer-muted); font-size: .83rem; }
+.premium-offer-actions { display: grid; gap: 10px; margin-top: 24px; }
+.premium-offer-cta { min-height: 52px; justify-content: center; background: var(--offer-accent) !important; color: var(--offer-accent-ink) !important; box-shadow: 0 10px 26px color-mix(in srgb, var(--offer-accent) 30%, transparent); }
+.premium-offer-cta:hover, .premium-offer-cta:focus-visible { box-shadow: 0 14px 34px color-mix(in srgb, var(--offer-accent) 44%, transparent); }
+.premium-offer-secondary { min-height: 44px; border: 0; background: transparent; color: var(--offer-muted); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.premium-offer-secondary:hover, .premium-offer-secondary:focus-visible { color: var(--offer-text); }
+@keyframes premium-offer-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes premium-offer-rise { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .premium-offer-backdrop, .premium-offer-dialog { animation: none; } }
+@media (max-width: 480px) { .premium-offer-dialog { border-radius: 16px; padding: 28px 20px 22px; } .premium-offer-dialog h2 { max-width: 16ch; } }
