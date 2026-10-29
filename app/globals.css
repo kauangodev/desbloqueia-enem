@@ -2391,7 +2391,6 @@ button.primary:hover,
   .workspace,
   .landing-main {
     min-width: 0;
-    overflow-x: hidden;
   }
 
   .table-wrap {
