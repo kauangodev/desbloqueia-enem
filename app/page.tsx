@@ -219,12 +219,11 @@ export default async function Home() {
       <Footer />
       <PremiumOfferModal
         enabled
-        delayMs={10000}
-        cooldownHours={24}
-        campaignId="premium-offer-2026-10"
+        delayMs={5000}
         checkoutHref={checkoutReady ? "/api/checkout/premium" : "/suporte"}
         plan={plans.find((plan) => plan.id === "premium") || plans[1]}
       />
     </>
   );
 }
+
