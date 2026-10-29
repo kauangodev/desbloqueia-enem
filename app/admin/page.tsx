@@ -477,7 +477,9 @@ export default async function Admin({
           {items.map(([name, ready]) => (
             <li key={String(name)}>
               <span>{name}</span>
-              <b>{ready ? "Configuração presente" : "Pendente"}</b>
+              <b className={`integration-state ${ready ? "is-ready" : "is-pending"}`}>
+                {ready ? "Configuração presente" : "Pendente"}
+              </b>
             </li>
           ))}
         </ul>

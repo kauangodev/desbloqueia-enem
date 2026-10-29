@@ -5032,3 +5032,120 @@ textarea::placeholder {
     transition: none;
   }
 }
+
+/* Admin and integration surfaces: final theme boundary. These rules are
+   intentionally scoped so legacy dashboard styles cannot leak white surfaces
+   and white text into the dark theme (or low-contrast green into the light one). */
+.admin-content .task-list,
+.admin-content .admin-form,
+.admin-content .table-wrap,
+.admin-content .crm-table,
+.admin-content .overview-white-card,
+.admin-content .overview-activity-card,
+.admin-content .overview-metric,
+.admin-content .card,
+.admin-content .panel,
+.admin-content .admin-card {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.admin-content .task-list li,
+.admin-content .crm-table th,
+.admin-content .crm-table td,
+.admin-content .admin-form label,
+.admin-content .admin-form p,
+.admin-content .table-wrap p {
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.admin-content .task-list li > span,
+.admin-content .admin-form label,
+.admin-content .admin-form p,
+.admin-content .table-wrap p,
+.admin-content .overview-white-card p,
+.admin-content .overview-activity-card p,
+.admin-content .overview-metric span,
+.admin-content .overview-metric small,
+.admin-content .activity-copy small,
+.admin-content .overview-quick-actions span {
+  color: var(--text-secondary) !important;
+}
+
+.admin-content .task-list li > b {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  padding: .35rem .65rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: .72rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.admin-content .integration-state.is-ready {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.admin-content .integration-state.is-pending {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.admin-content .task-list li {
+  min-width: 0;
+  gap: 1rem;
+  background: var(--surface-elevated) !important;
+}
+
+.admin-content img,
+.admin-content svg,
+.portal img,
+.portal svg {
+  max-width: 100%;
+}
+
+.admin-content .overview-white-card h2,
+.admin-content .overview-activity-card h2,
+.admin-content .overview-metric strong,
+.admin-content .activity-copy strong,
+.admin-content .plan-distribution-row,
+.admin-content .plan-distribution-row b,
+.admin-content .overview-quick-actions strong,
+.admin-content th,
+.admin-content td,
+.admin-content h1,
+.admin-content h2,
+.admin-content h3,
+.admin-content strong {
+  color: var(--text-primary) !important;
+}
+
+.admin-content a:not(.button),
+.admin-content .overview-text-link,
+.admin-content .overview-quick-actions b {
+  color: var(--link) !important;
+}
+
+.admin-content .status-message,
+.admin-content .status-message:not(.warning):not(.error),
+.admin-content .admin-empty-state {
+  background: var(--surface-elevated);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+@media (max-width: 560px) {
+  .admin-content .task-list li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-content .task-list li > b {
+    white-space: normal;
+  }
+}
