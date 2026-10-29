@@ -3954,3 +3954,153 @@ h1, h2, h3 { color: var(--ink); }
 }
 .overview-metric-tracking .overview-metric-icon { color: #34d399; }
 .overview-metric-roi .overview-metric-icon { color: #fbbf24; }
+
+/* Blue-first action system: the lime highlight was too bright against both
+   browser themes. Green remains reserved for success and live-status states. */
+:root,
+:root[data-theme="light"],
+:root[data-theme="dark"] {
+  --godev-blue: #4667e8;
+  --godev-blue-hover: #3653c7;
+  --godev-blue-soft: #e8edff;
+  --godev-green: #167a56;
+  --lime: var(--godev-blue);
+  --color-link: var(--godev-blue);
+  --color-accent: var(--godev-blue);
+  --color-accent-hover: var(--godev-blue-hover);
+  --color-accent-ink: #fff;
+  --color-accent-secondary: #90a3ff;
+}
+:root[data-theme="light"] .button.primary,
+:root[data-theme="light"] .button.lime,
+:root[data-theme="light"] .student-primary-action,
+:root[data-theme="light"] .login-link,
+:root[data-theme="light"] .admin-side-link[aria-current="page"],
+:root[data-theme="light"] .portal .sidebar nav a[aria-current="page"],
+:root[data-theme="light"] .theme-toggle button[aria-pressed="true"],
+:root[data-theme="light"] .material-index button[aria-selected="true"] {
+  background: var(--godev-blue);
+  border-color: var(--godev-blue);
+  color: #fff;
+}
+:root[data-theme="dark"] .button.primary,
+:root[data-theme="dark"] .button.lime,
+:root[data-theme="dark"] .student-primary-action,
+:root[data-theme="dark"] .login-link,
+:root[data-theme="dark"] .admin-side-link[aria-current="page"],
+:root[data-theme="dark"] .portal .sidebar nav a[aria-current="page"],
+:root[data-theme="dark"] .theme-toggle button[aria-pressed="true"],
+:root[data-theme="dark"] .material-index button[aria-selected="true"] {
+  background: var(--godev-blue);
+  border-color: var(--godev-blue);
+  color: #fff;
+}
+:root[data-theme="light"] .button.primary:hover,
+:root[data-theme="light"] .button.lime:hover,
+:root[data-theme="light"] .student-primary-action:hover,
+:root[data-theme="light"] .login-link:hover,
+:root[data-theme="dark"] .button.primary:hover,
+:root[data-theme="dark"] .button.lime:hover,
+:root[data-theme="dark"] .student-primary-action:hover,
+:root[data-theme="dark"] .login-link:hover {
+  background: var(--godev-blue-hover);
+  border-color: var(--godev-blue-hover);
+  color: #fff;
+}
+:root[data-theme="light"] .button.secondary,
+:root[data-theme="light"] .student-secondary-action,
+:root[data-theme="light"] .admin-open-student,
+:root[data-theme="light"] .catalog-expand {
+  border-color: #4667e8;
+  color: #2948b7;
+}
+:root[data-theme="dark"] .button.secondary,
+:root[data-theme="dark"] .student-secondary-action,
+:root[data-theme="dark"] .admin-open-student,
+:root[data-theme="dark"] .catalog-expand {
+  border-color: #90a3ff;
+  color: #b9c5ff;
+}
+:root[data-theme="light"] .admin-side-link:hover,
+:root[data-theme="light"] .portal .sidebar nav a:hover,
+:root[data-theme="light"] .theme-toggle button:hover,
+:root[data-theme="light"] .theme-toggle button:focus-visible {
+  background: var(--godev-blue-soft);
+  color: #2948b7;
+}
+:root[data-theme="dark"] .admin-side-link:hover,
+:root[data-theme="dark"] .portal .sidebar nav a:hover,
+:root[data-theme="dark"] .theme-toggle button:hover,
+:root[data-theme="dark"] .theme-toggle button:focus-visible {
+  background: rgb(70 103 232 / 22%);
+  color: #b9c5ff;
+}
+.brand b > span,
+.admin-brand > span > span,
+.portal .sidebar .brand b > span {
+  color: var(--godev-green);
+}
+.danger-button {
+  min-height: 38px;
+  padding: 9px 13px;
+  border: 1px solid #d34b5d;
+  border-radius: 10px;
+  background: transparent;
+  color: #b4233a;
+  font-size: 12px;
+  font-weight: 750;
+}
+.danger-button:hover,
+.danger-button:focus-visible {
+  background: #b4233a;
+  border-color: #b4233a;
+  color: #fff;
+}
+:root[data-theme="dark"] .danger-button {
+  border-color: #ff8a9a;
+  color: #ffb3be;
+}
+:root[data-theme="dark"] .danger-button:hover,
+:root[data-theme="dark"] .danger-button:focus-visible {
+  background: #b4233a;
+  border-color: #ff8a9a;
+  color: #fff;
+}
+.team-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.team-actions .button {
+  white-space: nowrap;
+}
+.crm-table td:last-child {
+  min-width: 142px;
+}
+@media (max-width: 760px) {
+  .admin-content,
+  .workspace {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+  .admin-content .table-wrap,
+  .workspace .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .crm-table {
+    min-width: 780px;
+  }
+  .team-table {
+    min-width: 720px;
+  }
+  .danger-button,
+  .team-actions .button {
+    min-height: 42px;
+  }
+  .student-welcome-actions,
+  .admin-topbar-actions {
+    flex-wrap: wrap;
+  }
+}
+
