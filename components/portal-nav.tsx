@@ -34,19 +34,19 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const [moreOpen, setMoreOpen] = useState(false);
   const active = (slug: string) => path === `/aluno${slug ? "/" + slug : ""}` ? "page" : undefined;
   const mobileLinks = [
-    ["", "Início", "⌂"],
-    ["materiais", "Estudar", "▤"],
-    ["exercicios", "Praticar", "✓"],
+    ["", "Início", "home"],
+    ["materiais", "Estudar", "book"],
+    ["exercicios", "Praticar", "check"],
   ] as const;
   const moreLinks = [
-    ["simulados", "Simulados", "◈"],
-    ["cronograma", "Cronograma", "□"],
-    ["checklists", "Checklists", "☷"],
-    ["redacao", "Redação", "✎"],
-    ["correcoes", "Correções", "↗"],
-    ["biblioteca", "Biblioteca", "◎"],
-    ["conta", "Minha conta", "○"],
-    ["suporte", "Atendimento", "?"],
+    ["simulados", "Simulados", "target"],
+    ["cronograma", "Cronograma", "calendar"],
+    ["checklists", "Checklists", "list"],
+    ["redacao", "Redação", "pen"],
+    ["correcoes", "Correções", "trend"],
+    ["biblioteca", "Biblioteca", "library"],
+    ["conta", "Minha conta", "user"],
+    ["suporte", "Atendimento", "help"],
   ] as const;
   const renderLink = ([slug, label, icon]: readonly [string, string, string]) => (
     <Link key={slug} href={`/aluno${slug ? "/" + slug : ""}`} aria-current={active(slug)}>
@@ -85,3 +85,4 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
     </>
   );
 }
+
