@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { questionBank, type Question } from "../data/question-bank";
 import { officialExams } from "../data/official-exams";
@@ -72,6 +72,11 @@ function duplicateAnalysis() {
 async function main() {
   await mkdir(outDir, { recursive: true });
   const duplicates = duplicateAnalysis();
+  let officialExtraction = { total: 0, ready: 0, needsReview: 0 };
+  try {
+    const extracted = JSON.parse(await readFile(path.join(process.cwd(), "tmp", "official-exams", "questions.json"), "utf8")) as Array<{ status: string }>;
+    officialExtraction = { total: extracted.length, ready: extracted.filter((item) => item.status === "ready").length, needsReview: extracted.filter((item) => item.status === "needs_review").length };
+  } catch { /* extraction is optional for the baseline audit */ }
   const normalized = questionBank.map(normalizedQuestion);
   await writeFile(path.join(outDir, "questions.normalized.ndjson"), normalized.map((item) => JSON.stringify(item)).join("\n") + "\n");
   const by = <T extends string>(values: T[]) => Object.fromEntries([...new Set(values)].sort().map((value) => [value, values.filter((item) => item === value).length]));
@@ -80,7 +85,7 @@ async function main() {
     source: "data/question-bank.ts and data/library.json",
     questionBank: { total: questionBank.length, uniqueIds: new Set(questionBank.map((item) => item.id)).size, byActivity: by(questionBank.map((item) => item.activity)), byArea: by(questionBank.map((item) => item.area)), byDifficulty: by(questionBank.map((item) => item.difficulty)), byItemType: { authorial: questionBank.length }, byStatus: { review: questionBank.length }, invalid: { optionCount: questionBank.filter((item) => item.options.length !== 5).map((item) => item.id), missingAnswer: questionBank.filter((item) => !/^[ABCDE]$/.test(item.answer)).map((item) => item.id), missingExplanation: questionBank.filter((item) => !item.explanation.trim()).map((item) => item.id), missingDistractorAnalysis: questionBank.length }, duplicates: { exactGroups: duplicates.exactNormalized.length, exactRecords: duplicates.exactNormalized.flat().length, structuralGroups: duplicates.structuralAlternative.length, semanticCandidates: duplicates.semanticCandidates.length } },
     library: { total: 1800, resolved: 7, pending: 1793 },
-    officialReference: { materialsDeclared: officialExams.length, sourceFilesPresent: 12, extractedInteractiveItems: 0, status: "reference_materials_present_extraction_requires_review" },
+    officialReference: { materialsDeclared: officialExams.length, sourceFilesPresent: 12, extractedInteractiveItems: officialExtraction.total, readyForReview: officialExtraction.ready, needsReview: officialExtraction.needsReview, status: "reference_materials_present_extraction_requires_review" },
     blockers: ["Conteúdo autoral legado contém duplicidades normalizadas", "Metadados ENEM e análise individual dos distratores estão incompletos", "1.793 referências da biblioteca continuam pendentes"],
   };
   await writeFile(path.join(outDir, "question-audit.json"), JSON.stringify(audit, null, 2) + "\n");
