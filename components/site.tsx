@@ -6,7 +6,7 @@ import { materials } from "../lib/config";
 import ThemeToggle from "./theme-toggle";
 export function Brand() {
   return (
-    <Link href="/#kit" className="brand" aria-label="Voltar para a hero do GoDev Education">
+    <Link href="/" className="brand" aria-label="Ir para o início do GoDev Education">
       <b>
         GoDev<span>.</span>
       </b>
@@ -25,7 +25,7 @@ export function Header() {
           className={open ? "nav open" : "nav"}
         >
           {[
-            ["O Kit", "/#kit"],
+            ["O Kit", "/"],
             ["Materiais", "/#materiais"],
             ["Planos", "/#planos"],
             ["Dúvidas", "/#duvidas"],
@@ -267,6 +267,7 @@ export function FAQ() {
     </div>
   );
 }
+
 
 
 
