@@ -164,7 +164,7 @@ export default async function Admin({
             cover: "/covers/kit.png",
             storage_path: null,
             published: false,
-            downloadable: true,
+            downloadable: false,
             public_sample_url: null,
           }}
         />
@@ -592,6 +592,7 @@ export default async function Admin({
     </main>
   );
 }
+
 
 
 
