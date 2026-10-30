@@ -19,7 +19,9 @@ function loadMetaPixel(pixel: string) {
   // Keep one initialization per page even if React remounts this component or
   // an already loaded script is reused during client navigation.
   if (window.fbq) {
-    window.fbq("init", pixel);
+    // A provider/extension may have initialized fbq before this component.
+    // Reusing it is safer than issuing a second init and creating conflicting
+    // pixel versions in a persistent browser session.
     window.__godevMetaPixelInitialized = pixel;
     return;
   }
