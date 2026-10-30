@@ -40,13 +40,6 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
     setCurrentIndex((index) => index + 1);
   }
 
-  function restart() {
-    setAnswers({});
-    setCurrentIndex(0);
-    setComplete(false);
-    setShowReport(false);
-  }
-
   useEffect(() => {
     if (!complete) return;
     const timer = window.setTimeout(() => setShowReport(true), 1500);
@@ -100,7 +93,7 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
           })}
         </ol>}
         {showReport && <div className={styles.previewResultActions}>
-          <button type="button" className={styles.previewPrimaryButton} onClick={restart}>Tentar novamente</button>
+          <a className={styles.previewPrimaryButton} href="#planos">Conhecer os planos</a>
           <a className={styles.conversionSecondary} href="#planos">Conhecer a plataforma</a>
         </div>}
       </article>
