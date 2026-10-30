@@ -45,6 +45,7 @@ export default async function Dashboard() {
   ]);
 
   const isAdmin = who.profile?.role === "admin";
+  const hasAccess = isAdmin || Boolean(access?.length);
   const visibleMaterials = (materials || []).filter(
     (material) =>
       isAdmin ||
@@ -89,7 +90,7 @@ export default async function Dashboard() {
         <article className="student-stat-card accent">
           <span>Meu plano</span>
           <strong>{plan}</strong>
-          <small>{access?.length ? "Acesso ativo" : "Acesso ainda não liberado"}</small>
+          <small>{hasAccess ? (isAdmin ? "Acesso administrativo e conteúdos liberados" : "Acesso ativo") : "Acesso ainda não liberado"}</small>
         </article>
         <article className="student-stat-card">
           <span>Materiais disponíveis</span>

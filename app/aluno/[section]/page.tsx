@@ -62,6 +62,7 @@ export default async function Section({
     ["biblioteca", "simulados", "checklists"].includes(section) ? "premium" : "essencial",
   );
   if (section === "conta") {
+    const isAdmin = who.profile?.role === "admin";
     const { data } = await who.db
       .from("entitlements")
       .select("plan,active,order_id")
@@ -82,6 +83,8 @@ export default async function Section({
               {e.active ? "Ativo" : "Revogado"}
             </p>
           ))
+        ) : isAdmin ? (
+          <p>Administrador · Acesso administrativo e conteúdos liberados.</p>
         ) : (
           <p>Nenhuma compra vinculada.</p>
         )}
