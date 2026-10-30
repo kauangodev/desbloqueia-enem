@@ -15,7 +15,7 @@ const policies: Record<
       ],
       [
         "Pagamento e serviços contratados",
-        "O pagamento será processado pela Cakto quando as vendas forem abertas. A plataforma não coleta nem armazena dados completos de cartão. Autenticação e dados operacionais usam a infraestrutura MySQL contratada na Hostinger; o envio transacional usa o provedor de e-mail contratado quando configurado. Esses serviços podem processar dados em outros países, conforme seus contratos e políticas.",
+        "O pagamento é processado pela Cakto. A plataforma não coleta nem armazena dados completos de cartão. Autenticação e dados operacionais usam a infraestrutura contratada para o produto; o envio transacional usa o provedor de e-mail configurado quando aplicável. Esses serviços podem processar dados em outros países, conforme seus contratos e políticas.",
       ],
       [
         "Cookies e métricas",
@@ -31,7 +31,7 @@ const policies: Record<
       ],
       [
         "Responsável e contato",
-        "Os dados do responsável comercial e os canais de privacidade serão publicados antes da abertura das vendas. Enquanto não estiverem configurados, a compra permanecerá indisponível.",
+        "Solicitações relacionadas a privacidade devem ser feitas pelo atendimento interno após o acesso. Em caso de dificuldade para entrar, consulte o comprovante da compra e o canal oficial do processador do pagamento.",
       ],
     ],
   },
@@ -44,7 +44,7 @@ const policies: Record<
       ],
       [
         "Conta e acesso",
-        "O acesso é pessoal, por e-mail. A liberação depende de pagamento confirmado e do plano adquirido. O uso indevido, a distribuição não autorizada dos arquivos e o compartilhamento de links privados não são permitidos. O material pode ser baixado quando o recurso estiver autorizado.",
+        "O acesso é pessoal, por e-mail. A liberação depende de pagamento confirmado e do plano adquirido. O uso indevido, a distribuição não autorizada dos arquivos e o compartilhamento de links privados não são permitidos. A leitura dos PDFs acontece exclusivamente dentro da plataforma; os PDFs não ficam disponíveis para download.",
       ],
       [
         "Fontes externas",
@@ -56,7 +56,7 @@ const policies: Record<
       ],
       [
         "Compras e atendimento",
-        "As compras estão em preparação. Antes da abertura, o responsável comercial, os canais de atendimento e as configurações de pagamento e entrega devem estar definidos. As condições de reembolso estão na política específica.",
+        "As compras são processadas pela Cakto. A liberação do acesso ocorre após a confirmação verificável do pagamento e é vinculada ao e-mail informado na compra. As condições de reembolso estão na política específica.",
       ],
     ],
   },
@@ -77,7 +77,7 @@ const policies: Record<
       ],
       [
         "O que acontece com o acesso",
-        "Após a confirmação do reembolso ou chargeback, o acesso vinculado àquele pedido será revogado. Outras compras válidas permanecem ativas. O conteúdo já baixado não deve ser redistribuído.",
+        "Após a confirmação do reembolso ou chargeback, o acesso vinculado àquele pedido será revogado. Outras compras válidas permanecem ativas. A leitura acontece exclusivamente na plataforma; os PDFs não são disponibilizados para download ou redistribuição.",
       ],
       [
         "Pagamento pela Cakto",
@@ -122,3 +122,4 @@ export default async function Policy({
     </>
   );
 }
+
