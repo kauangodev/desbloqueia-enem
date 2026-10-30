@@ -10,7 +10,7 @@ import AssessmentPlayer from "../../../components/assessment-player";
 import EssayMaintenance from "../../../components/essay-maintenance";
 import ActivityCatalog from "../../../components/activity-catalog";
 import Resources, { type Material } from "../../../components/resources";
-import { questionBank, questionsFor, questionsForCollection } from "../../../data/question-bank";
+import { questionBank, questionsFor, questionsForCollection, toPublicQuestion } from "../../../data/question-bank";
 import type { Question } from "../../../data/question-bank";
 import { officialMaterials } from "../../../data/official-exams";
 type Identity = NonNullable<Awaited<ReturnType<typeof identity>>>;
@@ -171,7 +171,7 @@ export default async function Section({
     content = selectedQuestions.length ? (
       <>
         <div className="assessment-switcher"><Link href="/aluno/exercicios">Todas as listas</Link><Link href="/aluno/correcoes">Ver correções</Link></div>
-        <AssessmentPlayer questions={selectedQuestions} collectionId={selectedCollectionId} title={selectedCollectionId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva no seu ritmo. Ao finalizar, a correção detalhada ficará salva no seu histórico." />
+        <AssessmentPlayer questions={selectedQuestions.map(toPublicQuestion)} collectionId={selectedCollectionId} title={selectedCollectionId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva no seu ritmo. Ao finalizar, a correção detalhada ficará salva no seu histórico." />
       </>
     ) : (
       <>
@@ -222,7 +222,7 @@ export default async function Section({
     content = selectedQuestions.length ? (
       <>
         <div className="assessment-switcher"><Link href="/aluno/simulados">Todos os simulados</Link><Link href="/aluno/correcoes">Ver correções</Link></div>
-        <AssessmentPlayer questions={selectedQuestions} collectionId={selectedSimulationId} title={selectedSimulationId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva todas as questões. A correção detalhada aparece ao finalizar." />
+        <AssessmentPlayer questions={selectedQuestions.map(toPublicQuestion)} collectionId={selectedSimulationId} title={selectedSimulationId!.replace("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())} subtitle="Resolva todas as questões. A correção detalhada aparece ao finalizar." />
       </>
     ) : (
       <>

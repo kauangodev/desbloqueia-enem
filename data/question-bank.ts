@@ -2,6 +2,14 @@ import { generatedQuestions } from "./generated-question-bank";
 
 export type QuestionOption = { id: string; text: string };
 export type Question = { id: string; batchId: number; activity: "exercicios" | "simulado-1" | "simulado-2"; collectionId: string; number: number; area: string; topic: string; difficulty: "média" | "alta"; statement: string; options: QuestionOption[]; answer: string; explanation: string; nextStep: string; sourceLabel: string; origin: "desbloqueio_enem_autoral"; version: number; reviewStatus: "revisao_inicial" | "revisado" };
+export type PublicQuestion = Omit<Question, "answer" | "explanation" | "nextStep">;
+export const toPublicQuestion = (question: Question): PublicQuestion => {
+  const publicQuestion = { ...question } as PublicQuestion & Partial<Pick<Question, "answer" | "explanation" | "nextStep">>;
+  delete publicQuestion.answer;
+  delete publicQuestion.explanation;
+  delete publicQuestion.nextStep;
+  return publicQuestion;
+};
 const q = (id: string, activity: Question["activity"], number: number, area: string, topic: string, difficulty: Question["difficulty"], statement: string, options: string[], answer: string, explanation: string, nextStep: string, collectionId: string = activity): Question => ({ id, batchId: Math.ceil(Number(id.replace("aut-", "")) / 100), activity, collectionId, number, area, topic, difficulty, statement, options: options.map((text, i) => ({ id: String.fromCharCode(65 + i), text })), answer, explanation, nextStep, sourceLabel: "Autoral · matriz ENEM", origin: "desbloqueio_enem_autoral", version: 1, reviewStatus: "revisao_inicial" });
 export const questionBank: Question[] = [
   q("aut-001", "exercicios", 1, "Linguagens", "Leitura e argumentação", "média", "Uma campanha de biblioteca afirma: “Ler também é escolher de onde observar o mundo”. O efeito central dessa formulação é", ["associar a leitura à ampliação de perspectivas.", "descrever uma rotina de empréstimos.", "informar o endereço da biblioteca.", "apresentar uma estatística de frequência.", "narrar uma experiência autobiográfica."], "A", "A campanha usa uma metáfora para relacionar leitura e mudança de perspectiva, valorizando o ato de ler como formação crítica.", "Revise linguagem figurada e finalidade de campanhas"),
