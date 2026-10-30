@@ -4,11 +4,9 @@ import type { PDFDocumentProxy, PDFDocumentLoadingTask } from "pdfjs-dist";
 export default function PdfReader({
   id,
   initialPage,
-  downloadable,
 }: {
   id: string;
   initialPage: number;
-  downloadable: boolean;
 }) {
   const [doc, D] = useState<PDFDocumentProxy | null>(null),
     [page, P] = useState(initialPage),
@@ -176,9 +174,7 @@ export default function PdfReader({
         >
           Tela cheia
         </button>
-        {downloadable && (
-          <span className="subtle">Leitura protegida na plataforma</span>
-        )}
+        <span className="subtle">Leitura exclusiva pela plataforma · PDF não disponível para download</span>
       </div>
       <p role="status">{status}</p>
       {error && (
@@ -195,4 +191,5 @@ export default function PdfReader({
     </div>
   );
 }
+
 
