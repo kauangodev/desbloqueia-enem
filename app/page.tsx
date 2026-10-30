@@ -219,7 +219,9 @@ export default async function Home() {
       <Footer />
       <PremiumOfferModal
         enabled
-        delayMs={5000}
+        delayMs={10000}
+        cooldownDays={7}
+        campaignId="premium-offer-v1"
         checkoutHref={checkoutReady ? "/api/checkout/premium" : "/suporte"}
         plan={plans.find((plan) => plan.id === "premium") || plans[1]}
       />
