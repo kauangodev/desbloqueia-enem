@@ -21,7 +21,6 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
   const currentQuestion = questions[currentIndex] || question;
   const selected = answers[currentIndex] || null;
   const answered = selected !== null;
-  const isCorrect = selected === (privateQuestions[currentIndex]?.answer || demoAnswer);
   const score = Object.entries(answers).reduce((total, [index, answer]) => (
     total + (answer === privateQuestions[Number(index)]?.answer ? 1 : 0)
   ), 0);
@@ -64,6 +63,23 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
         <p className={styles.previewResultScore}>Você acertou <b>{score} de {questions.length}</b> questões · <b>{score * 20}%</b> de aproveitamento.</p>
         <div className={styles.previewProgressTrack} aria-label={`${score * 20}% de aproveitamento`}><span style={{ width: `${score * 20}%` }} /></div>
         <p className={styles.previewResultNote}>{passed ? "Continue praticando para transformar consistência em confiança." : "Revise as explicações e tente novamente para acompanhar sua evolução."}</p>
+        <ol className={styles.previewReport} aria-label="Relatório das cinco questões">
+          {questions.map((item, index) => {
+            const answer = answers[index];
+            const expected = privateQuestions[index]?.answer || demoAnswer;
+            const correct = answer === expected;
+            return (
+              <li key={item.id} className={correct ? styles.previewReportCorrect : styles.previewReportMissed}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <strong>{correct ? "Acertou" : "Pode revisar"} · {item.area}</strong>
+                  <small>Sua resposta: {answer || "não respondida"} · Gabarito: {expected}</small>
+                  <p>{privateQuestions[index]?.explanation || demoExplanation}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
         <div className={styles.previewResultActions}>
           <button type="button" className={styles.previewPrimaryButton} onClick={restart}>Tentar novamente</button>
           <a className={styles.conversionSecondary} href="/entrar">Ver a plataforma completa</a>
@@ -104,15 +120,8 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
         ))}
       </div>
       {answered && (
-        <div className={isCorrect ? styles.previewFeedbackCorrect : styles.previewFeedback} role="status" aria-live="polite">
-          <div className={styles.previewFeedbackHeading}>
-            <strong>{isCorrect ? "Resposta correta" : "Quase lá — revise este ponto"}</strong>
-            <span>{isCorrect ? "+25 XP" : "Próximo passo"}</span>
-          </div>
-          <p>{isCorrect ? (privateQuestions[currentIndex]?.explanation || demoExplanation) : `A resposta correta é a alternativa ${privateQuestions[currentIndex]?.answer || demoAnswer}. ${privateQuestions[currentIndex]?.explanation || demoExplanation}`}</p>
-          <div className={styles.previewProgressLabel}><span>Progresso da demonstração</span><b>{currentIndex + 1} de {questions.length}</b></div>
-          <div className={styles.previewProgressTrack} aria-label={`${currentIndex + 1} de ${questions.length} questões respondidas`}><span style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }} /></div>
-          <small>Próximo passo: {privateQuestions[currentIndex]?.nextStep || demoNextStep}</small>
+        <div className={styles.previewNextRow} role="status" aria-live="polite">
+          <span>Alternativa {selected} selecionada. O resultado aparece no final.</span>
           <button type="button" className={styles.previewNextButton} onClick={nextQuestion}>
             {currentIndex === questions.length - 1 ? "Ver meu resultado" : "Próxima questão"}
           </button>
@@ -120,9 +129,9 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
       )}
       <div className={styles.previewFooter}>
         <span aria-live="polite">
-          {selected ? `Alternativa ${selected} selecionada. ${isCorrect ? "Você avançou na revisão." : "Confira a explicação abaixo."}` : "Escolha uma alternativa para experimentar."}
+          {selected ? "Você pode avançar quando estiver pronto." : "Escolha uma alternativa para experimentar."}
         </span>
-        <a href="/entrar" data-analytics-event="hero_demo_login">Ver correção completa</a>
+        <a href="/entrar" data-analytics-event="hero_demo_login">Conhecer a plataforma</a>
       </div>
     </article>
   );

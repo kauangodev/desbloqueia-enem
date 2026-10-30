@@ -3298,6 +3298,11 @@ button.primary:hover,
   font-size: 14px;
   line-height: 1;
 }
+.portal-nav-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
 .portal .sidebar nav a[aria-current="page"] .portal-nav-icon {
   background: #d6f27c;
   color: #08482d;

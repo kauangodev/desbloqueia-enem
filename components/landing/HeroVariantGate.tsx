@@ -1,17 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export type HeroVariant = "a" | "b";
-
-const STORAGE_KEY = "godev-hero-variant";
-
-function readVariant(): HeroVariant | null {
-  if (typeof window === "undefined") return null;
-  const value = window.localStorage.getItem(STORAGE_KEY);
-  return value === "a" || value === "b" ? value : null;
-}
 
 export function HeroVariantGate({
   legacy,
@@ -22,28 +14,10 @@ export function HeroVariantGate({
   conversion: ReactNode;
   forcedVariant?: HeroVariant;
 }) {
-  const [variant, setVariant] = useState<HeroVariant>(forcedVariant || "b");
-
-  useEffect(() => {
-    if (forcedVariant) {
-      setVariant(forcedVariant);
-      return;
-    }
-
-    // Marketing assignment is opt-in. Before consent the current B experience
-    // remains the safe SSR fallback and no identifier is written.
-    if (window.localStorage.getItem("godev-consent") !== "accepted") return;
-
-    const existing = readVariant();
-    if (existing) {
-      setVariant(existing);
-      return;
-    }
-
-    const assigned: HeroVariant = Math.random() < 0.5 ? "a" : "b";
-    window.localStorage.setItem(STORAGE_KEY, assigned);
-    setVariant(assigned);
-  }, [forcedVariant]);
+  // The public landing page has one canonical experience. Keeping the old A/B
+  // branch here allowed a stale localStorage assignment to resurrect the
+  // legacy animated hero on mobile, even after a new deployment.
+  const [variant] = useState<HeroVariant>(forcedVariant === "a" ? "b" : "b");
 
   return (
     <div data-hero-variant={variant} data-hero-ab="consent-local">
