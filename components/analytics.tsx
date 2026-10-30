@@ -37,6 +37,7 @@ export default function Analytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const lastPageRef = useRef<string | null>(null);
+  const lastHeroRef = useRef<string | null>(null);
   const pixel = META_PIXEL_ID;
   const ga = process.env.NEXT_PUBLIC_GA_ID;
   const pageKey = `${pathname}?${searchParams.toString()}`;
@@ -54,6 +55,14 @@ export default function Analytics() {
         trackMetaEvent("PageView");
         lastPageRef.current = pageKey;
       }
+    }
+
+    const heroVariant = document.querySelector<HTMLElement>("[data-hero-variant]")?.dataset.heroVariant;
+    const heroKey = `${pageKey}:${heroVariant || "none"}`;
+    if (heroVariant && (heroVariant === "a" || heroVariant === "b") && lastHeroRef.current !== heroKey) {
+      trackMetaEvent("ViewContent", { content_name: "hero_variant", variant: heroVariant });
+      window.gtag?.("event", "hero_variant_view", { hero_variant: heroVariant });
+      lastHeroRef.current = heroKey;
     }
 
     if (ga && /^G-[A-Z0-9]+$/i.test(ga) && !window.gtag) {

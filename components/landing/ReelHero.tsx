@@ -2,6 +2,7 @@ import Link from "next/link";
 import { questionBank, toPublicQuestion } from "../../data/question-bank";
 import { CurvedMaterialCarousel } from "./CurvedMaterialCarousel";
 import { HeroProductPreview } from "./HeroProductPreview";
+import { HeroVariantGate } from "./HeroVariantGate";
 import styles from "./reel-hero.module.css";
 
 function LegacyReelHero() {
@@ -42,13 +43,9 @@ function LegacyReelHero() {
 }
 
 export function ReelHero() {
-  if (process.env.NEXT_PUBLIC_HERO_VARIANT === "legacy") {
-    return <LegacyReelHero />;
-  }
-
   const question = toPublicQuestion(questionBank[0]);
 
-  return (
+  const conversion = (
     <section className={styles.conversionHero} id="kit" aria-labelledby="hero-title">
       <div className={styles.conversionGrid}>
         <div className={styles.conversionCopy}>
@@ -87,6 +84,14 @@ export function ReelHero() {
         <span>Conheça a plataforma antes de comprar</span>
       </div>
     </section>
+  );
+
+  return (
+    <HeroVariantGate
+      legacy={<LegacyReelHero />}
+      conversion={conversion}
+      forcedVariant={process.env.NEXT_PUBLIC_HERO_VARIANT === "legacy" ? "a" : undefined}
+    />
   );
 }
 

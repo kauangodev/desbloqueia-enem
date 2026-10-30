@@ -38,7 +38,7 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
             aria-checked={selected === option.id}
             className={selected === option.id ? styles.previewOptionSelected : styles.previewOption}
             onClick={() => setSelected(option.id)}
-            data-analytics-event="hero_question_option"
+            data-analytics-event="hero_question_answer"
           >
             <b>{option.id}</b>
             <span>{option.text}</span>
