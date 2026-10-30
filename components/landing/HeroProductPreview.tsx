@@ -66,3 +66,4 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
     </article>
   );
 }
+
