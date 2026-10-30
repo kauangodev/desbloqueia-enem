@@ -1,0 +1,68 @@
+/* GoDev Education: shared finishing layer for the public preview and portals. */
+.platform-motion {
+  display: grid;
+  grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr);
+  gap: clamp(22px, 5vw, 72px);
+  align-items: center;
+  margin: clamp(24px, 5vw, 54px) 0 34px;
+  padding: clamp(18px, 4vw, 34px);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-surface) 90%, var(--brand-green)), var(--color-surface));
+  box-shadow: 0 24px 60px rgb(2 12 8 / 12%);
+  overflow: hidden;
+}
+.platform-motion-copy h3 { margin: .6rem 0 .8rem; color: var(--color-text); font-size: clamp(1.6rem, 3.5vw, 2.8rem); line-height: 1.02; letter-spacing: -.04em; }
+.platform-motion-copy p { max-width: 36ch; margin: 0; color: var(--color-text-secondary); line-height: 1.6; }
+.platform-motion-dots { display: flex; gap: 7px; margin-top: 24px; }
+.platform-motion-dots button { width: 28px; height: 6px; padding: 0; border: 0; border-radius: 999px; background: var(--color-border); cursor: pointer; transition: width .25s ease, background .25s ease; }
+.platform-motion-dots button[aria-selected="true"] { width: 46px; background: var(--brand-green); }
+.platform-motion-window { min-width: 0; border: 1px solid color-mix(in srgb, var(--color-text) 18%, transparent); border-radius: 16px; background: var(--color-surface); box-shadow: 0 20px 48px rgb(2 12 8 / 18%); overflow: hidden; transform: rotate(1deg); }
+.platform-motion-windowbar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; border-bottom: 1px solid var(--color-border); background: var(--color-surface-elevated); color: var(--color-text-secondary); font-size: .68rem; }
+.platform-motion-windowbar > span { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-green); opacity: .6; }
+.platform-motion-windowbar > span:nth-child(2) { opacity: .4; }
+.platform-motion-windowbar > span:nth-child(3) { opacity: .25; }
+.platform-motion-windowbar b { margin-left: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
+.platform-motion-layout { display: grid; grid-template-columns: 130px minmax(0, 1fr); min-height: 320px; }
+.platform-motion-sidebar { display: grid; align-content: start; gap: 10px; padding: 18px 12px; border-right: 1px solid var(--color-border); background: var(--color-surface-elevated); color: var(--color-text-secondary); font-size: .68rem; }
+.platform-motion-sidebar strong { margin-bottom: 12px; color: var(--color-text); font-size: .9rem; }
+.platform-motion-sidebar strong span { color: var(--brand-green); }
+.platform-motion-sidebar i { padding: 8px 9px; border-radius: 8px; font-style: normal; }
+.platform-motion-sidebar i.is-active { background: color-mix(in srgb, var(--brand-green) 17%, var(--color-surface)); color: var(--color-text); }
+.platform-motion-dashboard { display: grid; align-content: start; gap: 14px; min-width: 0; padding: clamp(16px, 3vw, 26px); }
+.platform-motion-heading { display: flex; justify-content: space-between; gap: 12px; }
+.platform-motion-heading small, .platform-motion-heading strong { display: block; }
+.platform-motion-heading small { color: var(--color-text-secondary); font-size: .7rem; }
+.platform-motion-heading strong { margin-top: 5px; color: var(--color-text); font-size: clamp(1.1rem, 2.5vw, 1.65rem); letter-spacing: -.03em; }
+.platform-motion-heading em { color: var(--brand-green); font-size: .68rem; font-style: normal; font-weight: 800; }
+.platform-motion-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.platform-motion-stats span { display: grid; gap: 3px; padding: 10px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-surface-elevated); }
+.platform-motion-stats b { color: var(--color-text); font-size: 1.05rem; }
+.platform-motion-stats small { color: var(--color-text-secondary); font-size: .65rem; }
+.platform-motion-feature { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-width: 0; padding: 14px; border: 1px solid color-mix(in srgb, var(--brand-green) 38%, var(--color-border)); border-radius: 14px; background: color-mix(in srgb, var(--brand-green) 7%, var(--color-surface)); }
+.platform-motion-feature > div { min-width: 0; }
+.platform-motion-feature small { color: var(--color-text-secondary); font-size: .65rem; }
+.platform-motion-feature strong { display: block; margin-top: 5px; color: var(--color-text); font-size: 1.05rem; }
+.platform-motion-feature p { display: -webkit-box; overflow: hidden; margin: 6px 0 10px; color: var(--color-text-secondary); font-size: .76rem; line-height: 1.4; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.platform-motion-feature button { min-height: 34px; padding: 7px 11px; border: 1px solid var(--brand-green); border-radius: 8px; background: var(--brand-green); color: var(--color-accent-ink); font: inherit; font-size: .7rem; font-weight: 800; cursor: pointer; }
+.platform-motion-feature button:hover, .platform-motion-feature button:focus-visible { filter: brightness(1.08); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-green) 22%, transparent); }
+.platform-motion-feature img { width: 80px; height: 112px; flex: 0 0 auto; object-fit: cover; border-radius: 7px; box-shadow: 0 10px 22px rgb(0 0 0 / 18%); }
+.platform-motion-progress { display: grid; gap: 7px; color: var(--color-text-secondary); font-size: .7rem; }
+.platform-motion-progress > b { height: 7px; overflow: hidden; border-radius: 999px; background: var(--color-border); }
+.platform-motion-progress i { display: block; height: 100%; border-radius: inherit; background: var(--brand-green); transition: width .45s ease; }
+.materials-catalog-disclosure { margin-top: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--color-surface); overflow: hidden; }
+.materials-catalog-disclosure summary { padding: 14px 16px; color: var(--color-text); font-weight: 800; cursor: pointer; }
+.materials-catalog-disclosure > .material-explorer { padding: 0 16px 18px; }
+.admin-content, .admin-overview, .admin-kpis, .crm-stats { min-width: 0; }
+.admin-overview-metrics { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.admin-overview > *, .admin-overview-metrics > * { min-width: 0; }
+.admin-content .table-wrap { max-width: 100%; overflow: auto; overscroll-behavior-inline: contain; }
+.admin-content .crm-table { min-width: 680px; }
+.admin-content .admin-form, .team-invite-form, .ticket-form { max-width: 100%; }
+.team-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 900px) { .platform-motion { grid-template-columns: 1fr; } .platform-motion-window { transform: none; } .platform-motion-layout { min-height: 290px; } }
+@media (max-width: 760px) { .admin-topbar { align-items: flex-start; flex-direction: column; gap: 12px; } .admin-topbar-actions { width: 100%; flex-wrap: wrap; } .admin-content { padding: 18px 14px 90px; } .admin-hero { padding: 20px 18px; } .admin-hero h1 { font-size: clamp(2rem, 11vw, 3.2rem); } .admin-overview-metrics { grid-template-columns: 1fr 1fr; } .admin-content .table-wrap { margin-inline: -4px; } .ticket-form { padding: 16px; } .team-actions .button { flex: 1 1 130px; } .crm-table td, .crm-table th { padding: 10px 8px; } }
+@media (max-width: 560px) { .platform-motion { padding: 16px; border-radius: 18px; } .platform-motion-layout { grid-template-columns: 78px minmax(0, 1fr); } .platform-motion-sidebar { padding: 14px 8px; font-size: .6rem; } .platform-motion-sidebar i { padding: 7px 5px; } .platform-motion-stats { gap: 5px; } .platform-motion-stats span { padding: 8px 7px; } .platform-motion-stats b { font-size: .9rem; } .platform-motion-feature { align-items: flex-start; } .platform-motion-feature img { width: 62px; height: 88px; } .platform-motion-heading em { display: none; } }
+@media (max-width: 460px) { .admin-overview-metrics { grid-template-columns: 1fr; } .platform-motion-stats { grid-template-columns: 1fr 1fr; } .platform-motion-stats span:last-child { grid-column: 1 / -1; } }
+@media (prefers-reduced-motion: reduce) { .platform-motion-dots button, .platform-motion-progress i { transition: none; } }
+
