@@ -8,12 +8,21 @@ declare global {
   interface Window {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
+    __godevMetaPixelInitialized?: string;
   }
 }
 
 function loadMetaPixel(pixel: string) {
   if (typeof window === "undefined" || typeof document === "undefined") return;
-  if (window.fbq) return;
+  if (window.__godevMetaPixelInitialized === pixel) return;
+
+  // Keep one initialization per page even if React remounts this component or
+  // an already loaded script is reused during client navigation.
+  if (window.fbq) {
+    window.fbq("init", pixel);
+    window.__godevMetaPixelInitialized = pixel;
+    return;
+  }
 
   const f = ((...args: unknown[]) => {
     if (f.callMethod) f.callMethod(...args);
@@ -24,12 +33,15 @@ function loadMetaPixel(pixel: string) {
   f.version = "2.0";
   window.fbq = f;
 
-  const script = document.createElement("script");
-  script.src = "https://connect.facebook.net/en_US/fbevents.js";
-  script.async = true;
-  script.dataset.analytics = "meta-pixel";
-  document.head.appendChild(script);
+  if (!document.querySelector('script[data-analytics="meta-pixel"]')) {
+    const script = document.createElement("script");
+    script.src = "https://connect.facebook.net/en_US/fbevents.js";
+    script.async = true;
+    script.dataset.analytics = "meta-pixel";
+    document.head.appendChild(script);
+  }
   window.fbq("init", pixel);
+  window.__godevMetaPixelInitialized = pixel;
 }
 
 export default function Analytics() {
@@ -115,6 +127,7 @@ export default function Analytics() {
       document.querySelectorAll("script[data-analytics]").forEach((script) => script.remove());
       delete window.fbq;
       delete window.gtag;
+      delete window.__godevMetaPixelInitialized;
     }
   }
 
