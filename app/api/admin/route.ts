@@ -36,7 +36,7 @@ const material = z.object({
   pages: z.number().int().min(1).max(5000),
   cover: z.string().regex(/^\/covers\/(?:[a-z0-9-]+\/)?[a-z0-9-]+\.(?:png|jpg|webp)$/),
   published: z.boolean(),
-  downloadable: z.boolean(),
+  downloadable: z.boolean().default(false),
   storage_path: z
     .string()
     .regex(/^private\/[A-Za-z0-9_-]+\.pdf$/)
@@ -134,7 +134,7 @@ export async function POST(req: Request) {
         old && old.storage_path !== v.storage_path
           ? old.version + 1
           : old?.version || 1;
-      const { error } = await db.from("materials").upsert({ ...v, version });
+      const { error } = await db.from("materials").upsert({ ...v, downloadable: false, version });
       if (error) throw error;
       target = v.id;
     } else if (input.action === "upload") {
@@ -235,4 +235,5 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
