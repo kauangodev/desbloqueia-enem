@@ -94,7 +94,7 @@ export default async function Section({
         </p>
       </div>
     );
-  } else if (section === "suporte") content = <Support showPrivateEmail />;
+  } else if (section === "suporte") content = <Support showPrivateEmail showTicketForm />;
   else if (!entitled)
     content = (
       <div className="empty-state">
@@ -294,4 +294,5 @@ export default async function Section({
     </>
   );
 }
+
 
