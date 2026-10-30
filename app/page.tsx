@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Header, Footer, MaterialPreview, FAQ } from "../components/site";
 import { ReelHero } from "../components/landing/ReelHero";
 import { DisciplineMarquee } from "../components/landing/DisciplineMarquee";
+import PlatformMotionPreview from "../components/landing/PlatformMotionPreview";
 import { money } from "../lib/config";
 import { publicPlans } from "../lib/catalog";
 import { checkoutConfigured } from "../lib/readiness";
@@ -54,7 +55,11 @@ export default async function Home() {
                 navegação por disciplina.
               </p>
             </div>
-            <MaterialPreview />
+            <PlatformMotionPreview />
+            <details className="materials-catalog-disclosure">
+              <summary>Ver catálogo completo dos 16 materiais</summary>
+              <MaterialPreview />
+            </details>
             <div className="library-note">
               <span>2016 — 2025</span>
               <p>
@@ -228,4 +233,5 @@ export default async function Home() {
     </>
   );
 }
+
 
