@@ -445,9 +445,9 @@
 
 .conversionGrid {
   display: grid;
-  grid-template-columns: minmax(0, .9fr) minmax(440px, 1.1fr);
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
   align-items: center;
-  gap: clamp(32px, 6vw, 96px);
+  gap: clamp(28px, 5vw, 72px);
   width: min(1200px, 100%);
   margin-inline: auto;
 }
@@ -464,7 +464,7 @@
 }
 
 .conversionCopy h1 {
-  max-width: 11ch;
+  max-width: 12ch;
   margin: 0;
   color: var(--hero-ink);
   font-family: var(--font-inter-tight), Inter, sans-serif;
@@ -688,16 +688,23 @@
 .conversionFootnote span::before { content: "✓"; margin-right: 7px; color: var(--hero-accent); font-weight: 900; }
 
 @media (max-width: 920px) {
-  .conversionGrid { grid-template-columns: minmax(0, 1fr) minmax(360px, .95fr); gap: 28px; }
-  .conversionCopy h1 { font-size: clamp(2.6rem, 6vw, 4.2rem); }
+  .conversionGrid { grid-template-columns: minmax(0, 1fr) minmax(0, .95fr); gap: 28px; }
+  .conversionCopy h1 { max-width: 13ch; font-size: clamp(2.6rem, 6vw, 4.2rem); }
 }
 
 @media (max-width: 760px) {
   .conversionHero { padding-top: 32px; }
   .conversionGrid { grid-template-columns: 1fr; gap: 34px; }
-  .conversionCopy h1 { max-width: 14ch; font-size: clamp(2.65rem, 11vw, 4.2rem); }
+  .conversionCopy h1 { max-width: 15ch; font-size: clamp(2.55rem, 10.6vw, 4.2rem); }
   .conversionLead { max-width: 48ch; }
   .productPreview { width: min(100%, 560px); margin-inline: auto; }
+}
+
+@media (max-width: 390px) {
+  .conversionHero { padding-inline: 14px; }
+  .conversionCopy h1 { max-width: none; font-size: clamp(2.35rem, 12vw, 3.2rem); letter-spacing: -.045em; }
+  .conversionLead { margin-top: 18px; font-size: .96rem; }
+  .productPreview { padding: 14px; }
 }
 
 @media (max-width: 480px) {

@@ -1362,16 +1362,52 @@ textarea {
 .reader-toolbar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px 16px;
   flex-wrap: wrap;
-  background: white;
-  padding: 14px;
+  background: var(--surface-elevated, white);
+  padding: 14px 16px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 12px;
+}
+.reader-navigation,
+.reader-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.reader-navigation {
+  flex: 1 1 auto;
+  min-width: min(100%, 290px);
+}
+.reader-actions {
+  flex: 0 1 auto;
+}
+.reader-page-indicator {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 4px;
+  color: var(--text-primary, #142018);
+  font-size: .92rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 .reader-toolbar input {
-  width: 65px;
+  width: 64px;
+  min-height: 40px;
   padding: 8px;
+  text-align: center;
+}
+.reader-notice {
+  flex: 1 1 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--text-secondary, #536174);
+  font-size: .78rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 .reader-canvas {
   overflow: auto;
@@ -2504,6 +2540,15 @@ button.primary:hover,
   .filters { grid-template-columns: minmax(0, 1fr); }
   .sidebar .brand-sub { display: none; }
   .admin-tabs a { min-height: 44px; display: inline-flex; align-items: center; }
+}
+@media (max-width: 620px) {
+  .reader-toolbar { align-items: stretch; padding: 12px; }
+  .reader-navigation,
+  .reader-actions { width: 100%; }
+  .reader-navigation > button,
+  .reader-actions > button { flex: 1 1 auto; }
+  .reader-page-indicator { justify-content: center; flex: 1 1 100%; order: -1; }
+  .reader-notice { flex-basis: 100%; }
 }
 .materials-section,
 .site-footer {
@@ -4232,6 +4277,74 @@ textarea::placeholder {
 .portal .sidebar nav a,
 .admin-side-link {
   color: var(--text-secondary);
+}
+
+/* Theme-safe fallback surfaces. The account page uses .empty-state for both
+   profile details and gated content; its legacy white background previously
+   paired with light-green dark-theme text and made the content disappear. */
+.empty-state,
+.admin-empty-state {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.empty-state h2,
+.empty-state h3,
+.empty-state strong,
+.admin-empty-state h2,
+.admin-empty-state h3,
+.admin-empty-state strong {
+  color: var(--text-primary) !important;
+}
+
+.empty-state p,
+.empty-state small,
+.admin-empty-state p,
+.admin-empty-state small {
+  color: var(--text-secondary) !important;
+}
+
+/* Keep the same foreground contract across the student and admin surfaces,
+   including components that still carry older presentation classes. */
+.student-profile-card,
+.student-context-section,
+.student-empty-card,
+.student-dashboard .resource,
+.admin-content .card,
+.admin-content .panel,
+.admin-content .admin-card,
+.manual-access-form,
+.reader-toolbar {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.student-profile-card p,
+.student-profile-card small,
+.student-context-section p,
+.student-empty-card p,
+.student-dashboard .resource p,
+.admin-content .card p,
+.admin-content .panel p,
+.admin-content .admin-card p,
+.manual-access-form > p {
+  color: var(--text-secondary);
+}
+
+.student-profile-card strong,
+.student-context-heading,
+.student-empty-card strong,
+.student-dashboard .resource h3,
+.admin-content .card h2,
+.admin-content .card h3,
+.admin-content .panel h2,
+.admin-content .panel h3,
+.admin-content .admin-card h2,
+.admin-content .admin-card h3,
+.manual-access-form h3 {
+  color: var(--text-primary);
 }
 
 @media (max-width: 760px) {
