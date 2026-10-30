@@ -74,7 +74,12 @@ export function ReelHero() {
             <li><strong>16</strong><span>e-books didáticos</span></li>
           </ul>
         </div>
-        <HeroProductPreview question={question} />
+        <HeroProductPreview
+          question={question}
+          demoAnswer={questionBank[0].answer}
+          demoExplanation={questionBank[0].explanation}
+          demoNextStep={questionBank[0].nextStep}
+        />
       </div>
       <div className={styles.conversionFootnote}>
         <span>Conteúdo para o ENEM 2026</span>

@@ -661,6 +661,29 @@
 }
 
 .previewFooter a { color: var(--hero-accent); font-weight: 800; text-underline-offset: 3px; white-space: nowrap; }
+.previewFeedback,
+.previewFeedbackCorrect {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--hero-accent) 42%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--hero-accent) 8%, var(--hero-surface));
+}
+.previewFeedbackCorrect { border-color: color-mix(in srgb, #34d399 64%, transparent); }
+.previewFeedbackHeading,
+.previewProgressLabel { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.previewFeedbackHeading strong { color: var(--hero-ink); font-size: .9rem; }
+.previewFeedbackHeading span { color: var(--hero-accent); font-weight: 800; font-size: .78rem; }
+.previewFeedback p,
+.previewFeedbackCorrect p { margin: 0; color: var(--hero-muted); font-size: .82rem; line-height: 1.5; }
+.previewFeedback small,
+.previewFeedbackCorrect small { color: var(--hero-muted); font-size: .76rem; line-height: 1.4; }
+.previewProgressLabel { color: var(--hero-muted); font-size: .72rem; }
+.previewProgressLabel b { color: var(--hero-ink); }
+.previewProgressTrack { height: 6px; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--hero-ink) 14%, transparent); }
+.previewProgressTrack span { display: block; height: 100%; border-radius: inherit; background: var(--hero-accent); transition: width 280ms ease; }
 .conversionFootnote { display: flex; flex-wrap: wrap; gap: 12px 28px; width: min(1200px, 100%); margin: clamp(40px, 6vw, 70px) auto 0; padding-top: 16px; border-top: 1px solid var(--hero-line); color: var(--hero-muted); font-size: .78rem; }
 .conversionFootnote span::before { content: "✓"; margin-right: 7px; color: var(--hero-accent); font-weight: 900; }
 
@@ -695,7 +718,8 @@
   .conversionPrimary,
   .conversionSecondary,
   .previewOption,
-  .previewOptionSelected { transition: none; }
+  .previewOptionSelected,
+  .previewProgressTrack span { transition: none; }
 }
 
 

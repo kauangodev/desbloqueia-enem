@@ -2536,6 +2536,25 @@ button.primary:hover,
 .assessment-counter small { color: var(--muted); font-size: 16px; font-weight: 500; }
 .progress-track { height: 8px; border-radius: 99px; background: #dfe8df; margin-bottom: 26px; overflow: hidden; }
 .progress-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #0b6847, #8aa93f); transition: width 180ms ease; }
+.gamification-achievements { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.gamification-achievements-heading { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--ink); }
+.gamification-achievements-heading span { color: var(--muted); font-size: .78rem; }
+.gamification-achievement-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.gamification-achievement { display: flex; gap: 9px; min-width: 0; padding: 11px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-elevated); color: var(--muted); }
+.gamification-achievement > span { color: var(--muted); font-weight: 900; }
+.gamification-achievement strong, .gamification-achievement small { display: block; }
+.gamification-achievement strong { color: var(--text-primary); font-size: .8rem; }
+.gamification-achievement small { margin-top: 3px; color: var(--text-secondary); font-size: .7rem; line-height: 1.35; }
+.gamification-achievement.is-unlocked { border-color: color-mix(in srgb, var(--brand-green) 56%, var(--line)); }
+.gamification-achievement.is-unlocked > span { color: var(--brand-green); }
+@media (max-width: 760px) { .gamification-achievement-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .gamification-achievement-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .landing-main .preview-paper,
+  .landing-main .preview-paper img { max-width: 100%; }
+  .landing-main .preview-paper { overflow: hidden; }
+  .landing-main .preview-paper img { width: auto; object-fit: contain; }
+}
 .question-card { padding: clamp(22px, 4vw, 44px); border: 1px solid #d9e4da; border-radius: 24px; background: #fff; box-shadow: 0 22px 60px rgb(8 72 45 / 9%); }
 .question-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
 .question-meta span { padding: 7px 11px; border-radius: 999px; background: #edf5ea; color: #39604f; font-size: 12px; font-weight: 700; }
