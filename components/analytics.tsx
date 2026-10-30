@@ -78,6 +78,12 @@ export default function Analytics() {
 
     const click = (event: MouseEvent) => {
       const anchor = (event.target as Element).closest("a");
+      const tracked = (event.target as Element).closest<HTMLElement>("[data-analytics-event]")?.dataset.analyticsEvent;
+      if (tracked) {
+        const eventName = tracked.includes("checkout") || tracked === "hero_primary_cta" ? "InitiateCheckout" : "ViewContent";
+        trackMetaEvent(eventName, { content_name: tracked });
+        window.gtag?.("event", tracked);
+      }
       if (anchor?.getAttribute("href")?.startsWith("/api/checkout/")) {
         trackMetaEvent("InitiateCheckout", { content_name: "Desbloqueia ENEM 2026" });
         window.gtag?.("event", "begin_checkout");
