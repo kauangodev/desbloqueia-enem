@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { questionBank, toPublicQuestion, type PublicQuestion } from "../../data/question-bank";
 import styles from "./reel-hero.module.css";
 
@@ -18,6 +18,7 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [complete, setComplete] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const currentQuestion = questions[currentIndex] || question;
   const selected = answers[currentIndex] || null;
   const answered = selected !== null;
@@ -43,12 +44,19 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
     setAnswers({});
     setCurrentIndex(0);
     setComplete(false);
+    setShowReport(false);
   }
+
+  useEffect(() => {
+    if (!complete) return;
+    const timer = window.setTimeout(() => setShowReport(true), 1500);
+    return () => window.clearTimeout(timer);
+  }, [complete]);
 
   if (complete) {
     const passed = score >= 3;
     return (
-      <article className={`${styles.productPreview} ${styles.previewResult}`} id="demo-questao" aria-labelledby="demo-result-title">
+      <article className={`${styles.productPreview} ${styles.previewResult} ${showReport ? styles.previewReportVisible : styles.previewCelebration} ${passed ? styles.previewPassed : styles.previewNeedsPractice}`} id="demo-questao" aria-labelledby="demo-result-title">
         <div className={styles.previewResultIcon} aria-hidden="true">
           {passed ? (
             <svg viewBox="0 0 48 48" role="img"><circle cx="24" cy="24" r="20" /><path d="m14 24 7 7 14-15" /></svg>
@@ -56,14 +64,25 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
             <svg viewBox="0 0 48 48" role="img"><circle cx="24" cy="24" r="20" /><path d="M16 31c4-5 12-5 16 0M17 19h.01M31 19h.01" /></svg>
           )}
         </div>
-        <span className={styles.previewLabel}>Demonstração concluída</span>
-        <strong className={styles.previewResultTitle} id="demo-result-title">
-          {passed ? "Você está no caminho certo!" : "Poxa, não foi dessa vez — ainda dá para evoluir."}
-        </strong>
-        <p className={styles.previewResultScore}>Você acertou <b>{score} de {questions.length}</b> questões · <b>{score * 20}%</b> de aproveitamento.</p>
-        <div className={styles.previewProgressTrack} aria-label={`${score * 20}% de aproveitamento`}><span style={{ width: `${score * 20}%` }} /></div>
-        <p className={styles.previewResultNote}>{passed ? "Continue praticando para transformar consistência em confiança." : "Revise as explicações e tente novamente para acompanhar sua evolução."}</p>
-        <ol className={styles.previewReport} aria-label="Relatório das cinco questões">
+        <span className={styles.previewLabel}>{showReport ? "Demonstração concluída" : "Resultado da demonstração"}</span>
+        {!showReport ? (
+          <>
+            <strong className={styles.previewResultTitle} id="demo-result-title">
+              {passed ? "Parabéns! Você está no caminho certo." : "Poxa, não foi dessa vez."}
+            </strong>
+            <p className={styles.previewCelebrationHint} aria-live="polite">{passed ? "Sua conquista está sendo registrada." : "Cada tentativa é um novo passo para evoluir."}</p>
+          </>
+        ) : (
+          <>
+            <strong className={styles.previewResultTitle} id="demo-result-title">
+              {passed ? "Você está no caminho certo!" : "Ainda dá para evoluir — vamos revisar?"}
+            </strong>
+            <p className={styles.previewResultScore}>Você acertou <b>{score} de {questions.length}</b> questões · <b>{score * 20}%</b> de aproveitamento.</p>
+            <div className={styles.previewProgressTrack} aria-label={`${score * 20}% de aproveitamento`}><span style={{ width: `${score * 20}%` }} /></div>
+            <p className={styles.previewResultNote}>{passed ? "Continue praticando para transformar consistência em confiança." : "Revise as explicações e tente novamente para acompanhar sua evolução."}</p>
+          </>
+        )}
+        {showReport && <ol className={styles.previewReport} aria-label="Relatório das cinco questões">
           {questions.map((item, index) => {
             const answer = answers[index];
             const expected = privateQuestions[index]?.answer || demoAnswer;
@@ -79,11 +98,11 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
               </li>
             );
           })}
-        </ol>
-        <div className={styles.previewResultActions}>
+        </ol>}
+        {showReport && <div className={styles.previewResultActions}>
           <button type="button" className={styles.previewPrimaryButton} onClick={restart}>Tentar novamente</button>
-          <a className={styles.conversionSecondary} href="/entrar">Ver a plataforma completa</a>
-        </div>
+          <a className={styles.conversionSecondary} href="#planos">Conhecer a plataforma</a>
+        </div>}
       </article>
     );
   }
@@ -131,9 +150,10 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
         <span aria-live="polite">
           {selected ? "Você pode avançar quando estiver pronto." : "Escolha uma alternativa para experimentar."}
         </span>
-        <a href="/entrar" data-analytics-event="hero_demo_login">Conhecer a plataforma</a>
+        <a href="#planos" data-analytics-event="hero_demo_plans">Conhecer a plataforma</a>
       </div>
     </article>
   );
 }
+
 
