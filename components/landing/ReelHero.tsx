@@ -1,46 +1,8 @@
 import Link from "next/link";
 import { questionBank, toPublicQuestion } from "../../data/question-bank";
-import { CurvedMaterialCarousel } from "./CurvedMaterialCarousel";
 import { HeroProductPreview } from "./HeroProductPreview";
 import { HeroVariantGate } from "./HeroVariantGate";
 import styles from "./reel-hero.module.css";
-
-function LegacyReelHero() {
-  return (
-    <section className={styles.hero} id="kit" aria-labelledby="hero-title">
-      <div className={styles.intro}>
-        <h1 id="hero-title">
-          <span>Sua reta final,</span>
-          <span>
-            mais leve e <em>organizada.</em>
-          </span>
-        </h1>
-        <p>
-          Resumos por matéria, exercícios comentados, simulados e um cronograma
-          para organizar sua revisão e aproveitar melhor cada sessão de estudo.
-        </p>
-      </div>
-
-      <div className={styles.stage}>
-        <CurvedMaterialCarousel />
-      </div>
-
-      <div className={styles.actions}>
-        <div className={styles.primaryWrap}>
-          <Link className={styles.primaryCta} href="#planos">
-            Explorar os planos
-          </Link>
-        </div>
-        <Link className={styles.secondaryCta} href="#materiais">
-          Conhecer os materiais
-        </Link>
-        <span className={styles.rhythmNote} aria-hidden="true">
-          Estude no seu ritmo
-        </span>
-      </div>
-    </section>
-  );
-}
 
 export function ReelHero() {
   const question = toPublicQuestion(questionBank[0]);
@@ -88,9 +50,7 @@ export function ReelHero() {
 
   return (
     <HeroVariantGate
-      legacy={<LegacyReelHero />}
       conversion={conversion}
-      forcedVariant={process.env.NEXT_PUBLIC_HERO_VARIANT === "legacy" ? "a" : undefined}
     />
   );
 }
