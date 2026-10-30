@@ -3948,6 +3948,88 @@ h1, h2, h3 { color: var(--ink); }
   .portal-mobile-nav > a[aria-current="page"], .portal-mobile-nav > button.is-active { background: var(--color-accent); color: var(--color-accent-ink); }
   .portal-mobile-nav .portal-nav-icon { width: 24px; height: 24px; flex-basis: 24px; background: transparent; color: currentColor; font-size: 15px; }
   .portal-mobile-more { position: absolute; right: 0; bottom: calc(100% + 8px); left: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; padding: 8px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-surface); box-shadow: 0 14px 36px rgb(0 0 0 / 18%); }
+
+/* Final cross-surface contrast and responsive pass. Keep portal content on the
+   same semantic theme tokens as the shell instead of inheriting legacy greens. */
+.portal .workspace,
+.portal .workspace-bar,
+.portal .resource-grid,
+.portal .correction-history,
+.admin-app,
+.admin-workspace,
+.admin-content { color: var(--color-text); }
+.portal .resource,
+.portal .student-profile-card,
+.portal .student-context-section,
+.portal .student-empty-card,
+.portal .student-dashboard .resource,
+.portal .correction-history-card,
+.portal .empty-state,
+.admin-content table,
+.admin-content .card,
+.admin-content .panel,
+.admin-content .admin-card,
+.admin-content .admin-form,
+.admin-content .admin-empty-state {
+  background: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+.portal .resource-info h3,
+.portal .resource-info p,
+.portal .resource-info small,
+.portal .empty-state h2,
+.portal .empty-state p,
+.portal .correction-history-card h3,
+.portal .correction-history-card p,
+.portal .correction-history-card strong,
+.admin-content h1,
+.admin-content h2,
+.admin-content h3,
+.admin-content p,
+.admin-content small,
+.admin-content label,
+.admin-content td,
+.admin-content th { color: var(--color-text) !important; }
+.portal .resource-info p,
+.portal .resource-info small,
+.portal .correction-history-card p,
+.admin-content small,
+.admin-content label { color: var(--color-text-secondary) !important; }
+.portal .resource-info small,
+.portal .student-eyebrow,
+.portal .student-section-heading > a,
+.portal .student-inline-action,
+.admin-content a:not(.button) { color: var(--color-link) !important; }
+.portal .resource:hover,
+.portal .correction-history-card:hover,
+.admin-content .admin-card:hover { border-color: var(--color-accent-secondary) !important; }
+.portal .student-dashboard .resource { box-shadow: 0 12px 28px rgb(0 0 0 / 12%); }
+.portal .student-dashboard .resource-cover { background: var(--color-surface-elevated); }
+.portal .student-dashboard .resource-info { padding: 16px; }
+.portal .empty-state { min-width: 0; }
+.portal .theme-toggle { flex: 0 0 auto; }
+
+@media (max-width: 700px) {
+  .portal .workspace-bar { flex-wrap: wrap; gap: 10px; }
+  .portal .workspace-bar-tools { width: 100%; justify-content: space-between; }
+  .portal .page-title { max-width: 12ch; font-size: clamp(2rem, 9vw, 3.2rem); }
+  .portal .resource-grid { grid-template-columns: 1fr; gap: 14px; }
+  .portal .resource { display: grid; grid-template-columns: minmax(108px, 34%) minmax(0, 1fr); align-items: stretch; }
+  .portal .resource-cover { min-height: 170px; border-radius: 0; }
+  .portal .resource-info { display: grid; align-content: center; gap: 8px; }
+  .portal .resource-info h3 { font-size: 1.05rem; }
+  .portal .resource-info p { font-size: .84rem; }
+  .portal .resource-info small { font-size: .72rem; }
+  .portal .correction-history-card { padding: 1rem; }
+  .portal .correction-history-card summary { align-items: flex-start; }
+}
+
+@media (max-width: 420px) {
+  .portal .resource { grid-template-columns: 108px minmax(0, 1fr); }
+  .portal .resource-cover { min-height: 154px; }
+  .portal .resource-info { padding: 12px; }
+}
   .portal-mobile-more a { display: flex; min-height: 44px; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 10px; color: var(--color-text-secondary); font-size: 11px; text-decoration: none; }
   .portal-mobile-more a:hover, .portal-mobile-more a:focus-visible { background: var(--color-surface-elevated); color: var(--color-text); }
   .site-header .nav { background: #101a14; border-radius: 18px; }
