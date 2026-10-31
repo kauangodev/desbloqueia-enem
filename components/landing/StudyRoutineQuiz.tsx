@@ -47,7 +47,7 @@ export default function StudyRoutineQuiz() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") as { answers?: Record<string, string>; complete?: boolean } | null;
       if (saved?.answers) setAnswers(saved.answers);
-      if (saved?.complete) router.replace("/");
+      if (saved?.complete) router.replace("/landing");
     } catch { /* local state remains available */ }
   }, [router]);
 
@@ -63,7 +63,7 @@ export default function StudyRoutineQuiz() {
   function finish() {
     sendEvent("complete");
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, complete: true }));
-    router.push("/");
+    router.push("/landing");
   }
 
   if (complete) {

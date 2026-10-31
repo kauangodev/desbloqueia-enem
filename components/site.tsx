@@ -24,10 +24,10 @@ export function Header() {
           className={open ? "nav open" : "nav"}
         >
           {[
-            ["O Kit", "/"],
-            ["Materiais", "/#materiais"],
-            ["Planos", "/#planos"],
-            ["Dúvidas", "/#duvidas"],
+            ["O Kit", "/landing"],
+            ["Materiais", "/landing#materiais"],
+            ["Planos", "/landing#planos"],
+            ["Dúvidas", "/landing#duvidas"],
           ].map(([label, href]) => (
             <Link key={href} href={href} onClick={() => setOpen(false)}>
               {label}
@@ -77,8 +77,8 @@ export function Footer() {
         </div>
         <div>
           <b>Desbloqueia ENEM</b>
-          <Link href="/#materiais">Conheça os materiais</Link>
-          <Link href="/#planos">Compare os planos</Link>
+          <Link href="/landing#materiais">Conheça os materiais</Link>
+          <Link href="/landing#planos">Compare os planos</Link>
           <Link href="/entrar">Área do aluno</Link>
         </div>
         <div>
