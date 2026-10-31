@@ -616,8 +616,8 @@ export default async function Admin({
           <div className="admin-hero">
             <div>
               <span className="eyebrow">Central de gestão</span>
-              <h1 className="page-title">Administração</h1>
-              <p>Veja o que está acontecendo no produto, nos acessos e na jornada dos alunos.</p>
+              <h1 className="page-title">Olá, {who.profile?.name || "Administrador"}</h1>
+              <p>Acompanhe sua plataforma hoje.</p>
             </div>
           </div>
           {content}

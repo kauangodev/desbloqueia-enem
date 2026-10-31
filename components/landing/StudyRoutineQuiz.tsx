@@ -77,7 +77,8 @@ export default function StudyRoutineQuiz() {
   }
 
   return <section className="study-quiz" id="diagnostico" aria-labelledby="study-quiz-title">
-    <div className="study-quiz-intro"><span className="eyebrow">Preparação para o ENEM 2026</span><h2 id="study-quiz-title">Uma preparação clara começa com o próximo passo.</h2><p>Responda 8 perguntas rápidas sobre sua rotina e descubra uma direção possível para estudar no seu ritmo.</p><Link className="text-link" href="#planos" data-analytics-event="study_quiz_skip" onClick={() => sendEvent("skip")}>Prefiro conhecer os planos</Link></div>
+    <div className="study-quiz-heading"><span className="eyebrow">Seu ponto de partida</span><h2 id="study-quiz-title">Vamos entender sua <em>rotina</em> de estudos?</h2><p>Responda 8 perguntas rápidas sobre sua preparação para o ENEM e descubra um próximo passo possível para você.</p></div>
+    <div className="study-quiz-grid">
     <div className="study-quiz-card">
       <div className="study-quiz-card-head"><span>Pergunta {index + 1} de {questions.length}</span><span>{Math.round(((index + 1) / questions.length) * 100)}%</span></div>
       <div className="study-quiz-progress" aria-hidden="true"><span style={{ width: `${((index + 1) / questions.length) * 100}%` }} /></div>
@@ -86,6 +87,13 @@ export default function StudyRoutineQuiz() {
         {current.answers.map((answer) => <button key={answer.value} type="button" role="radio" aria-checked={selected === answer.value} className={selected === answer.value ? "is-selected" : ""} onClick={() => { save({ ...answers, [current.id]: answer.value }); if (!Object.keys(answers).length) sendEvent("start"); sendEvent("answer", index, answer.value); }} data-analytics-event="study_quiz_answer"><span className="study-quiz-radio" aria-hidden="true" />{answer.label}</button>)}
       </div>
       <div className="study-quiz-card-foot"><button className="button secondary" type="button" disabled={index === 0} onClick={() => { setIndex((value) => value - 1); sendEvent("back", index); }}>Anterior</button>{index < questions.length - 1 ? <button className="button primary" type="button" disabled={!selected} onClick={() => { setIndex((value) => value + 1); sendEvent("next", index); }}>Continuar <span aria-hidden="true">→</span></button> : <button className="button primary" type="button" disabled={!selected} onClick={finish}>Ver meu próximo passo <span aria-hidden="true">→</span></button>}</div>
+    </div>
+    <aside className="study-quiz-aside" aria-label="Etapas do diagnóstico">
+      <div className="study-quiz-aside-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 19V10m5 9V5m5 14v-7m5 7V3" /></svg></div>
+      <h3>No seu ritmo</h3>
+      <p>As próximas perguntas ajudam a entender seu tempo, seus objetivos e seus desafios.</p>
+      <ol>{["Sua rotina de estudos", "Seus objetivos no ENEM", "Suas áreas de foco", "Como você estuda", "Seus principais desafios", "Seu tempo disponível", "Recursos que você usa", "Seu próximo passo"].map((label, step) => <li key={label} className={step === index ? "is-current" : step < index ? "is-done" : ""}><span>{step + 1}</span>{label}</li>)}</ol>
+    </aside>
     </div>
   </section>;
 }
