@@ -1,13 +1,14 @@
 import { test, expect } from "@playwright/test";
 test("landing, planos, capas e FAQ", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/landing");
   await page.evaluate(() => document.fonts.ready);
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    /Sua reta final,\s*mais leve e organizada\./,
+    "Prepare-se para o ENEM 2026 com método e clareza.",
   );
   await expect(page.getByText("DESBLOQUEIA ENEM 2026", { exact: true })).toHaveCount(0);
-  await expect(page.locator("[data-carousel-card]")).toHaveCount(32);
+  await page.getByText("Ver catálogo completo dos 16 materiais").click();
+  await expect(page.locator(".material-index [role=tab]")).toHaveCount(8);
   await expect(
     page.getByRole("heading", { name: "Essencial", exact: true }),
   ).toBeVisible();
@@ -15,13 +16,13 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Premium", exact: true }),
   ).toBeVisible();
-  await page.getByRole("tab", { name: /Matemática/ }).click();
+  const materialTabs = page.locator(".material-index [role=tab]");
+  await materialTabs.filter({ hasText: "Matemática" }).click();
   await expect(page.getByRole("tabpanel")).toContainText("Matemática");
-  await page.getByRole("tab", { name: /Matemática/ }).press("Home");
-  await expect(page.getByRole("tab").first()).toBeFocused();
-  await expect(page.getByRole("tab").first()).toHaveAttribute("aria-selected", "true");
+  await materialTabs.filter({ hasText: "Matemática" }).press("Home");
+  await expect(materialTabs.first()).toHaveAttribute("aria-selected", "true");
   await page.getByText("A biblioteca tem 1.800 questões?").click();
-  await expect(page.locator("details[open]")).toContainText("Sim.");
+  await expect(page.locator("details[open]").filter({ hasText: "A biblioteca tem 1.800 questões?" })).toContainText("Sim.");
   const planLink = page.getByRole("link", { name: "Receber orientação", exact: true }).last();
   await expect(planLink).toHaveAttribute("href", "/suporte");
 });
@@ -30,7 +31,7 @@ test("faixa de matérias corre suavemente da esquerda para a direita", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
+  await page.goto("/landing");
   const track = page.locator("[data-discipline-track]");
   await expect(track).toBeVisible();
   await expect(track.locator("span")).toHaveCount(10);
@@ -60,9 +61,9 @@ for (const viewport of viewports)
     page,
   }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/landing");
     await page.evaluate(() => document.fonts.ready);
-    await expect(page.locator("[data-carousel-card]").first()).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -79,11 +80,6 @@ for (const viewport of viewports)
         const box = await control.boundingBox();
         expect(box?.height).toBeGreaterThanOrEqual(43.5);
         expect(box?.width).toBeGreaterThan(0);
-      }
-      for (const control of await page.locator(".catalog-arrow").all()) {
-        const box = await control.boundingBox();
-        expect(box?.width).toBeGreaterThanOrEqual(43.5);
-        expect(box?.height).toBeGreaterThanOrEqual(43.5);
       }
       await menu.click();
       await page
@@ -103,7 +99,7 @@ for (const viewport of viewports)
             ? "hero-desktop-1440"
             : null;
     if (screenshotName) {
-      await page.goto("/");
+      await page.goto("/landing");
       await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(1400);
       await page.screenshot({
@@ -113,60 +109,26 @@ for (const viewport of viewports)
     }
   });
 
-test("carrossel tem curva, movimento contínuo, arraste e retomada", async ({
-  page,
-}) => {
+test("catálogo de materiais tem navegação por teclado e painel sincronizado", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1080 });
-  await page.goto("/");
-  const cards = page.locator("[data-carousel-card]");
-  await expect(cards.first()).toBeVisible();
-  const dimensions = await cards.evaluateAll((items) =>
-    items.map((item) => ({
-      width: Number.parseFloat((item as HTMLElement).style.width),
-      height: Number.parseFloat((item as HTMLElement).style.height),
-    })),
-  );
-  expect(Math.max(...dimensions.map((item) => item.width))).toBeGreaterThan(
-    Math.min(...dimensions.map((item) => item.width)) + 20,
-  );
-  expect(Math.max(...dimensions.map((item) => item.height))).toBeGreaterThan(
-    Math.min(...dimensions.map((item) => item.height)) + 45,
-  );
-
-  const before = await cards.first().getAttribute("style");
-  await page.waitForTimeout(320);
-  const afterAuto = await cards.first().getAttribute("style");
-  expect(afterAuto).not.toBe(before);
-
-  const carousel = page.getByRole("region", {
-    name: "Capas dos materiais do Desbloqueia ENEM 2026",
-  });
-  const box = await carousel.boundingBox();
-  expect(box).not.toBeNull();
-  await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
-  await page.mouse.down();
-  await page.mouse.move(box!.x + box!.width / 2 + 150, box!.y + box!.height / 2, {
-    steps: 4,
-  });
-  const afterDrag = await cards.first().getAttribute("style");
-  expect(afterDrag).not.toBe(afterAuto);
-  await page.mouse.up();
-  await page.waitForTimeout(260);
-  const afterRelease = await cards.first().getAttribute("style");
-  expect(afterRelease).not.toBe(afterDrag);
+  await page.goto("/landing");
+  await page.getByText("Ver catálogo completo dos 16 materiais").click();
+  const tabs = page.locator(".material-index [role=tab]");
+  await expect(tabs.first()).toBeVisible();
+  await tabs.nth(1).click();
+  await expect(page.getByRole("tabpanel")).toContainText("Literatura");
+  await tabs.nth(1).press("End");
+  await expect(tabs.nth(7)).toBeFocused();
 });
 
 test("redução de movimento mantém o carrossel estável", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  const card = page.locator("[data-carousel-card]").first();
-  await expect(card).toBeVisible();
-  await expect
-    .poll(() => card.getAttribute("style"))
-    .not.toBeNull();
-  const before = await card.getAttribute("style");
+  await page.goto("/landing");
+  const track = page.locator("[data-discipline-track]");
+  await expect(track).toBeVisible();
+  const before = await track.getAttribute("style");
   await page.waitForTimeout(320);
-  expect(await card.getAttribute("style")).toBe(before);
+  expect(await track.getAttribute("style")).toBe(before);
 });
 test("rotas privadas e arquivos exigem sessão", async ({ page, request }) => {
   await page.context().addCookies([{ name: "desbloqueia_demo", value: "admin.invalid", domain: "127.0.0.1", path: "/" }]);
@@ -198,7 +160,7 @@ test("rotas privadas e arquivos exigem sessão", async ({ page, request }) => {
 
 test("páginas públicas são responsivas em 320px", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 720 });
-  for (const route of ["/entrar", "/comprar/essencial", "/comprar/premium", "/suporte", "/politicas/termos"]) {
+  for (const route of ["/", "/landing", "/entrar", "/comprar/essencial", "/comprar/premium", "/suporte", "/politicas/termos"]) {
     await page.goto(route);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), route).toBeTruthy();
   }
@@ -232,3 +194,4 @@ test("políticas e suporte têm rotas reais", async ({ page }) => {
 
 
 // Mobile layout coverage is part of the release gate.
+

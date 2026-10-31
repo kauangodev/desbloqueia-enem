@@ -183,3 +183,83 @@ a, button { -webkit-tap-highlight-color: transparent; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
 
+/* Responsive audit hardening: keep every surface readable between the shipped
+   mobile breakpoints and the wide desktop reference. */
+.diagnostico-page {
+  min-width: 0;
+  overflow-x: clip;
+  background: var(--ref-bg);
+  color: var(--ref-ink);
+}
+.diagnostico-page .study-quiz {
+  width: min(100% - 32px, 1180px);
+  margin-inline: auto;
+}
+.diagnostico-page .study-quiz-heading h2,
+.diagnostico-page .study-quiz-card h3,
+.diagnostico-page .study-quiz-result h2 {
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.site-header, .header-inner, .site-footer, .landing-main,
+.admin-app, .portal { min-width: 0; max-width: 100%; }
+.landing-main, .site-footer { overflow-x: clip; }
+.material-index, .material-carousel-shell, .material-stage,
+.admin-content, .workspace, .portal .workspace { min-width: 0; }
+.material-index { scrollbar-width: thin; overscroll-behavior-inline: contain; }
+.material-stage { overflow: hidden; }
+.preview-caption { min-width: 0; }
+.preview-caption p, .preview-caption b, .preview-caption span { overflow-wrap: anywhere; }
+.admin-content .crm-heading, .admin-content .admin-hero,
+.admin-content .ticket-card-head, .admin-content .team-card-head {
+  min-width: 0;
+}
+.admin-content .crm-heading > *, .admin-content .admin-hero > *,
+.admin-content .ticket-card-head > *, .admin-content .team-card-head > * {
+  min-width: 0;
+}
+.admin-content h1, .admin-content h2, .admin-content h3,
+.student-dashboard h1, .student-dashboard h2, .student-dashboard h3 {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.admin-content button, .admin-content a, .portal button, .portal a {
+  max-width: 100%;
+}
+
+@media (max-width: 720px) {
+  .diagnostico-header { min-height: 68px; gap: 12px; }
+  .diagnostico-header .brand { min-width: 0; }
+  .diagnostico-meta { justify-content: flex-end; text-align: right; }
+  .diagnostico-meta span:first-child { display: none; }
+  .diagnostico-page .study-quiz { width: min(100% - 24px, 520px); padding-inline: 0; }
+  .study-quiz-grid { gap: 18px; }
+  .study-quiz-card-head { gap: 10px; flex-wrap: wrap; }
+  .study-quiz-card-head > span:last-child { margin-left: auto; }
+  .study-quiz-options button { min-height: 54px; }
+  .study-quiz-aside { padding: 20px 16px; }
+  .study-quiz-aside li { min-height: 44px; }
+  .materials-section .section { padding-inline: 16px; }
+  .material-carousel-shell { margin-inline: -4px; }
+  .material-index { padding-inline: 4px; }
+  .catalog-arrow { flex: 0 0 44px; }
+  .material-stage { grid-template-columns: minmax(96px, 34%) minmax(0, 1fr); gap: 16px; padding: 16px; }
+  .material-stage .preview-paper { max-width: 150px; }
+  .preview-caption { align-self: center; }
+  .library-note { overflow-wrap: anywhere; }
+  .admin-content .crm-heading { align-items: stretch; flex-direction: column; }
+  .admin-content .admin-form-grid, .admin-content .form-grid { grid-template-columns: 1fr; }
+  .portal .workspace-bar { gap: 10px; flex-wrap: wrap; }
+  .portal .workspace-bar-tools { margin-left: auto; }
+}
+@media (max-width: 420px) {
+  .diagnostico-page .study-quiz-heading h2 { font-size: clamp(2rem, 10.5vw, 2.65rem); }
+  .study-quiz-card { padding: 18px 14px; }
+  .study-quiz-card-foot { gap: 8px; }
+  .study-quiz-card-foot .button { min-height: 48px; }
+  .material-stage { grid-template-columns: 1fr; }
+  .material-stage .preview-paper { width: min(58vw, 170px); margin-inline: auto; }
+  .preview-caption { text-align: center; }
+  .preview-caption span { display: block; margin-top: 10px; }
+}
+
