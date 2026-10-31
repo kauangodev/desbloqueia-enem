@@ -154,3 +154,15 @@ create table if not exists storage_files (
   local_path varchar(800) not null,
   created_at datetime(3) not null default current_timestamp(3)
 ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
+
+create table if not exists quiz_events (
+  event_id varchar(96) primary key,
+  event_name varchar(24) not null,
+  question_index tinyint unsigned null,
+  session_hash char(64) null,
+  metadata json null,
+  created_at datetime(3) not null default current_timestamp(3),
+  index quiz_events_event_idx (event_name, created_at),
+  index quiz_events_question_idx (question_index, created_at)
+) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
+

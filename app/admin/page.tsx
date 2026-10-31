@@ -524,7 +524,7 @@ export default async function Admin({
     const { data, error } = await db.from("support_tickets").select("id,email,subject,message,status,priority,admin_note,created_at,updated_at").order("updated_at", { ascending: false }).limit(100);
     content = error ? <p className="status-message">O sistema de tickets ainda precisa da migração do banco para ser ativado.</p> : <TicketManager tickets={data || []} />;
   } else {
-    const [{ data: overviewOrders }, stats] = await Promise.all([
+    const [{ data: overviewOrders }, stats, quizResult] = await Promise.all([
       db
         .from("orders")
         .select("id,email,name,plan,amount,status,created_at")
@@ -549,9 +549,10 @@ export default async function Admin({
           return { table, count: error ? null : count };
         }),
       ),
+      db.from("quiz_events").select("event_name,question_index,created_at").limit(10000),
     ]);
     const adSpendCents = Number(process.env.META_AD_SPEND_CENTS || 0);
-    content = <AdminOverview stats={stats} orders={overviewOrders || []} adSpendCents={Number.isFinite(adSpendCents) ? adSpendCents : 0} />;
+    content = <AdminOverview stats={stats} orders={overviewOrders || []} quizEvents={quizResult.error ? [] : quizResult.data || []} adSpendCents={Number.isFinite(adSpendCents) ? adSpendCents : 0} />;
   }
   return (
     <main id="conteudo" className="admin-app">

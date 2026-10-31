@@ -11,6 +11,7 @@ type OverviewOrder = {
   status: string;
   created_at: string;
 };
+type QuizEvent = { event_name: string; question_index: number | null; created_at: string };
 
 const statValue = (stats: AdminStat[], table: string) =>
   stats.find((item) => item.table === table)?.count ?? 0;
@@ -34,10 +35,12 @@ const orderTone: Record<string, string> = {
 export default function AdminOverview({
   stats,
   orders,
+  quizEvents = [],
   adSpendCents = 0,
 }: {
   stats: AdminStat[];
   orders: OverviewOrder[];
+  quizEvents?: QuizEvent[];
   adSpendCents?: number;
 }) {
   const paidOrders = orders.filter((order) => order.status === "paid");
@@ -91,6 +94,11 @@ export default function AdminOverview({
   const totalPlans = Math.max(1, premiumOrders + essentialOrders);
   const trackedAccesses = statValue(stats, "account_access_fingerprints");
   const roi = adSpendCents > 0 ? ((revenue - adSpendCents) / adSpendCents) * 100 : null;
+  const quizViews = quizEvents.filter((event) => event.event_name === "view").length;
+  const quizStarts = quizEvents.filter((event) => event.event_name === "start" || event.event_name === "answer").length;
+  const quizCompletions = quizEvents.filter((event) => event.event_name === "complete").length;
+  const quizAnswerEvents = quizEvents.filter((event) => event.event_name === "answer");
+  const quizAnsweredByQuestion = Array.from({ length: 8 }, (_, index) => ({ index, count: quizAnswerEvents.filter((event) => event.question_index === index).length }));
 
   return (
     <section className="admin-overview" aria-labelledby="overview-title">
@@ -178,6 +186,21 @@ export default function AdminOverview({
         </article>
       </div>
 
+      <article className="overview-white-card quiz-funnel-card" aria-labelledby="quiz-funnel-title">
+        <div className="overview-white-heading">
+          <div><span className="admin-eyebrow">Funil anônimo do diagnóstico</span><h2 id="quiz-funnel-title">Quiz de rotina</h2></div>
+          <span className="overview-count">Base atual</span>
+        </div>
+        <div className="quiz-funnel-metrics">
+          <div><strong>{quizViews}</strong><span>Visitas</span></div>
+          <div><strong>{quizStarts}</strong><span>Inícios</span></div>
+          <div><strong>{quizCompletions}</strong><span>Conclusões</span></div>
+          <div><strong>{quizViews ? Math.round((quizCompletions / quizViews) * 100) : 0}%</strong><span>Conclusão</span></div>
+        </div>
+        <div className="quiz-abandonment"><span>Respostas por etapa</span><div>{quizAnsweredByQuestion.map((item) => <i key={item.index} title={`Pergunta ${item.index + 1}: ${item.count} respostas`} style={{ height: `${Math.max(8, Math.min(100, item.count ? 20 + item.count * 8 : 8))}%` }}><b>{item.index + 1}</b></i>)}</div></div>
+        {!quizEvents.length && <p className="admin-empty-state">Os eventos aparecerão aqui depois da primeira visita ao diagnóstico.</p>}
+      </article>
+
       <div className="overview-lower-grid">
         <article className="overview-white-card">
           <div className="overview-white-heading">
@@ -218,3 +241,4 @@ export default function AdminOverview({
     </section>
   );
 }
+

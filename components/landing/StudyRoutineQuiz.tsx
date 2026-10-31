@@ -18,13 +18,30 @@ const questions: Question[] = [
 ];
 
 const STORAGE_KEY = "godev-study-routine-quiz";
+const SESSION_KEY = "godev-quiz-session";
 
 export default function StudyRoutineQuiz() {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [complete, setComplete] = useState(false);
 
+  function sendEvent(event: string, questionIndex?: number, signature = "") {
+    try {
+      let sessionHash = localStorage.getItem(SESSION_KEY);
+      if (!sessionHash) {
+        const session = crypto.randomUUID();
+        sessionHash = session.replaceAll("-", "").padEnd(64, "0").slice(0, 64);
+        localStorage.setItem(SESSION_KEY, sessionHash);
+      }
+      if ((event === "view" || event === "start") && sessionStorage.getItem(`godev-quiz-${event}`) === "1") return;
+      if (event === "view" || event === "start") sessionStorage.setItem(`godev-quiz-${event}`, "1");
+      const eventId = `${sessionHash.slice(0, 12)}:${event}:${questionIndex ?? "all"}:${signature}`.slice(0, 80);
+      void fetch("/api/quiz", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event, eventId, questionIndex, sessionHash }), keepalive: true }).catch(() => undefined);
+    } catch { /* analytics remains optional */ }
+  }
+
   useEffect(() => {
+    sendEvent("view");
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") as { answers?: Record<string, string>; complete?: boolean } | null;
       if (saved?.answers) setAnswers(saved.answers);
@@ -42,6 +59,7 @@ export default function StudyRoutineQuiz() {
   }
 
   function finish() {
+    sendEvent("complete");
     setComplete(true);
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, complete: true }));
   }
@@ -54,20 +72,20 @@ export default function StudyRoutineQuiz() {
       <span className="eyebrow">Seu ponto de partida</span>
       <h2 id="study-quiz-result-title">{title}</h2>
       <p>{body}</p>
-      <div className="study-quiz-result-actions"><Link className="button primary" href="#planos" data-analytics-event="study_quiz_result_plans">Conhecer os planos</Link><button className="button secondary" type="button" onClick={() => { setIndex(0); setComplete(false); localStorage.removeItem(STORAGE_KEY); }} data-analytics-event="study_quiz_restart">Refazer diagnóstico</button></div>
+      <div className="study-quiz-result-actions"><Link className="button primary" href="#planos" data-analytics-event="study_quiz_result_plans" onClick={() => sendEvent("plans")}>Conhecer os planos</Link><button className="button secondary" type="button" onClick={() => { setIndex(0); setComplete(false); localStorage.removeItem(STORAGE_KEY); sendEvent("start"); }} data-analytics-event="study_quiz_restart">Refazer diagnóstico</button></div>
     </section>;
   }
 
   return <section className="study-quiz" id="diagnostico" aria-labelledby="study-quiz-title">
-    <div className="study-quiz-intro"><span className="eyebrow">Preparação para o ENEM 2026</span><h2 id="study-quiz-title">Uma preparação clara começa com o próximo passo.</h2><p>Responda 8 perguntas rápidas sobre sua rotina e descubra uma direção possível para estudar no seu ritmo.</p><Link className="text-link" href="#planos" data-analytics-event="study_quiz_skip">Prefiro conhecer os planos</Link></div>
+    <div className="study-quiz-intro"><span className="eyebrow">Preparação para o ENEM 2026</span><h2 id="study-quiz-title">Uma preparação clara começa com o próximo passo.</h2><p>Responda 8 perguntas rápidas sobre sua rotina e descubra uma direção possível para estudar no seu ritmo.</p><Link className="text-link" href="#planos" data-analytics-event="study_quiz_skip" onClick={() => sendEvent("skip")}>Prefiro conhecer os planos</Link></div>
     <div className="study-quiz-card">
       <div className="study-quiz-card-head"><span>Pergunta {index + 1} de {questions.length}</span><span>{Math.round(((index + 1) / questions.length) * 100)}%</span></div>
       <div className="study-quiz-progress" aria-hidden="true"><span style={{ width: `${((index + 1) / questions.length) * 100}%` }} /></div>
       <h3>{current.title}</h3><p className="study-quiz-hint">{current.hint}</p>
       <div className="study-quiz-options" role="radiogroup" aria-label="Respostas">
-        {current.answers.map((answer) => <button key={answer.value} type="button" role="radio" aria-checked={selected === answer.value} className={selected === answer.value ? "is-selected" : ""} onClick={() => save({ ...answers, [current.id]: answer.value })} data-analytics-event="study_quiz_answer"><span className="study-quiz-radio" aria-hidden="true" />{answer.label}</button>)}
+        {current.answers.map((answer) => <button key={answer.value} type="button" role="radio" aria-checked={selected === answer.value} className={selected === answer.value ? "is-selected" : ""} onClick={() => { save({ ...answers, [current.id]: answer.value }); if (!Object.keys(answers).length) sendEvent("start"); sendEvent("answer", index, answer.value); }} data-analytics-event="study_quiz_answer"><span className="study-quiz-radio" aria-hidden="true" />{answer.label}</button>)}
       </div>
-      <div className="study-quiz-card-foot"><button className="button secondary" type="button" disabled={index === 0} onClick={() => setIndex((value) => value - 1)}>Anterior</button>{index < questions.length - 1 ? <button className="button primary" type="button" disabled={!selected} onClick={() => setIndex((value) => value + 1)}>Continuar <span aria-hidden="true">→</span></button> : <button className="button primary" type="button" disabled={!selected} onClick={finish}>Ver meu próximo passo <span aria-hidden="true">→</span></button>}</div>
+      <div className="study-quiz-card-foot"><button className="button secondary" type="button" disabled={index === 0} onClick={() => { setIndex((value) => value - 1); sendEvent("back", index); }}>Anterior</button>{index < questions.length - 1 ? <button className="button primary" type="button" disabled={!selected} onClick={() => { setIndex((value) => value + 1); sendEvent("next", index); }}>Continuar <span aria-hidden="true">→</span></button> : <button className="button primary" type="button" disabled={!selected} onClick={finish}>Ver meu próximo passo <span aria-hidden="true">→</span></button>}</div>
     </div>
   </section>;
 }
