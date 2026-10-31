@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type Answer = { label: string; value: string };
@@ -21,6 +22,7 @@ const STORAGE_KEY = "godev-study-routine-quiz";
 const SESSION_KEY = "godev-quiz-session";
 
 export default function StudyRoutineQuiz() {
+  const router = useRouter();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [complete, setComplete] = useState(false);
@@ -45,9 +47,9 @@ export default function StudyRoutineQuiz() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") as { answers?: Record<string, string>; complete?: boolean } | null;
       if (saved?.answers) setAnswers(saved.answers);
-      if (saved?.complete) setComplete(true);
+      if (saved?.complete) router.replace("/");
     } catch { /* local state remains available */ }
-  }, []);
+  }, [router]);
 
   const current = questions[index];
   const selected = answers[current.id];
@@ -60,8 +62,8 @@ export default function StudyRoutineQuiz() {
 
   function finish() {
     sendEvent("complete");
-    setComplete(true);
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, complete: true }));
+    router.push("/");
   }
 
   if (complete) {

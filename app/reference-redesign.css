@@ -15,6 +15,13 @@ body { -webkit-font-smoothing: antialiased; }
 a, button { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 3px solid #8bd4b2; outline-offset: 3px; }
 
+.diagnostico-page { min-height: 100dvh; background: #fff; color: var(--ref-ink); }
+.diagnostico-header { display: flex; justify-content: space-between; align-items: center; max-width: 1280px; min-height: 76px; margin: 0 auto; padding: 0 28px; border-bottom: 1px solid var(--ref-line); }
+.diagnostico-header .brand { color: var(--ref-green-dark); }
+.diagnostico-meta { display: flex; align-items: center; gap: 16px; color: var(--ref-muted); font-size: .76rem; letter-spacing: .16em; font-weight: 700; }
+.diagnostico-meta i { width: 1px; height: 20px; background: var(--ref-line); }
+.diagnostico-page .study-quiz { padding-top: clamp(72px, 9vw, 120px); }
+
 .site-header {
   background: rgb(255 255 255 / 94%);
   border-bottom: 1px solid var(--ref-line);
@@ -154,6 +161,8 @@ a, button { -webkit-tap-highlight-color: transparent; }
   .library-note > span:last-child { grid-column: 1 / -1; }
 }
 @media (max-width: 720px) {
+  .diagnostico-header { padding-inline: 16px; }
+  .diagnostico-meta { gap: 8px; font-size: .62rem; letter-spacing: .1em; }
   .site-header .nav { display: none; }
   .header-inner { padding-inline: 16px; }
   .study-quiz { padding-inline: 16px; padding-top: 58px; }
