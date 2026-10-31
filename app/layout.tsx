@@ -55,7 +55,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${interTight.variable} ${caveat.variable}`}>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{const c=localStorage.getItem('godev-theme')||'system';const d=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.themeChoice=c;document.documentElement.dataset.theme=c==='system'?d:c}catch(e){document.documentElement.dataset.theme='light';document.documentElement.dataset.themeChoice='system'}`,
+            __html: `try{document.documentElement.dataset.themeChoice='light';document.documentElement.dataset.theme='light';localStorage.setItem('godev-theme','light')}catch(e){document.documentElement.dataset.theme='light';document.documentElement.dataset.themeChoice='light'}`,
           }}
         />
         <a className="skip-link" href="#conteudo">

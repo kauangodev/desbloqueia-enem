@@ -10,7 +10,6 @@ import TicketManager from "../../components/ticket-manager";
 import AdminOverview from "../../components/admin-overview";
 import TeamManager from "../../components/team-manager";
 import ManualAccessForm from "../../components/manual-access-form";
-import ThemeToggle from "../../components/theme-toggle";
 import DeleteUserButton from "../../components/delete-user-button";
 import { questionBank } from "../../data/question-bank";
 export const dynamic = "force-dynamic";
@@ -608,7 +607,6 @@ export default async function Admin({
             <strong>Painel de controle</strong>
           </div>
           <div className="admin-topbar-actions">
-            <ThemeToggle />
             <Link className="admin-open-student" href="/aluno">Abrir área do aluno</Link>
             <span className="admin-live-indicator"><i /> Dados conectados</span>
           </div>
@@ -627,6 +625,7 @@ export default async function Admin({
     </main>
   );
 }
+
 
 
 

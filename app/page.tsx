@@ -3,6 +3,7 @@ import { Header, Footer, MaterialPreview, FAQ } from "../components/site";
 import { ReelHero } from "../components/landing/ReelHero";
 import { DisciplineMarquee } from "../components/landing/DisciplineMarquee";
 import PlatformMotionPreview from "../components/landing/PlatformMotionPreview";
+import StudyRoutineQuiz from "../components/landing/StudyRoutineQuiz";
 import { money } from "../lib/config";
 import { publicPlans } from "../lib/catalog";
 import { checkoutConfigured } from "../lib/readiness";
@@ -16,6 +17,7 @@ export default async function Home() {
     <>
       <Header />
       <main id="conteudo" className="landing-main">
+        <StudyRoutineQuiz />
         <ReelHero />
         <DisciplineMarquee />
         <section className="container section intro-section">
