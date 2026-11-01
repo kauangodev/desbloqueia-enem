@@ -22,4 +22,3 @@ Data: 01/11/2026
 ## Limites da homologação
 
 As páginas `/admin` e `/aluno` foram validadas quanto ao comportamento de proteção sem sessão. Não foi usada nem exposta credencial real nesta execução; portanto, uma homologação autenticada completa desses dois painéis ainda requer sessão de usuário no navegador. A confirmação de deployment/caching do hPanel também depende do log do deployment e do domínio após o merge.
-

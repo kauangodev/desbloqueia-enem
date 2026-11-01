@@ -14,4 +14,3 @@ Principais problemas encontrados:
 - O portal de aluno não tinha uma barra superior consistente com busca, notificações e identidade do usuário.
 
 O objetivo desta etapa é corrigir a camada visual sem alterar autenticação, pagamentos, Cakto, banco ou variáveis secretas.
-

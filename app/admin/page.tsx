@@ -12,6 +12,7 @@ import TeamManager from "../../components/team-manager";
 import ManualAccessForm from "../../components/manual-access-form";
 import DeleteUserButton from "../../components/delete-user-button";
 import { questionBank } from "../../data/question-bank";
+import ResponsiveDrawerToggle from "../../components/responsive-drawer-toggle";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
@@ -556,7 +557,7 @@ export default async function Admin({
   }
   return (
     <main id="conteudo" className="admin-app">
-      <aside className="admin-sidebar" aria-label="Navegação administrativa">
+      <aside id="admin-navigation" className="admin-sidebar" aria-label="Navegação administrativa">
         <Link href="/admin?tab=visao" className="admin-brand" aria-label="GoDev Education, visão geral">
           <span>GoDev<span>.</span></span>
           <small>EDUCATION / ADMIN</small>
@@ -603,12 +604,12 @@ export default async function Admin({
       </aside>
       <section className="admin-workspace">
         <header className="admin-topbar">
+          <ResponsiveDrawerToggle target="admin" label="administrativo" />
           <div>
-            <span className="admin-topbar-kicker">GoDev Education · Operação</span>
-            <strong>Painel de controle</strong>
+            <span className="admin-topbar-kicker">GoDev Education</span>
+            <strong>Operação</strong>
           </div>
           <div className="admin-topbar-actions">
-            <Link className="admin-open-student" href="/aluno">Abrir área do aluno</Link>
             <span className="admin-live-indicator"><i /> Dados conectados</span>
           </div>
         </header>
