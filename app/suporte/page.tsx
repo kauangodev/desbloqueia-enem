@@ -1,5 +1,6 @@
 import { Header, Footer } from "../../components/site";
 import Support from "../../components/support";
+export const metadata = { title: "Suporte | GoDev Education" };
 export default function Page() {
   return (
     <>

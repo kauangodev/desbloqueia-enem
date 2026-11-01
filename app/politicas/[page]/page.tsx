@@ -2,6 +2,11 @@ import { Header, Footer } from "../../../components/site";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Support from "../../../components/support";
+export async function generateMetadata({ params }: { params: Promise<{ page: string }> }) {
+  const { page } = await params;
+  const title = policies[page]?.title || "Políticas";
+  return { title: `${title} | GoDev Education` };
+}
 const policies: Record<
   string,
   { title: string; sections: [string, string][] }

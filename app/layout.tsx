@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Caveat, Inter, Inter_Tight } from "next/font/google";
+import { Caveat, Inter, Inter_Tight, Newsreader } from "next/font/google";
 import "./globals.css";
+import "./responsive-hardening.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 
@@ -14,6 +15,12 @@ const interTight = Inter_Tight({
   subsets: ["latin"],
   weight: ["700"],
   variable: "--font-inter-tight",
+  display: "swap",
+});
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-newsreader",
   display: "swap",
 });
 const caveat = Caveat({
@@ -43,7 +50,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.variable} ${interTight.variable} ${caveat.variable}`}>
+      <body className={`${inter.variable} ${interTight.variable} ${newsreader.variable} ${caveat.variable}`}>
         <script
           dangerouslySetInnerHTML={{
             __html: `try{const c=localStorage.getItem('godev-theme')||'system';const d=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.themeChoice=c;document.documentElement.dataset.theme=c==='system'?d:c}catch(e){document.documentElement.dataset.theme='light';document.documentElement.dataset.themeChoice='system'}`,

@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { materials } from "../lib/config";
 import ThemeToggle from "./theme-toggle";
 export function Brand() {
   return (
-    <Link href="/#kit" className="brand" aria-label="Voltar para a hero do GoDev Education">
+    <Link href="/" className="brand" aria-label="Voltar ao início do GoDev Education">
       <b>
         GoDev<span>.</span>
       </b>
@@ -16,8 +16,36 @@ export function Brand() {
 }
 export function Header() {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    const mobile = window.matchMedia("(max-width: 899px)").matches;
+    if (mobile) document.body.style.overflow = "hidden";
+    firstLinkRef.current?.focus({ preventScroll: true });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        menuButtonRef.current?.focus({ preventScroll: true });
+      }
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [open]);
+
   return (
-    <header className="site-header">
+    <header className="site-header" ref={headerRef}>
       <div className="container header-inner">
         <Brand />
         <nav
@@ -29,8 +57,8 @@ export function Header() {
             ["Materiais", "/#materiais"],
             ["Planos", "/#planos"],
             ["Dúvidas", "/#duvidas"],
-          ].map(([label, href]) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)}>
+          ].map(([label, href], index) => (
+            <Link ref={index === 0 ? firstLinkRef : undefined} key={href} href={href} onClick={() => setOpen(false)}>
               {label}
             </Link>
           ))}
@@ -41,6 +69,7 @@ export function Header() {
             Entrar
           </Link>
           <button
+            ref={menuButtonRef}
             className="menu-button"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
@@ -141,7 +170,9 @@ export function MaterialPreview() {
           </small>
         </div>
         <div className="material-carousel-shell">
-          <button className="catalog-arrow catalog-arrow-previous" type="button" aria-label="Materiais anteriores" onClick={() => moveCatalog(-1)}>‹</button>
+          <button className="catalog-arrow catalog-arrow-previous" type="button" aria-label="Materiais anteriores" onClick={() => moveCatalog(-1)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+          </button>
           <div
             className="material-index"
             ref={tabs}
@@ -170,14 +201,16 @@ export function MaterialPreview() {
               key={item.id}
               onClick={() => selectTab(i, false, materials.findIndex((materialEntry) => materialEntry.id === item.id))}
             >
-              <Image src={item.cover} width={160} height={226} alt="" aria-hidden="true" />
+              <Image src={item.cover} width={160} height={226} sizes="(max-width: 599px) 28vw, (max-width: 1199px) 18vw, 160px" alt="" aria-hidden="true" />
               <span>{String(i + 1).padStart(2, "0")}</span>
               <b>{item.title}</b>
               <small>{item.category}</small>
             </button>
             ))}
           </div>
-          <button className="catalog-arrow catalog-arrow-next" type="button" aria-label="Próximos materiais" onClick={() => moveCatalog(1)}>›</button>
+          <button className="catalog-arrow catalog-arrow-next" type="button" aria-label="Próximos materiais" onClick={() => moveCatalog(1)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
         </div>
         {!expanded && (
           <button className="catalog-expand" type="button" onClick={() => setExpanded(true)}>
@@ -196,6 +229,7 @@ export function MaterialPreview() {
             src={material.cover}
             width={330}
             height={467}
+            sizes="(max-width: 599px) min(70vw, 220px), (max-width: 899px) 35vw, 330px"
             alt={`Capa real: ${material.title}`}
           />
         </div>
