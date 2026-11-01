@@ -4,6 +4,7 @@ import { Caveat, Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import "./ui-finish.css";
 import "./reference-redesign.css";
+import "./responsive-hardening.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 

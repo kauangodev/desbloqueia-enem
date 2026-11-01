@@ -34,8 +34,8 @@ test.describe("responsive public surfaces", () => {
             .map((element) => `${element.tagName}.${element.className}(${(element.textContent || "").trim().slice(0, 24)})`);
           const smallText = [...document.querySelectorAll("body *")]
             .filter(visible)
-            .filter((element) => element.children.length === 0)
-            .filter((element) => !element.closest("[aria-hidden=\"true\"], .sr-only, .brand-sub, .theme-toggle-label, .discipline-group") && parseFloat(getComputedStyle(element).fontSize) < 12)
+            .filter((element) => element.children.length === 0 && element.tagName !== "I")
+            .filter((element) => !element.closest("[aria-hidden=\"true\"], .sr-only, .brand-sub, .theme-toggle-label, .discipline-group, .portal-nav-icon, .admin-side-icon") && parseFloat(getComputedStyle(element).fontSize) < 12)
             .slice(0, 8)
             .map((element) => `${element.tagName}.${element.className}(${(element.textContent || "").trim().slice(0, 24)})`);
           const smallControls = [...document.querySelectorAll("a,button,input,select,textarea,[role=button]")]

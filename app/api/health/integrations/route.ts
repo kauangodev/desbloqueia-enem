@@ -3,13 +3,6 @@ import type { RowDataPacket } from "mysql2/promise";
 import { checkoutConfigured } from "../../../../lib/readiness";
 import { mysqlConfigured, mysqlHealth, mysqlPool } from "../../../../lib/mysql";
 
-type OfferRow = RowDataPacket & {
-  plan: string;
-  cakto_product_id: string | null;
-  cakto_offer_id: string | null;
-  enabled: boolean | number;
-};
-
 const officialOffers = {
   essencial: { product: "6ff97951-a03a-4bed-bbe5-62c88031c0fc", offer: "3biievb" },
   premium: { product: "e1fc994d-6000-41d4-9b08-5af47ec3ce07", offer: "3fq7t2s" },

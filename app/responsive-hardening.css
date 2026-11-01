@@ -21,7 +21,7 @@
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
   --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
   --gutter: clamp(16px, 4vw, 32px);
-  --fs-xs: .75rem; --fs-sm: .875rem; --fs-base: 1rem; --fs-lg: 1.125rem;
+  --fs-xs: .8rem; --fs-sm: .875rem; --fs-base: 1rem; --fs-lg: 1.125rem;
   --fs-h3: clamp(1.25rem, 1.1rem + .8vw, 1.5rem);
   --fs-h2: clamp(1.9rem, 1.4rem + 2.6vw, 3.25rem);
   --fs-h1: clamp(2.2rem, 1.5rem + 3.6vw, 4.5rem);
@@ -106,6 +106,18 @@ body .library-note > span,
 body .footer-bottom,
 body .footer-bottom span { font-size: var(--fs-xs); }
 body .reel-hero_card figcaption span { font-size: var(--fs-xs); }
+body [class*="previewLabel"],
+body [class*="PreviewLabel"],
+body [class*="previewMeta"] span,
+body [class*="trustStrip"] span,
+body [class*="trustStrip"] strong,
+body [class*="conversionFootnote"] span,
+body [class*="previewTopbar"] i,
+body [class*="previewReport"] small { font-size: .8rem; }
+.platform-motion-windowbar b { font-size: .8rem; }
+.platform-motion small,
+.platform-motion em,
+.platform-motion button { font-size: .8rem; }
 
 /* Shared editorial light surface for the two authenticated workspaces. */
 .admin-app, .portal { background: var(--bg); color: var(--text); }
@@ -243,6 +255,8 @@ body .reel-hero_card figcaption span { font-size: var(--fs-xs); }
 .study-quiz-radio { width: 20px; height: 20px; flex: 0 0 20px; border: 1px solid var(--border-strong); border-radius: 50%; }
 .is-selected .study-quiz-radio { border: 5px solid var(--brand-green); }
 .study-quiz-card-foot { display: flex; justify-content: space-between; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-subtle); }
+.study-quiz-card-foot { flex-wrap: wrap; }
+.study-quiz-card-foot .button { min-width: 0; max-width: 100%; flex: 1 1 180px; white-space: normal; overflow-wrap: anywhere; }
 .study-quiz-card-foot .button:disabled { opacity: .42; cursor: not-allowed; }
 .study-quiz-aside { padding: clamp(22px, 3vw, 36px); background: var(--surface-soft); }
 .study-quiz-aside-icon { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: var(--brand-soft); color: var(--brand-green); }
@@ -269,6 +283,10 @@ body .reel-hero_card figcaption span { font-size: var(--fs-xs); }
   .study-quiz-aside ol { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
   .study-quiz-aside li { display: block; min-height: auto; font-size: .72rem; text-align: center; }
   .study-quiz-aside li span { margin: 0 auto 6px; }
+}
+@media (max-width: 900px) {
+  .study-quiz-card-foot { align-items: stretch; flex-direction: column-reverse; }
+  .study-quiz-card-foot .button { width: 100%; }
 }
 @media (max-width: 460px) {
   .study-quiz-heading h2 { font-size: clamp(2.25rem, 12vw, 3.2rem); }
