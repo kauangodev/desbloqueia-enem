@@ -14,7 +14,6 @@ export default async function Dashboard() {
     { data: access },
     { data: tasks },
     { count: activityCount },
-    { count: essayCount },
   ] = await Promise.all([
     who.db.from("materials").select("*").eq("published", true),
     who.db
@@ -38,14 +37,9 @@ export default async function Dashboard() {
       .from("assessment_attempts")
       .select("*", { count: "exact", head: true })
       .eq("user_id", who.user.id),
-    who.db
-      .from("essay_submissions")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", who.user.id),
   ]);
 
   const isAdmin = who.profile?.role === "admin";
-  const hasAccess = isAdmin || Boolean(access?.length);
   const visibleMaterials = (materials || []).filter(
     (material) =>
       isAdmin ||
@@ -69,43 +63,35 @@ export default async function Dashboard() {
       <section className="student-welcome" aria-labelledby="student-welcome-title">
         <div className="student-welcome-copy">
           <span className="student-eyebrow">Seu espaço de estudo</span>
-          <h1 id="student-welcome-title">Seu próximo passo começa aqui.</h1>
-          <p>Olá, {firstName}. Organize sua revisão, acompanhe seu progresso e continue seus estudos de onde parou.</p>
-          <div className="student-welcome-actions">
-            <Link className="student-primary-action" href={progress?.[0] ? `/aluno/ler/${progress[0].material_id}` : "/aluno/materiais"}>
-              {progress?.[0] ? "Continuar estudando" : "Explorar materiais"}
-            </Link>
-            <Link className="student-secondary-action" href="/aluno/cronograma">Ver cronograma</Link>
-          </div>
+          <h1 id="student-welcome-title">Olá, {firstName}</h1>
+          <p>Acompanhe seu progresso e continue seus estudos.</p>
         </div>
-        <div className="student-welcome-art" aria-hidden="true">
-          <span>DESBLOQUEIA</span>
-          <strong>ENEM<br />2026</strong>
-          <i />
-          <small>Estude com direção.</small>
+        <div className="student-welcome-meta">
+          <span className="demo-badge">Dados demonstrativos</span>
+          <Link className="period-control" href="/aluno/cronograma">Últimos 30 dias <span aria-hidden="true">⌄</span></Link>
         </div>
       </section>
 
       <div className="student-stat-grid" aria-label="Resumo do seu espaço">
         <article className="student-stat-card accent">
-          <span>Meu plano</span>
-          <strong>{plan}</strong>
-          <small>{hasAccess ? (isAdmin ? "Acesso administrativo e conteúdos liberados" : "Acesso ativo") : "Acesso ainda não liberado"}</small>
+          <span>XP acumulado</span>
+          <strong>{activityCount ? activityCount * 10 : 0}</strong>
+          <small>progresso registrado</small>
         </article>
         <article className="student-stat-card">
-          <span>Materiais disponíveis</span>
-          <strong>{visibleMaterials.length}</strong>
-          <small>Conteúdos liberados para você</small>
-        </article>
-        <article className="student-stat-card">
-          <span>Atividades concluídas</span>
+          <span>Questões respondidas</span>
           <strong>{activityCount || 0}</strong>
-          <small>Exercícios e simulados registrados</small>
+          <small>exercícios e simulados</small>
         </article>
         <article className="student-stat-card">
-          <span>Redações enviadas</span>
-          <strong>{essayCount || 0}</strong>
-          <small>Histórico de produção</small>
+          <span>Tempo de estudo</span>
+          <strong>—</strong>
+          <small>aguardando dados de uso</small>
+        </article>
+        <article className="student-stat-card">
+          <span>Simulados concluídos</span>
+          <strong>—</strong>
+          <small>aguardando dados de uso</small>
         </article>
       </div>
 
