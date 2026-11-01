@@ -1,13 +1,15 @@
 import { Header, Footer } from "../../../components/site";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Support from "../../../components/support";
 const policies: Record<
   string,
-  { title: string; sections: [string, string][] }
+  { title: string; description: string; sections: [string, string][] }
 > = {
   privacidade: {
     title: "Política de privacidade",
+    description: "Como a GoDev Education trata dados de acesso, atendimento, cookies e métricas.",
     sections: [
       [
         "Dados para o seu acesso",
@@ -37,6 +39,7 @@ const policies: Record<
   },
   termos: {
     title: "Termos de uso",
+    description: "Regras de uso do Desbloqueia ENEM 2026 e dos conteúdos da GoDev Education.",
     sections: [
       [
         "Produto e conteúdo",
@@ -62,6 +65,7 @@ const policies: Record<
   },
   reembolso: {
     title: "Política de reembolso",
+    description: "Condições da garantia de sete dias e orientações para solicitar reembolso.",
     sections: [
       [
         "Sete dias para decidir",
@@ -86,6 +90,11 @@ const policies: Record<
     ],
   },
 };
+export async function generateMetadata({ params }: { params: Promise<{ page: string }> }): Promise<Metadata> {
+  const { page } = await params;
+  const policy = policies[page];
+  return policy ? { title: `${policy.title} | GoDev Education`, description: policy.description } : {};
+}
 export default async function Policy({
   params,
 }: {
@@ -122,4 +131,5 @@ export default async function Policy({
     </>
   );
 }
+
 

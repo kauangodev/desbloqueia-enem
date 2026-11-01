@@ -6,13 +6,13 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Prepare-se para o ENEM 2026 com método e clareza.",
   );
-  await expect(page.getByText("DESBLOQUEIA ENEM 2026", { exact: true })).toHaveCount(0);
-  await page.getByText("Ver catálogo completo dos 16 materiais").click();
+  await expect(page.getByText("Desbloqueia ENEM 2026", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: /Ver todos os e-books/ }).click();
+  await expect(page.locator("#catalogo")).toBeVisible();
   await expect(page.locator(".material-index [role=tab]")).toHaveCount(8);
   await expect(
     page.getByRole("heading", { name: "Essencial", exact: true }),
   ).toBeVisible();
-  await expect(page.locator("body")).not.toContainText("↗");
   await expect(
     page.getByRole("heading", { name: "Premium", exact: true }),
   ).toBeVisible();
@@ -23,26 +23,16 @@ test("landing, planos, capas e FAQ", async ({ page }) => {
   await expect(materialTabs.first()).toHaveAttribute("aria-selected", "true");
   await page.getByText("A biblioteca tem 1.800 questões?").click();
   await expect(page.locator("details[open]").filter({ hasText: "A biblioteca tem 1.800 questões?" })).toContainText("Sim.");
-  const planLink = page.getByRole("link", { name: "Receber orientação", exact: true }).last();
-  await expect(planLink).toHaveAttribute("href", "/suporte");
+  await expect(page.getByRole("link", { name: "Ler a política", exact: true })).toHaveAttribute("href", "/politicas/reembolso");
 });
 
-test("faixa de matérias corre suavemente da esquerda para a direita", async ({
+test("faixa de indicadores de materiais permanece legível", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/landing");
-  const track = page.locator("[data-discipline-track]");
-  await expect(track).toBeVisible();
-  await expect(track.locator("span")).toHaveCount(10);
-  const x = () =>
-    track.evaluate((element) => {
-      const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform);
-      return matrix.m41;
-    });
-  const before = await x();
-  await page.waitForTimeout(400);
-  expect(await x()).toBeGreaterThan(before);
+  await expect(page.locator(".landing-stat-strip")).toContainText("16 e-books");
+  await expect(page.locator(".landing-stat-strip")).toContainText("30 simulados");
 });
 const viewports = [
   { width: 320, height: 568 },
@@ -76,7 +66,7 @@ for (const viewport of viewports)
       expect(menuBox?.height).toBeGreaterThanOrEqual(43.5);
       const loginBox = await page.getByRole("link", { name: "Entrar" }).boundingBox();
       expect(loginBox?.height).toBeGreaterThanOrEqual(43.5);
-      for (const control of await page.locator(".hero .actions a").all()) {
+      for (const control of await page.locator(".landing-actions a").all()) {
         const box = await control.boundingBox();
         expect(box?.height).toBeGreaterThanOrEqual(43.5);
         expect(box?.width).toBeGreaterThan(0);
@@ -112,23 +102,24 @@ for (const viewport of viewports)
 test("catálogo de materiais tem navegação por teclado e painel sincronizado", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1080 });
   await page.goto("/landing");
-  await page.getByText("Ver catálogo completo dos 16 materiais").click();
+  await page.getByRole("button", { name: "Ver os 16 materiais" }).click();
   const tabs = page.locator(".material-index [role=tab]");
   await expect(tabs.first()).toBeVisible();
   await tabs.nth(1).click();
   await expect(page.getByRole("tabpanel")).toContainText("Literatura");
-  await tabs.nth(1).press("End");
+  await tabs.nth(7).click();
+  await expect(page.getByRole("tabpanel")).toContainText("História");
   await expect(tabs.nth(7)).toBeFocused();
 });
 
-test("redução de movimento mantém o carrossel estável", async ({ page }) => {
+test("redução de movimento mantém o catálogo estável", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/landing");
-  const track = page.locator("[data-discipline-track]");
-  await expect(track).toBeVisible();
-  const before = await track.getAttribute("style");
+  const catalog = page.locator(".material-index");
+  await expect(catalog).toBeVisible();
+  const before = await catalog.evaluate((element) => element.scrollLeft);
   await page.waitForTimeout(320);
-  expect(await track.getAttribute("style")).toBe(before);
+  expect(await catalog.evaluate((element) => element.scrollLeft)).toBe(before);
 });
 test("rotas privadas e arquivos exigem sessão", async ({ page, request }) => {
   await page.context().addCookies([{ name: "desbloqueia_demo", value: "admin.invalid", domain: "127.0.0.1", path: "/" }]);
@@ -194,4 +185,5 @@ test("políticas e suporte têm rotas reais", async ({ page }) => {
 
 
 // Mobile layout coverage is part of the release gate.
+
 

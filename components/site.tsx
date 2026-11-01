@@ -1,24 +1,37 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { materials } from "../lib/config";
 export function Brand() {
   return (
     <Link href="/" className="brand" aria-label="Ir para o início do GoDev Education">
-      <b>
-        GoDev<span>.</span>
-      </b>
-      <span className="brand-sub">EDUCATION</span>
+      <span className="brand-wordmark">GoDev</span>
+      <span className="brand-sub">EDUCAÇÃO</span>
     </Link>
   );
 }
 export function Header() {
   const [open, setOpen] = useState(false);
+  const firstLink = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    document.body.style.overflow = "hidden";
+    firstLink.current?.focus({ preventScroll: true });
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
   return (
     <header className="site-header">
       <div className="container header-inner">
         <Brand />
+        {open && <button className="nav-backdrop" type="button" aria-label="Fechar menu" onClick={() => setOpen(false)} />}
         <nav
           aria-label="Navegação principal"
           className={open ? "nav open" : "nav"}
@@ -28,8 +41,8 @@ export function Header() {
             ["Materiais", "/landing#materiais"],
             ["Planos", "/landing#planos"],
             ["Dúvidas", "/landing#duvidas"],
-          ].map(([label, href]) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)}>
+          ].map(([label, href], index) => (
+            <Link key={href} href={href} ref={index === 0 ? firstLink : undefined} onClick={() => setOpen(false)}>
               {label}
             </Link>
           ))}
@@ -108,7 +121,7 @@ export function MaterialPreview() {
     const container = tabs.current;
     const tab = container?.querySelectorAll<HTMLButtonElement>("[role=tab]")[index];
     if (!container || !tab) return;
-    if (focus) tab.focus({ preventScroll: true });
+    if (focus) requestAnimationFrame(() => tab.focus({ preventScroll: true }));
     if (container.scrollWidth > container.clientWidth) {
       container.scrollTo({ left: tab.offsetLeft - container.offsetLeft - (container.clientWidth - tab.offsetWidth) / 2,
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
@@ -265,6 +278,7 @@ export function FAQ() {
     </div>
   );
 }
+
 
 
 
