@@ -40,7 +40,21 @@ export async function POST(req: Request) {
   });
   if (error) return jsonError("O resultado foi calculado, mas não pôde ser salvo no histórico. Tente novamente.", 503);
   await recordGamificationEvent(who.user.id, "assessment_completed", attemptId);
-  return NextResponse.json({ saved: true, score, total: questions.length });
+  return NextResponse.json({
+    saved: true,
+    score,
+    total: questions.length,
+    corrections: questions.map((question) => ({
+      id: question.id,
+      number: question.number,
+      area: question.area,
+      selected: answers[question.id],
+      correct: answers[question.id] === question.answer,
+      correctAnswer: question.answer,
+      explanation: question.explanation,
+      nextStep: question.nextStep,
+    })),
+  });
 }
 
 

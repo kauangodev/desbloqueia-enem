@@ -8,6 +8,16 @@ export const GAMIFICATION_RULE_VERSION = "2026-10-27-v2";
 const XP_BY_EVENT = { assessment_completed: 25, reading_completed: 10, study_task_completed: 15 } as const;
 export type GamificationEventType = keyof typeof XP_BY_EVENT;
 export type RewardResult = "awarded" | "duplicate" | "ineligible" | "unavailable";
+export type GamificationAchievement = { id: string; title: string; description: string; unlocked: boolean };
+
+function achievements(input: { events: number; xp: number; streak: number; assessments: number }): GamificationAchievement[] {
+  return [
+    { id: "first-activity", title: "Primeiro passo", description: "Conclua sua primeira atividade.", unlocked: input.events >= 1 },
+    { id: "first-simulado", title: "Primeiro simulado", description: "Finalize um simulado completo.", unlocked: input.assessments >= 1 },
+    { id: "hundred-xp", title: "Ritmo consistente", description: "Alcance 100 XP de estudo.", unlocked: input.xp >= 100 },
+    { id: "seven-day-streak", title: "Semana em sequência", description: "Estude por 7 dias consecutivos.", unlocked: input.streak >= 7 },
+  ];
+}
 
 /** Revalidates completion server-side; a client request never proves eligibility. */
 export async function recordGamificationEvent(userId: string, type: GamificationEventType, sourceId: string): Promise<RewardResult> {
@@ -40,10 +50,10 @@ export async function recordGamificationEvent(userId: string, type: Gamification
 
 export async function gamificationSummary(userId: string) {
   const today = studyDate(new Date());
-  const empty = { available: false, xp: 0, level: 1, nextLevelXp: 100, events: 0, studyDays: 0, activeDays: 0, streak: 0, dailyTarget: 1, weeklyTarget: 5, todayEvents: 0, weekEvents: 0, today, ruleVersion: GAMIFICATION_RULE_VERSION };
+  const empty = { available: false, xp: 0, level: 1, nextLevelXp: 100, events: 0, assessments: 0, studyDays: 0, activeDays: 0, streak: 0, dailyTarget: 1, weeklyTarget: 5, todayEvents: 0, weekEvents: 0, achievements: achievements({ events: 0, xp: 0, streak: 0, assessments: 0 }), today, ruleVersion: GAMIFICATION_RULE_VERSION };
   try {
     const pool = mysqlPool();
-    const [totals] = await pool.query<RowDataPacket[]>("SELECT COALESCE(SUM(xp),0) xp,COUNT(*) events FROM gamification_events WHERE user_id=?", [userId]);
+    const [totals] = await pool.query<RowDataPacket[]>("SELECT COALESCE(SUM(xp),0) xp,COUNT(*) events,COALESCE(SUM(event_type='assessment_completed'),0) assessments FROM gamification_events WHERE user_id=?", [userId]);
     const [dates] = await pool.query<RowDataPacket[]>("SELECT DATE_FORMAT(CONVERT_TZ(occurred_at,'+00:00','-03:00'),'%Y-%m-%d') day,COUNT(*) events FROM gamification_events WHERE user_id=? GROUP BY day", [userId]);
     const [goals] = await pool.query<RowDataPacket[]>("SELECT daily_target,weekly_target FROM gamification_goals WHERE user_id=? LIMIT 1", [userId]);
     const xp = Number(totals[0]?.xp || 0);
@@ -51,7 +61,9 @@ export async function gamificationSummary(userId: string) {
     const weekStart = new Date(`${today}T12:00:00Z`);
     weekStart.setUTCDate(weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7));
     const monday = weekStart.toISOString().slice(0, 10);
-    return { ...empty, available: true, xp, ...levelFor(xp), events: Number(totals[0]?.events || 0), ...days, activeDays: days.studyDays, dailyTarget: Number(goals[0]?.daily_target || 1), weeklyTarget: Number(goals[0]?.weekly_target || 5), todayEvents: dates.filter((row) => String(row.day) === today).reduce((sum, row) => sum + Number(row.events), 0), weekEvents: dates.filter((row) => String(row.day) >= monday && String(row.day) <= today).reduce((sum, row) => sum + Number(row.events), 0) };
+    const events = Number(totals[0]?.events || 0);
+    const assessments = Number(totals[0]?.assessments || 0);
+    return { ...empty, available: true, xp, ...levelFor(xp), events, assessments, ...days, activeDays: days.studyDays, dailyTarget: Number(goals[0]?.daily_target || 1), weeklyTarget: Number(goals[0]?.weekly_target || 5), todayEvents: dates.filter((row) => String(row.day) === today).reduce((sum, row) => sum + Number(row.events), 0), weekEvents: dates.filter((row) => String(row.day) >= monday && String(row.day) <= today).reduce((sum, row) => sum + Number(row.events), 0), achievements: achievements({ events, xp, streak: days.streak, assessments }) };
   } catch (error) {
     console.error("gamification_summary_unavailable", { code: (error as { code?: string }).code || "unknown" });
     return empty;

@@ -4,11 +4,9 @@ import type { PDFDocumentProxy, PDFDocumentLoadingTask } from "pdfjs-dist";
 export default function PdfReader({
   id,
   initialPage,
-  downloadable,
 }: {
   id: string;
   initialPage: number;
-  downloadable: boolean;
 }) {
   const [doc, D] = useState<PDFDocumentProxy | null>(null),
     [page, P] = useState(initialPage),
@@ -118,15 +116,16 @@ export default function PdfReader({
   }, [doc, page, zoom, id, width]);
   return (
     <div ref={frame}>
-      <div className="reader-toolbar">
-        <button
-          className="button secondary"
-          disabled={!doc || page <= 1}
-          onClick={() => P(page - 1)}
-        >
-          Anterior
-        </button>
-        <label>
+      <div className="reader-toolbar" aria-label="Controles de leitura">
+        <div className="reader-navigation" aria-label="Navegação de páginas">
+          <button
+            className="button secondary"
+            disabled={!doc || page <= 1}
+            onClick={() => P(page - 1)}
+          >
+            Anterior
+          </button>
+          <label className="reader-page-indicator">
           Página{" "}
           <input
             aria-label="Página"
@@ -140,45 +139,46 @@ export default function PdfReader({
             }}
           />{" "}
           / {doc?.numPages || "…"}
-        </label>
-        <button
-          className="button secondary"
-          disabled={!doc || page >= doc.numPages}
-          onClick={() => P(page + 1)}
-        >
-          Próxima
-        </button>
-        <button
-          className="button secondary"
-          aria-label="Diminuir zoom"
-          disabled={zoom <= 0.6}
-          onClick={() => Z(Math.max(0.6, zoom - 0.2))}
-        >
-          −
-        </button>
-        <button
-          className="button secondary"
-          aria-label="Aumentar zoom"
-          disabled={zoom >= 2}
-          onClick={() => Z(Math.min(2, zoom + 0.2))}
-        >
-          +
-        </button>
-        <button
-          className="button secondary"
-          onClick={() => {
-            if (document.fullscreenElement) document.exitFullscreen();
-            else
-              frame.current
-                ?.requestFullscreen?.()
-                .catch(() => E("Tela cheia não disponível neste navegador."));
-          }}
-        >
-          Tela cheia
-        </button>
-        {downloadable && (
-          <span className="subtle">Leitura protegida na plataforma</span>
-        )}
+          </label>
+          <button
+            className="button secondary"
+            disabled={!doc || page >= doc.numPages}
+            onClick={() => P(page + 1)}
+          >
+            Próxima
+          </button>
+        </div>
+        <div className="reader-actions" aria-label="Ajustes de visualização">
+          <button
+            className="button secondary"
+            aria-label="Diminuir zoom"
+            disabled={zoom <= 0.6}
+            onClick={() => Z(Math.max(0.6, zoom - 0.2))}
+          >
+            −
+          </button>
+          <button
+            className="button secondary"
+            aria-label="Aumentar zoom"
+            disabled={zoom >= 2}
+            onClick={() => Z(Math.min(2, zoom + 0.2))}
+          >
+            +
+          </button>
+          <button
+            className="button secondary"
+            onClick={() => {
+              if (document.fullscreenElement) document.exitFullscreen();
+              else
+                frame.current
+                  ?.requestFullscreen?.()
+                  .catch(() => E("Tela cheia não disponível neste navegador."));
+            }}
+          >
+            Tela cheia
+          </button>
+        </div>
+        <span className="subtle reader-notice">Leitura exclusiva pela plataforma · PDF não disponível para download</span>
       </div>
       <p role="status">{status}</p>
       {error && (
@@ -195,4 +195,5 @@ export default function PdfReader({
     </div>
   );
 }
+
 

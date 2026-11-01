@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Caveat, Inter, Inter_Tight, Newsreader } from "next/font/google";
+import { Caveat, Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
-import "./responsive-hardening.css";
+import "./ui-finish.css";
+import "./reference-redesign.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 
@@ -17,12 +18,6 @@ const interTight = Inter_Tight({
   variable: "--font-inter-tight",
   display: "swap",
 });
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-newsreader",
-  display: "swap",
-});
 const caveat = Caveat({
   subsets: ["latin"],
   weight: ["600"],
@@ -35,6 +30,14 @@ export const metadata: Metadata = {
   title: "Desbloqueia ENEM 2026 | GoDev Education",
   description:
     "Sua reta final do ENEM, organizada em um só lugar. Materiais, revisão e prática por GoDev Education.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "16x16 32x32 48x48" },
+      { url: "/icon-16.png", type: "image/png", sizes: "16x16" },
+      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+  },
   openGraph: {
     title: "Desbloqueia ENEM 2026 | GoDev Education",
     description: "Sua reta final, organizada em um só lugar.",
@@ -50,10 +53,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.variable} ${interTight.variable} ${newsreader.variable} ${caveat.variable}`}>
+      <body className={`${inter.variable} ${interTight.variable} ${caveat.variable}`}>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{const c=localStorage.getItem('godev-theme')||'system';const d=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.themeChoice=c;document.documentElement.dataset.theme=c==='system'?d:c}catch(e){document.documentElement.dataset.theme='light';document.documentElement.dataset.themeChoice='system'}`,
+            __html: `try{document.documentElement.dataset.themeChoice='light';document.documentElement.dataset.theme='light';localStorage.setItem('godev-theme','light')}catch(e){document.documentElement.dataset.theme='light';document.documentElement.dataset.themeChoice='light'}`,
           }}
         />
         <a className="skip-link" href="#conteudo">
@@ -67,3 +70,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+

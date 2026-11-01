@@ -8,12 +8,23 @@ declare global {
   interface Window {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
+    __godevMetaPixelInitialized?: string;
   }
 }
 
 function loadMetaPixel(pixel: string) {
   if (typeof window === "undefined" || typeof document === "undefined") return;
-  if (window.fbq) return;
+  if (window.__godevMetaPixelInitialized === pixel) return;
+
+  // Keep one initialization per page even if React remounts this component or
+  // an already loaded script is reused during client navigation.
+  if (window.fbq) {
+    // A provider/extension may have initialized fbq before this component.
+    // Reusing it is safer than issuing a second init and creating conflicting
+    // pixel versions in a persistent browser session.
+    window.__godevMetaPixelInitialized = pixel;
+    return;
+  }
 
   const f = ((...args: unknown[]) => {
     if (f.callMethod) f.callMethod(...args);
@@ -24,12 +35,15 @@ function loadMetaPixel(pixel: string) {
   f.version = "2.0";
   window.fbq = f;
 
-  const script = document.createElement("script");
-  script.src = "https://connect.facebook.net/en_US/fbevents.js";
-  script.async = true;
-  script.dataset.analytics = "meta-pixel";
-  document.head.appendChild(script);
+  if (!document.querySelector('script[data-analytics="meta-pixel"]')) {
+    const script = document.createElement("script");
+    script.src = "https://connect.facebook.net/en_US/fbevents.js";
+    script.async = true;
+    script.dataset.analytics = "meta-pixel";
+    document.head.appendChild(script);
+  }
   window.fbq("init", pixel);
+  window.__godevMetaPixelInitialized = pixel;
 }
 
 export default function Analytics() {
@@ -37,6 +51,7 @@ export default function Analytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const lastPageRef = useRef<string | null>(null);
+  const lastHeroRef = useRef<string | null>(null);
   const pixel = META_PIXEL_ID;
   const ga = process.env.NEXT_PUBLIC_GA_ID;
   const pageKey = `${pathname}?${searchParams.toString()}`;
@@ -54,6 +69,14 @@ export default function Analytics() {
         trackMetaEvent("PageView");
         lastPageRef.current = pageKey;
       }
+    }
+
+    const heroVariant = document.querySelector<HTMLElement>("[data-hero-variant]")?.dataset.heroVariant;
+    const heroKey = `${pageKey}:${heroVariant || "none"}`;
+    if (heroVariant && (heroVariant === "a" || heroVariant === "b") && lastHeroRef.current !== heroKey) {
+      trackMetaEvent("ViewContent", { content_name: "hero_variant", variant: heroVariant });
+      window.gtag?.("event", "hero_variant_view", { hero_variant: heroVariant });
+      lastHeroRef.current = heroKey;
     }
 
     if (ga && /^G-[A-Z0-9]+$/i.test(ga) && !window.gtag) {
@@ -78,6 +101,12 @@ export default function Analytics() {
 
     const click = (event: MouseEvent) => {
       const anchor = (event.target as Element).closest("a");
+      const tracked = (event.target as Element).closest<HTMLElement>("[data-analytics-event]")?.dataset.analyticsEvent;
+      if (tracked) {
+        const eventName = tracked.includes("checkout") || tracked === "hero_primary_cta" ? "InitiateCheckout" : "ViewContent";
+        trackMetaEvent(eventName, { content_name: tracked });
+        window.gtag?.("event", tracked);
+      }
       if (anchor?.getAttribute("href")?.startsWith("/api/checkout/")) {
         trackMetaEvent("InitiateCheckout", { content_name: "Desbloqueia ENEM 2026" });
         window.gtag?.("event", "begin_checkout");
@@ -100,6 +129,7 @@ export default function Analytics() {
       document.querySelectorAll("script[data-analytics]").forEach((script) => script.remove());
       delete window.fbq;
       delete window.gtag;
+      delete window.__godevMetaPixelInitialized;
     }
   }
 

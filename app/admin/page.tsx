@@ -10,7 +10,8 @@ import TicketManager from "../../components/ticket-manager";
 import AdminOverview from "../../components/admin-overview";
 import TeamManager from "../../components/team-manager";
 import ManualAccessForm from "../../components/manual-access-form";
-import ThemeToggle from "../../components/theme-toggle";
+import DeleteUserButton from "../../components/delete-user-button";
+import { questionBank } from "../../data/question-bank";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administração | GoDev Education",
@@ -87,6 +88,7 @@ function AdminIcon({ name }: { name: string }) {
     tickets: "M4 5h16v11H8l-4 4V5ZM8 9h8M8 12h5",
     support: "M5 5h14v11H9l-4 3V5ZM8 9h8M8 12h5",
     integrations: "M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+    questions: "M6 4h12v16H6zM9 8h6M9 12h6M9 16h4",
   };
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name] || paths.overview} /></svg>;
 }
@@ -163,10 +165,42 @@ export default async function Admin({
             cover: "/covers/kit.png",
             storage_path: null,
             published: false,
-            downloadable: true,
+            downloadable: false,
             public_sample_url: null,
           }}
         />
+      </>
+    );
+  } else if (tab === "questoes") {
+    const duplicateGroups = new Map<string, string[]>();
+    for (const question of questionBank) {
+      const key = `${question.statement.trim().toLocaleLowerCase()}|${question.options.map((option) => option.text.trim().toLocaleLowerCase()).sort().join("|")}`;
+      duplicateGroups.set(key, [...(duplicateGroups.get(key) || []), question.id]);
+    }
+    const duplicateRecords = [...duplicateGroups.values()].filter((ids) => ids.length > 1).flat().length;
+    const byArea = [...new Set(questionBank.map((question) => question.area))].map((area) => ({ area, count: questionBank.filter((question) => question.area === area).length }));
+    content = (
+      <>
+        <div className="crm-heading">
+          <div>
+            <h2>Governança de questões</h2>
+            <p>Visão técnica da base autoral e da fila de revisão. Nenhum item é excluído ou publicado automaticamente por esta tela.</p>
+          </div>
+          <span className="crm-count">Fonte: banco autoral local</span>
+        </div>
+        <p className="status-message" role="status">A publicação em lote permanece bloqueada até existir backup verificável, fila persistida de revisão e confirmação dos metadados pedagógicos. Os 1.793 itens da biblioteca histórica continuam em pendência controlada.</p>
+        <div className="stat-grid crm-stats admin-kpis">
+          <div className="stat"><strong>{questionBank.length}</strong><span>Questões autorais</span></div>
+          <div className="stat"><strong>{new Set(questionBank.map((question) => question.id)).size}</strong><span>IDs únicos</span></div>
+          <div className="stat"><strong>{duplicateRecords}</strong><span>Em grupos duplicados</span></div>
+          <div className="stat"><strong>1.793</strong><span>Biblioteca pendente</span></div>
+        </div>
+        <div className="table-wrap">
+          <table className="crm-table">
+            <thead><tr><th>Área</th><th>Itens</th><th>Status</th><th>Ação segura</th></tr></thead>
+            <tbody>{byArea.map((item) => <tr key={item.area}><td><strong>{item.area}</strong></td><td>{item.count}</td><td><span className="crm-badge pending">Revisão controlada</span></td><td><small>Sem publicação automática</small></td></tr>)}</tbody>
+          </table>
+        </div>
       </>
     );
   } else if (tab === "suporte") {
@@ -340,6 +374,7 @@ export default async function Admin({
                 <th>Conta no site</th>
                 <th>Atividade</th>
                 <th>Última compra</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -400,12 +435,13 @@ export default async function Admin({
                       <small>{customer.essays.length ? `${customer.essays.length} redação(ões)` : "Sem redações"}</small>
                     </td>
                     <td>{date(lastOrder?.created_at)}</td>
+                    <td>{customer.profile ? <DeleteUserButton userId={customer.profile.id} email={customer.email} /> : <small>Sem conta criada</small>}</td>
                   </tr>
                 );
               })}
               {!rows.length ? (
                 <tr>
-                  <td colSpan={6}>Nenhum contato encontrado.</td>
+                  <td colSpan={7}>Nenhum contato encontrado.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -474,7 +510,9 @@ export default async function Admin({
           {items.map(([name, ready]) => (
             <li key={String(name)}>
               <span>{name}</span>
-              <b>{ready ? "Configuração presente" : "Pendente"}</b>
+              <b className={`integration-state ${ready ? "is-ready" : "is-pending"}`}>
+                {ready ? "Configuração presente" : "Pendente"}
+              </b>
             </li>
           ))}
         </ul>
@@ -486,7 +524,7 @@ export default async function Admin({
     const { data, error } = await db.from("support_tickets").select("id,email,subject,message,status,priority,admin_note,created_at,updated_at").order("updated_at", { ascending: false }).limit(100);
     content = error ? <p className="status-message">O sistema de tickets ainda precisa da migração do banco para ser ativado.</p> : <TicketManager tickets={data || []} />;
   } else {
-    const [{ data: overviewOrders }, stats] = await Promise.all([
+    const [{ data: overviewOrders }, stats, quizResult] = await Promise.all([
       db
         .from("orders")
         .select("id,email,name,plan,amount,status,created_at")
@@ -511,8 +549,10 @@ export default async function Admin({
           return { table, count: error ? null : count };
         }),
       ),
+      db.from("quiz_events").select("event_name,question_index,created_at").limit(10000),
     ]);
-    content = <AdminOverview stats={stats} orders={overviewOrders || []} />;
+    const adSpendCents = Number(process.env.META_AD_SPEND_CENTS || 0);
+    content = <AdminOverview stats={stats} orders={overviewOrders || []} quizEvents={quizResult.error ? [] : quizResult.data || []} adSpendCents={Number.isFinite(adSpendCents) ? adSpendCents : 0} />;
   }
   return (
     <main id="conteudo" className="admin-app">
@@ -528,6 +568,7 @@ export default async function Admin({
             ["alunos", "CRM de alunos", "students"],
             ["produtos", "Produtos e planos", "products"],
             ["materiais", "Materiais", "materials"],
+            ["questoes", "Questões", "questions"],
             ["entregas", "Entregas e acessos", "deliveries"],
             ["equipe", "Equipe e permissões", "team"],
           ].map(([id, label, icon]) => (
@@ -567,7 +608,6 @@ export default async function Admin({
             <strong>Painel de controle</strong>
           </div>
           <div className="admin-topbar-actions">
-            <ThemeToggle />
             <Link className="admin-open-student" href="/aluno">Abrir área do aluno</Link>
             <span className="admin-live-indicator"><i /> Dados conectados</span>
           </div>
@@ -576,8 +616,8 @@ export default async function Admin({
           <div className="admin-hero">
             <div>
               <span className="eyebrow">Central de gestão</span>
-              <h1 className="page-title">Administração</h1>
-              <p>Veja o que está acontecendo no produto, nos acessos e na jornada dos alunos.</p>
+              <h1 className="page-title">Olá, {who.profile?.name || "Administrador"}</h1>
+              <p>Acompanhe sua plataforma hoje.</p>
             </div>
           </div>
           {content}
@@ -586,4 +626,8 @@ export default async function Admin({
     </main>
   );
 }
+
+
+
+
 

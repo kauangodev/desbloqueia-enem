@@ -30,6 +30,8 @@ export async function POST(request: Request) {
     await mysqlPool().query("INSERT IGNORE INTO quiz_events (event_id,event_name,question_index,session_hash,metadata) VALUES (?,?,?,?,?)", [eventId, event, questionIndex, sessionHash, metadata]);
     return NextResponse.json({ ok: true });
   } catch {
+    // Analytics must never block the public landing page.
     return NextResponse.json({ ok: false }, { status: 202 });
   }
 }
+
