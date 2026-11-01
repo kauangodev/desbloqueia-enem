@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
-import type { RowDataPacket } from "mysql2/promise";
+import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import type { Pool } from "mysql2/promise";
 import { identity } from "../../../../lib/supabase";
 import { mysqlPool } from "../../../../lib/mysql";
@@ -138,6 +138,31 @@ export async function POST(req: Request) {
       await pool.query("INSERT INTO audit_logs (actor,action,target) VALUES (?,?,?)", [who.user.id, "team_member_removed", member.email]);
       return NextResponse.json({ saved: true });
     }
+    if (input.action === "delete-member") {
+      const userId = String(input.userId || "");
+      const [rows] = await pool.query<TeamRow[]>("SELECT id,email,admin_role FROM users WHERE id=? AND role='admin' LIMIT 1", [userId]);
+      const member = rows[0];
+      if (!member) return jsonError("Membro não encontrado", 404);
+      if (member.id === who.user.id) return jsonError("Por segurança, você não pode excluir a própria conta.", 403);
+      if (normalizeAdminRole(member.admin_role) === "owner") return jsonError("A conta do proprietário não pode ser excluída por esta ação.", 403);
+      if (who.adminRole !== "owner" && !canGrantRole(who.adminRole, member.admin_role)) return jsonError("Você não pode excluir este membro.", 403);
+      const connection = await pool.getConnection();
+      try {
+        await connection.beginTransaction();
+        await connection.query("UPDATE entitlements SET user_id=NULL WHERE user_id=?", [userId]);
+        await connection.query("DELETE FROM admin_invites WHERE email=?", [member.email]);
+        const [result] = await connection.query<ResultSetHeader>("DELETE FROM users WHERE id=? AND role='admin'", [userId]);
+        if (Number(result.affectedRows || 0) !== 1) throw new Error("A conta não pôde ser excluída.");
+        await connection.query("INSERT INTO audit_logs (actor,action,target) VALUES (?,?,?)", [who.user.id, "team_member_deleted", member.email]);
+        await connection.commit();
+      } catch (error) {
+        await connection.rollback();
+        throw error;
+      } finally {
+        connection.release();
+      }
+      return NextResponse.json({ saved: true });
+    }
     return jsonError("Ação desconhecida");
   } catch (error) {
     const errorId = randomBytes(8).toString("hex");
@@ -145,3 +170,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Não foi possível concluir a operação agora.", errorId }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
 }
+

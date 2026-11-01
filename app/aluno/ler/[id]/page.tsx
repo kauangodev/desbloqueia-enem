@@ -31,8 +31,8 @@ export default async function Read({
       <PdfReader
         id={id}
         initialPage={p?.page || 1}
-        downloadable={material.downloadable}
       />
     </>
   );
 }
+

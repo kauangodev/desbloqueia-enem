@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-type Summary = { streak?: number; todayEvents?: number; weekEvents?: number; xp: number; level: number; nextLevelXp: number; events: number; studyDays: number; dailyTarget: number; weeklyTarget: number; ruleVersion?: string };
+type Summary = { streak?: number; todayEvents?: number; weekEvents?: number; xp: number; level: number; nextLevelXp: number; events: number; studyDays: number; dailyTarget: number; weeklyTarget: number; achievements?: { id: string; title: string; description: string; unlocked: boolean }[]; ruleVersion?: string };
 const initial: Summary = { xp: 0, level: 1, nextLevelXp: 100, events: 0, studyDays: 0, dailyTarget: 1, weeklyTarget: 5 };
 
 export default function GamificationPanel() {
@@ -23,7 +23,8 @@ export default function GamificationPanel() {
         <article className="student-stat-card"><span>Dias de estudo</span><strong>{summary.studyDays}</strong><small>Eventos válidos: {summary.events}</small></article>
       </div>
       <div className="progress-track" aria-label={`${progress}% para o próximo nível`}><span style={{ width: `${progress}%` }} /></div>
-      <p className="subtle">{summary.nextLevelXp - summary.xp} XP para o próximo nível. Hoje: {summary.todayEvents || 0}/{summary.dailyTarget} atividade(s). Semana: {summary.weekEvents || 0}/{summary.weeklyTarget}. Sequência: {summary.streak || 0} dia(s).</p>
+      <p className="subtle">{Math.max(0, summary.nextLevelXp - summary.xp)} XP para o próximo nível. Hoje: {summary.todayEvents || 0}/{summary.dailyTarget} atividade(s). Semana: {summary.weekEvents || 0}/{summary.weeklyTarget}. Sequência: {summary.streak || 0} dia(s).</p>
+      {summary.achievements?.length ? <div className="gamification-achievements" aria-labelledby="achievements-title"><div className="gamification-achievements-heading"><strong id="achievements-title">Conquistas</strong><span>{summary.achievements.filter((item) => item.unlocked).length}/{summary.achievements.length} desbloqueadas</span></div><div className="gamification-achievement-grid">{summary.achievements.map((item) => <article className={`gamification-achievement ${item.unlocked ? "is-unlocked" : ""}`} key={item.id}><span aria-hidden="true">{item.unlocked ? "✓" : "○"}</span><div><strong>{item.title}</strong><small>{item.description}</small></div></article>)}</div></div> : null}
     </section>
   );
 }

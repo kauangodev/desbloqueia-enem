@@ -19,3 +19,4 @@ Atualizado em 2026-11-01.
 ## Publicação
 
 O domínio público respondeu HTTP 200 em `/`, `/diagnostico` e `/landing` durante a verificação. Isso é evidência do estado atualmente servido, não prova de que este working tree já foi publicado. A confirmação final depende do deployment criado a partir do commit desta entrega e de nova leitura do domínio após o build da Hostinger.
+

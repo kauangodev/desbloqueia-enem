@@ -3,17 +3,17 @@ import type { RowDataPacket } from "mysql2/promise";
 import { checkoutConfigured } from "../../../../lib/readiness";
 import { mysqlConfigured, mysqlHealth, mysqlPool } from "../../../../lib/mysql";
 
-type OfferRow = RowDataPacket & {
-  plan: string;
-  cakto_product_id: string | null;
-  cakto_offer_id: string | null;
-  enabled: boolean | number;
-};
-
 const officialOffers = {
   essencial: { product: "6ff97951-a03a-4bed-bbe5-62c88031c0fc", offer: "3biievb" },
   premium: { product: "e1fc994d-6000-41d4-9b08-5af47ec3ce07", offer: "3fq7t2s" },
 } as const;
+
+type OfferRow = RowDataPacket & {
+  plan: string;
+  cakto_product_id: string | null;
+  cakto_offer_id: string | null;
+  enabled: boolean | number | null;
+};
 
 /** Internal, read-only smoke check. It never creates an order or entitlement. */
 export async function GET(request: Request) {
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     const mysql = await mysqlHealth();
     const [offers] = await mysqlPool().query<OfferRow[]>("SELECT plan,cakto_product_id,cakto_offer_id,enabled FROM offers WHERE plan IN (?,?)", ["essencial", "premium"]);
     const offerStatus = Object.fromEntries(Object.entries(officialOffers).map(([plan, expectedOffer]) => {
-      const actual = offers?.find((item) => item.plan === plan);
+      const actual = offers.find((item) => item.plan === plan);
       return [plan, Boolean(actual && actual.enabled && actual.cakto_product_id === expectedOffer.product && actual.cakto_offer_id === expectedOffer.offer)];
     }));
     const ready = mysql && Object.values(offerStatus).every(Boolean);

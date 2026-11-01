@@ -1,14 +1,71 @@
 :root {
-  --bg: #f7f8fa;
-  --surface: #fff;
-  --ink: #161c30;
-  --muted: #667085;
-  --navy: #102a4c;
-  --blue: #555ceb;
-  --teal: #18a6a6;
-  --lime: #d6f27c;
-  --line: #e7eaf0;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0fdf4;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --brand-green: #047857;
+  --brand-green-hover: #047857;
+  --brand-soft: #d1fae5;
+  --btn-text: #ffffff;
+  --link: #047857;
+  --border-subtle: #bbf7d0;
+  --border-control: #86efac;
+  --focus-ring: #047857;
+  --success-bg: #dcfce7;
+  --success-text: #166534;
+  --warning-bg: #fef3c7;
+  --warning-text: #92400e;
+  --error-bg: #fee2e2;
+  --error-text: #991b1b;
+  --selection-bg: #a7f3d0;
+  --selection-text: #064e3b;
+  /* Compatibility aliases for existing components. */
+  --bg: var(--bg-primary);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
   --radius: 10px;
+}
+:root[data-theme="dark"],
+:root.dark {
+  --bg-primary: #06150d;
+  --bg-secondary: #112a1d;
+  --surface: #101a14;
+  --surface-elevated: #16251c;
+  --text-primary: #f8fafc;
+  --text-secondary: #a7f3d0;
+  --text-muted: #94a3b8;
+  --brand-green: #34d399;
+  --brand-green-hover: #6ee7b7;
+  --brand-soft: #143c2b;
+  --btn-text: #022c22;
+  --link: #a7f3d0;
+  --border-subtle: #28533b;
+  --border-control: #4ade80;
+  --focus-ring: #6ee7b7;
+  --success-bg: #123b27;
+  --success-text: #bbf7d0;
+  --warning-bg: #422b0b;
+  --warning-text: #fde68a;
+  --error-bg: #451a1a;
+  --error-text: #fecaca;
+  --selection-bg: #14532d;
+  --selection-text: #d1fae5;
+  --bg: var(--bg-primary);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
 }
 * {
   box-sizing: border-box;
@@ -1305,16 +1362,52 @@ textarea {
 .reader-toolbar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px 16px;
   flex-wrap: wrap;
-  background: white;
-  padding: 14px;
+  background: var(--surface-elevated, white);
+  padding: 14px 16px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 12px;
+}
+.reader-navigation,
+.reader-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.reader-navigation {
+  flex: 1 1 auto;
+  min-width: min(100%, 290px);
+}
+.reader-actions {
+  flex: 0 1 auto;
+}
+.reader-page-indicator {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 4px;
+  color: var(--text-primary, #142018);
+  font-size: .92rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 .reader-toolbar input {
-  width: 65px;
+  width: 64px;
+  min-height: 40px;
   padding: 8px;
+  text-align: center;
+}
+.reader-notice {
+  flex: 1 1 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--text-secondary, #536174);
+  font-size: .78rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 .reader-canvas {
   overflow: auto;
@@ -1545,7 +1638,8 @@ th {
   background: rgb(245 248 239 / 92%);
   border-color: rgb(8 72 45 / 12%);
   backdrop-filter: blur(16px);
-  animation: nav-enter 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Keep the global header fully opaque from first paint for contrast and QA. */
+  animation: none;
 }
 .brand b,
 .landing-main h2,
@@ -1686,7 +1780,8 @@ th {
 
 @keyframes nav-enter {
   from {
-    opacity: 0;
+    /* Preserve immediate text contrast while the header enters. */
+    opacity: 1;
     transform: translateY(-10px);
   }
   to {
@@ -2107,6 +2202,249 @@ th {
   }
 }
 
+/* WCAG 2.1 AA theme contract: every shared surface owns its foreground. */
+:root,
+:root[data-theme="light"],
+:root[data-theme="dark"],
+:root.dark {
+  --lime: var(--brand-green);
+  --action-bg: #047857;
+  --action-bg-hover: #065f46;
+  --action-text: #ffffff;
+  --color-link: var(--link);
+  --color-accent: var(--action-bg);
+  --color-accent-hover: var(--action-bg-hover);
+  --color-accent-ink: var(--action-text);
+  --color-accent-secondary: var(--brand-green);
+}
+
+body,
+.landing-main,
+.portal,
+.admin-app,
+.admin-workspace,
+.admin-content,
+.workspace {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+p,
+small,
+.subtle,
+.section-heading p,
+.large-copy,
+.landing-main .section-heading p,
+.landing-main .large-copy,
+.admin-content p,
+.admin-content small,
+.workspace p,
+.workspace small {
+  color: var(--text-secondary);
+}
+
+h1,
+h2,
+h3,
+h4,
+strong,
+label,
+th,
+td,
+.landing-main h1,
+.landing-main h2,
+.landing-main h3,
+.admin-content h1,
+.admin-content h2,
+.admin-content h3,
+.workspace h1,
+.workspace h2,
+.workspace h3 {
+  color: var(--text-primary);
+}
+
+a,
+.link,
+.landing-main a:not(.button):not(.brand),
+.admin-content a:not(.button),
+.workspace a:not(.button) {
+  color: var(--link);
+}
+
+a:hover,
+.link:hover,
+.landing-main a:not(.button):not(.brand):hover,
+.admin-content a:not(.button):hover,
+.workspace a:not(.button):hover {
+  color: var(--brand-green-hover);
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+:focus-visible {
+  outline-color: var(--focus-ring);
+}
+
+.site-header,
+.admin-topbar,
+.admin-sidebar,
+.portal .sidebar,
+.nav,
+.study-outline,
+.faq-list details,
+.library-note,
+.material-stage,
+.price-card,
+.guarantee,
+.student-section-block,
+.student-context-section,
+.student-continue-card,
+.student-empty-card,
+.student-profile-card,
+.student-dashboard .resource,
+.official-exams,
+.assessment,
+.question-card,
+.form-card,
+.library-entry,
+.activity-card,
+.overview-white-card,
+.overview-activity-card,
+.overview-metric,
+.crm-table,
+.stat,
+.task-list,
+.admin-form,
+.table-wrap {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+input,
+select,
+textarea {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-control);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 1;
+}
+
+button.primary,
+.button.primary,
+.button.lime,
+.student-primary-action,
+.login-link,
+.admin-side-link[aria-current="page"],
+.portal .sidebar nav a[aria-current="page"],
+.theme-toggle button[aria-pressed="true"],
+.material-index button[aria-selected="true"] {
+  background: var(--brand-green);
+  border-color: var(--brand-green);
+  color: var(--btn-text);
+}
+
+button.primary:hover,
+.button.primary:hover,
+.button.lime:hover,
+.student-primary-action:hover,
+.login-link:hover {
+  background: var(--brand-green-hover);
+  border-color: var(--brand-green-hover);
+  color: var(--btn-text);
+}
+
+.button.secondary,
+.student-secondary-action,
+.admin-open-student,
+.catalog-expand {
+  background: transparent;
+  border-color: var(--brand-green);
+  color: var(--link);
+}
+
+.button.secondary:hover,
+.student-secondary-action:hover,
+.admin-open-student:hover,
+.catalog-expand:hover,
+.admin-side-link:hover,
+.portal .sidebar nav a:hover,
+.theme-toggle button:hover {
+  background: var(--brand-soft);
+  color: var(--link);
+}
+
+.crm-badge.success,
+.status-success,
+.success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.status-message.warning,
+.warning {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.status-message.error,
+.error,
+.form-error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.theme-toggle button,
+.material-index button,
+.admin-side-link,
+.portal .sidebar nav a {
+  color: var(--text-secondary);
+}
+
+.site-footer {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.site-footer p,
+.site-footer a:not(.brand),
+.site-footer .footer-bottom {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 760px) {
+  .container {
+    width: min(100% - 40px, 1200px);
+  }
+
+  .admin-content,
+  .workspace,
+  .landing-main {
+    min-width: 0;
+  }
+
+  .table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .button,
+  button,
+  .theme-toggle button,
+  .menu-button {
+    min-height: 44px;
+  }
+}
+
 /* Structural tablet breakpoint: keep the reading order intact before the
    narrow mobile breakpoint and prevent the desktop two-column scaffold from
    compressing at 768px. */
@@ -2203,6 +2541,15 @@ th {
   .sidebar .brand-sub { display: none; }
   .admin-tabs a { min-height: 44px; display: inline-flex; align-items: center; }
 }
+@media (max-width: 620px) {
+  .reader-toolbar { align-items: stretch; padding: 12px; }
+  .reader-navigation,
+  .reader-actions { width: 100%; }
+  .reader-navigation > button,
+  .reader-actions > button { flex: 1 1 auto; }
+  .reader-page-indicator { justify-content: center; flex: 1 1 100%; order: -1; }
+  .reader-notice { flex-basis: 100%; }
+}
 .materials-section,
 .site-footer {
   --muted: #536174;
@@ -2234,6 +2581,25 @@ th {
 .assessment-counter small { color: var(--muted); font-size: 16px; font-weight: 500; }
 .progress-track { height: 8px; border-radius: 99px; background: #dfe8df; margin-bottom: 26px; overflow: hidden; }
 .progress-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #0b6847, #8aa93f); transition: width 180ms ease; }
+.gamification-achievements { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.gamification-achievements-heading { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: var(--ink); }
+.gamification-achievements-heading span { color: var(--muted); font-size: .78rem; }
+.gamification-achievement-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.gamification-achievement { display: flex; gap: 9px; min-width: 0; padding: 11px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-elevated); color: var(--muted); }
+.gamification-achievement > span { color: var(--muted); font-weight: 900; }
+.gamification-achievement strong, .gamification-achievement small { display: block; }
+.gamification-achievement strong { color: var(--text-primary); font-size: .8rem; }
+.gamification-achievement small { margin-top: 3px; color: var(--text-secondary); font-size: .7rem; line-height: 1.35; }
+.gamification-achievement.is-unlocked { border-color: color-mix(in srgb, var(--brand-green) 56%, var(--line)); }
+.gamification-achievement.is-unlocked > span { color: var(--brand-green); }
+@media (max-width: 760px) { .gamification-achievement-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .gamification-achievement-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .landing-main .preview-paper,
+  .landing-main .preview-paper img { max-width: 100%; }
+  .landing-main .preview-paper { overflow: hidden; }
+  .landing-main .preview-paper img { width: auto; object-fit: contain; }
+}
 .question-card { padding: clamp(22px, 4vw, 44px); border: 1px solid #d9e4da; border-radius: 24px; background: #fff; box-shadow: 0 22px 60px rgb(8 72 45 / 9%); }
 .question-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
 .question-meta span { padding: 7px 11px; border-radius: 999px; background: #edf5ea; color: #39604f; font-size: 12px; font-weight: 700; }
@@ -2932,6 +3298,11 @@ th {
   font-size: 14px;
   line-height: 1;
 }
+.portal-nav-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
 .portal .sidebar nav a[aria-current="page"] .portal-nav-icon {
   background: #d6f27c;
   color: #08482d;
@@ -3355,9 +3726,7 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="light"] .brand b > span { color: #246033; }
 :root[data-theme="light"] .brand-sub { border-left-color: #a8b6a5; color: var(--color-text-secondary); }
 :root[data-theme="light"] .nav { background: rgb(255 255 255 / 92%); border-color: #c4d0c1; }
-:root[data-theme="light"] .brand-sub,
-:root[data-theme="light"] .nav a,
-:root[data-theme="light"] .theme-toggle button { color: #1d4f2b; }
+:root[data-theme="light"] .nav a { color: #246033; }
 :root[data-theme="light"] .nav a:hover, :root[data-theme="light"] .nav a:focus-visible { background: #edf3ea; color: #142018; }
 :root[data-theme="light"] .login-link { background: #142018; color: #fff; }
 :root[data-theme="light"] .login-link:hover, :root[data-theme="light"] .login-link:focus-visible { background: #246033; color: #fff; }
@@ -3584,6 +3953,88 @@ h1, h2, h3 { color: var(--ink); }
   .portal-mobile-nav > a[aria-current="page"], .portal-mobile-nav > button.is-active { background: var(--color-accent); color: var(--color-accent-ink); }
   .portal-mobile-nav .portal-nav-icon { width: 24px; height: 24px; flex-basis: 24px; background: transparent; color: currentColor; font-size: 15px; }
   .portal-mobile-more { position: absolute; right: 0; bottom: calc(100% + 8px); left: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; padding: 8px; border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-surface); box-shadow: 0 14px 36px rgb(0 0 0 / 18%); }
+
+/* Final cross-surface contrast and responsive pass. Keep portal content on the
+   same semantic theme tokens as the shell instead of inheriting legacy greens. */
+.portal .workspace,
+.portal .workspace-bar,
+.portal .resource-grid,
+.portal .correction-history,
+.admin-app,
+.admin-workspace,
+.admin-content { color: var(--color-text); }
+.portal .resource,
+.portal .student-profile-card,
+.portal .student-context-section,
+.portal .student-empty-card,
+.portal .student-dashboard .resource,
+.portal .correction-history-card,
+.portal .empty-state,
+.admin-content table,
+.admin-content .card,
+.admin-content .panel,
+.admin-content .admin-card,
+.admin-content .admin-form,
+.admin-content .admin-empty-state {
+  background: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+.portal .resource-info h3,
+.portal .resource-info p,
+.portal .resource-info small,
+.portal .empty-state h2,
+.portal .empty-state p,
+.portal .correction-history-card h3,
+.portal .correction-history-card p,
+.portal .correction-history-card strong,
+.admin-content h1,
+.admin-content h2,
+.admin-content h3,
+.admin-content p,
+.admin-content small,
+.admin-content label,
+.admin-content td,
+.admin-content th { color: var(--color-text) !important; }
+.portal .resource-info p,
+.portal .resource-info small,
+.portal .correction-history-card p,
+.admin-content small,
+.admin-content label { color: var(--color-text-secondary) !important; }
+.portal .resource-info small,
+.portal .student-eyebrow,
+.portal .student-section-heading > a,
+.portal .student-inline-action,
+.admin-content a:not(.button) { color: var(--color-link) !important; }
+.portal .resource:hover,
+.portal .correction-history-card:hover,
+.admin-content .admin-card:hover { border-color: var(--color-accent-secondary) !important; }
+.portal .student-dashboard .resource { box-shadow: 0 12px 28px rgb(0 0 0 / 12%); }
+.portal .student-dashboard .resource-cover { background: var(--color-surface-elevated); }
+.portal .student-dashboard .resource-info { padding: 16px; }
+.portal .empty-state { min-width: 0; }
+.portal .theme-toggle { flex: 0 0 auto; }
+
+@media (max-width: 700px) {
+  .portal .workspace-bar { flex-wrap: wrap; gap: 10px; }
+  .portal .workspace-bar-tools { width: 100%; justify-content: space-between; }
+  .portal .page-title { max-width: 12ch; font-size: clamp(2rem, 9vw, 3.2rem); }
+  .portal .resource-grid { grid-template-columns: 1fr; gap: 14px; }
+  .portal .resource { display: grid; grid-template-columns: minmax(108px, 34%) minmax(0, 1fr); align-items: stretch; }
+  .portal .resource-cover { min-height: 170px; border-radius: 0; }
+  .portal .resource-info { display: grid; align-content: center; gap: 8px; }
+  .portal .resource-info h3 { font-size: 1.05rem; }
+  .portal .resource-info p { font-size: .84rem; }
+  .portal .resource-info small { font-size: .72rem; }
+  .portal .correction-history-card { padding: 1rem; }
+  .portal .correction-history-card summary { align-items: flex-start; }
+}
+
+@media (max-width: 420px) {
+  .portal .resource { grid-template-columns: 108px minmax(0, 1fr); }
+  .portal .resource-cover { min-height: 154px; }
+  .portal .resource-info { padding: 12px; }
+}
   .portal-mobile-more a { display: flex; min-height: 44px; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 10px; color: var(--color-text-secondary); font-size: 11px; text-decoration: none; }
   .portal-mobile-more a:hover, .portal-mobile-more a:focus-visible { background: var(--color-surface-elevated); color: var(--color-text); }
   .site-header .nav { background: #101a14; border-radius: 18px; }
@@ -3642,6 +4093,357 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="dark"] .landing-main .guarantee p,
 :root[data-theme="dark"] .landing-main .guarantee .text-link { color: #f9fafb; }
 :root[data-theme="dark"] .landing-main .guarantee-number { color: #b7ff3c; }
+
+/* Final theme contract: this block is intentionally last so legacy component
+   rules cannot reintroduce low-contrast neon text or washed-out surfaces. */
+:root,
+:root[data-theme="light"] {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --action-bg: #34d399;
+  --action-bg-hover: #6ee7b7;
+  --action-text: #022c22;
+  --color-link: var(--link);
+  --color-accent: var(--action-bg);
+  --color-accent-hover: var(--action-bg-hover);
+  --color-accent-ink: var(--action-text);
+  --color-accent-secondary: var(--brand-green);
+  --color-border: var(--border-control);
+  --bg: var(--bg-primary);
+  --surface: var(--surface);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
+}
+
+:root[data-theme="dark"],
+:root.dark {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-link: var(--link);
+  --color-accent: var(--brand-green);
+  --color-accent-hover: var(--brand-green-hover);
+  --color-accent-ink: var(--btn-text);
+  --color-accent-secondary: var(--brand-green);
+  --color-border: var(--border-control);
+  --bg: var(--bg-primary);
+  --surface: var(--surface);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
+}
+
+:root[data-theme="light"] .site-header,
+:root[data-theme="light"] .nav,
+:root[data-theme="light"] .landing-main,
+:root[data-theme="light"] .materials-section,
+:root[data-theme="light"] .pricing-section,
+:root[data-theme="light"] .faq-section,
+:root[data-theme="light"] .closing,
+:root[data-theme="light"] .site-footer {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+:root[data-theme="dark"] .site-header,
+:root[data-theme="dark"] .nav,
+:root[data-theme="dark"] .landing-main,
+:root[data-theme="dark"] .materials-section,
+:root[data-theme="dark"] .pricing-section,
+:root[data-theme="dark"] .faq-section,
+:root[data-theme="dark"] .closing,
+:root[data-theme="dark"] .site-footer {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+:root[data-theme="light"] .section-heading h2,
+:root[data-theme="light"] .section-heading p,
+:root[data-theme="light"] .pricing-section .section-heading h2,
+:root[data-theme="light"] .pricing-section .section-heading p,
+:root[data-theme="light"] .landing-main .section-heading h2,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy,
+:root[data-theme="light"] .landing-main .benefit-lines p,
+:root[data-theme="light"] .landing-main .faq-section > div > p {
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .pricing-section .section-heading p,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy,
+:root[data-theme="light"] .landing-main .benefit-lines p,
+:root[data-theme="light"] .landing-main .faq-section > div > p {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="dark"] .section-heading h2,
+:root[data-theme="dark"] .section-heading p,
+:root[data-theme="dark"] .pricing-section .section-heading h2,
+:root[data-theme="dark"] .pricing-section .section-heading p,
+:root[data-theme="dark"] .landing-main .section-heading h2,
+:root[data-theme="dark"] .landing-main .section-heading p,
+:root[data-theme="dark"] .landing-main .large-copy,
+:root[data-theme="dark"] .landing-main .benefit-lines p,
+:root[data-theme="dark"] .landing-main .faq-section > div > p {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="light"] .price-card:not(.premium),
+:root[data-theme="dark"] .price-card:not(.premium) {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+:root[data-theme="light"] .price-card:not(.premium) h3,
+:root[data-theme="light"] .price-card:not(.premium) .price,
+:root[data-theme="light"] .price-card:not(.premium) li,
+:root[data-theme="dark"] .price-card:not(.premium) h3,
+:root[data-theme="dark"] .price-card:not(.premium) .price,
+:root[data-theme="dark"] .price-card:not(.premium) li {
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .price-card:not(.premium) > p,
+:root[data-theme="light"] .price-card:not(.premium) .plan-benefit,
+:root[data-theme="light"] .price-card:not(.premium) .price small,
+:root[data-theme="light"] .price-card:not(.premium) .plan-note,
+:root[data-theme="dark"] .price-card:not(.premium) > p,
+:root[data-theme="dark"] .price-card:not(.premium) .plan-benefit,
+:root[data-theme="dark"] .price-card:not(.premium) .price small,
+:root[data-theme="dark"] .price-card:not(.premium) .plan-note {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="light"] .price-card.premium,
+:root[data-theme="dark"] .price-card.premium {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--brand-green);
+}
+
+:root[data-theme="light"] .price-card.premium h3,
+:root[data-theme="light"] .price-card.premium .price,
+:root[data-theme="light"] .price-card.premium > p,
+:root[data-theme="light"] .price-card.premium .plan-benefit,
+:root[data-theme="light"] .price-card.premium .price small,
+:root[data-theme="light"] .price-card.premium li,
+:root[data-theme="dark"] .price-card.premium h3,
+:root[data-theme="dark"] .price-card.premium .price,
+:root[data-theme="dark"] .price-card.premium > p,
+:root[data-theme="dark"] .price-card.premium .plan-benefit,
+:root[data-theme="dark"] .price-card.premium .price small,
+:root[data-theme="dark"] .price-card.premium li {
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .price-card.premium > p,
+:root[data-theme="light"] .price-card.premium .plan-benefit,
+:root[data-theme="light"] .price-card.premium .price small,
+:root[data-theme="light"] .price-card.premium li,
+:root[data-theme="dark"] .price-card.premium > p,
+:root[data-theme="dark"] .price-card.premium .plan-benefit,
+:root[data-theme="dark"] .price-card.premium .price small,
+:root[data-theme="dark"] .price-card.premium li {
+  color: var(--text-secondary);
+}
+
+.button.primary,
+.button.lime,
+.student-primary-action,
+.login-link,
+.admin-side-link[aria-current="page"],
+.portal .sidebar nav a[aria-current="page"],
+.theme-toggle button[aria-pressed="true"],
+.material-index button[aria-selected="true"] {
+  background: var(--action-bg) !important;
+  border-color: var(--action-bg) !important;
+  color: var(--action-text) !important;
+}
+
+.button.primary:hover,
+.button.primary:focus-visible,
+.button.lime:hover,
+.button.lime:focus-visible,
+.student-primary-action:hover,
+.student-primary-action:focus-visible,
+.login-link:hover,
+.login-link:focus-visible {
+  background: var(--action-bg-hover) !important;
+  border-color: var(--action-bg-hover) !important;
+  color: var(--action-text) !important;
+}
+
+.button.secondary,
+.student-secondary-action,
+.admin-open-student,
+.catalog-expand {
+  background: transparent !important;
+  border-color: var(--brand-green) !important;
+  color: var(--link) !important;
+}
+
+.button.secondary:hover,
+.button.secondary:focus-visible,
+.student-secondary-action:hover,
+.student-secondary-action:focus-visible,
+.admin-open-student:hover,
+.admin-open-student:focus-visible,
+.catalog-expand:hover,
+.catalog-expand:focus-visible {
+  background: var(--brand-soft) !important;
+  color: var(--text-primary) !important;
+}
+
+input,
+select,
+textarea {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-control) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 1;
+}
+
+.brand,
+.brand b,
+.brand-sub,
+.site-footer,
+.site-footer p,
+.site-footer a,
+.admin-content,
+.admin-content p,
+.admin-content small,
+.portal .sidebar,
+.portal .sidebar nav a,
+.admin-side-link {
+  color: var(--text-primary);
+}
+
+.brand b > span,
+.admin-brand > span > span,
+.portal .sidebar .brand b > span,
+.admin-live-indicator,
+.student-eyebrow,
+.admin-eyebrow,
+.student-inline-action,
+.student-section-heading > a,
+.site-footer a:hover {
+  color: var(--brand-green);
+}
+
+.site-footer p,
+.site-footer a:not(.brand),
+.footer-bottom,
+.admin-content p,
+.admin-content small,
+.admin-content label,
+.portal .sidebar nav a,
+.admin-side-link {
+  color: var(--text-secondary);
+}
+
+/* Theme-safe fallback surfaces. The account page uses .empty-state for both
+   profile details and gated content; its legacy white background previously
+   paired with light-green dark-theme text and made the content disappear. */
+.empty-state,
+.admin-empty-state {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.empty-state h2,
+.empty-state h3,
+.empty-state strong,
+.admin-empty-state h2,
+.admin-empty-state h3,
+.admin-empty-state strong {
+  color: var(--text-primary) !important;
+}
+
+.empty-state p,
+.empty-state small,
+.admin-empty-state p,
+.admin-empty-state small {
+  color: var(--text-secondary) !important;
+}
+
+/* Keep the same foreground contract across the student and admin surfaces,
+   including components that still carry older presentation classes. */
+.student-profile-card,
+.student-context-section,
+.student-empty-card,
+.student-dashboard .resource,
+.admin-content .card,
+.admin-content .panel,
+.admin-content .admin-card,
+.manual-access-form,
+.reader-toolbar {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.student-profile-card p,
+.student-profile-card small,
+.student-context-section p,
+.student-empty-card p,
+.student-dashboard .resource p,
+.admin-content .card p,
+.admin-content .panel p,
+.admin-content .admin-card p,
+.manual-access-form > p {
+  color: var(--text-secondary);
+}
+
+.student-profile-card strong,
+.student-context-heading,
+.student-empty-card strong,
+.student-dashboard .resource h3,
+.admin-content .card h2,
+.admin-content .card h3,
+.admin-content .panel h2,
+.admin-content .panel h3,
+.admin-content .admin-card h2,
+.admin-content .admin-card h3,
+.manual-access-form h3 {
+  color: var(--text-primary);
+}
+
+@media (max-width: 760px) {
+  .container { width: min(100% - 32px, 1200px); }
+  .site-header .header-inner { min-height: 68px; }
+  .button,
+  .theme-toggle button,
+  .menu-button,
+  .catalog-arrow { min-height: 44px; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card { min-width: 0; }
+}
 :root[data-theme="dark"] .landing-main .text-link,
 :root[data-theme="dark"] .landing-main .outline-row > span { color: #b7ff3c; }
 :root[data-theme="dark"] .landing-main .materials-section { background: #0f1318; }
@@ -3686,3 +4488,1024 @@ h1, h2, h3 { color: var(--ink); }
 :root[data-theme="dark"] .landing-main .pricing-section .section-heading p {
   color: #b4c1b4;
 }
+
+/* Final theme contract: every product surface owns its foreground colors.
+   Older components still contain presentation colors from the first visual
+   system, so relying on inherited body text makes them disappear when the
+   browser preference changes. Keep these rules scoped to real surfaces and
+   leave branded accent cards (Premium, welcome art and the sidebar) intact. */
+:root[data-theme="light"] body,
+:root[data-theme="light"] .landing-main,
+:root[data-theme="light"] .portal,
+:root[data-theme="light"] .admin-app {
+  background: #f6f8f5;
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main .intro-section,
+:root[data-theme="light"] .landing-main .study-section,
+:root[data-theme="light"] .landing-main .faq-section,
+:root[data-theme="light"] .landing-main .closing,
+:root[data-theme="light"] .landing-main .pricing-section {
+  background: #f6f8f5;
+}
+:root[data-theme="light"] .landing-main p,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy,
+:root[data-theme="light"] .landing-main .benefit-lines p,
+:root[data-theme="light"] .landing-main .outline-row p,
+:root[data-theme="light"] .landing-main .faq-list details p {
+  color: #47564a;
+}
+:root[data-theme="light"] .landing-main h1,
+:root[data-theme="light"] .landing-main h2,
+:root[data-theme="light"] .landing-main h3,
+:root[data-theme="light"] .landing-main .benefit-lines b,
+:root[data-theme="light"] .landing-main .outline-row b,
+:root[data-theme="light"] .landing-main .outline-top b {
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main h2 span {
+  color: #246033;
+}
+:root[data-theme="light"] .landing-main .study-outline,
+:root[data-theme="light"] .landing-main .faq-list details,
+:root[data-theme="light"] .landing-main .library-note,
+:root[data-theme="light"] .landing-main .material-stage {
+  background: #fff;
+  border-color: #c4d0c1;
+  color: #142018;
+}
+:root[data-theme="light"] .landing-main .library-note p,
+:root[data-theme="light"] .landing-main .library-note > span,
+:root[data-theme="light"] .landing-main .outline-top > span,
+:root[data-theme="light"] .landing-main .outline-row > span {
+  color: #47564a;
+}
+:root[data-theme="light"] .landing-main .discipline-strip {
+  background: #edf3ea;
+  border-color: #c4d0c1;
+}
+:root[data-theme="light"] .landing-main .discipline-strip * {
+  color: #246033;
+}
+:root[data-theme="light"] .landing-main .faq-list summary {
+  color: #142018;
+}
+
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .landing-main,
+:root[data-theme="dark"] .portal,
+:root[data-theme="dark"] .admin-app {
+  background: #0b0d10;
+  color: #f4f8f2;
+}
+:root[data-theme="dark"] .landing-main p,
+:root[data-theme="dark"] .landing-main .section-heading p,
+:root[data-theme="dark"] .landing-main .large-copy,
+:root[data-theme="dark"] .landing-main .benefit-lines p,
+:root[data-theme="dark"] .landing-main .outline-row p,
+:root[data-theme="dark"] .landing-main .faq-list details p {
+  color: #cbd5e1;
+}
+:root[data-theme="dark"] .landing-main h1,
+:root[data-theme="dark"] .landing-main h2,
+:root[data-theme="dark"] .landing-main h3,
+:root[data-theme="dark"] .landing-main .benefit-lines b,
+:root[data-theme="dark"] .landing-main .outline-row b,
+:root[data-theme="dark"] .landing-main .outline-top b,
+:root[data-theme="dark"] .landing-main .faq-list summary {
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .landing-main h2 span {
+  color: #b7c5d1;
+}
+:root[data-theme="dark"] .landing-main .study-outline,
+:root[data-theme="dark"] .landing-main .faq-list details,
+:root[data-theme="dark"] .landing-main .library-note,
+:root[data-theme="dark"] .landing-main .material-stage {
+  background: #15181d;
+  border-color: #374151;
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .landing-main .library-note p,
+:root[data-theme="dark"] .landing-main .library-note > span,
+:root[data-theme="dark"] .landing-main .outline-top > span,
+:root[data-theme="dark"] .landing-main .outline-row > span {
+  color: #cbd5e1;
+}
+
+:root[data-theme="light"] .portal .workspace,
+:root[data-theme="light"] .admin-workspace,
+:root[data-theme="light"] .admin-topbar,
+:root[data-theme="light"] .admin-content {
+  background: #f6f8f5;
+  color: #142018;
+}
+:root[data-theme="light"] .student-section-block,
+:root[data-theme="light"] .student-context-section,
+:root[data-theme="light"] .student-continue-card,
+:root[data-theme="light"] .student-empty-card,
+:root[data-theme="light"] .student-profile-card,
+:root[data-theme="light"] .student-dashboard .resource,
+:root[data-theme="light"] .official-exams,
+:root[data-theme="light"] .assessment,
+:root[data-theme="light"] .question-card,
+:root[data-theme="light"] .form-card,
+:root[data-theme="light"] .library-entry,
+:root[data-theme="light"] .activity-card {
+  background: #fff;
+  border-color: #c4d0c1;
+  color: #142018;
+}
+:root[data-theme="light"] .student-section-block p,
+:root[data-theme="light"] .student-context-section p,
+:root[data-theme="light"] .student-continue-copy p,
+:root[data-theme="light"] .student-dashboard .resource p,
+:root[data-theme="light"] .assessment p,
+:root[data-theme="light"] .question-card p,
+:root[data-theme="light"] .activity-card p {
+  color: #47564a;
+}
+:root[data-theme="light"] .student-section-block h2,
+:root[data-theme="light"] .student-section-block h3,
+:root[data-theme="light"] .student-context-section strong,
+:root[data-theme="light"] .student-continue-copy h3,
+:root[data-theme="light"] .student-dashboard .resource strong,
+:root[data-theme="light"] .assessment h2,
+:root[data-theme="light"] .assessment h3,
+:root[data-theme="light"] .question-card h3,
+:root[data-theme="light"] .activity-card h3 {
+  color: #142018;
+}
+:root[data-theme="light"] .subtle,
+:root[data-theme="light"] .student-stat-card > span,
+:root[data-theme="light"] .student-stat-card small,
+:root[data-theme="light"] .student-next-list small,
+:root[data-theme="light"] .student-context-empty,
+:root[data-theme="light"] .assessment-source {
+  color: #47564a;
+}
+
+:root[data-theme="dark"] .portal .workspace,
+:root[data-theme="dark"] .admin-workspace,
+:root[data-theme="dark"] .admin-topbar,
+:root[data-theme="dark"] .admin-content {
+  background: #0b0d10;
+  color: #f4f8f2;
+}
+:root[data-theme="dark"] .student-section-block,
+:root[data-theme="dark"] .student-context-section,
+:root[data-theme="dark"] .student-continue-card,
+:root[data-theme="dark"] .student-empty-card,
+:root[data-theme="dark"] .student-profile-card,
+:root[data-theme="dark"] .student-dashboard .resource,
+:root[data-theme="dark"] .official-exams,
+:root[data-theme="dark"] .assessment,
+:root[data-theme="dark"] .question-card,
+:root[data-theme="dark"] .form-card,
+:root[data-theme="dark"] .library-entry,
+:root[data-theme="dark"] .activity-card {
+  background: #15181d;
+  border-color: #374151;
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .student-section-block p,
+:root[data-theme="dark"] .student-context-section p,
+:root[data-theme="dark"] .student-continue-copy p,
+:root[data-theme="dark"] .student-dashboard .resource p,
+:root[data-theme="dark"] .assessment p,
+:root[data-theme="dark"] .question-card p,
+:root[data-theme="dark"] .activity-card p,
+:root[data-theme="dark"] .subtle,
+:root[data-theme="dark"] .student-stat-card > span,
+:root[data-theme="dark"] .student-stat-card small,
+:root[data-theme="dark"] .student-next-list small,
+:root[data-theme="dark"] .student-context-empty,
+:root[data-theme="dark"] .assessment-source {
+  color: #cbd5e1;
+}
+:root[data-theme="dark"] .student-section-block h2,
+:root[data-theme="dark"] .student-section-block h3,
+:root[data-theme="dark"] .student-context-section strong,
+:root[data-theme="dark"] .student-continue-copy h3,
+:root[data-theme="dark"] .student-dashboard .resource strong,
+:root[data-theme="dark"] .assessment h2,
+:root[data-theme="dark"] .assessment h3,
+:root[data-theme="dark"] .question-card h3,
+:root[data-theme="dark"] .activity-card h3 {
+  color: #f9fafb;
+}
+
+:root[data-theme="light"] .admin-content .overview-white-card,
+:root[data-theme="light"] .admin-content .overview-activity-card,
+:root[data-theme="light"] .admin-content .overview-metric,
+:root[data-theme="light"] .admin-content .crm-table,
+:root[data-theme="light"] .admin-content .stat,
+:root[data-theme="light"] .admin-content .task-list,
+:root[data-theme="light"] .admin-content .admin-form,
+:root[data-theme="light"] .admin-content .table-wrap {
+  background: #fff;
+  border-color: #c4d0c1;
+  color: #142018;
+}
+:root[data-theme="light"] .admin-content .overview-white-card h2,
+:root[data-theme="light"] .admin-content .overview-activity-card h2,
+:root[data-theme="light"] .admin-content .overview-metric strong,
+:root[data-theme="light"] .admin-content .activity-copy strong,
+:root[data-theme="light"] .admin-content .plan-distribution-row,
+:root[data-theme="light"] .admin-content .overview-quick-actions strong,
+:root[data-theme="light"] .admin-content th,
+:root[data-theme="light"] .admin-content td {
+  color: #142018;
+}
+:root[data-theme="light"] .admin-content .overview-white-card p,
+:root[data-theme="light"] .admin-content .overview-activity-card p,
+:root[data-theme="light"] .admin-content .activity-copy small,
+:root[data-theme="light"] .admin-content .overview-quick-actions span,
+:root[data-theme="light"] .admin-content .overview-metric span,
+:root[data-theme="light"] .admin-content .overview-metric small {
+  color: #47564a;
+}
+:root[data-theme="dark"] .admin-content .overview-white-card,
+:root[data-theme="dark"] .admin-content .overview-activity-card,
+:root[data-theme="dark"] .admin-content .overview-metric,
+:root[data-theme="dark"] .admin-content .crm-table,
+:root[data-theme="dark"] .admin-content .stat,
+:root[data-theme="dark"] .admin-content .task-list,
+:root[data-theme="dark"] .admin-content .admin-form,
+:root[data-theme="dark"] .admin-content .table-wrap {
+  background: #15181d;
+  border-color: #374151;
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .admin-content .overview-white-card h2,
+:root[data-theme="dark"] .admin-content .overview-activity-card h2,
+:root[data-theme="dark"] .admin-content .overview-metric strong,
+:root[data-theme="dark"] .admin-content .activity-copy strong,
+:root[data-theme="dark"] .admin-content .plan-distribution-row,
+:root[data-theme="dark"] .admin-content .overview-quick-actions strong,
+:root[data-theme="dark"] .admin-content th,
+:root[data-theme="dark"] .admin-content td {
+  color: #f9fafb;
+}
+:root[data-theme="dark"] .admin-content .overview-white-card p,
+:root[data-theme="dark"] .admin-content .overview-activity-card p,
+:root[data-theme="dark"] .admin-content .activity-copy small,
+:root[data-theme="dark"] .admin-content .overview-quick-actions span,
+:root[data-theme="dark"] .admin-content .overview-metric span,
+:root[data-theme="dark"] .admin-content .overview-metric small {
+  color: #cbd5e1;
+}
+.overview-metric-tracking .overview-metric-icon { color: #34d399; }
+.overview-metric-roi .overview-metric-icon { color: #fbbf24; }
+
+/* Blue-first action system: the lime highlight was too bright against both
+   browser themes. Green remains reserved for success and live-status states. */
+:root,
+:root[data-theme="light"],
+:root[data-theme="dark"] {
+  --godev-blue: #4667e8;
+  --godev-blue-hover: #3653c7;
+  --godev-blue-soft: #e8edff;
+  --godev-green: #167a56;
+  --lime: var(--godev-blue);
+  --color-link: var(--godev-blue);
+  --color-accent: var(--godev-blue);
+  --color-accent-hover: var(--godev-blue-hover);
+  --color-accent-ink: #fff;
+  --color-accent-secondary: #90a3ff;
+}
+:root[data-theme="light"] .button.primary,
+:root[data-theme="light"] .button.lime,
+:root[data-theme="light"] .student-primary-action,
+:root[data-theme="light"] .login-link,
+:root[data-theme="light"] .admin-side-link[aria-current="page"],
+:root[data-theme="light"] .portal .sidebar nav a[aria-current="page"],
+:root[data-theme="light"] .theme-toggle button[aria-pressed="true"],
+:root[data-theme="light"] .material-index button[aria-selected="true"] {
+  background: var(--godev-blue);
+  border-color: var(--godev-blue);
+  color: #fff;
+}
+:root[data-theme="dark"] .button.primary,
+:root[data-theme="dark"] .button.lime,
+:root[data-theme="dark"] .student-primary-action,
+:root[data-theme="dark"] .login-link,
+:root[data-theme="dark"] .admin-side-link[aria-current="page"],
+:root[data-theme="dark"] .portal .sidebar nav a[aria-current="page"],
+:root[data-theme="dark"] .theme-toggle button[aria-pressed="true"],
+:root[data-theme="dark"] .material-index button[aria-selected="true"] {
+  background: var(--godev-blue);
+  border-color: var(--godev-blue);
+  color: #fff;
+}
+:root[data-theme="light"] .button.primary:hover,
+:root[data-theme="light"] .button.lime:hover,
+:root[data-theme="light"] .student-primary-action:hover,
+:root[data-theme="light"] .login-link:hover,
+:root[data-theme="dark"] .button.primary:hover,
+:root[data-theme="dark"] .button.lime:hover,
+:root[data-theme="dark"] .student-primary-action:hover,
+:root[data-theme="dark"] .login-link:hover {
+  background: var(--godev-blue-hover);
+  border-color: var(--godev-blue-hover);
+  color: #fff;
+}
+:root[data-theme="light"] .button.secondary,
+:root[data-theme="light"] .student-secondary-action,
+:root[data-theme="light"] .admin-open-student,
+:root[data-theme="light"] .catalog-expand {
+  border-color: #4667e8;
+  color: #2948b7;
+}
+:root[data-theme="dark"] .button.secondary,
+:root[data-theme="dark"] .student-secondary-action,
+:root[data-theme="dark"] .admin-open-student,
+:root[data-theme="dark"] .catalog-expand {
+  border-color: #90a3ff;
+  color: #b9c5ff;
+}
+:root[data-theme="light"] .admin-side-link:hover,
+:root[data-theme="light"] .portal .sidebar nav a:hover,
+:root[data-theme="light"] .theme-toggle button:hover,
+:root[data-theme="light"] .theme-toggle button:focus-visible {
+  background: var(--godev-blue-soft);
+  color: #2948b7;
+}
+:root[data-theme="dark"] .admin-side-link:hover,
+:root[data-theme="dark"] .portal .sidebar nav a:hover,
+:root[data-theme="dark"] .theme-toggle button:hover,
+:root[data-theme="dark"] .theme-toggle button:focus-visible {
+  background: rgb(70 103 232 / 22%);
+  color: #b9c5ff;
+}
+.brand b > span,
+.admin-brand > span > span,
+.portal .sidebar .brand b > span {
+  color: var(--godev-green);
+}
+.danger-button {
+  min-height: 38px;
+  padding: 9px 13px;
+  border: 1px solid #d34b5d;
+  border-radius: 10px;
+  background: transparent;
+  color: #b4233a;
+  font-size: 12px;
+  font-weight: 750;
+}
+.danger-button:hover,
+.danger-button:focus-visible {
+  background: #b4233a;
+  border-color: #b4233a;
+  color: #fff;
+}
+:root[data-theme="dark"] .danger-button {
+  border-color: #ff8a9a;
+  color: #ffb3be;
+}
+:root[data-theme="dark"] .danger-button:hover,
+:root[data-theme="dark"] .danger-button:focus-visible {
+  background: #b4233a;
+  border-color: #ff8a9a;
+  color: #fff;
+}
+.team-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.team-actions .button {
+  white-space: nowrap;
+}
+.crm-table td:last-child {
+  min-width: 142px;
+}
+@media (max-width: 760px) {
+  .admin-content,
+  .workspace {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+  .admin-content .table-wrap,
+  .workspace .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .crm-table {
+    min-width: 780px;
+  }
+  .team-table {
+    min-width: 720px;
+  }
+  .danger-button,
+  .team-actions .button {
+    min-height: 42px;
+  }
+  .student-welcome-actions,
+  .admin-topbar-actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* Authoritative final overrides: keep theme aliases and high-risk text layers
+   on the WCAG palette after all legacy component rules. */
+:root,
+:root[data-theme="light"] {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-link: var(--link);
+  --color-accent: var(--brand-green);
+  --color-accent-hover: var(--brand-green-hover);
+  --color-accent-ink: var(--btn-text);
+  --color-accent-secondary: var(--brand-green);
+  --color-border: var(--border-control);
+  --bg: var(--bg-primary);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
+}
+
+:root[data-theme="dark"],
+:root.dark {
+  --color-bg: var(--bg-primary);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-link: var(--link);
+  --color-accent: var(--brand-green);
+  --color-accent-hover: var(--brand-green-hover);
+  --color-accent-ink: var(--btn-text);
+  --color-accent-secondary: var(--brand-green);
+  --color-border: var(--border-control);
+  --bg: var(--bg-primary);
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--link);
+  --teal: var(--brand-green);
+  --lime: var(--brand-green);
+  --line: var(--border-subtle);
+}
+
+.button.primary,
+.button.lime,
+.student-primary-action,
+.login-link,
+.admin-side-link[aria-current="page"],
+.portal .sidebar nav a[aria-current="page"],
+.theme-toggle button[aria-pressed="true"],
+.material-index button[aria-selected="true"] {
+  background: var(--brand-green) !important;
+  border-color: var(--brand-green) !important;
+  color: var(--btn-text) !important;
+}
+
+.material-index button[aria-selected="true"] > span,
+.material-index button[aria-selected="true"] > b,
+.material-index button[aria-selected="true"] > small {
+  color: var(--btn-text) !important;
+}
+
+.button.primary:hover,
+.button.primary:focus-visible,
+.button.lime:hover,
+.button.lime:focus-visible,
+.student-primary-action:hover,
+.student-primary-action:focus-visible,
+.login-link:hover,
+.login-link:focus-visible {
+  background: var(--brand-green-hover) !important;
+  border-color: var(--brand-green-hover) !important;
+  color: var(--btn-text) !important;
+}
+
+.button.secondary,
+.student-secondary-action,
+.admin-open-student,
+.catalog-expand {
+  background: transparent !important;
+  border-color: var(--brand-green) !important;
+  color: var(--link) !important;
+}
+
+.button.secondary:hover,
+.button.secondary:focus-visible,
+.student-secondary-action:hover,
+.student-secondary-action:focus-visible,
+.admin-open-student:hover,
+.admin-open-student:focus-visible,
+.catalog-expand:hover,
+.catalog-expand:focus-visible {
+  background: var(--brand-soft) !important;
+  color: var(--text-primary) !important;
+}
+
+input,
+select,
+textarea {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-control) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 1;
+}
+
+:root[data-theme="light"] .pricing-section .section-heading h2,
+:root[data-theme="light"] .pricing-section .section-heading p,
+:root[data-theme="light"] .landing-main .section-heading h2,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy {
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .pricing-section .section-heading p,
+:root[data-theme="light"] .landing-main .section-heading p,
+:root[data-theme="light"] .landing-main .large-copy {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="light"] .price-card:not(.premium),
+:root[data-theme="dark"] .price-card:not(.premium),
+:root[data-theme="light"] .price-card.premium,
+:root[data-theme="dark"] .price-card.premium {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.price-card h3,
+.price-card .price,
+.price-card li {
+  color: var(--text-primary) !important;
+}
+
+.price-card > p,
+.price-card .plan-benefit,
+.price-card .price small,
+.price-card .plan-note {
+  color: var(--text-secondary) !important;
+}
+
+.site-footer,
+.site-footer p,
+.site-footer a,
+.admin-content,
+.admin-content p,
+.admin-content small,
+.portal .sidebar,
+.portal .sidebar nav a,
+.admin-side-link {
+  color: var(--text-primary);
+}
+
+.site-footer p,
+.site-footer a:not(.brand),
+.footer-bottom,
+.admin-content p,
+.admin-content small,
+.admin-content label,
+.portal .sidebar nav a,
+.admin-side-link {
+  color: var(--text-secondary);
+}
+
+.brand b > span,
+.admin-brand > span > span,
+.portal .sidebar .brand b > span,
+.admin-live-indicator,
+.student-eyebrow,
+.admin-eyebrow,
+.student-inline-action,
+.student-section-heading > a,
+.site-footer a:hover {
+  color: var(--brand-green);
+}
+
+@media (max-width: 760px) {
+  .container { width: min(100% - 32px, 1200px); }
+  .button,
+  .theme-toggle button,
+  .menu-button,
+  .catalog-arrow { min-height: 44px; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card { min-width: 0; }
+}
+
+/* Premium offer: a self-contained decision surface that remains readable
+   above the older landing-page rules and adapts cleanly on narrow screens. */
+.pricing-grid .price-card.premium {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(1.25rem, 2.4vw, 2.25rem);
+  border: 1px solid color-mix(in srgb, var(--brand-green) 72%, var(--border-control));
+  border-radius: clamp(1rem, 2vw, 1.5rem);
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+}
+
+.pricing-grid .price-card.premium .plan-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .75rem 1rem;
+  min-width: 0;
+}
+
+.pricing-grid .price-card.premium .plan-title h3 {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(1.45rem, 2.5vw, 2rem);
+  line-height: 1.1;
+}
+
+.pricing-grid .price-card.premium .plan-badge {
+  flex: 0 0 auto;
+  max-width: 100%;
+  padding: .35rem .7rem;
+  border: 1px solid color-mix(in srgb, var(--brand-green) 54%, transparent);
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--text-primary);
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pricing-grid .price-card.premium > p,
+.pricing-grid .price-card.premium .plan-benefit,
+.pricing-grid .price-card.premium .price small,
+.pricing-grid .price-card.premium li,
+.pricing-grid .price-card.premium .plan-note {
+  color: var(--text-secondary);
+}
+
+.pricing-grid .price-card.premium .price {
+  margin-block: clamp(1.25rem, 3vw, 2rem) .25rem;
+  color: var(--text-primary);
+  font-size: clamp(2.35rem, 6vw, 3.5rem);
+  line-height: .98;
+  white-space: nowrap;
+}
+
+.pricing-grid .price-card.premium .price small {
+  display: block;
+  margin-top: .55rem;
+  font-size: .8rem;
+  line-height: 1.3;
+  white-space: normal;
+}
+
+.pricing-grid .price-card.premium ul {
+  display: grid;
+  gap: .8rem;
+  min-height: 0;
+  margin-block: 1.5rem 1.75rem;
+}
+
+.pricing-grid .price-card.premium li {
+  display: flex;
+  align-items: flex-start;
+  gap: .7rem;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.pricing-grid .price-card.premium li svg {
+  flex: 0 0 auto;
+  margin-top: .15rem;
+  color: var(--brand-green);
+}
+
+.pricing-grid .price-card.premium .premium-cta {
+  width: 100%;
+  min-height: 3.35rem;
+  margin-top: auto;
+  padding: .85rem 1.25rem;
+  border: 1px solid var(--action-bg);
+  border-radius: .85rem;
+  background: var(--action-bg) !important;
+  color: var(--action-text) !important;
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--action-bg) 28%, transparent);
+  font-weight: 800;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, opacity 180ms ease;
+}
+
+.pricing-grid .price-card.premium .premium-cta:hover,
+.pricing-grid .price-card.premium .premium-cta:focus-visible {
+  background: var(--action-bg-hover) !important;
+  border-color: var(--action-bg-hover);
+  color: var(--action-text) !important;
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px color-mix(in srgb, var(--action-bg-hover) 36%, transparent);
+}
+
+.pricing-grid .price-card.premium .premium-cta:active {
+  transform: translateY(0);
+  opacity: .92;
+}
+
+.pricing-grid .price-card.premium .plan-note {
+  display: block;
+  margin-top: .8rem;
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 560px) {
+  .pricing-grid .price-card.premium {
+    padding: 1.15rem;
+  }
+
+  .pricing-grid .price-card.premium .plan-title {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .pricing-grid .price-card.premium .plan-badge {
+    margin-left: auto;
+  }
+
+  .pricing-grid .price-card.premium .price {
+    font-size: clamp(2.2rem, 12vw, 3rem);
+  }
+
+  .pricing-grid .price-card.premium .premium-cta {
+    min-height: 3.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-grid .price-card.premium .premium-cta {
+    transition: none;
+  }
+}
+
+/* Local surface contract for the revenue hero. It intentionally owns its
+   foreground palette because the card remains dark in the light theme too. */
+.overview-revenue-card {
+  --overview-bg: #075c3b;
+  --overview-fg: #f8fafc;
+  --overview-muted: #d1fae5;
+  --overview-border: rgb(209 250 229 / 28%);
+  background: var(--overview-bg);
+  border: 1px solid var(--overview-border);
+  color: var(--overview-fg);
+}
+
+.overview-revenue-card h2,
+.overview-revenue-card strong,
+.overview-revenue-card .admin-eyebrow,
+.overview-revenue-card .overview-period,
+.overview-revenue-card .overview-total span,
+.overview-revenue-card .overview-chart-column small,
+.overview-revenue-card .overview-card-footer {
+  color: var(--overview-fg);
+}
+
+.overview-revenue-card .admin-eyebrow,
+.overview-revenue-card .overview-total span,
+.overview-revenue-card .overview-chart-column small,
+.overview-revenue-card .overview-card-footer {
+  color: var(--overview-muted);
+}
+
+.overview-revenue-card .overview-period {
+  border-color: var(--overview-border);
+  background: rgb(255 255 255 / 8%);
+}
+
+.overview-revenue-card .overview-chart {
+  border-top-color: var(--overview-border);
+}
+
+.overview-revenue-card .overview-chart-bar {
+  background: linear-gradient(180deg, #a7f3d0, #f0abcf);
+  box-shadow: 0 4px 12px rgb(240 171 207 / 25%);
+}
+
+.overview-revenue-card .status-dot.success { background: #86efac; }
+.overview-revenue-card .status-dot.warning { background: #fde68a; }
+.overview-revenue-card .status-dot.muted { background: #c4b5fd; }
+
+@media (prefers-reduced-motion: reduce) {
+  .overview-revenue-card .overview-chart-bar { transition: none; }
+}
+
+/* Admin and integration surfaces: final theme boundary. These rules are
+   intentionally scoped so legacy dashboard styles cannot leak white surfaces
+   and white text into the dark theme (or low-contrast green into the light one). */
+.admin-content .task-list,
+.admin-content .admin-form,
+.admin-content .table-wrap,
+.admin-content .crm-table,
+.admin-content .overview-white-card,
+.admin-content .overview-activity-card,
+.admin-content .overview-metric,
+.admin-content .card,
+.admin-content .panel,
+.admin-content .admin-card {
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.admin-content .task-list li,
+.admin-content .crm-table th,
+.admin-content .crm-table td,
+.admin-content .admin-form label,
+.admin-content .admin-form p,
+.admin-content .table-wrap p {
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.admin-content .task-list li > span,
+.admin-content .admin-form label,
+.admin-content .admin-form p,
+.admin-content .table-wrap p,
+.admin-content .overview-white-card p,
+.admin-content .overview-activity-card p,
+.admin-content .overview-metric span,
+.admin-content .overview-metric small,
+.admin-content .activity-copy small,
+.admin-content .overview-quick-actions span {
+  color: var(--text-secondary) !important;
+}
+
+.admin-content .task-list li > b {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  padding: .35rem .65rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: .72rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.admin-content .integration-state.is-ready {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.admin-content .integration-state.is-pending {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.admin-content .task-list li {
+  min-width: 0;
+  gap: 1rem;
+  background: var(--surface-elevated) !important;
+}
+
+.admin-content img,
+.admin-content svg,
+.portal img,
+.portal svg {
+  max-width: 100%;
+}
+
+.admin-content .overview-white-card h2,
+.admin-content .overview-activity-card h2,
+.admin-content .overview-metric strong,
+.admin-content .activity-copy strong,
+.admin-content .plan-distribution-row,
+.admin-content .plan-distribution-row b,
+.admin-content .overview-quick-actions strong,
+.admin-content th,
+.admin-content td,
+.admin-content h1,
+.admin-content h2,
+.admin-content h3,
+.admin-content strong {
+  color: var(--text-primary) !important;
+}
+
+.admin-content a:not(.button),
+.admin-content .overview-text-link,
+.admin-content .overview-quick-actions b {
+  color: var(--link) !important;
+}
+
+.admin-content .status-message,
+.admin-content .status-message:not(.warning):not(.error),
+.admin-content .admin-empty-state {
+  background: var(--surface-elevated);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+@media (max-width: 560px) {
+  .admin-content .task-list li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-content .task-list li > b {
+    white-space: normal;
+  }
+}
+/* Timed Premium offer: isolated surface contract for both themes. */
+.premium-offer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: rgb(3 12 8 / 58%);
+  backdrop-filter: blur(6px);
+  animation: premium-offer-fade 220ms ease-out both;
+}
+
+.premium-offer-dialog {
+  --offer-surface: color-mix(in srgb, var(--color-surface, #fff) 92%, transparent);
+  --offer-text: var(--color-text, #111827);
+  --offer-muted: var(--color-text-secondary, #475569);
+  --offer-line: var(--color-border, #cbd5e1);
+  --offer-accent: var(--color-accent, #b7ff3c);
+  --offer-accent-ink: var(--color-accent-ink, #142018);
+  position: relative;
+  width: min(100%, 500px);
+  max-height: min(700px, calc(100dvh - 32px));
+  overflow: auto;
+  padding: clamp(24px, 5vw, 36px);
+  border: 1px solid color-mix(in srgb, var(--offer-line) 80%, transparent);
+  border-radius: 20px;
+  background: #ffffff;
+  background: var(--offer-surface);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 28%), 0 0 0 1px rgb(255 255 255 / 12%) inset;
+  color: var(--offer-text);
+  backdrop-filter: blur(18px);
+  animation: premium-offer-rise 260ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+:root[data-theme="dark"] .premium-offer-dialog {
+  --offer-surface: rgb(17 42 29 / 96%);
+  --offer-text: #f8fafc;
+  --offer-muted: #d1fae5;
+  --offer-line: #4b7862;
+  --offer-accent: #b7ff3c;
+  --offer-accent-ink: #142018;
+}
+
+.premium-offer-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid var(--offer-line);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--offer-surface) 82%, var(--offer-text));
+  color: var(--offer-text);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.premium-offer-close:hover,
+.premium-offer-close:focus-visible { background: var(--offer-text); color: var(--offer-surface); }
+.premium-offer-kicker { margin: 0 48px 12px 0; color: var(--offer-muted); font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.premium-offer-dialog h2 { max-width: 15ch; margin: 0; color: var(--offer-text); font-size: clamp(1.65rem, 4vw, 2.3rem); line-height: 1.08; letter-spacing: -.03em; }
+.premium-offer-description { margin: 16px 0 0; color: var(--offer-muted); font-size: 1rem; line-height: 1.55; }
+.premium-offer-benefits { display: grid; gap: 10px; margin: 24px 0; padding: 0; list-style: none; color: var(--offer-text); }
+.premium-offer-benefits li { position: relative; padding-left: 24px; line-height: 1.45; }
+.premium-offer-benefits li::before { position: absolute; top: .25em; left: 0; content: "✓"; color: var(--offer-accent-ink); font-weight: 900; }
+.premium-offer-price { display: grid; gap: 4px; padding-top: 20px; border-top: 1px solid var(--offer-line); }
+.premium-offer-price strong { color: var(--offer-text); font-size: clamp(2rem, 7vw, 2.8rem); line-height: 1; letter-spacing: -.04em; }
+.premium-offer-price span { color: var(--offer-muted); font-size: .83rem; }
+.premium-offer-actions { display: grid; gap: 10px; margin-top: 24px; }
+.premium-offer-cta { min-height: 52px; justify-content: center; background: var(--offer-accent) !important; color: var(--offer-accent-ink) !important; box-shadow: 0 10px 26px color-mix(in srgb, var(--offer-accent) 30%, transparent); }
+.premium-offer-cta:hover, .premium-offer-cta:focus-visible { box-shadow: 0 14px 34px color-mix(in srgb, var(--offer-accent) 44%, transparent); }
+.premium-offer-secondary { min-height: 44px; border: 0; background: transparent; color: var(--offer-muted); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.premium-offer-secondary:hover, .premium-offer-secondary:focus-visible { color: var(--offer-text); }
+@keyframes premium-offer-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes premium-offer-rise { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) { .premium-offer-backdrop, .premium-offer-dialog { animation: none; } }
+@media (max-width: 480px) { .premium-offer-dialog { border-radius: 16px; padding: 28px 20px 22px; } .premium-offer-dialog h2 { max-width: 16ch; } }
+

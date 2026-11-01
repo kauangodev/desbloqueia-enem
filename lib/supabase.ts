@@ -71,7 +71,7 @@ async function issueResetEmail(email: string) {
 }
 
 const tableAliases: Record<string, string> = { profiles: "users" };
-const tableNames = new Set(["users", "profiles", "admin_invites", "products", "offers", "orders", "payment_events", "entitlements", "materials", "reading_progress", "study_progress", "support_settings", "audit_logs", "storage_files", "assessment_attempts", "essay_submissions", "account_access_fingerprints", "support_tickets", "email_deliveries", "gamification_events", "gamification_goals"]);
+const tableNames = new Set(["users", "profiles", "admin_invites", "products", "offers", "orders", "payment_events", "entitlements", "materials", "reading_progress", "study_progress", "support_settings", "audit_logs", "storage_files", "assessment_attempts", "essay_submissions", "account_access_fingerprints", "support_tickets", "email_deliveries", "gamification_events", "gamification_goals", "quiz_events"]);
 function tableName(table: string) { if (!tableNames.has(table)) throw new Error("Tabela não permitida"); return tableAliases[table] || table; }
 function columnName(column: string) { if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(column)) throw new Error("Coluna inválida"); return column === "date" ? "date_value" : column; }
 function normalizeRow(row: any) { return normalizeMysqlRow(row); }
@@ -218,4 +218,5 @@ export async function identity() {
   return { db, user, profile: profile ? { ...profile, role: normalizedRole(profile.role), admin_role: user.admin_role, account_status: user.account_status } : profile };
 }
 export async function canAccess(plan: string) { const who = await identity(); if (!who) return null; if (who.profile?.role === "admin") return who; const { data } = await who.db.from("entitlements").select("plan").eq("user_id", who.user.id).eq("active", true); return data?.some((e: { plan: string }) => e.plan === "premium" || e.plan === plan) ? who : null; }
+
 
