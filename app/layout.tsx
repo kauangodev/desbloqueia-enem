@@ -1,27 +1,23 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Caveat, Inter, Inter_Tight } from "next/font/google";
+import { Inter, Newsreader } from "next/font/google";
 import "./globals.css";
 import "./ui-finish.css";
 import "./reference-redesign.css";
+import "./reformulation.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
   display: "swap",
 });
-const interTight = Inter_Tight({
+const newsreader = Newsreader({
   subsets: ["latin"],
-  weight: ["700"],
-  variable: "--font-inter-tight",
-  display: "swap",
-});
-const caveat = Caveat({
-  subsets: ["latin"],
-  weight: ["600"],
-  variable: "--font-caveat",
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -52,13 +48,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR">
-      <body className={`${inter.variable} ${interTight.variable} ${caveat.variable}`}>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{document.documentElement.dataset.themeChoice='light';document.documentElement.dataset.theme='light';localStorage.setItem('godev-theme','light')}catch(e){document.documentElement.dataset.theme='light';document.documentElement.dataset.themeChoice='light'}`,
-          }}
-        />
+    <html lang="pt-BR" className={`${inter.variable} ${newsreader.variable}`}>
+      <body>
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo
         </a>

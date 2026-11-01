@@ -22,10 +22,12 @@ export default async function StudentLayout({
         </form>
       </aside>
       <main className="workspace" id="conteudo">
-        <div className="workspace-bar">
-          <span>Desbloqueia ENEM 2026</span>
-          <span className="workspace-bar-tools"><span>Área protegida</span></span>
-        </div>
+        <header className="portal-topbar">
+          <label className="portal-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="5.8" /><path d="m15.2 15.2 4.3 4.3" /></svg><input aria-label="Buscar nos estudos" placeholder="Buscar nos estudos" /></label>
+          <button className="portal-notification" type="button" aria-label="Notificações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 10a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8M10 21h4" /></svg></button>
+          <span className="portal-user-avatar" aria-hidden="true">{(who.profile?.name || "E").slice(0, 1).toUpperCase()}</span>
+          <span className="portal-user-name">{who.profile?.name?.split(" ")[0] || "Estudante"}</span>
+        </header>
         {children}
       </main>
     </div>

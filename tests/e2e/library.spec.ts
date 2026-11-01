@@ -9,6 +9,7 @@ test('biblioteca React: filtro de ano, área, resolução, busca e paginação',
   await page.route('**/component-fixture',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><html lang="pt-BR"><head><title>Teste isolado da biblioteca</title></head><body><main id="root"></main></body></html>'}));
   await page.goto('/component-fixture');
   await page.addStyleTag({content:readFileSync('app/globals.css','utf8')});
+  await page.addStyleTag({content:readFileSync('app/reformulation.css','utf8')});
   await page.addScriptTag({content:bundle.outputFiles[0].text});
   await expect(page.getByRole('status')).toHaveText('1.800 referências encontradas');
   await page.getByRole('button',{name:'Próxima'}).click();
