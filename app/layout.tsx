@@ -40,9 +40,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "GoDev Education",
-    images: [{ url: "/og.svg", width: 1200, height: 630, alt: "GoDev Education — preparação para o ENEM 2026" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "GoDev Education — preparação para o ENEM 2026" }],
   },
-  twitter: { card: "summary_large_image", title: "GoDev Education | ENEM 2026", description: "Sua preparação para o ENEM, organizada com método e clareza.", images: ["/og.svg"] },
+  twitter: { card: "summary_large_image", title: "GoDev Education | ENEM 2026", description: "Sua preparação para o ENEM, organizada com método e clareza.", images: ["/og.jpg"] },
 };
 
 export default function RootLayout({

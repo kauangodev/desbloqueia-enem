@@ -251,7 +251,7 @@ export function CurvedMaterialCarousel() {
                 fill
                 sizes="(max-width: 820px) 180px, 240px"
                 draggable={false}
-                priority={index < 7}
+                priority={index === 0}
               />
             </div>
             <figcaption>

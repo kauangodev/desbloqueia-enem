@@ -14,6 +14,8 @@
     "audit:official-exams": "tsx scripts/audit-official-exams.ts",
     "extract:official-questions": "tsx scripts/extract-official-questions.ts",
     "audit:questions": "tsx scripts/audit-question-bank.ts",
+    "optimize:covers": "node scripts/optimize-covers.mjs",
+    "generate:og": "node scripts/generate-og.mjs",
     "admin:seed": "tsx scripts/setup-admin-user.ts",
     "test:e2e": "playwright test",
     "cakto:plan": "node scripts/cakto-provision.mjs",
@@ -41,6 +43,7 @@
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.2",
+    "sharp": "0.34.3",
     "tsx": "^4.23.15",
     "typescript": "^5.0.0"
   }
