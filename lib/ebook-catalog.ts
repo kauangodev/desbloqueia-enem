@@ -38,7 +38,7 @@ export const ebookMaterials: EbookMaterial[] = entries.map(([order, title, descr
   category,
   pages: 34,
   plan,
-  cover: `/covers/enem-2026/${order}-${slug}.png`,
+  cover: `/covers/enem-2026/optimized/${order}-${slug}-640.webp`,
   storagePath: `private/ebook-${order}-${slug}-v2.pdf`,
   version: 2,
 }));
