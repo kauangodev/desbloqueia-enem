@@ -18,3 +18,4 @@ export default function Error({ reset }: { error: Error & { digest?: string }; r
     </main>
   );
 }
+

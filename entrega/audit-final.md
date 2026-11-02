@@ -30,3 +30,4 @@
 - Upload, webhook e checkout não foram simulados em produção; compras reais permanecem fora do escopo.
 - Lighthouse e logs internos da Hostinger ainda precisam ser coletados no ambiente de publicação para certificar métricas de campo.
 - A tag local `prod-antes-paineis-20261101` aponta para o commit de produção anterior. O push da tag não foi concluído porque o transporte Git solicitou autenticação interativa; não houve force-push nem alteração destrutiva.
+
