@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">GoDev Education — ENEM 2026</title>
+  <desc id="desc">Sua preparação para o ENEM, organizada com método e clareza.</desc>
+  <rect width="1200" height="630" fill="#072A1F"/>
+  <rect x="64" y="64" width="1072" height="502" rx="24" fill="#0B3D2C" stroke="#3F9A68" stroke-width="2"/>
+  <text x="112" y="190" fill="#F2F8F4" font-family="Georgia, serif" font-size="78">GoDev</text>
+  <text x="116" y="232" fill="#9FD3B2" font-family="Arial, sans-serif" font-size="18" letter-spacing="7">EDUCAÇÃO</text>
+  <text x="112" y="360" fill="#FFFFFF" font-family="Georgia, serif" font-size="62">Prepare-se para o ENEM 2026</text>
+  <text x="116" y="418" fill="#D7EADF" font-family="Arial, sans-serif" font-size="27">Questões, simulados e e-books com método e clareza.</text>
+  <rect x="116" y="478" width="220" height="6" rx="3" fill="#9FD3B2"/>
+  <rect x="922" y="378" width="92" height="130" rx="6" fill="#F3F0E8" transform="rotate(7 922 378)"/>
+  <rect x="1008" y="364" width="92" height="130" rx="6" fill="#E6F2EA" transform="rotate(-5 1008 364)"/>
+  <rect x="836" y="398" width="92" height="130" rx="6" fill="#3F9A68" transform="rotate(-12 836 398)"/>
+</svg>
