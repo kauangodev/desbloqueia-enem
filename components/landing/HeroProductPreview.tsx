@@ -49,7 +49,10 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
 
   useEffect(() => {
     if (!complete) return;
-    const timer = window.setTimeout(() => setShowReport(true), 1500);
+    const timer = window.setTimeout(() => {
+      setShowReport(true);
+      window.dispatchEvent(new CustomEvent("godev:demo-report-ready"));
+    }, 1500);
     return () => window.clearTimeout(timer);
   }, [complete]);
 
@@ -80,6 +83,10 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
             <p className={styles.previewResultScore}>Você acertou <b>{score} de {questions.length}</b> questões · <b>{score * 20}%</b> de aproveitamento.</p>
             <div className={styles.previewProgressTrack} aria-label={`${score * 20}% de aproveitamento`}><span style={{ width: `${score * 20}%` }} /></div>
             <p className={styles.previewResultNote}>{passed ? "Continue praticando para transformar consistência em confiança." : "Revise as explicações e tente novamente para acompanhar sua evolução."}</p>
+            {!passed && <div className={styles.previewFocusAreas} role="note">
+              <strong>Prioridade para revisar</strong>
+              <span>{questions.filter((item, index) => answers[index] !== privateQuestions[index]?.answer).map((item) => item.area).filter((area, index, areas) => areas.indexOf(area) === index).join(" · ") || "os fundamentos desta seleção"}</span>
+            </div>}
           </>
         )}
         {showReport && <ol className={styles.previewReport} aria-label="Relatório das cinco questões">
