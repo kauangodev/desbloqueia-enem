@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { materials } from "../../lib/config";
 
 const offsets = [-2, -1, 0, 1, 2] as const;
@@ -10,6 +10,8 @@ export function LandingMaterialCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const pointerStart = useRef<number | null>(null);
+  const pointerMoved = useRef(false);
   const length = materials.length;
 
   useEffect(() => {
@@ -33,8 +35,29 @@ export function LandingMaterialCarousel() {
   const active = materials[activeIndex];
   const move = (direction: number) => setActiveIndex((current) => (current + direction + length) % length);
 
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === "mouse") return;
+    pointerStart.current = event.clientX;
+    pointerMoved.current = false;
+    setPaused(true);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (pointerStart.current === null) return;
+    pointerMoved.current = Math.abs(event.clientX - pointerStart.current) > 8;
+  }
+
+  function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {
+    if (pointerStart.current === null) return;
+    const delta = event.clientX - pointerStart.current;
+    pointerStart.current = null;
+    setPaused(false);
+    if (!pointerMoved.current || Math.abs(delta) < 42) return;
+    move(delta < 0 ? 1 : -1);
+  }
+
   return (
-    <div className="landing-material-carousel" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+    <div className="landing-material-carousel" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerCancel={handlePointerUp}>
       <div className="material-carousel-stage" aria-label="Carrossel dos 16 e-books didáticos">
         {visible.map(({ item, offset }) => (
           <button

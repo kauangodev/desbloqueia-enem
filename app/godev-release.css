@@ -100,6 +100,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .reformulated-landing .material-covers > span { background: var(--release-surface); border-color: var(--release-line); }
 .reformulated-landing .landing-material-carousel { min-width: 0; }
 .reformulated-landing .material-carousel-stage { position: relative; min-height: 330px; overflow: hidden; }
+.reformulated-landing .landing-material-carousel { touch-action: pan-y; }
 .reformulated-landing .material-carousel-card { position: absolute; top: 8px; left: 50%; display: block; width: clamp(132px, 18vw, 190px); padding: 0; border: 1px solid var(--release-line); border-radius: 14px; background: var(--release-surface); box-shadow: 0 14px 28px rgb(16 24 40 / 10%); cursor: pointer; transform: translateX(-50%) scale(.78); opacity: .35; transition: transform .55s cubic-bezier(.2,.8,.2,1), opacity .55s ease, box-shadow .55s ease; }
 .reformulated-landing .material-carousel-card img { display: block; width: 100%; height: auto; border-radius: inherit; }
 .reformulated-landing .material-carousel-card[data-offset="-1"] { transform: translateX(-155%) scale(.9); opacity: .72; }
@@ -121,6 +122,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .reformulated-landing .material-carousel-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: var(--release-line); cursor: pointer; }
 .reformulated-landing .material-carousel-dots button[aria-selected="true"] { width: 22px; border-radius: 999px; background: var(--release-green); }
 .reformulated-landing .ref-price-card.is-premium { background: var(--release-soft); border-color: var(--release-green); }
+.reformulated-landing .ref-price-card.is-premium { transform: translateY(-8px); box-shadow: 0 18px 42px color-mix(in srgb, var(--release-green) 20%, transparent), 0 0 0 1px color-mix(in srgb, var(--release-green) 42%, transparent); }
+.reformulated-landing .ref-price-card.is-premium::before { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 28%); }
 .reformulated-landing .ref-price-card :is(h3,.ref-price,li) { color: var(--release-ink); }
 .reformulated-landing .ref-price-card li span { color: var(--release-green-strong); }
 .reformulated-landing .ref-badge { background: var(--release-green); color: #fff; }
@@ -151,6 +154,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
   color: #fff;
   box-shadow: 0 14px 30px rgb(6 62 45 / 20%);
 }
+.reformulated-landing .ref-guarantee-copy { display: grid; gap: 4px; min-width: 0; }
+.reformulated-landing .ref-guarantee-copy strong { color: #fff; font-size: 1rem; }
+.reformulated-landing .ref-guarantee-copy span { color: #d7f6e4; font-size: .86rem; line-height: 1.45; }
 .reformulated-landing .ref-guarantee-mark { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(167 243 208 / 46%); border-radius: 50%; background: rgb(167 243 208 / 16%); color: #d7f6e4; }
 .reformulated-landing .ref-guarantee-mark svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5; }
 .reformulated-landing .ref-guarantee :is(span,a) { color: #d7f6e4; }
@@ -226,15 +232,16 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .admin-page-header { padding-top: 1.25rem; }
   .demo-aside { grid-template-columns: 1fr; }
   .demo-aside > * { grid-column: auto; }
-  .reformulated-landing .ref-guarantee { grid-template-columns: auto 1fr; gap: 10px 12px; padding: 16px; }
+  .reformulated-landing .ref-guarantee { grid-template-columns: auto minmax(0, 1fr); gap: 10px 12px; padding: 16px; }
   .reformulated-landing .ref-guarantee > a { grid-column: 2; justify-self: start; }
+  .reformulated-landing .ref-price-card.is-premium { transform: none; }
   .portal-mobile-nav { right: .5rem; bottom: max(.5rem, env(safe-area-inset-bottom)); left: .5rem; }
   .reformulated-landing .material-carousel-stage { min-height: 275px; }
   .reformulated-landing .material-carousel-card { width: min(42vw, 160px); }
   .reformulated-landing .material-carousel-card[data-offset="-2"], .reformulated-landing .material-carousel-card[data-offset="2"] { opacity: 0; pointer-events: none; }
   .reformulated-landing .material-carousel-card[data-offset="-1"] { transform: translateX(-128%) scale(.86); }
   .reformulated-landing .material-carousel-card[data-offset="1"] { transform: translateX(28%) scale(.86); }
-  .reformulated-landing .material-carousel-arrow { width: 36px; height: 36px; }
+  .reformulated-landing .material-carousel-arrow { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

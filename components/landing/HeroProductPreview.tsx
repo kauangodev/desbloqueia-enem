@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { questionBank, toPublicQuestion, type PublicQuestion } from "../../data/question-bank";
 import styles from "./reel-hero.module.css";
 
-export function HeroProductPreview({ question, demoAnswer, demoExplanation, demoNextStep }: {
+export function HeroProductPreview({ question, demoAnswer, demoExplanation, demoNextStep: _demoNextStep }: {
   question: PublicQuestion;
   demoAnswer: string;
   demoExplanation: string;
@@ -38,6 +38,13 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
       return;
     }
     setCurrentIndex((index) => index + 1);
+  }
+
+  function restartDemo() {
+    setCurrentIndex(0);
+    setAnswers({});
+    setComplete(false);
+    setShowReport(false);
   }
 
   useEffect(() => {
@@ -94,7 +101,7 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
         </ol>}
         {showReport && <div className={styles.previewResultActions}>
           <a className={styles.previewPrimaryButton} href="#planos">Conhecer os planos</a>
-          <a className={styles.conversionSecondary} href="#planos">Conhecer a plataforma</a>
+          <button className={styles.conversionSecondary} type="button" onClick={restartDemo}>Refazer demonstração</button>
         </div>}
       </article>
     );
@@ -143,10 +150,11 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
         <span aria-live="polite">
           {selected ? "Você pode avançar quando estiver pronto." : "Escolha uma alternativa para experimentar."}
         </span>
-        <a href="#planos" data-analytics-event="hero_demo_plans">Conhecer a plataforma</a>
+        <a href="#planos" data-analytics-event="hero_demo_plans">Conhecer os planos</a>
       </div>
     </article>
   );
 }
+
 
 
