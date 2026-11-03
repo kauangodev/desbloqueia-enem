@@ -1,0 +1,155 @@
+/* GoDev master release layer.
+   Keeps the editorial reference direction while neutralising legacy theme and
+   responsive rules that were fighting the portal shell. */
+:root {
+  --master-bg: #fafaf7;
+  --master-surface: #ffffff;
+  --master-soft: #f2f8f4;
+  --master-ink: #16211b;
+  --master-muted: #5b6660;
+  --master-subtle: #6f7a73;
+  --master-green-950: #072a1f;
+  --master-green-900: #0b3d2c;
+  --master-green-700: #1e6b47;
+  --master-green-100: #e6f2ea;
+  --master-line: #e1e7e2;
+  --master-shadow: 0 14px 34px rgb(22 33 27 / 7%);
+}
+
+:root[data-theme="dark"], :root.dark {
+  --master-bg: #08140f;
+  --master-surface: #10231a;
+  --master-soft: #153326;
+  --master-ink: #f4faf6;
+  --master-muted: #c2d1c7;
+  --master-subtle: #a9bbb0;
+  --master-green-950: #052319;
+  --master-green-900: #0b4932;
+  --master-green-700: #63bd8c;
+  --master-green-100: #194634;
+  --master-line: #315544;
+  --master-shadow: 0 16px 38px rgb(0 0 0 / 24%);
+}
+
+html, body { min-width: 0; overflow-x: clip; }
+body { background: var(--master-bg); color: var(--master-ink); }
+
+/* Stable readable surfaces in both themes. */
+.reformulated-landing, .admin-app, .portal, .admin-workspace,
+.portal .workspace, .student-dashboard { background: var(--master-bg); color: var(--master-ink); }
+.reformulated-landing p, .admin-content p, .admin-content small,
+.admin-content label, .student-dashboard p, .student-dashboard small { color: var(--master-muted); }
+.reformulated-landing h1, .reformulated-landing h2,
+.reformulated-landing h3, .admin-content h1, .admin-content h2,
+.admin-content h3, .student-dashboard h1, .student-dashboard h2,
+.student-dashboard h3 { color: var(--master-ink); }
+.reformulated-landing .landing-materials { background: var(--master-soft); }
+.reformulated-landing .landing-demo, .reformulated-landing .ref-price-card,
+.reformulated-landing .landing-faq .faq-list, .admin-content table,
+.admin-content .card, .admin-content .panel, .admin-content .admin-card,
+.manual-access-form, .student-welcome, .student-stat-card,
+.student-continue-card, .student-profile-card, .student-context-section,
+.student-dashboard .resource { background: var(--master-surface); border-color: var(--master-line); box-shadow: var(--master-shadow); }
+
+.ref-button-primary, .student-primary-action, .button.primary,
+.button.lime { background: var(--master-green-900); color: #fff; }
+.ref-button-primary:hover, .ref-button-primary:focus-visible,
+.student-primary-action:hover, .button.primary:hover,
+.button.lime:hover { background: var(--master-green-700); color: #fff; }
+.ref-button-link, .admin-content a, .student-dashboard a { color: var(--master-green-700); }
+.ref-price-card.is-premium { background: var(--master-soft); border-color: var(--master-green-700); }
+.ref-guarantee { background: var(--master-green-900); color: #fff; }
+.ref-guarantee span, .ref-guarantee a { color: #d7f0df; }
+
+/* Public flow: keep the reference composition compact on tablet/mobile. */
+.landing-hero h1 { max-width: 18ch; margin-inline: auto; text-wrap: balance; }
+.landing-demo { min-width: 0; }
+.demo-aside, .demo-sidebar, .demo-tab, .demo-number-grid { min-width: 0; }
+.demo-tab { white-space: nowrap; }
+.landing-faq { width: min(100% - 32px, 1200px); margin-inline: auto; }
+.landing-faq .faq-list { max-width: 760px; margin-inline: auto; }
+.landing-materials .material-index { scrollbar-width: thin; }
+.landing-materials .material-index > button { min-width: 132px; }
+
+/* The portal has one source of truth for layout at each breakpoint. */
+.admin-app, .portal { min-width: 0; }
+.admin-content, .student-dashboard, .admin-workspace, .portal .workspace { min-width: 0; max-width: none; }
+.admin-content { width: min(100%, 1500px); margin-inline: auto; }
+.admin-content .crm-heading, .admin-content .admin-hero,
+.student-section-heading, .student-welcome { min-width: 0; }
+.admin-content .crm-heading > *, .admin-content .admin-hero > *,
+.student-section-heading > *, .student-welcome > * { min-width: 0; }
+.admin-content .table-wrap { max-width: 100%; overflow-x: auto; }
+.admin-content table { min-width: 680px; }
+.student-dashboard .resource-grid { min-width: 0; }
+.student-dashboard .resource-info, .student-dashboard .resource-info * { min-width: 0; overflow-wrap: anywhere; }
+
+/* Desktop grid: sidebar participates in the grid and never overlays content. */
+@media (min-width: 1200px) {
+  .admin-app { grid-template-columns: 260px minmax(0, 1fr); gap: 24px; padding: 24px; }
+  .portal { grid-template-columns: 260px minmax(0, 1fr); }
+  .admin-sidebar, .portal .sidebar { position: sticky; inset: auto; width: auto; height: calc(100svh - 48px); min-height: 0; overflow-y: auto; }
+  .portal .sidebar { height: 100svh; }
+}
+
+/* Tablet rail: 76px is reserved in the grid, so content remains usable. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .admin-app { grid-template-columns: 76px minmax(0, 1fr); gap: 16px; padding: 16px; }
+  .portal { grid-template-columns: 76px minmax(0, 1fr); }
+  .admin-sidebar, .portal .sidebar { position: sticky; inset: auto; width: 76px; height: calc(100svh - 32px); min-height: 0; overflow-y: auto; padding-inline: 8px; }
+  .portal .sidebar { height: 100svh; }
+  .admin-brand > span, .admin-brand small, .admin-sidebar-label,
+  .admin-side-link > span:last-child, .portal .sidebar .brand-sub,
+  .portal .sidebar nav a > span:last-child, .portal .sidebar form { display: none; }
+  .admin-brand, .portal .sidebar .brand { justify-content: center; padding-inline: 0; }
+  .admin-side-link, .portal .sidebar nav a { justify-content: center; padding-inline: 8px; }
+  .admin-side-icon, .portal-nav-icon { margin-inline: auto; }
+  .admin-sidebar-footer { justify-content: center; }
+  .admin-profile > span:last-child { display: none; }
+}
+
+/* Phone: the closed drawer is removed from document flow; the bottom nav is
+   the only persistent navigation. This eliminates the large empty top band. */
+@media (max-width: 899px) {
+  .admin-app, .portal { display: block; padding: 0; }
+  .admin-sidebar, .portal .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 60; width: min(86vw, 320px); height: 100dvh; min-height: 100dvh; transform: translateX(-110%); overflow-y: auto; border-radius: 0; padding: 24px 18px; transition: transform 220ms ease-out; }
+  body[data-drawer-open="admin"] .admin-sidebar,
+  body[data-drawer-open="student"] .portal .sidebar { transform: translateX(0); }
+  .admin-workspace, .portal .workspace { width: 100%; min-height: 100svh; border-radius: 0; }
+  .admin-topbar, .portal-topbar { min-height: 64px; padding: 10px 16px; }
+  .admin-content { width: 100%; padding: 24px 16px 92px; }
+  .portal .workspace { padding-inline: 16px; padding-bottom: 92px; }
+  .admin-content .admin-hero { align-items: flex-start; flex-direction: column; }
+  .admin-overview-metrics, .student-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .overview-grid, .overview-lower-grid, .student-dashboard-grid { grid-template-columns: 1fr; }
+  .student-welcome { grid-template-columns: 1fr; }
+  .student-welcome-art { min-height: 140px; }
+  .portal-mobile-nav { display: grid; }
+  .drawer-trigger { position: relative; z-index: 70; }
+}
+
+@media (max-width: 599px) {
+  .admin-content .page-title, .student-welcome h1 { font-size: clamp(2rem, 10vw, 2.8rem); }
+  .admin-overview-metrics, .student-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .student-stat-card { padding: 16px 14px; }
+  .student-stat-card strong { font-size: clamp(1.45rem, 8vw, 2rem); }
+  .landing-hero { padding-inline: 16px; }
+  .landing-hero h1 { font-size: clamp(2.25rem, 12vw, 3.4rem); }
+  .landing-actions { width: 100%; flex-direction: column; align-items: stretch; }
+  .landing-actions .ref-button { width: 100%; }
+  .demo-aside { grid-template-columns: 1fr; }
+  .demo-aside > * { grid-column: auto; }
+  .demo-aside .demo-number-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .portal-mobile-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .portal-mobile-nav > a, .portal-mobile-nav > button { min-width: 0; font-size: 10px; }
+}
+
+@media (max-width: 380px) {
+  .admin-content, .portal .workspace { padding-inline: 12px; }
+  .admin-overview-metrics, .student-stat-grid { grid-template-columns: 1fr; }
+  .portal-mobile-nav { right: 6px; left: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-sidebar, .portal .sidebar { transition: none; }
+}
