@@ -6,6 +6,7 @@ import "./ui-finish.css";
 import "./reference-redesign.css";
 import "./reformulation.css";
 import "./final-ui.css";
+import "./master-fix.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 
@@ -63,6 +64,7 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
 

@@ -37,6 +37,7 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
     ["", "Início", "home"],
     ["materiais", "Estudar", "book"],
     ["exercicios", "Praticar", "check"],
+    ["simulados", "Simulados", "target"],
   ] as const;
   const moreLinks = [
     ["simulados", "Simulados", "target"],
@@ -85,4 +86,5 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
     </>
   );
 }
+
 
