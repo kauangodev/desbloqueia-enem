@@ -45,12 +45,17 @@
 - A navegação móvel passou a expor também `Simulados`, evitando que a rota fique escondida em uma camada secundária.
 - As referências recebidas foram versionadas em `docs/referencias/`.
 - A preview local foi revisada visualmente em viewport estreito; a composição do quiz, CTA, título e card permanece legível e sem overflow horizontal aparente.
+- Criado o branch de release `release/godev-reformulacao` a partir de `origin/main`.
+- Adicionada a camada final `app/godev-release.css`, com tokens explícitos para os temas, CTA/inputs com contraste reforçado, drawer móvel e sidebar legível em tablet.
+- O cabeçalho administrativo agora é contextual: a saudação completa aparece apenas em `visao`; as outras abas têm cabeçalho próprio, evitando repetição e rolagem artificial.
+- Detector Impeccable executado em `components/landing/LandingPage.tsx` e `app/admin/page.tsx`: retorno `[]`.
 
 ## Limitação registrada
 
-O launcher local do Impeccable aceitou `context`, mas não expôs os subcomandos `critique`, `init` ou `audit`. A auditoria foi executada diretamente no código, nos tokens CSS, na suíte automatizada e na preview renderizada; isso está registrado em `entrega/impeccable-log.md`.
+O launcher local do Impeccable aceitou `context` e `detect`; o detector retornou `[]` nos componentes-alvo. A auditoria visual foi executada diretamente no código, nos tokens CSS, na suíte automatizada e na preview renderizada; os subcomandos conversacionais não ficam disponíveis como automação terminal nesta instalação.
 
 ## Gate de publicação
 
-Os gates locais continuam verdes: typecheck, build, 35 testes e diff sem whitespace errors. A publicação remota deve ser considerada concluída somente após o commit aparecer no pipeline da Hostinger e a rota pública `/landing` retornar HTTP 200.
+Os gates locais continuam verdes: typecheck, lint direcionado, build e 35 testes. A publicação remota deve ser considerada concluída somente após o commit aparecer no pipeline da Hostinger e as rotas públicas retornarem HTTP 200.
+
 
