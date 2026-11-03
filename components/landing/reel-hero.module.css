@@ -687,6 +687,8 @@
   box-shadow: 0 10px 22px color-mix(in srgb, var(--hero-accent) 18%, transparent);
   transform: translateX(3px);
 }
+.previewOption:active { transform: translateX(3px) scale(.985); }
+.previewOptionSelected { animation: option-selected 360ms ease-out both; }
 
 .previewOption:focus-visible,
 .previewOptionSelected:focus-visible { outline: 3px solid color-mix(in srgb, var(--hero-accent) 48%, transparent); outline-offset: 2px; }
@@ -745,6 +747,8 @@
 .previewNextButton:focus-visible,
 .previewPrimaryButton:hover,
 .previewPrimaryButton:focus-visible { transform: translateY(-1px); filter: brightness(1.04); box-shadow: 0 10px 22px color-mix(in srgb, var(--hero-accent) 25%, transparent); }
+.previewNextButton:not(:disabled) { animation: next-attention 2.8s ease-in-out infinite; }
+.previewNextButton:active, .previewPrimaryButton:active { transform: translateY(1px) scale(.985); }
 .previewFeedback .previewNextButton { margin-top: 4px; justify-self: start; }
 .previewNextRow {
   display: flex;
@@ -796,6 +800,8 @@
 @keyframes result-pop { from { opacity: 0; transform: scale(.75); } to { opacity: 1; transform: scale(1); } }
 @keyframes result-draw { from { stroke-dasharray: 0 150; } to { stroke-dasharray: 150 150; } }
 @keyframes result-pulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--hero-accent) 0%, transparent); } 50% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--hero-accent) 16%, transparent); } }
+@keyframes option-selected { from { opacity: .72; transform: translateX(0) scale(.985); } to { opacity: 1; transform: translateX(3px) scale(1); } }
+@keyframes next-attention { 0%, 72%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--hero-accent) 0%, transparent); } 84% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--hero-accent) 14%, transparent); } }
 .conversionFootnote { display: flex; flex-wrap: wrap; gap: 12px 28px; width: min(1200px, 100%); margin: clamp(40px, 6vw, 70px) auto 0; padding-top: 16px; border-top: 1px solid var(--hero-line); color: var(--hero-muted); font-size: .78rem; }
 .conversionFootnote span::before { content: "✓"; margin-right: 7px; color: var(--hero-accent); font-weight: 900; }
 
@@ -845,10 +851,11 @@
   .previewOptionSelected,
   .previewProgressTrack span,
   .previewNextButton,
-  .previewPrimaryButton { transition: none; }
+  .previewPrimaryButton { transition: none; animation: none; }
   .previewResultIcon,
   .previewResultIcon svg { animation: none; }
 }
+
 
 
 
