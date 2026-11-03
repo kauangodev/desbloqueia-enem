@@ -248,3 +248,115 @@ body { background: var(--master-bg); color: var(--master-ink); }
   .reformulated-landing .landing-stat-strip i { height: 1rem; }
   .reformulated-landing .ref-pricing-grid { grid-template-columns: 1fr; }
 }
+
+/* Final interaction pass: compact controls, clear states, and no duplicate catalog wall. */
+.reformulated-landing .ref-button {
+  position: relative;
+  min-height: 2.7rem;
+  border-radius: .55rem;
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+.reformulated-landing .ref-button-primary {
+  box-shadow: 0 8px 18px rgb(11 61 44 / 14%);
+}
+.reformulated-landing .ref-button-primary:hover,
+.reformulated-landing .ref-button-primary:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgb(11 61 44 / 22%);
+}
+.reformulated-landing .ref-button-link {
+  padding-inline: .35rem;
+  border-bottom: 1px solid currentColor;
+  border-radius: 0;
+}
+.reformulated-landing .ref-button-link:hover,
+.reformulated-landing .ref-button-link:focus-visible {
+  background: transparent;
+  color: var(--master-green-950);
+  transform: translateY(-1px);
+}
+.reformulated-landing .landing-areas,
+.reformulated-landing .landing-steps,
+.reformulated-landing .landing-pricing,
+.reformulated-landing .landing-faq {
+  content-visibility: auto;
+  contain-intrinsic-size: 520px;
+}
+.reformulated-landing .landing-materials .materials-intro {
+  padding-bottom: clamp(2.75rem, 5vw, 4.25rem);
+}
+.reformulated-landing .landing-materials .landing-stat-strip {
+  border-top: 1px solid var(--master-line);
+}
+.reformulated-landing .landing-demo {
+  animation: landing-card-in 650ms cubic-bezier(.2,.8,.2,1) both;
+}
+.reformulated-landing .landing-steps article,
+.reformulated-landing .landing-areas .area-grid > div,
+.reformulated-landing .material-covers > span,
+.reformulated-landing .ref-price-card {
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+.reformulated-landing .landing-steps article:hover,
+.reformulated-landing .landing-areas .area-grid > div:hover,
+.reformulated-landing .material-covers > span:hover,
+.reformulated-landing .ref-price-card:hover {
+  transform: translateY(-3px);
+}
+.reformulated-landing .landing-steps article:hover .step-number,
+.reformulated-landing .landing-areas .area-grid > div:hover .area-icon {
+  background: var(--master-green-900);
+  color: #fff;
+}
+.reformulated-landing .ref-price-card .ref-button { width: 100%; }
+.reformulated-landing .landing-faq .faq-list button { min-height: 3.5rem; }
+.login-link {
+  min-height: 2.55rem;
+  padding: .55rem 1rem;
+  border-radius: .55rem;
+  box-shadow: none;
+  transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+.login-link:hover,
+.login-link:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgb(8 72 45 / 18%);
+}
+
+/* The admin overview is information-dense by design; reduce dead space so the
+   first operational view remains scannable without a long initial scroll. */
+.admin-content { padding: clamp(18px, 2.7vw, 34px); }
+.admin-content .admin-hero { margin-bottom: 1.15rem; }
+.admin-content .admin-hero .page-title { font-size: clamp(2rem, 4vw, 3.35rem); }
+.admin-overview { gap: 12px; }
+.overview-grid, .overview-lower-grid { gap: 12px; }
+.overview-revenue-card { min-height: 286px; padding: 22px; border-radius: 20px; }
+.overview-total { margin-top: 20px; }
+.overview-total strong { font-size: clamp(2rem, 3.4vw, 3rem); }
+.overview-activity-card, .overview-white-card { padding: 18px; border-radius: 18px; }
+.admin-overview-metrics { gap: 10px; }
+.overview-metric { min-height: 84px; padding: 12px 14px; border-radius: 15px; }
+.overview-metric strong { font-size: 1.45rem; }
+.quiz-funnel-card { padding-block: 16px; }
+.overview-quick-actions { margin-top: 12px; }
+@media (max-width: 760px) {
+  .admin-content { padding: 18px 14px 34px; }
+  .admin-content .admin-hero { margin-bottom: 16px; }
+  .overview-revenue-card { min-height: 248px; padding: 18px; }
+  .overview-total { margin-top: 14px; }
+}
+@keyframes landing-card-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reformulated-landing .landing-demo,
+  .reformulated-landing .landing-steps article,
+  .reformulated-landing .landing-areas .area-grid > div,
+  .reformulated-landing .material-covers > span,
+  .reformulated-landing .ref-price-card,
+  .login-link { animation: none; transition: none; transform: none; }
+}
