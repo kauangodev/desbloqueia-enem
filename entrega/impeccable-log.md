@@ -8,11 +8,11 @@
 
 ## Limitação do launcher
 
-O launcher local respondeu `Unknown command: "critique"` ao tentar executar a auditoria pelo subcomando. A instalação disponível não expôs `init`, `critique` ou `audit` como comandos de terminal. Não houve tentativa de contornar isso com scripts não oficiais.
+O launcher local expôs `context` e `detect`; os comandos conversacionais `init`, `critique` e `audit` não ficam disponíveis como automação terminal nesta instalação. Não houve tentativa de contornar isso com scripts não oficiais.
 
 ## Substituição aplicada
 
-Foi feita auditoria direta dos componentes e das folhas carregadas, seguida de validação da preview renderizada e dos gates de typecheck, testes, build e diff. A correção foi isolada em `app/master-fix.css` e em uma inclusão de item na navegação móvel, preservando o backend e as rotas existentes.
+Foi feita auditoria direta dos componentes e das folhas carregadas, seguida do detector em dois componentes-alvo, validação da preview renderizada e dos gates de typecheck, lint direcionado, testes e build. A correção foi isolada em `app/godev-release.css`, com ajuste contextual em `app/admin/page.tsx` e import em `app/layout.tsx`, preservando o backend e as rotas existentes.
 
 ## Escopo validado
 
@@ -22,4 +22,6 @@ Foi feita auditoria direta dos componentes e das folhas carregadas, seguida de v
 - Barra inferior com cinco destinos.
 - CTA e demonstração de questões na landing.
 - Ausência de overflow horizontal intencional no preview estreito.
+- Detector Impeccable em `components/landing/LandingPage.tsx` e `app/admin/page.tsx`: `[]`.
+
 

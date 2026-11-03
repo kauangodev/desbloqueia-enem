@@ -614,19 +614,28 @@ export default async function Admin({
           </div>
         </header>
         <div className="admin-content">
-          <div className="admin-hero">
-            <div>
-              <span className="eyebrow">Central de gestão</span>
-              <h1 className="page-title">Olá, {who.profile?.name || "Administrador"}</h1>
-              <p>Acompanhe sua plataforma hoje.</p>
+          {tab === "visao" ? (
+            <div className="admin-hero">
+              <div>
+                <span className="eyebrow">Central de gestão</span>
+                <h1 className="page-title">Olá, {who.profile?.name || "Administrador"}</h1>
+                <p>Acompanhe sua plataforma hoje.</p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <header className="admin-page-header">
+              <span className="eyebrow">Central de gestão</span>
+              <h1 className="page-title">{tab === "alunos" ? "CRM de alunos" : tab === "produtos" ? "Produtos e planos" : tab === "materiais" ? "Materiais didáticos" : tab === "questoes" ? "Banco de questões" : tab === "equipe" ? "Equipe e permissões" : tab === "tickets" ? "Atendimento" : "Operação"}</h1>
+              <p>Gerencie esta frente com clareza e acompanhe o próximo passo.</p>
+            </header>
+          )}
           {content}
         </div>
       </section>
     </main>
   );
 }
+
 
 
 

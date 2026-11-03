@@ -7,6 +7,7 @@ import "./reference-redesign.css";
 import "./reformulation.css";
 import "./final-ui.css";
 import "./master-fix.css";
+import "./godev-release.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 
@@ -64,6 +65,7 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
 
