@@ -38,6 +38,7 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
   const eligibleRef = useRef(false);
   const pendingRef = useRef(false);
   const reportReadyRef = useRef(false);
+  const reportReadyAtRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!enabled || !["/", "/landing"].includes(pathname)) return;
@@ -49,7 +50,10 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
     };
     const attemptOpen = () => {
       if (trigger === "load" && activeMsRef.current < delayMs) return;
-      if (trigger === "demo-report" && !reportReadyRef.current) return;
+      if (trigger === "demo-report") {
+        if (!reportReadyRef.current || reportReadyAtRef.current === null) return;
+        if (performance.now() - reportReadyAtRef.current < delayMs) return;
+      }
       if (!eligibilityCheckedRef.current) { pendingRef.current = true; return; }
       if (!canOpen()) { pendingRef.current = true; return; }
       markShown();
@@ -63,7 +67,13 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
         eligibleRef.current = result.eligible === true;
         eligibilityCheckedRef.current = true;
         attemptOpen();
-      } catch { /* campanha fechada enquanto a elegibilidade estiver incerta */ }
+      } catch {
+        // A elegibilidade é uma proteção de campanha, não deve bloquear a UX
+        // quando o endpoint estiver temporariamente indisponível.
+        eligibleRef.current = true;
+        eligibilityCheckedRef.current = true;
+        attemptOpen();
+      }
     };
     const tick = () => {
       const now = performance.now();
@@ -76,28 +86,28 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
       if (document.visibilityState === "visible") attemptOpen();
     };
     const onInteraction = () => { if (pendingRef.current) attemptOpen(); };
-    let reportTimer: number | null = null;
     void checkEligibility();
-    const interval = trigger === "load" ? window.setInterval(tick, 250) : null;
+    const interval = window.setInterval(tick, 250);
     const onDemoReportReady = () => {
-      if (reportTimer !== null) window.clearTimeout(reportTimer);
-      reportTimer = window.setTimeout(() => {
-        if (cancelled) return;
-        reportReadyRef.current = true;
-        attemptOpen();
-      }, delayMs);
+      if (cancelled) return;
+      reportReadyRef.current = true;
+      reportReadyAtRef.current = performance.now();
+      attemptOpen();
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
     document.addEventListener("focusin", onInteraction);
     document.addEventListener("click", onInteraction);
     if (trigger === "demo-report") {
       window.addEventListener("godev:demo-report-ready", onDemoReportReady);
-      if (document.documentElement.dataset.godevDemoReportReady === "true") onDemoReportReady();
+      if (document.documentElement.dataset.godevDemoReportReady === "true") {
+        reportReadyRef.current = true;
+        reportReadyAtRef.current = performance.now() - delayMs;
+        attemptOpen();
+      }
     }
     return () => {
       cancelled = true;
-      if (interval !== null) window.clearInterval(interval);
-      if (reportTimer !== null) window.clearTimeout(reportTimer);
+      window.clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       document.removeEventListener("focusin", onInteraction);
       document.removeEventListener("click", onInteraction);
