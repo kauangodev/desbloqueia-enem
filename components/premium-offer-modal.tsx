@@ -90,7 +90,10 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
     document.addEventListener("visibilitychange", onVisibilityChange);
     document.addEventListener("focusin", onInteraction);
     document.addEventListener("click", onInteraction);
-    if (trigger === "demo-report") window.addEventListener("godev:demo-report-ready", onDemoReportReady);
+    if (trigger === "demo-report") {
+      window.addEventListener("godev:demo-report-ready", onDemoReportReady);
+      if (document.documentElement.dataset.godevDemoReportReady === "true") onDemoReportReady();
+    }
     return () => {
       cancelled = true;
       if (interval !== null) window.clearInterval(interval);
