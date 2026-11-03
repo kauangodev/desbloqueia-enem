@@ -45,12 +45,14 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
     setAnswers({});
     setComplete(false);
     setShowReport(false);
+    delete document.documentElement.dataset.godevDemoReportReady;
   }
 
   useEffect(() => {
     if (!complete) return;
     const timer = window.setTimeout(() => {
       setShowReport(true);
+      document.documentElement.dataset.godevDemoReportReady = "true";
       window.dispatchEvent(new CustomEvent("godev:demo-report-ready"));
     }, 1500);
     return () => window.clearTimeout(timer);
