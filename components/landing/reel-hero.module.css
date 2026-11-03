@@ -796,6 +796,18 @@
 .previewReportCorrect { border-color: color-mix(in srgb, #34d399 55%, var(--hero-line)) !important; }
 .previewReportCorrect > span { background: #34d399 !important; color: #062118 !important; }
 .previewReportMissed > span { background: color-mix(in srgb, #f59e0b 20%, var(--hero-surface)) !important; color: #d69a28 !important; }
+.previewFocusAreas {
+  display: grid;
+  gap: 4px;
+  margin-top: 2px;
+  padding: 11px 13px;
+  border: 1px solid color-mix(in srgb, #f59e0b 52%, var(--hero-line));
+  border-radius: 10px;
+  background: color-mix(in srgb, #f59e0b 10%, var(--hero-surface));
+  text-align: left;
+}
+.previewFocusAreas strong { color: var(--hero-ink); font-size: .78rem; }
+.previewFocusAreas span { color: var(--hero-muted); font-size: .75rem; line-height: 1.4; }
 .previewResultActions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; }
 .previewResultActions .conversionSecondary { min-height: 42px; padding: 10px 16px; font-size: .8rem; }
 @keyframes result-pop { from { opacity: 0; transform: scale(.75); } to { opacity: 1; transform: scale(1); } }
