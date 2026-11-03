@@ -37,9 +37,9 @@ export function Header() {
           className={open ? "nav open" : "nav"}
         >
           {[
-            ["O Kit", "/landing"],
-            ["Materiais", "/landing#materiais"],
+            ["Recursos", "/landing#conteudo"],
             ["Planos", "/landing#planos"],
+            ["E-books", "/landing#materiais"],
             ["Dúvidas", "/landing#duvidas"],
           ].map(([label, href], index) => (
             <Link key={href} href={href} ref={index === 0 ? firstLink : undefined} onClick={() => setOpen(false)}>
