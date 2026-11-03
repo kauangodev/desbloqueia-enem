@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 type PremiumOfferModalProps = {
   enabled: boolean;
   delayMs: number;
+  trigger?: "load" | "demo-report";
   cooldownDays: number;
   campaignId: string;
   checkoutHref: string;
@@ -25,7 +26,7 @@ function formatMoney(cents: number) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-export default function PremiumOfferModal({ enabled, delayMs, cooldownDays: _cooldownDays, campaignId, checkoutHref, plan }: PremiumOfferModalProps) {
+export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", cooldownDays: _cooldownDays, campaignId, checkoutHref, plan }: PremiumOfferModalProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -72,19 +73,32 @@ export default function PremiumOfferModal({ enabled, delayMs, cooldownDays: _coo
       if (document.visibilityState === "visible") attemptOpen();
     };
     const onInteraction = () => { if (pendingRef.current) attemptOpen(); };
+    let reportTimer: number | null = null;
     void checkEligibility();
-    const interval = window.setInterval(tick, 250);
+    const interval = trigger === "load" ? window.setInterval(tick, 250) : null;
+    const onDemoReportReady = () => {
+      if (reportTimer !== null) window.clearTimeout(reportTimer);
+      reportTimer = window.setTimeout(() => {
+        if (!cancelled && canOpen()) {
+          markShown();
+          setOpen(true);
+        }
+      }, delayMs);
+    };
     document.addEventListener("visibilitychange", onVisibilityChange);
     document.addEventListener("focusin", onInteraction);
     document.addEventListener("click", onInteraction);
+    if (trigger === "demo-report") window.addEventListener("godev:demo-report-ready", onDemoReportReady);
     return () => {
       cancelled = true;
-      window.clearInterval(interval);
+      if (interval !== null) window.clearInterval(interval);
+      if (reportTimer !== null) window.clearTimeout(reportTimer);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       document.removeEventListener("focusin", onInteraction);
       document.removeEventListener("click", onInteraction);
+      if (trigger === "demo-report") window.removeEventListener("godev:demo-report-ready", onDemoReportReady);
     };
-  }, [campaignId, delayMs, enabled, pathname]);
+  }, [campaignId, delayMs, enabled, pathname, trigger]);
 
   useEffect(() => {
     if (!open) return;
