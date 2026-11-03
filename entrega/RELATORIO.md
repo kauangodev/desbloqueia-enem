@@ -1,4 +1,4 @@
-# GoDev Education — relatório de auditoria v2
+# GoDev Education — relatório de auditoria v3
 
 ## A. Auditoria inicial
 
@@ -11,6 +11,9 @@ O projeto é Next.js App Router com `/` e `/diagnostico` como quiz de entrada, `
 - A prévia social passou a usar `public/og.jpg`, 1200×630 e abaixo de 200 KB.
 - O carrossel reserva prioridade apenas para a primeira imagem.
 - 404, erro de rota e erro global permanecem em português.
+- As referências fornecidas para landing, quiz, aluno e admin foram copiadas para `docs/referencias/`.
+- Foi criada uma camada visual final em `app/master-fix.css` para neutralizar conflitos do CSS legado sem alterar backend, preços, autenticação ou checkout.
+- O fluxo público mantém o quiz de cinco questões da demonstração com correção apenas no resumo final.
 
 ## C. Técnico
 
@@ -21,7 +24,9 @@ O projeto é Next.js App Router com `/` e `/diagnostico` como quiz de entrada, `
 
 ## D. Responsividade e acessibilidade
 
-As larguras cobertas pela suíte existente incluem 320, 360, 390, 430, 768, 1024, 1440 e 1920px. A suíte E2E inclui navegação, catálogo, redução de movimento, rotas protegidas, políticas, suporte e acessibilidade automatizada.
+As larguras cobertas pela suíte existente incluem 320, 360, 390, 430, 768, 1024, 1440 e 1920px. A suíte E2E inclui navegação, catálogo, redução de movimento, rotas protegidas, políticas, suporte e acessibilidade automatizada. A camada final corrige o layout comprimido do shell em tablet, retira a sidebar fechada do fluxo em mobile, reserva espaço para a navegação inferior e mantém tabelas roláveis dentro do contêiner.
+
+Tokens de superfície, texto, borda e ação foram separados para que o tema escuro não herde texto claro em fundos claros nem o tema claro herde verde de baixa legibilidade. A navegação móvel passou a conter cinco destinos, incluindo Simulados.
 
 ## E. Segurança
 
@@ -41,9 +46,11 @@ Nenhuma credencial foi adicionada, nenhum banco de produção foi modificado e n
 
 As capas de 320px ficaram entre 17 KB e 20 KB; as de 640px e 960px também ficaram abaixo de 200 KB. Lighthouse de campo não foi executado neste ambiente.
 
-## H. GitHub
+## H. Impeccable e GitHub
 
 Branch de trabalho: `release/godev-premium`. A publicação deve ocorrer por PR para `main`, sem force-push. O commit aprovado da rodada anterior foi `14bca3614ab282d47a1d2ec3afc040cb77b403fc`; esta rodada ainda precisa de um novo PR após os testes finais.
+
+O contexto do Impeccable foi carregado. O launcher local não reconheceu `critique`, `init` ou `audit`; a substituição segura foi a auditoria direta do código, preview renderizada e gates automatizados, sem mascarar a limitação.
 
 ## I. Hostinger/publicação
 
@@ -58,3 +65,8 @@ O domínio público é atendido pelo pipeline GitHub/Vercel disponível nesta se
 ## K. Parecer
 
 **APTO COM RESSALVAS para a rodada visual e técnica local.** O código e os testes locais estão verdes, mas a homologação autenticada, métricas Lighthouse de campo e operações de pagamento/Hostinger ainda não têm evidência suficiente para um parecer irrestrito de produção.
+
+## L. Entrega desta rodada
+
+O parecer desta rodada permanece **APTO COM RESSALVAS** até que o pipeline remoto seja verificado. A versão não deve ser descrita como 100% homologada sem teste autenticado real, webhook assinado, checkout e métricas de campo.
+

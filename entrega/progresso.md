@@ -38,6 +38,19 @@
 - `pnpm audit --prod --audit-level high`: nenhum alerta conhecido.
 - Após as mudanças: build aprovado, 19/19 E2E aprovados e 35/35 testes unitários aprovados.
 
-## Próximo gate
+## Fase final — shell responsivo, contraste e publicação
 
-Criar commit da fase e abrir PR para `main`. A publicação só ocorre após os checks remotos verdes; não executar compra, migração ou alteração de segredo em produção.
+- Adicionado `app/master-fix.css` como camada final de tokens e correções, com superfícies legíveis nos temas claro/escuro, contraste AA para texto principal, botões e cards, e regras responsivas mobile/tablet/desktop.
+- O shell administrativo e do aluno agora reserva espaço real para a navegação: sidebar em grid no desktop/tablet, drawer fora do fluxo no mobile e barra inferior com cinco destinos úteis.
+- A navegação móvel passou a expor também `Simulados`, evitando que a rota fique escondida em uma camada secundária.
+- As referências recebidas foram versionadas em `docs/referencias/`.
+- A preview local foi revisada visualmente em viewport estreito; a composição do quiz, CTA, título e card permanece legível e sem overflow horizontal aparente.
+
+## Limitação registrada
+
+O launcher local do Impeccable aceitou `context`, mas não expôs os subcomandos `critique`, `init` ou `audit`. A auditoria foi executada diretamente no código, nos tokens CSS, na suíte automatizada e na preview renderizada; isso está registrado em `entrega/impeccable-log.md`.
+
+## Gate de publicação
+
+Os gates locais continuam verdes: typecheck, build, 35 testes e diff sem whitespace errors. A publicação remota deve ser considerada concluída somente após o commit aparecer no pipeline da Hostinger e a rota pública `/landing` retornar HTTP 200.
+
