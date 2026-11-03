@@ -37,6 +37,7 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
   const eligibilityCheckedRef = useRef(false);
   const eligibleRef = useRef(false);
   const pendingRef = useRef(false);
+  const reportReadyRef = useRef(false);
 
   useEffect(() => {
     if (!enabled || !["/", "/landing"].includes(pathname)) return;
@@ -47,7 +48,9 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
       pendingRef.current = false;
     };
     const attemptOpen = () => {
-      if (activeMsRef.current < delayMs || !eligibilityCheckedRef.current) return;
+      if (trigger === "load" && activeMsRef.current < delayMs) return;
+      if (trigger === "demo-report" && !reportReadyRef.current) return;
+      if (!eligibilityCheckedRef.current) { pendingRef.current = true; return; }
       if (!canOpen()) { pendingRef.current = true; return; }
       markShown();
       setOpen(true);
@@ -79,10 +82,9 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
     const onDemoReportReady = () => {
       if (reportTimer !== null) window.clearTimeout(reportTimer);
       reportTimer = window.setTimeout(() => {
-        if (!cancelled && canOpen()) {
-          markShown();
-          setOpen(true);
-        }
+        if (cancelled) return;
+        reportReadyRef.current = true;
+        attemptOpen();
       }, delayMs);
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
