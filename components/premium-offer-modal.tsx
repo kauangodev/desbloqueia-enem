@@ -21,19 +21,11 @@ function hasInteractionBlocker() {
   return Boolean(document.querySelector('[role="dialog"], .consent, .nav.open, form:focus-within, [data-modal-open="true"]'));
 }
 
-function readStorage(storage: Storage | undefined, key: string) {
-  try { return storage?.getItem(key) || null; } catch { return null; }
-}
-
-function writeStorage(storage: Storage | undefined, key: string, value: string) {
-  try { storage?.setItem(key, value); } catch { /* armazenamento pode estar indisponível */ }
-}
-
 function formatMoney(cents: number) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-export default function PremiumOfferModal({ enabled, delayMs, cooldownDays, campaignId, checkoutHref, plan }: PremiumOfferModalProps) {
+export default function PremiumOfferModal({ enabled, delayMs, cooldownDays: _cooldownDays, campaignId, checkoutHref, plan }: PremiumOfferModalProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -46,21 +38,12 @@ export default function PremiumOfferModal({ enabled, delayMs, cooldownDays, camp
   const pendingRef = useRef(false);
 
   useEffect(() => {
-    if (!enabled || pathname !== "/") return;
+    if (!enabled || !["/", "/landing"].includes(pathname)) return;
     let cancelled = false;
-    const sessionKey = `godev-premium-offer-session:${campaignId}`;
-    const storageKey = `godev-premium-offer-dismissed:${campaignId}`;
-    const cooldownMs = Math.max(0, cooldownDays) * 24 * 60 * 60 * 1000;
-    const seenAt = Number(readStorage(window.localStorage, storageKey) || 0);
-    const alreadyDismissed = Number.isFinite(seenAt) && seenAt > 0 && Date.now() - seenAt < cooldownMs;
-    const alreadyShownThisSession = readStorage(window.sessionStorage, sessionKey) === "1";
-    if (alreadyDismissed || alreadyShownThisSession) shownRef.current = true;
-    const canOpen = () => !cancelled && document.visibilityState === "visible" && pathname === "/" && !shownRef.current && eligibleRef.current && !hasInteractionBlocker();
+    const canOpen = () => !cancelled && document.visibilityState === "visible" && ["/", "/landing"].includes(pathname) && !shownRef.current && eligibleRef.current && !hasInteractionBlocker();
     const markShown = () => {
       shownRef.current = true;
       pendingRef.current = false;
-      writeStorage(window.sessionStorage, sessionKey, "1");
-      writeStorage(window.localStorage, storageKey, String(Date.now()));
     };
     const attemptOpen = () => {
       if (activeMsRef.current < delayMs || !eligibilityCheckedRef.current) return;
@@ -101,7 +84,7 @@ export default function PremiumOfferModal({ enabled, delayMs, cooldownDays, camp
       document.removeEventListener("focusin", onInteraction);
       document.removeEventListener("click", onInteraction);
     };
-  }, [campaignId, cooldownDays, delayMs, enabled, pathname]);
+  }, [campaignId, delayMs, enabled, pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -131,7 +114,7 @@ export default function PremiumOfferModal({ enabled, delayMs, cooldownDays, camp
     };
   }, [open]);
 
-  if (!enabled || pathname !== "/" || !open) return null;
+  if (!enabled || !["/", "/landing"].includes(pathname) || !open) return null;
   const benefits = plan.features.filter((feature) => feature !== "Tudo do Essencial").slice(0, 3);
   return (
     <div className="premium-offer-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}>
@@ -150,4 +133,5 @@ export default function PremiumOfferModal({ enabled, delayMs, cooldownDays, camp
     </div>
   );
 }
+
 
