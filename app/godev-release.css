@@ -98,6 +98,28 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .reformulated-landing .landing-materials { background: var(--release-soft); color: var(--release-ink); }
 .reformulated-landing .landing-materials :is(h2,h3,p,span) { color: inherit; }
 .reformulated-landing .material-covers > span { background: var(--release-surface); border-color: var(--release-line); }
+.reformulated-landing .landing-material-carousel { min-width: 0; }
+.reformulated-landing .material-carousel-stage { position: relative; min-height: 330px; overflow: hidden; }
+.reformulated-landing .material-carousel-card { position: absolute; top: 8px; left: 50%; display: block; width: clamp(132px, 18vw, 190px); padding: 0; border: 1px solid var(--release-line); border-radius: 14px; background: var(--release-surface); box-shadow: 0 14px 28px rgb(16 24 40 / 10%); cursor: pointer; transform: translateX(-50%) scale(.78); opacity: .35; transition: transform .55s cubic-bezier(.2,.8,.2,1), opacity .55s ease, box-shadow .55s ease; }
+.reformulated-landing .material-carousel-card img { display: block; width: 100%; height: auto; border-radius: inherit; }
+.reformulated-landing .material-carousel-card[data-offset="-1"] { transform: translateX(-155%) scale(.9); opacity: .72; }
+.reformulated-landing .material-carousel-card[data-offset="1"] { transform: translateX(55%) scale(.9); opacity: .72; }
+.reformulated-landing .material-carousel-card[data-offset="-2"] { transform: translateX(-245%) scale(.76); }
+.reformulated-landing .material-carousel-card[data-offset="2"] { transform: translateX(145%) scale(.76); }
+.reformulated-landing .material-carousel-card.is-active { z-index: 3; border-color: var(--release-green); box-shadow: 0 22px 44px color-mix(in srgb, var(--release-green) 24%, transparent); transform: translateX(-50%) scale(1.03); opacity: 1; }
+.reformulated-landing .material-carousel-card:focus-visible { z-index: 5; outline: 3px solid var(--release-focus); outline-offset: 4px; }
+.reformulated-landing .material-carousel-arrow { position: absolute; top: 44%; z-index: 6; display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid var(--release-line); border-radius: 50%; background: var(--release-surface); color: var(--release-ink); font-size: 1.5rem; line-height: 1; cursor: pointer; box-shadow: 0 8px 20px rgb(16 24 40 / 12%); transition: transform .18s ease, background .18s ease; }
+.reformulated-landing .material-carousel-arrow:hover, .reformulated-landing .material-carousel-arrow:focus-visible { background: var(--release-soft); transform: scale(1.06); }
+.reformulated-landing .material-carousel-arrow.is-prev { left: 2px; }
+.reformulated-landing .material-carousel-arrow.is-next { right: 2px; }
+.reformulated-landing .material-carousel-caption { display: grid; gap: 5px; margin: 10px auto 0; max-width: 34ch; text-align: center; }
+.reformulated-landing .material-carousel-caption .landing-eyebrow { font-size: .68rem; }
+.reformulated-landing .material-carousel-caption h3 { margin: 0; color: var(--release-ink); font-size: clamp(1.2rem, 2vw, 1.5rem); }
+.reformulated-landing .material-carousel-caption p { margin: 0; color: var(--release-muted); font-size: .88rem; line-height: 1.5; }
+.reformulated-landing .material-carousel-caption > span:last-child { color: var(--release-muted); font-size: .72rem; }
+.reformulated-landing .material-carousel-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
+.reformulated-landing .material-carousel-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: var(--release-line); cursor: pointer; }
+.reformulated-landing .material-carousel-dots button[aria-selected="true"] { width: 22px; border-radius: 999px; background: var(--release-green); }
 .reformulated-landing .ref-price-card.is-premium { background: var(--release-soft); border-color: var(--release-green); }
 .reformulated-landing .ref-price-card :is(h3,.ref-price,li) { color: var(--release-ink); }
 .reformulated-landing .ref-price-card li span { color: var(--release-green-strong); }
@@ -129,7 +151,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   color: #fff;
   box-shadow: 0 14px 30px rgb(6 62 45 / 20%);
 }
-.reformulated-landing .ref-guarantee::before { content: "✓"; display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(167 243 208 / 46%); border-radius: 50%; background: rgb(167 243 208 / 16%); color: #d7f6e4; font-weight: 800; }
+.reformulated-landing .ref-guarantee-mark { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(167 243 208 / 46%); border-radius: 50%; background: rgb(167 243 208 / 16%); color: #d7f6e4; }
+.reformulated-landing .ref-guarantee-mark svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5; }
 .reformulated-landing .ref-guarantee :is(span,a) { color: #d7f6e4; }
 .reformulated-landing .landing-faq { width: min(100% - 2rem, 76rem); margin-inline: auto; }
 .reformulated-landing .landing-faq .faq-list { max-width: 48rem; margin-inline: auto; display: grid; gap: 10px; background: transparent; border: 0; box-shadow: none; }
@@ -206,9 +229,16 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .reformulated-landing .ref-guarantee { grid-template-columns: auto 1fr; gap: 10px 12px; padding: 16px; }
   .reformulated-landing .ref-guarantee > a { grid-column: 2; justify-self: start; }
   .portal-mobile-nav { right: .5rem; bottom: max(.5rem, env(safe-area-inset-bottom)); left: .5rem; }
+  .reformulated-landing .material-carousel-stage { min-height: 275px; }
+  .reformulated-landing .material-carousel-card { width: min(42vw, 160px); }
+  .reformulated-landing .material-carousel-card[data-offset="-2"], .reformulated-landing .material-carousel-card[data-offset="2"] { opacity: 0; pointer-events: none; }
+  .reformulated-landing .material-carousel-card[data-offset="-1"] { transform: translateX(-128%) scale(.86); }
+  .reformulated-landing .material-carousel-card[data-offset="1"] { transform: translateX(28%) scale(.86); }
+  .reformulated-landing .material-carousel-arrow { width: 36px; height: 36px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  .reformulated-landing .material-carousel-card { transition: none; }
 }
 
