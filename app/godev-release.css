@@ -1,0 +1,160 @@
+/* GoDev release layer: explicit, accessible surfaces shared by public and
+   authenticated experiences. It intentionally comes last in the cascade. */
+:root {
+  --release-bg: #fbfcfa;
+  --release-surface: #ffffff;
+  --release-soft: #f1f8f3;
+  --release-ink: #101828;
+  --release-muted: #475467;
+  --release-green: #086b4b;
+  --release-green-strong: #07553c;
+  --release-green-soft: #dff3e7;
+  --release-line: #d7e3da;
+  --release-focus: #0b7a54;
+  --release-shadow: 0 14px 36px rgb(16 24 40 / 7%);
+}
+
+:root[data-theme="dark"], :root.dark {
+  --release-bg: #08130e;
+  --release-surface: #10231a;
+  --release-soft: #153326;
+  --release-ink: #f5faf7;
+  --release-muted: #c3d4ca;
+  --release-green: #69d39d;
+  --release-green-strong: #8be7b6;
+  --release-green-soft: #1c4a35;
+  --release-line: #315743;
+  --release-focus: #a7f3d0;
+  --release-shadow: 0 18px 42px rgb(0 0 0 / 25%);
+}
+
+html, body { min-width: 0; overflow-x: clip; }
+body { background: var(--release-bg); color: var(--release-ink); }
+
+/* Never let inherited theme colors decide readability. */
+.reformulated-landing, .diagnostico-page, .admin-app, .portal,
+.admin-workspace, .portal .workspace, .student-dashboard {
+  background: var(--release-bg);
+  color: var(--release-ink);
+}
+.reformulated-landing :is(h1,h2,h3,h4,p,li,small,span),
+.diagnostico-page :is(h1,h2,h3,h4,p,li,small,span),
+.admin-content :is(h1,h2,h3,h4,p,li,small,label,span),
+.student-dashboard :is(h1,h2,h3,h4,p,li,small,label,span) { overflow-wrap: anywhere; }
+.reformulated-landing :is(h1,h2,h3,h4), .diagnostico-page :is(h1,h2,h3,h4),
+.admin-content :is(h1,h2,h3,h4), .student-dashboard :is(h1,h2,h3,h4) { color: var(--release-ink); }
+.reformulated-landing :is(p,li,small), .diagnostico-page :is(p,li,small),
+.admin-content :is(p,small,label), .student-dashboard :is(p,small,label) { color: var(--release-muted); }
+
+button, a { -webkit-tap-highlight-color: transparent; }
+:is(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--release-focus) 70%, transparent);
+  outline-offset: 3px;
+}
+
+/* Public navigation and conversion controls. */
+.site-header { background: color-mix(in srgb, var(--release-surface) 94%, transparent); border-color: var(--release-line); }
+.site-header .brand, .site-header .brand b { color: var(--release-ink); }
+.site-header .brand-sub, .site-header .nav a { color: var(--release-muted); }
+.site-header .nav a:hover, .site-header .nav a:focus-visible { color: var(--release-ink); background: var(--release-soft); }
+.header-actions .button.primary, .site-header .button.primary,
+.reformulated-landing .ref-button-primary, .landing-actions .ref-button-primary {
+  background: var(--release-green);
+  color: #fff;
+  border-color: var(--release-green);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--release-green) 23%, transparent);
+}
+.header-actions .button.primary:hover, .site-header .button.primary:hover,
+.reformulated-landing .ref-button-primary:hover, .reformulated-landing .ref-button-primary:focus-visible,
+.landing-actions .ref-button-primary:hover { background: var(--release-green-strong); color: #fff; transform: translateY(-1px); }
+.reformulated-landing .ref-button-link, .reformulated-landing a:not(.ref-button-primary) { color: var(--release-green-strong); }
+.reformulated-landing .ref-button-link:hover { color: var(--release-green); }
+
+.reformulated-landing .landing-hero h1 { color: var(--release-ink); font-size: clamp(2.4rem, 6vw, 4.8rem); line-height: .98; }
+.reformulated-landing .landing-hero > p { color: var(--release-muted); max-width: 62ch; margin-inline: auto; }
+.reformulated-landing .landing-eyebrow { color: var(--release-green-strong); }
+.reformulated-landing .landing-demo, .reformulated-landing .demo-sidebar,
+.reformulated-landing .demo-aside, .reformulated-landing .ref-price-card,
+.reformulated-landing .landing-faq .faq-list { background: var(--release-surface); border-color: var(--release-line); color: var(--release-ink); box-shadow: var(--release-shadow); }
+.reformulated-landing .demo-sidebar span.is-active { background: var(--release-green-soft); color: var(--release-ink); }
+.reformulated-landing .demo-aside, .reformulated-landing .demo-aside * { color: var(--release-muted); }
+.reformulated-landing .demo-aside .demo-tab.is-active { color: var(--release-green-strong); border-color: var(--release-green-strong); }
+.reformulated-landing .demo-number-grid span { color: var(--release-muted); border-color: var(--release-line); }
+.reformulated-landing .demo-number-grid span.is-active { color: var(--release-green-strong); border-color: var(--release-green-strong); }
+.reformulated-landing .landing-materials { background: var(--release-soft); color: var(--release-ink); }
+.reformulated-landing .landing-materials :is(h2,h3,p,span) { color: inherit; }
+.reformulated-landing .material-covers > span { background: var(--release-surface); border-color: var(--release-line); }
+.reformulated-landing .ref-price-card.is-premium { background: var(--release-soft); border-color: var(--release-green); }
+.reformulated-landing .ref-price-card :is(h3,.ref-price,li) { color: var(--release-ink); }
+.reformulated-landing .ref-price-card li span { color: var(--release-green-strong); }
+.reformulated-landing .ref-badge { background: var(--release-green); color: #fff; }
+.reformulated-landing .ref-guarantee { background: #07553c; color: #fff; }
+.reformulated-landing .ref-guarantee :is(span,a) { color: #d7f6e4; }
+.reformulated-landing .landing-faq { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+.reformulated-landing .landing-faq .faq-list { max-width: 48rem; margin-inline: auto; }
+
+/* Portal shells: keep the sidebar readable on tablet; switch to a real drawer
+   on phones instead of shrinking the application into a sliver. */
+.admin-app, .portal { min-width: 0; }
+.admin-sidebar, .portal .sidebar { background: #063e2d; color: #fff; }
+.admin-sidebar :is(a,button), .portal .sidebar :is(a,button) { color: rgb(255 255 255 / 92%); }
+.admin-sidebar :is(a,button):hover, .portal .sidebar :is(a,button):hover { background: rgb(255 255 255 / 12%); color: #fff; }
+.admin-side-link[aria-current="page"], .portal .sidebar nav a[aria-current="page"] { background: #e8f7ee; color: #063e2d; }
+.admin-side-link[aria-current="page"] .admin-side-icon, .portal .sidebar nav a[aria-current="page"] .portal-nav-icon { background: transparent; color: #063e2d; }
+.admin-workspace, .portal .workspace { background: var(--release-bg); min-width: 0; }
+.admin-topbar, .portal .workspace-bar { background: var(--release-surface); border-color: var(--release-line); }
+.admin-content, .student-dashboard { min-width: 0; max-width: 1500px; color: var(--release-ink); }
+.admin-page-header { padding: clamp(1.25rem, 3vw, 2.5rem) 0 1.25rem; }
+.admin-page-header .page-title { margin: .35rem 0 .25rem; }
+.admin-page-header p { margin: 0; color: var(--release-muted); }
+.admin-content > :is(article,section,form,table), .admin-content > div:not(.admin-hero):not(.admin-page-header),
+.student-dashboard > :is(article,section,form), .student-dashboard .resource,
+.student-welcome, .student-stat-card, .student-continue-card, .student-profile-card { background: var(--release-surface); border-color: var(--release-line); color: var(--release-ink); box-shadow: var(--release-shadow); }
+.admin-content table { max-width: 100%; }
+.admin-content .table-wrap { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+.admin-content input, .admin-content select, .admin-content textarea, .portal input, .portal select, .portal textarea { min-height: 44px; background: var(--release-surface); color: var(--release-ink); border-color: var(--release-line); font-size: 1rem; }
+.admin-content .button.primary, .portal .button.primary, .student-primary-action { background: var(--release-green); color: #fff; border-color: var(--release-green); }
+.admin-content .button.primary:hover, .portal .button.primary:hover, .student-primary-action:hover { background: var(--release-green-strong); color: #fff; }
+.admin-content a, .student-dashboard a { color: var(--release-green-strong); }
+
+@media (min-width: 900px) and (max-width: 1199px) {
+  .admin-app, .portal { grid-template-columns: 220px minmax(0, 1fr); gap: 16px; padding: 16px; }
+  .admin-sidebar, .portal .sidebar { width: auto; min-width: 0; }
+  .admin-content, .student-dashboard { padding-inline: clamp(1rem, 2vw, 2rem); }
+  .admin-overview-metrics, .student-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 899px) {
+  .admin-app, .portal { display: block; padding: 0; }
+  .admin-sidebar, .portal .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 100; width: min(88vw, 320px); height: 100dvh; transform: translateX(-110%); transition: transform .24s ease; overflow-y: auto; border-radius: 0; }
+  body[data-drawer-open="admin"] .admin-sidebar, body[data-drawer-open="student"] .portal .sidebar { transform: translateX(0); }
+  .drawer-backdrop { position: fixed; inset: 0; z-index: 90; display: block; border: 0; background: rgb(3 18 12 / 55%); }
+  .admin-workspace, .portal .workspace { min-height: 100dvh; border-radius: 0; }
+  .admin-content, .student-dashboard { padding: 1.25rem 1rem 6.5rem; }
+  .admin-topbar, .portal .workspace-bar { min-height: 64px; padding-inline: 1rem; }
+  .admin-content .admin-hero { margin-bottom: 1rem; }
+  .admin-content .admin-hero h1, .admin-page-header .page-title, .student-welcome h1 { font-size: clamp(2rem, 10vw, 3.2rem); }
+  .admin-overview-metrics, .student-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .overview-grid, .overview-lower-grid, .student-dashboard-grid { grid-template-columns: 1fr; }
+  .portal-mobile-nav { z-index: 80; }
+  .landing-demo { overflow: visible; }
+}
+
+@media (max-width: 520px) {
+  .site-header .header-inner { padding-inline: .85rem; }
+  .reformulated-landing .container { width: min(100% - 1.5rem, 76rem); }
+  .reformulated-landing .landing-hero h1 { font-size: clamp(2.15rem, 11vw, 3.3rem); }
+  .landing-actions, .landing-actions .ref-button { width: 100%; }
+  .landing-actions { align-items: stretch; flex-direction: column; }
+  .admin-overview-metrics, .student-stat-grid { grid-template-columns: 1fr; }
+  .admin-content, .student-dashboard { padding-inline: .75rem; }
+  .admin-page-header { padding-top: 1.25rem; }
+  .demo-aside { grid-template-columns: 1fr; }
+  .demo-aside > * { grid-column: auto; }
+  .portal-mobile-nav { right: .5rem; bottom: max(.5rem, env(safe-area-inset-bottom)); left: .5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
