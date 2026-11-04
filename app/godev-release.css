@@ -393,3 +393,87 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .landing-shell.landing-dark .ref-price-card.is-premium .ref-button-primary { animation: none; }
 }
 
+/* Final landing refinement: intentional motion, explicit contrast, and
+   lighter surfaces so the conversion path stays readable in every theme. */
+.landing-shell.landing-dark .reformulated-landing {
+  --release-ink: #f4fff8;
+  --release-muted: #c8ded1;
+  --release-line: #345746;
+  --release-green: #b9ff3d;
+  --release-soft: #14291f;
+  color: var(--release-ink);
+}
+.landing-shell.landing-dark .landing-demo,
+.landing-shell.landing-dark .demo-sidebar,
+.landing-shell.landing-dark .demo-aside,
+.landing-shell.landing-dark .ref-price-card,
+.landing-shell.landing-dark .landing-faq .faq-list {
+  color: var(--release-ink);
+}
+.landing-shell.landing-dark .demo-sidebar strong,
+.landing-shell.landing-dark .demo-aside-note,
+.landing-shell.landing-dark .demo-status,
+.landing-shell.landing-dark .ref-price-card h3,
+.landing-shell.landing-dark .ref-price-card li,
+.landing-shell.landing-dark .ref-price-card .ref-price,
+.landing-shell.landing-dark .landing-faq .faq-list summary {
+  color: var(--release-ink) !important;
+}
+.landing-shell.landing-dark .demo-sidebar a:not(.is-active),
+.landing-shell.landing-dark .ref-price-card li small,
+.landing-shell.landing-dark .landing-faq .faq-list details p {
+  color: var(--release-muted) !important;
+}
+.landing-shell.landing-dark .landing-hero > p,
+.landing-shell.landing-dark .materials-intro p,
+.landing-shell.landing-dark .landing-faq h2,
+.landing-shell.landing-dark .landing-faq .landing-eyebrow { color: var(--release-muted); }
+
+.landing-shell.landing-dark .demo-sidebar a,
+.landing-shell.landing-dark .demo-aside,
+.landing-shell.landing-dark .ref-price-card,
+.landing-shell.landing-dark .landing-faq .faq-list details { transition: transform .24s ease, background-color .24s ease, box-shadow .24s ease; }
+.landing-shell.landing-dark .demo-sidebar a:hover,
+.landing-shell.landing-dark .demo-sidebar a:focus-visible { transform: translateX(4px); }
+.landing-shell.landing-dark .demo-aside:hover { box-shadow: 0 22px 60px rgb(0 0 0 / 44%); }
+
+/* Covers float as individual objects; the carousel remains keyboard and
+   swipe navigable without the old boxed treatment. */
+.landing-shell.landing-dark .material-carousel-card {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: 0 22px 44px rgb(0 0 0 / 42%);
+}
+.landing-shell.landing-dark .material-carousel-card img {
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 10%);
+}
+.landing-shell.landing-dark .material-carousel-card:hover,
+.landing-shell.landing-dark .material-carousel-card:focus-visible { transform: translateX(-50%) translateY(-6px) scale(1.06); }
+.landing-shell.landing-dark .material-carousel-card.is-active { border-color: transparent; box-shadow: 0 30px 60px rgb(0 0 0 / 52%), 0 0 34px rgb(185 255 61 / 22%); }
+.landing-shell.landing-dark .material-carousel-card[data-offset="-1"]:hover { transform: translateX(-155%) translateY(-5px) scale(.94); }
+.landing-shell.landing-dark .material-carousel-card[data-offset="1"]:hover { transform: translateX(55%) translateY(-5px) scale(.94); }
+.landing-shell.landing-dark .material-carousel-card[data-offset="-2"]:hover { transform: translateX(-245%) translateY(-5px) scale(.8); }
+.landing-shell.landing-dark .material-carousel-card[data-offset="2"]:hover { transform: translateX(145%) translateY(-5px) scale(.8); }
+
+.landing-shell.landing-dark .ref-price-card { transform: translateY(0); }
+.landing-shell.landing-dark .ref-price-card:hover,
+.landing-shell.landing-dark .ref-price-card:focus-within { transform: translateY(-6px); box-shadow: 0 24px 58px rgb(0 0 0 / 42%); }
+.landing-shell.landing-dark .ref-price-card.is-premium { transform: translateY(-8px); }
+.landing-shell.landing-dark .ref-price-card.is-premium:hover,
+.landing-shell.landing-dark .ref-price-card.is-premium:focus-within { transform: translateY(-14px) scale(1.01); }
+.landing-shell.landing-dark .ref-price-card .ref-button-primary { color: #07110b !important; }
+
+.landing-shell.landing-dark .landing-faq .faq-list { background: transparent; box-shadow: none; }
+.landing-shell.landing-dark .landing-faq .faq-list details { background: #13271f; box-shadow: 0 12px 30px rgb(0 0 0 / 24%); }
+.landing-shell.landing-dark .landing-faq .faq-list details:hover,
+.landing-shell.landing-dark .landing-faq .faq-list details[open] { background: #193528; transform: translateY(-3px); box-shadow: 0 18px 38px rgb(0 0 0 / 34%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-shell.landing-dark .demo-sidebar a,
+  .landing-shell.landing-dark .demo-aside,
+  .landing-shell.landing-dark .material-carousel-card,
+  .landing-shell.landing-dark .ref-price-card,
+  .landing-shell.landing-dark .landing-faq .faq-list details { transition: none; transform: none !important; }
+}
+
