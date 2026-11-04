@@ -467,6 +467,31 @@
   }
 }
 
+/* Quiz feedback should feel tactile without revealing correctness early. */
+.previewOption,
+.previewOptionSelected {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.previewOption::after,
+.previewOptionSelected::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(100deg, transparent 20%, color-mix(in srgb, var(--hero-accent) 12%, transparent) 50%, transparent 80%);
+  transform: translateX(-120%);
+  transition: transform .45s ease;
+}
+.previewOption:hover::after,
+.previewOption:focus-visible::after,
+.previewOptionSelected::after { transform: translateX(120%); }
+.previewOptionSelected { animation: option-selected 420ms cubic-bezier(.16,1,.3,1) both; }
+.previewNextButton:not(:disabled) { box-shadow: 0 12px 28px color-mix(in srgb, var(--hero-accent) 24%, transparent); }
+.previewNextButton:not(:disabled):hover,
+.previewNextButton:not(:disabled):focus-visible { animation: next-attention 1.6s ease-in-out infinite; }
+
 /* Conversion hero: the first viewport proves the product before it decorates it. */
 .conversionHero {
   --hero-ink: var(--color-text);
