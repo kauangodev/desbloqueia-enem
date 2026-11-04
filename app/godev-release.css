@@ -428,6 +428,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-shell.landing-dark .materials-intro p,
 .landing-shell.landing-dark .landing-faq h2,
 .landing-shell.landing-dark .landing-faq .landing-eyebrow { color: var(--release-muted); }
+.landing-shell.landing-dark .landing-steps :is(h3, p) { color: var(--release-ink) !important; }
+.landing-shell.landing-dark .landing-steps p { color: var(--release-muted) !important; }
+.landing-shell.landing-dark .landing-steps .step-number { color: var(--release-ink); border-color: var(--release-line); background: var(--release-surface); }
 
 .landing-shell.landing-dark .demo-sidebar a,
 .landing-shell.landing-dark .demo-aside,
