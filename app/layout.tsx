@@ -7,6 +7,7 @@ import "./reformulation.css";
 import "./final-ui.css";
 import "./master-fix.css";
 import "./godev-release.css";
+import "./modern-interface.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 
