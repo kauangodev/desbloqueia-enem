@@ -39,6 +39,7 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
   const pendingRef = useRef(false);
   const reportReadyRef = useRef(false);
   const reportReadyAtRef = useRef<number | null>(null);
+  const demoTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!enabled || !["/", "/landing"].includes(pathname)) return;
@@ -86,12 +87,20 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
       if (document.visibilityState === "visible") attemptOpen();
     };
     const onInteraction = () => { if (pendingRef.current) attemptOpen(); };
+    const scheduleDemoOpen = () => {
+      if (trigger !== "demo-report" || demoTimerRef.current !== null) return;
+      demoTimerRef.current = window.setTimeout(() => {
+        demoTimerRef.current = null;
+        attemptOpen();
+      }, delayMs);
+    };
     void checkEligibility();
     const interval = window.setInterval(tick, 250);
     const onDemoReportReady = () => {
       if (cancelled) return;
       reportReadyRef.current = true;
       reportReadyAtRef.current = performance.now();
+      scheduleDemoOpen();
       attemptOpen();
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
@@ -102,12 +111,14 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
       if (document.documentElement.dataset.godevDemoReportReady === "true") {
         reportReadyRef.current = true;
         reportReadyAtRef.current = performance.now() - delayMs;
+        scheduleDemoOpen();
         attemptOpen();
       }
     }
     return () => {
       cancelled = true;
       window.clearInterval(interval);
+      if (demoTimerRef.current !== null) window.clearTimeout(demoTimerRef.current);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       document.removeEventListener("focusin", onInteraction);
       document.removeEventListener("click", onInteraction);
@@ -162,5 +173,6 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
     </div>
   );
 }
+
 
 
