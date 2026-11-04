@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Inter, Newsreader } from "next/font/google";
 import "./globals.css";
 import "./ui-finish.css";
 import "./reference-redesign.css";
@@ -10,19 +9,6 @@ import "./master-fix.css";
 import "./godev-release.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-serif",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -52,7 +38,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${newsreader.variable}`}>
+    <html lang="pt-BR">
       <body>
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo
