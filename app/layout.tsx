@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 import "./globals.css";
 import "./ui-finish.css";
 import "./reference-redesign.css";
@@ -7,8 +8,24 @@ import "./reformulation.css";
 import "./final-ui.css";
 import "./master-fix.css";
 import "./godev-release.css";
+import "./modern-interface.css";
+import "./tokens.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
+
+const bodyFont = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--godev-font-body",
+  fallback: ["system-ui", "sans-serif"],
+});
+
+const displayFont = Bricolage_Grotesque({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--godev-font-display",
+  fallback: ["system-ui", "sans-serif"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -38,8 +55,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR">
-      <body>
+    <html lang="pt-BR" className={`${bodyFont.variable} ${displayFont.variable}`}>
+      <body className="godev-app">
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo
         </a>

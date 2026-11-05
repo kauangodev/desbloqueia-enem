@@ -1,0 +1,167 @@
+/* GoDev visual contract: one semantic surface system for public and authenticated UI. */
+:root {
+  color-scheme: dark;
+  --bg-primary: #07120d;
+  --bg-secondary: #0d2117;
+  --surface: #102a1c;
+  --surface-raised: #153622;
+  --surface-soft: #183d28;
+  --text-primary: #f5fbf7;
+  --text-secondary: #c4d8cb;
+  --text-muted: #9eb9a9;
+  --border-subtle: #315b42;
+  --border-strong: #4b8964;
+  --brand-green: #36d879;
+  --brand-green-strong: #16b862;
+  --brand-green-deep: #063e29;
+  --accent-lime: #c8ff66;
+  --accent-ink: #102b1b;
+  --danger: #ff8f8f;
+  --warning: #ffd27a;
+  --focus-ring: #b9ff62;
+  --font-body: var(--godev-font-body), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--godev-font-display), Bricolage Grotesque, Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-inter: var(--font-body);
+  --font-inter-tight: var(--font-body);
+  --font-serif: var(--font-display);
+  --godev-ink: var(--text-primary);
+  --godev-muted: var(--text-secondary);
+  --godev-line: var(--border-subtle);
+  --godev-surface: var(--surface);
+  --godev-shadow: 0 24px 70px rgb(0 0 0 / 24%);
+}
+
+html[data-theme="light"],
+html.light,
+html:has(body[data-theme="light"]) {
+  color-scheme: light;
+  --bg-primary: #f7faf8;
+  --bg-secondary: #edf7f0;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-soft: #eaf6ef;
+  --text-primary: #102019;
+  --text-secondary: #40564a;
+  --text-muted: #5c7366;
+  --border-subtle: #c4d8cb;
+  --border-strong: #7eae91;
+  --brand-green: #087f50;
+  --brand-green-strong: #05633f;
+  --brand-green-deep: #06452e;
+  --accent-lime: #b9ee4e;
+  --accent-ink: #17331f;
+  --focus-ring: #07553c;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg-primary); scroll-behavior: smooth; }
+body.godev-app {
+  min-width: 320px;
+  overflow-x: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, .page-title, .landing-hero h1, .admin-hero h1, .student-welcome h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+p, li, label, small, button, input, textarea, select, a { font-family: var(--font-body); }
+a { color: var(--brand-green); }
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+
+/* Public landing: dark premium surfaces with readable text in every section. */
+.landing-shell.landing-dark,
+.landing-shell.landing-dark .reformulated-landing { background: var(--bg-primary); color: var(--text-primary); }
+.landing-shell.landing-dark .site-header,
+.landing-shell.landing-dark .site-footer { background: color-mix(in srgb, var(--bg-primary) 94%, transparent); border-color: var(--border-subtle); }
+.landing-shell.landing-dark .site-header .brand,
+.landing-shell.landing-dark .site-header .brand-wordmark,
+.landing-shell.landing-dark .site-footer .brand-wordmark,
+.landing-shell.landing-dark :is(h1,h2,h3,h4,strong,summary) { color: var(--text-primary); }
+.landing-shell.landing-dark :is(p,li,small,.landing-hero > p,.materials-intro p,.landing-faq details p) { color: var(--text-secondary); }
+.landing-shell.landing-dark .landing-eyebrow { color: var(--accent-lime); }
+.landing-shell.landing-dark .site-header .brand-sub,
+.landing-shell.landing-dark .site-header .nav a,
+.landing-shell.landing-dark .site-footer :is(p,a,span) { color: var(--text-muted); }
+.landing-shell.landing-dark .site-header .nav a:hover,
+.landing-shell.landing-dark .site-header .nav a:focus-visible { color: var(--text-primary); background: var(--surface-soft); }
+.landing-shell.landing-dark .ref-button-primary,
+.landing-shell.landing-dark .header-actions .login-link { background: var(--brand-green); border-color: var(--brand-green); color: var(--brand-green-deep); }
+.landing-shell.landing-dark .ref-button-primary:hover,
+.landing-shell.landing-dark .ref-button-primary:focus-visible,
+.landing-shell.landing-dark .header-actions .login-link:hover { background: var(--accent-lime); border-color: var(--accent-lime); color: var(--accent-ink); transform: translateY(-2px); }
+.landing-shell.landing-dark .ref-button-link,
+.landing-shell.landing-dark .reformulated-landing a:not(.ref-button-primary) { color: var(--accent-lime); }
+.landing-shell.landing-dark .landing-demo,
+.landing-shell.landing-dark .demo-sidebar,
+.landing-shell.landing-dark .demo-aside,
+.landing-shell.landing-dark .ref-price-card,
+.landing-shell.landing-dark .landing-faq .faq-list { background: var(--surface); border-color: var(--border-subtle); color: var(--text-primary); box-shadow: var(--godev-shadow); }
+.landing-shell.landing-dark .demo-sidebar a:not(.is-active) { color: var(--text-secondary); }
+.landing-shell.landing-dark .demo-sidebar a.is-active { background: var(--surface-soft); color: var(--accent-lime); }
+.landing-shell.landing-dark .demo-aside * { color: var(--text-secondary); }
+.landing-shell.landing-dark .demo-aside .demo-tab.is-active,
+.landing-shell.landing-dark .demo-number-grid span.is-active { color: var(--accent-lime); border-color: var(--accent-lime); }
+.landing-shell.landing-dark .landing-materials { background: var(--bg-secondary); border-block-color: var(--border-subtle); }
+.landing-shell.landing-dark .material-carousel-card { background: transparent; border-color: transparent; box-shadow: none; }
+.landing-shell.landing-dark .material-carousel-card.is-active { filter: drop-shadow(0 22px 28px rgb(0 0 0 / 32%)); }
+.landing-shell.landing-dark .material-carousel-arrow { background: var(--surface); border-color: var(--border-subtle); color: var(--text-primary); }
+.landing-shell.landing-dark .material-carousel-arrow:hover,
+.landing-shell.landing-dark .material-carousel-arrow:focus-visible { background: var(--accent-lime); color: var(--accent-ink); }
+.landing-shell.landing-dark .ref-price-card.is-premium { background: linear-gradient(145deg, var(--surface-raised), var(--surface)); border-color: var(--brand-green); box-shadow: 0 0 0 1px rgb(54 216 121 / 25%), 0 26px 70px rgb(0 0 0 / 28%); }
+.landing-shell.landing-dark .ref-price-card :is(h3,.ref-price,li) { color: var(--text-primary); }
+.landing-shell.landing-dark .ref-price-card li span { color: var(--brand-green); }
+.landing-shell.landing-dark .ref-badge { background: var(--accent-lime); color: var(--accent-ink); }
+.landing-shell.landing-dark .ref-guarantee { background: var(--surface-raised); border-color: var(--border-strong); }
+.landing-shell.landing-dark .ref-guarantee :is(strong,span,a) { color: var(--text-primary); }
+.landing-shell.landing-dark .landing-faq .faq-list { background: transparent; box-shadow: none; }
+.landing-shell.landing-dark .landing-faq .faq-list details { background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 1rem; }
+.landing-shell.landing-dark .landing-faq .faq-list details:hover,
+.landing-shell.landing-dark .landing-faq .faq-list details[open] { background: var(--surface-raised); border-color: var(--border-strong); }
+
+/* Shared portal readability and mobile containment. */
+.admin-content, .student-dashboard, .admin-workspace, .portal .workspace { min-width: 0; background: var(--bg-primary); color: var(--text-primary); }
+.admin-content :is(h1,h2,h3,h4), .student-dashboard :is(h1,h2,h3,h4) { color: var(--text-primary); }
+.admin-content :is(p,small,label), .student-dashboard :is(p,small,label) { color: var(--text-secondary); }
+.admin-content :is(table,form,.admin-card,.metric-card), .student-dashboard :is(article,section,form,.resource,.student-stat-card,.student-continue-card,.student-profile-card) { background: var(--surface); border-color: var(--border-subtle); color: var(--text-primary); }
+.admin-content :is(input,textarea,select), .student-dashboard :is(input,textarea,select) { background: var(--surface-raised); border-color: var(--border-subtle); color: var(--text-primary); }
+.admin-content :is(button,.button.primary), .student-dashboard :is(button,.student-primary-action) { background: var(--brand-green); border-color: var(--brand-green); color: var(--brand-green-deep); }
+.admin-content :is(button,.button.primary):hover, .student-dashboard :is(button,.student-primary-action):hover { background: var(--accent-lime); color: var(--accent-ink); }
+
+/* Touch targets: compact editorial controls remain easy to use on mobile. */
+.site-header .header-actions .login-link,
+.reformulated-landing .ref-button,
+.material-carousel-arrow,
+.catalog-arrow,
+.catalog-expand,
+.material-index > button { min-height: 44px; }
+.site-header .header-actions .login-link,
+.reformulated-landing .ref-button-primary { min-height: 48px; }
+.material-carousel-arrow,
+.catalog-arrow,
+.material-index > button { min-width: 44px; }
+
+@media (max-width: 760px) {
+  .landing-hero, .landing-demo, .landing-steps, .materials-intro, .landing-faq { width: min(100% - 2rem, 40rem); }
+  .landing-hero h1 { font-size: clamp(2.55rem, 11vw, 4.5rem); line-height: .98; }
+  .landing-demo { grid-template-columns: 1fr; gap: 1rem; }
+  .demo-sidebar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .demo-sidebar a { min-height: 2.75rem; }
+  .landing-steps, .ref-pricing-grid { grid-template-columns: 1fr; }
+  .ref-price-card.is-premium { transform: none; }
+  .ref-price-card.is-premium:hover { transform: translateY(-4px); }
+  .material-carousel { overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
+  .material-carousel-track { min-width: max-content; }
+  .admin-content, .student-dashboard { padding-inline: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
