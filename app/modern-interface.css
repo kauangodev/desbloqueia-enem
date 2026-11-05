@@ -92,6 +92,75 @@ body { background: var(--modern-bg); color: var(--modern-ink); font-family: var(
 .reformulated-landing .landing-materials :is(h2, h3) { color: var(--modern-ink); }
 .reformulated-landing .landing-materials :is(p, span) { color: var(--modern-muted); }
 
+/* Landing demo: one readable contract for the shared preview and its live status panel. */
+.reformulated-landing .landing-demo {
+  grid-template-columns: minmax(150px, 170px) minmax(0, 1fr) minmax(170px, 200px);
+  min-width: 0;
+}
+.reformulated-landing .demo-sidebar,
+.reformulated-landing .demo-aside {
+  background: var(--modern-surface);
+  color: var(--modern-muted);
+  border-color: var(--modern-line);
+}
+.reformulated-landing .demo-sidebar strong { color: var(--modern-ink); }
+.reformulated-landing .demo-sidebar a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: 10px;
+  color: var(--modern-muted);
+  text-decoration: none;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.reformulated-landing .demo-sidebar a:hover,
+.reformulated-landing .demo-sidebar a:focus-visible,
+.reformulated-landing .demo-sidebar a.is-active { background: var(--modern-surface-soft); color: var(--modern-ink); }
+.reformulated-landing .demo-sidebar a:hover,
+.reformulated-landing .demo-sidebar a:focus-visible { transform: translateX(2px); }
+.reformulated-landing .demo-aside { gap: 12px; }
+.reformulated-landing .demo-aside .demo-tab { min-height: 32px; color: var(--modern-muted); }
+.reformulated-landing .demo-aside .demo-tab.is-active { color: var(--modern-brand-dark); border-color: var(--modern-brand-dark); }
+.reformulated-landing .demo-status { min-height: 28px; color: var(--modern-muted); font-size: .82rem; }
+.reformulated-landing .demo-status > span { flex: 0 0 auto; border-color: var(--modern-brand); }
+.reformulated-landing .demo-status > span.answered { background: var(--modern-brand); }
+.reformulated-landing .demo-number-grid { gap: 8px; }
+.reformulated-landing .demo-number-grid span {
+  min-height: 44px;
+  border-color: var(--modern-line);
+  color: var(--modern-muted);
+  font-weight: 700;
+}
+.reformulated-landing .demo-number-grid span.is-answered { background: var(--modern-surface-soft); border-color: var(--modern-brand); color: var(--modern-brand-dark); }
+.reformulated-landing .demo-number-grid span.is-active { outline: 2px solid var(--modern-brand); outline-offset: 2px; }
+.reformulated-landing .demo-aside-note { color: var(--modern-muted); font-size: .75rem; line-height: 1.45; }
+.reformulated-landing .productPreview { color: var(--modern-ink); }
+.reformulated-landing .productPreview :is(.previewLabel, .previewProgress, .previewTopbar strong, .previewStatement, .previewResultTitle, .previewResultScore b, .previewReport strong, .previewFocusAreas strong) { color: var(--modern-ink); }
+.reformulated-landing .productPreview :is(.previewMeta span, .previewProgress i, .previewFooter, .previewFooter span, .previewResultScore, .previewResultNote, .previewCelebrationHint, .previewReport small, .previewReport p, .previewFocusAreas span) { color: var(--modern-muted); }
+.reformulated-landing .productPreview :is(.previewOption, .previewOptionSelected) { color: var(--modern-ink); background: var(--modern-surface); border-color: var(--modern-line); }
+.reformulated-landing .productPreview :is(.previewOption:hover, .previewOption:focus-visible, .previewOptionSelected) { background: var(--modern-surface-soft); border-color: var(--modern-brand); }
+.reformulated-landing .productPreview :is(.previewOption b, .previewOptionSelected b) { background: var(--modern-surface-soft); color: var(--modern-brand-dark); }
+.reformulated-landing .productPreview :is(.previewNextButton, .previewPrimaryButton) { min-height: 44px; color: var(--modern-accent-ink); background: var(--modern-accent); border-color: var(--modern-accent); }
+.reformulated-landing .productPreview :is(.previewNextButton:hover, .previewNextButton:focus-visible, .previewPrimaryButton:hover, .previewPrimaryButton:focus-visible) { color: var(--modern-accent-ink); }
+.reformulated-landing .productPreview .previewResultIcon { border-color: var(--modern-brand); background: var(--modern-surface-soft); }
+.reformulated-landing .productPreview .previewResultIcon svg { stroke: var(--modern-brand); }
+
+@media (max-width: 899px) {
+  .reformulated-landing .landing-demo { grid-template-columns: 1fr; overflow: visible; }
+  .reformulated-landing .demo-sidebar { display: flex; gap: 6px; overflow-x: auto; padding: 10px; border-right: 0; border-bottom: 1px solid var(--modern-line); scrollbar-width: thin; }
+  .reformulated-landing .demo-sidebar strong { flex: 0 0 auto; margin: 0 8px 0 2px; align-self: center; }
+  .reformulated-landing .demo-sidebar a { flex: 0 0 auto; white-space: nowrap; }
+  .reformulated-landing .demo-aside { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--modern-line); border-left: 0; padding: 16px; }
+  .reformulated-landing .demo-aside > :is(.demo-tab, .demo-number-grid, .demo-aside-note) { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .reformulated-landing .demo-aside { grid-template-columns: 1fr; }
+  .reformulated-landing .demo-aside > * { grid-column: auto; }
+  .reformulated-landing .demo-aside > :is(.demo-tab, .demo-number-grid, .demo-aside-note) { grid-column: 1; }
+  .reformulated-landing .productPreview { min-width: 0; }
+}
+
 /* Pricing and FAQ: clear hierarchy, no washed-out text. */
 .reformulated-landing .ref-pricing-grid { align-items: stretch; }
 .reformulated-landing .ref-price-card { border-radius: var(--modern-radius); transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
@@ -166,4 +235,3 @@ body { background: var(--modern-bg); color: var(--modern-ink); font-family: var(
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
-
