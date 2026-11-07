@@ -484,3 +484,8 @@ body.godev-app.godev-app .study-quiz-aside li.is-current span, body.godev-app.go
 
 /* O ✓ original fica oculto (aria-hidden); a cor garante contraste caso o ícone por máscara não carregue */
 body.godev-app.godev-app .ref-price-card li > span[aria-hidden="true"] { color: var(--on-accent); }
+
+/* Capas dos materiais: proporção 2:3 do arquivo, sem esticar */
+body.godev-app.godev-app .resource-cover { aspect-ratio: 2 / 3; height: auto; min-height: 0; overflow: hidden; background: var(--surface-soft); }
+body.godev-app.godev-app .resource-cover img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+body.godev-app.godev-app .student-profile-card a[aria-label], body.godev-app.godev-app .student-profile-card a { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
