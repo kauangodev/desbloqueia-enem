@@ -220,9 +220,9 @@ button:disabled, .button[aria-disabled="true"] { opacity: 1; background: var(--s
 .portal-notification { color: var(--text-primary); }
 
 /* Cartões */
-.student-welcome, .student-stat-card, .student-continue-card, .student-profile-card, .student-context-panel, .student-empty-card,
+body.godev-app.godev-app :is(.student-welcome, .student-stat-card, .student-continue-card, .student-profile-card, .student-context-panel, .student-empty-card,
 .stat, .overview-white-card, .overview-metric, .overview-activity-card, .overview-revenue-card, .quiz-funnel-card,
-.crm-table, .table-wrap, .library-entry, .admin-form, .panel, .card, .card-grid > *, .admin-kpis > * {
+.crm-table, .table-wrap, .library-entry, .admin-form, .panel, .card, .card-grid > *, .admin-kpis > *) {
   background: var(--surface); border: 1px solid var(--border-subtle); color: var(--text-primary); border-radius: 18px;
   box-shadow: none;
 }
@@ -304,3 +304,19 @@ body.godev-app.godev-app .reformulated-landing .material-carousel-dots button[ar
 }
 /* Preços em destaque */
 body.godev-app .ref-price { font-family: var(--font-display); font-size: clamp(2.25rem, 1.8rem + 1.6vw, 3rem); font-weight: 800; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* ---------- Correções do portal ---------- */
+/* A navegação móvel vive dentro de .sidebar e era exibida no desktop (.sidebar nav vencia .portal-mobile-nav). */
+body.godev-app.godev-app .portal .sidebar .portal-mobile-nav { display: none; }
+@media (max-width: 899px) { body.godev-app.godev-app .portal .sidebar .portal-mobile-nav { display: grid; } }
+body.godev-app.godev-app .portal-mobile-nav { background: var(--bg-sidebar); border: 1px solid var(--border-control); border-radius: 18px; box-shadow: 0 -8px 32px rgb(0 0 0 / 45%); }
+body.godev-app.godev-app .portal-mobile-nav > a, body.godev-app.godev-app .portal-mobile-nav > button { color: var(--text-secondary); font-size: .75rem; min-height: 56px; }
+body.godev-app.godev-app .portal-mobile-nav > a[aria-current="page"], body.godev-app.godev-app .portal-mobile-nav > button.is-active { background: var(--accent); color: var(--on-accent); }
+body.godev-app.godev-app .portal-mobile-more { background: var(--surface-elevated); border: 1px solid var(--border-control); }
+body.godev-app.godev-app .portal-mobile-more a { color: var(--text-primary); font-size: .8125rem; }
+
+body.godev-app.godev-app .portal-search { display: flex; align-items: center; gap: 10px; padding: 0 14px; min-height: 46px; border-radius: 999px; }
+body.godev-app.godev-app .portal-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(199 244 100 / 45%); }
+body.godev-app.godev-app .portal-search input { border: 0; background: transparent; min-height: 0; padding: 0; outline: 0; box-shadow: none; width: 100%; }
+body.godev-app.godev-app .student-count { color: var(--text-secondary); background: var(--surface-soft); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 4px 10px; }
+body.godev-app.godev-app .student-welcome { padding: clamp(20px, 3vw, 32px); background: linear-gradient(135deg, #1b4650 0%, var(--surface) 70%); }
