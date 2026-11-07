@@ -331,3 +331,15 @@ body.godev-app.godev-app .activity-icon.is-warning { background: var(--warning-b
 body.godev-app.godev-app .activity-icon.is-danger, body.godev-app.godev-app .activity-icon.is-error { background: var(--error-bg); color: var(--error-text); border-color: var(--error-text); }
 body.godev-app.godev-app .overview-chart-bar { min-height: 6px; background: linear-gradient(180deg, #a2f3d0 0%, #6ee7b7 55%, #2fb59a 100%); border-radius: 8px 8px 3px 3px; }
 body.godev-app.godev-app .overview-chart-column small, body.godev-app.godev-app .overview-revenue-card .overview-chart-column small { color: var(--text-secondary); }
+
+/* ---------- Chips por área (cores legíveis no tema escuro) ---------- */
+body.godev-app.godev-app .activity-card-areas [class*="catalog-chip"] { border: 1px solid var(--border-control); border-radius: 999px; padding: 4px 12px; font-weight: 600; }
+body.godev-app.godev-app .catalog-chip-linguagens { color: #a9e8ff; background: #123a4a; }
+body.godev-app.godev-app .catalog-chip-humanas { color: #ffd9ad; background: #4a3319; }
+body.godev-app.godev-app .catalog-chip-natureza { color: #b4f5c8; background: #164232; }
+body.godev-app.godev-app .catalog-chip-matematica { color: #e2d4ff; background: #34285a; }
+
+/* ---------- Controles: alvos de toque e checkboxes ---------- */
+body.godev-app.godev-app input[type="checkbox"], body.godev-app.godev-app input[type="radio"] { width: 20px; height: 20px; min-width: 20px; padding: 0; flex: none; }
+body.godev-app.godev-app .portal-search input { min-height: 44px; }
+body.godev-app.godev-app :is(.admin-logout, .portal-notification, .admin-profile button, .student-inline-action, .overview-text-link) { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }

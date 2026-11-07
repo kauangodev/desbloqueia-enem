@@ -2559,7 +2559,7 @@ button.primary:hover,
 .activity-card-areas { display: flex; flex-wrap: wrap; gap: .4rem; padding: .85rem 0 1rem; }
 .activity-card-areas span { padding: .3rem .5rem; border-radius: .45rem; background: var(--surface); color: var(--text-primary); font-size: 0.75rem; }
 .activity-card-areas .catalog-chip-linguagens { background: var(--surface-soft); color: var(--text-primary); }
-.activity-card-areas .catalog-chip-humanas { background: var(--surface); color: #9a5b2a; }
+.activity-card-areas .catalog-chip-humanas { background: var(--surface); color: #ffcf9e; }
 .activity-card-areas .catalog-chip-natureza { background: var(--surface); color: var(--text-secondary); }
 .activity-card-areas .catalog-chip-matematica { background: var(--surface-soft); color: var(--text-primary); }
 .activity-card-action { display: flex; min-height: 44px; align-items: center; justify-content: center; border-radius: .7rem; background: var(--bg-sidebar); color: #fff; font-size: .78rem; font-weight: 750; text-decoration: none; transition: background 160ms ease, transform 160ms ease; }
