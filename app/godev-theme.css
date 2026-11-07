@@ -481,3 +481,6 @@ body.godev-app.godev-app .study-quiz-aside li.is-current span, body.godev-app.go
   body.godev-app.godev-app .admin-sidebar .admin-side-link > span:last-child, body.godev-app.godev-app .admin-sidebar .admin-sidebar-label { display: inline; }
   body.godev-app.godev-app .admin-sidebar .admin-sidebar-footer { margin-top: auto; justify-content: space-between; }
 }
+
+/* O ✓ original fica oculto (aria-hidden); a cor garante contraste caso o ícone por máscara não carregue */
+body.godev-app.godev-app .ref-price-card li > span[aria-hidden="true"] { color: var(--on-accent); }
