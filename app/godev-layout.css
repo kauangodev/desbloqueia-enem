@@ -109,3 +109,6 @@ body.godev-app.godev-app :is(.overview-revenue-card, .overview-activity-card, .o
 @media (min-width: 900px) and (max-width: 1199px) {
   body.godev-app.godev-app .portal .sidebar { top: 16px; height: calc(100dvh - 32px); }
 }
+
+/* Demo: marcadores das questões quebram linha em vez de estourar a coluna */
+body.godev-app.godev-app .demo-number-grid { display: flex; flex-wrap: wrap; gap: 6px; }

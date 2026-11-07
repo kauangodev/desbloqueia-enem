@@ -12,6 +12,7 @@ import "./modern-interface.css";
 import "./tokens.css";
 import "./godev-theme.css";
 import "./godev-layout.css";
+import "./godev-hero.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 
