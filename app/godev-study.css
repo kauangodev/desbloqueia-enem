@@ -80,3 +80,15 @@ body.godev-app.godev-app .assessment-actions { position: static; padding: 4px 0 
 body.godev-app.godev-app .assessment-source { font-size: .75rem; }
 body.godev-app.godev-app .workspace-scroll > .page-title { margin-top: 0; }
 body.godev-app.godev-app .workspace-scroll > .page-title + p { margin-bottom: 12px; }
+
+/* ---- Páginas de lista/simulado: título e alternância (listas/correções) na mesma linha ---- */
+@media (min-width: 900px) {
+  body.godev-app.godev-app .workspace-scroll:has(> .assessment-switcher) {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "title switch" "desc switch" "main main"; column-gap: 16px; align-content: start;
+  }
+  body.godev-app.godev-app .workspace-scroll:has(> .assessment-switcher) > .page-title { grid-area: title; margin: 0 0 2px; }
+  body.godev-app.godev-app .workspace-scroll:has(> .assessment-switcher) > .page-title + p { grid-area: desc; margin: 0 0 10px; }
+  body.godev-app.godev-app .workspace-scroll:has(> .assessment-switcher) > .assessment-switcher { grid-area: switch; margin: 0; align-self: center; }
+  body.godev-app.godev-app .workspace-scroll:has(> .assessment-switcher) > .assessment { grid-area: main; min-width: 0; }
+  body.godev-app.godev-app .workspace-scroll { padding-bottom: 52px; }
+}
