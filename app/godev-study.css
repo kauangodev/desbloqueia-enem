@@ -92,3 +92,8 @@ body.godev-app.godev-app .workspace-scroll > .page-title + p { margin-bottom: 12
   body.godev-app.godev-app .workspace-scroll:has(> .assessment-switcher) > .assessment { grid-area: main; min-width: 0; }
   body.godev-app.godev-app .workspace-scroll { padding-bottom: 52px; }
 }
+
+/* Mobile/tablet: a pergunta vem primeiro; a navegação das questões fica abaixo das ações */
+@media (max-width: 1100px) {
+  body.godev-app.godev-app .assessment-aside { order: 0; }
+}
