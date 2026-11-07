@@ -72,11 +72,11 @@ a, button, input, select, textarea, [role="button"] { min-height: 44px; }
 
 .landing-main .guarantee, .guarantee { background: var(--surface-soft); border-color: var(--border-subtle); color: var(--text-primary); }
 .landing-main .guarantee h3, .guarantee h3, .landing-main .guarantee p, .guarantee p { color: var(--text-primary); }
-.landing-main .guarantee .text-link, .guarantee .text-link { color: #064e3b; border-color: #064e3b; }
-:root[data-theme="dark"] .landing-main .guarantee, :root[data-theme="dark"] .guarantee { background: #112a1d; border-color: #5eead4; }
+.landing-main .guarantee .text-link, .guarantee .text-link { color: var(--text-primary); border-color: #064e3b; }
+:root[data-theme="dark"] .landing-main .guarantee, :root[data-theme="dark"] .guarantee { background: var(--bg-sidebar); border-color: var(--border-subtle); }
 :root[data-theme="dark"] .landing-main .guarantee h3, :root[data-theme="dark"] .guarantee h3,
 :root[data-theme="dark"] .landing-main .guarantee p, :root[data-theme="dark"] .guarantee p { color: #f8fafc; }
-:root[data-theme="dark"] .landing-main .guarantee .text-link, :root[data-theme="dark"] .guarantee .text-link { color: #a7f3d0; border-color: #a7f3d0; }
+:root[data-theme="dark"] .landing-main .guarantee .text-link, :root[data-theme="dark"] .guarantee .text-link { color: #a7f3d0; border-color: var(--border-subtle); }
 
 .pricing-grid, .price-card, .material-carousel-shell, .material-index, .material-stage, .preview-caption { min-width: 0; }
 .price-card.premium { transform: none; }
@@ -114,7 +114,7 @@ body [class*="previewReport"] small { font-size: .8rem; }
 
 /* Shared editorial light surface for the two authenticated workspaces. */
 .admin-app, .portal { background: var(--bg); color: var(--text); }
-.admin-sidebar, .portal .sidebar { background: var(--green-900); color: #fff; border-color: var(--green-900); }
+.admin-sidebar, .portal .sidebar { background: var(--bg-sidebar); color: #fff; border-color: var(--green-900); }
 .admin-workspace, .portal .workspace { background: var(--bg); color: var(--text); }
 .admin-topbar, .portal .workspace-bar { background: var(--surface); border-color: var(--border); color: var(--text-2); }
 .admin-side-link, .portal .sidebar nav a { color: rgb(255 255 255 / 82%); font-size: var(--fs-sm); }

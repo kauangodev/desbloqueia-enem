@@ -173,7 +173,7 @@ body { background: var(--modern-bg); color: var(--modern-ink); font-family: var(
 .reformulated-landing .ref-price-card li span { color: var(--modern-brand-dark); }
 .reformulated-landing .ref-price-card .ref-button-primary { background: var(--modern-brand-dark); color: #fff; }
 .reformulated-landing .ref-price-card.is-premium .ref-button-primary { background: var(--modern-accent); border-color: var(--modern-accent); color: var(--modern-accent-ink); box-shadow: 0 0 0 1px rgb(255 255 255 / 22%), 0 12px 28px color-mix(in srgb, var(--modern-accent) 26%, transparent); }
-.reformulated-landing .ref-price-card.is-premium .ref-button-primary:hover { background: #dafa86; color: var(--modern-accent-ink); }
+.reformulated-landing .ref-price-card.is-premium .ref-button-primary:hover { background: var(--surface-soft); color: var(--modern-accent-ink); }
 .reformulated-landing .ref-guarantee { background: var(--modern-brand-dark); border-color: color-mix(in srgb, var(--modern-brand) 45%, transparent); box-shadow: var(--modern-shadow); }
 .reformulated-landing .ref-guarantee :is(strong, span, a) { color: #f0fff6; }
 .reformulated-landing .landing-faq .faq-list { background: transparent; border: 0; box-shadow: none; }
@@ -185,13 +185,13 @@ body { background: var(--modern-bg); color: var(--modern-ink); font-family: var(
 
 /* Admin and student portal */
 .admin-app, .portal, .admin-workspace, .portal .workspace, .student-dashboard { background: var(--modern-bg); color: var(--modern-ink); }
-.admin-sidebar, .portal .sidebar { background: #063e2d; border-color: #063e2d; color: #f5fff8; box-shadow: 14px 0 34px rgb(6 62 45 / 12%); }
+.admin-sidebar, .portal .sidebar { background: var(--bg-sidebar); border-color: #063e2d; color: #f5fff8; box-shadow: 14px 0 34px rgb(6 62 45 / 12%); }
 .admin-brand, .portal .sidebar .brand { color: #fff; }
 .admin-sidebar-label { color: #b9d8c5; }
 .admin-side-link, .portal .sidebar nav a { color: #dff7e8; }
 .admin-side-link:hover, .admin-side-link:focus-visible, .portal .sidebar nav a:hover, .portal .sidebar nav a:focus-visible { background: rgb(255 255 255 / 12%); color: #fff; }
-.admin-side-link[aria-current="page"], .portal .sidebar nav a[aria-current="page"] { background: #e3f7ea; color: #063e2d; box-shadow: inset 3px 0 #7ee2a9; }
-.admin-side-link[aria-current="page"] .admin-side-icon, .portal .sidebar nav a[aria-current="page"] .portal-nav-icon { color: #063e2d; background: transparent; }
+.admin-side-link[aria-current="page"], .portal .sidebar nav a[aria-current="page"] { background: var(--surface); color: var(--text-primary); box-shadow: inset 3px 0 #7ee2a9; }
+.admin-side-link[aria-current="page"] .admin-side-icon, .portal .sidebar nav a[aria-current="page"] .portal-nav-icon { color: var(--text-primary); background: transparent; }
 .admin-side-icon, .portal-nav-icon { color: #b9f4cf; }
 .admin-workspace, .portal .workspace { min-width: 0; border-radius: 20px; }
 .admin-topbar, .portal .workspace-bar { background: color-mix(in srgb, var(--modern-surface) 94%, transparent); border-color: var(--modern-line); color: var(--modern-ink); }

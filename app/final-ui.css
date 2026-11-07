@@ -13,11 +13,11 @@
 .reformulated-landing .landing-faq .faq-list { background: var(--godev-surface); border-color: var(--godev-line); }
 .reformulated-landing .landing-materials { background: var(--godev-surface-soft); border-color: var(--godev-line); }
 .reformulated-landing .ref-button-primary { background: var(--godev-green); color: #ffffff; box-shadow: 0 10px 24px color-mix(in srgb, var(--godev-green) 28%, transparent); }
-.reformulated-landing .ref-button-primary:hover, .reformulated-landing .ref-button-primary:focus-visible { background: var(--godev-green-bright); color: #052e1b; box-shadow: 0 15px 30px color-mix(in srgb, var(--godev-green) 35%, transparent); }
+.reformulated-landing .ref-button-primary:hover, .reformulated-landing .ref-button-primary:focus-visible { background: var(--godev-green-bright); color: var(--text-primary); box-shadow: 0 15px 30px color-mix(in srgb, var(--godev-green) 35%, transparent); }
 .reformulated-landing .ref-button-link { color: var(--godev-green); }
 .reformulated-landing .ref-price-card.is-premium { border-color: var(--godev-green); background: var(--godev-surface-soft); }
 .reformulated-landing .ref-badge { background: var(--godev-green); color: #ffffff; }
-.reformulated-landing .ref-guarantee { background: #064e3b; color: #ecfdf5; }
+.reformulated-landing .ref-guarantee { background: var(--bg-sidebar); color: #ecfdf5; }
 .reformulated-landing .ref-guarantee span, .reformulated-landing .ref-guarantee a { color: #d1fae5; }
 .reformulated-landing .ref-button span[aria-hidden="true"] { display: none; }
 .demo-aside-note { color: var(--godev-muted); font-size: .75rem; line-height: 1.45; }
@@ -46,7 +46,7 @@
 .student-context-section { border-color: var(--godev-line); background: var(--godev-surface); color: var(--godev-ink); box-shadow: var(--godev-shadow); }
 .admin-side-link, .portal .sidebar nav a { min-height: 44px; }
 .admin-side-link[aria-current="page"], .portal .sidebar nav a[aria-current="page"] { background: var(--godev-green); color: #ffffff; box-shadow: none; }
-.admin-side-link[aria-current="page"] .admin-side-icon, .portal .sidebar nav a[aria-current="page"] .portal-nav-icon { background: #ffffff; color: #065f46; }
+.admin-side-link[aria-current="page"] .admin-side-icon, .portal .sidebar nav a[aria-current="page"] .portal-nav-icon { background: var(--surface); color: var(--text-primary); }
 .student-dashboard .resource-info h3, .student-dashboard .resource-info p,
 .student-dashboard .resource-info small { color: var(--godev-ink); }
 .student-dashboard .resource-info p, .student-dashboard .resource-info small { color: var(--godev-muted); }

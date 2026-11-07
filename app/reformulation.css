@@ -45,8 +45,8 @@ a, button { min-height: 44px; }
 .landing-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 28px; }
 .ref-button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; border-radius: var(--radius-sm); padding: 11px 20px; font: 600 14px/1.2 var(--font-sans-stack); transition: transform .18s ease, background .18s ease, box-shadow .18s ease; }
 .ref-button:focus-visible { outline: 3px solid var(--green-500); outline-offset: 3px; }
-.ref-button-primary { background: var(--green-900); color: #fff; box-shadow: var(--shadow-sm); }
-.ref-button-primary:hover { background: var(--green-800); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.ref-button-primary { background: var(--bg-sidebar); color: #fff; box-shadow: var(--shadow-sm); }
+.ref-button-primary:hover { background: var(--bg-sidebar); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .ref-button-link { min-height: 48px; padding-inline: 8px; color: var(--green-800); text-decoration: underline; text-underline-offset: 5px; }
 .ref-button-link:hover { color: var(--green-700); }
 .landing-demo { display: grid; grid-template-columns: 170px minmax(0, 1fr) 190px; min-height: 480px; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-md); }
@@ -103,7 +103,7 @@ a, button { min-height: 44px; }
 .ref-price small { display: block; margin-top: 5px; color: var(--text-3); font-size: 12px; font-weight: 400; }
 .ref-price-card .ref-button { margin-top: auto; width: 100%; }
 .ref-badge { position: absolute; top: -13px; right: 20px; border-radius: 999px; padding: 5px 10px; background: var(--green-700); color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-.ref-guarantee { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; max-width: 760px; margin: 24px auto 0; padding: 15px 18px; border-radius: var(--radius-md); background: var(--green-900); color: #fff; text-align: left; }
+.ref-guarantee { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; max-width: 760px; margin: 24px auto 0; padding: 15px 18px; border-radius: var(--radius-md); background: var(--bg-sidebar); color: #fff; text-align: left; }
 .ref-guarantee span { color: #d7eadf; font-size: 13px; }.ref-guarantee a { color: #fff; text-decoration: underline; text-underline-offset: 4px; font-size: 13px; }
 .landing-faq { padding-block: 78px; }.landing-faq h2 { margin-block: 12px 26px; }.landing-faq .faq-list { max-width: 760px; }
 .landing-steps h3 { margin: 0; color: var(--text); font-size: 1.125rem; letter-spacing: -.01em; }
@@ -114,16 +114,16 @@ a, button { min-height: 44px; }
 .not-found-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 28px; }
 .material-index-heading { color: var(--green-800); }
 .material-index-heading small { color: var(--text-2); }
-.material-index button { border-color: var(--border) !important; background: #fff !important; color: var(--text) !important; }
+.material-index button { border-color: var(--border) !important; background: var(--surface) !important; color: var(--text) !important; }
 .material-index button > span { background: var(--green-100) !important; color: var(--green-900) !important; }
-.material-index button b { color: #16211b !important; }
-.material-index button[aria-selected="true"] > b { color: #0b3d2c !important; background: #e6f2ea !important; }
-.material-index button small { color: #475b50 !important; }
+.material-index button b { color: var(--text-primary) !important; }
+.material-index button[aria-selected="true"] > b { color: var(--text-primary) !important; background: var(--surface-soft) !important; }
+.material-index button small { color: var(--text-primary) !important; }
 .material-index button[aria-selected="true"] { border-color: var(--green-700) !important; background: var(--green-100) !important; color: var(--green-900) !important; }
 .material-index button[aria-selected="true"] > span, .material-index button[aria-selected="true"] small { color: var(--green-900) !important; }
 .material-index button:hover:not([aria-selected="true"]) { border-color: var(--green-500); background: var(--green-50); }
-.material-stage { background: #fff !important; }
-.preview-caption b { color: #16211b !important; }.preview-caption p { color: #475b50 !important; }.preview-caption > span { color: #475b50 !important; }
+.material-stage { background: var(--surface) !important; }
+.preview-caption b { color: var(--text-primary) !important; }.preview-caption p { color: var(--text-primary) !important; }.preview-caption > span { color: var(--text-primary) !important; }
 .site-footer { background: var(--surface); color: var(--text); border-top: 1px solid var(--border); }
 .site-footer .brand-wordmark, .site-footer .brand-sub, .footer-grid > div > b { color: var(--green-900) !important; }
 .footer-grid > div > p, .footer-grid > div > a:not(.brand), .footer-bottom { color: var(--text-2) !important; }
@@ -131,14 +131,14 @@ a, button { min-height: 44px; }
 .ref-guarantee > strong { color: #ffffff !important; }
 
 .portal, .admin-app { background: var(--bg); color: var(--text); }
-.portal .sidebar, .admin-sidebar { background: var(--green-900); color: #fff; }
+.portal .sidebar, .admin-sidebar { background: var(--bg-sidebar); color: #fff; }
 .portal .sidebar .brand, .admin-sidebar .brand { color: #fff; }.portal .sidebar .brand-sub, .admin-sidebar .brand-sub { color: #fff; }
 .portal .sidebar nav a, .admin-side-link { min-height: 44px; color: rgb(255 255 255 / 86%); border-radius: var(--radius-sm); }
 .portal .sidebar nav a[aria-current="page"], .admin-side-link[aria-current="page"] { background: var(--green-50); color: var(--green-900); }
 .portal .workspace, .admin-workspace, .admin-topbar { background: var(--bg); }.student-welcome, .student-stat-card, .student-section-block, .student-context-section, .admin-content .card, .admin-content .panel, .admin-content .admin-card, .overview-white-card { border-color: var(--border); background: var(--surface); box-shadow: var(--shadow-sm); }
 .student-welcome h1, .student-section-heading h2, .admin-hero h1, .overview-white-card h2 { font-family: var(--font-serif-stack); color: var(--text); }
 .student-welcome p, .student-stat-card > span, .student-stat-card small, .admin-hero p, .admin-topbar-kicker { color: var(--text-2); }
-.student-primary-action, .button.primary, .button.lime { background: var(--green-900); color: #fff; }.student-primary-action:hover, .button.primary:hover, .button.lime:hover { background: var(--green-800); color: #fff; }
+.student-primary-action, .button.primary, .button.lime { background: var(--bg-sidebar); color: #fff; }.student-primary-action:hover, .button.primary:hover, .button.lime:hover { background: var(--bg-sidebar); color: #fff; }
 .student-secondary-action, .button.secondary { border-color: var(--green-700); background: var(--surface); color: var(--green-900); }
 .admin-topbar { border-bottom-color: var(--border); }.admin-side-icon, .portal-nav-icon { color: currentColor; }
 .portal-topbar { display: flex; min-height: 76px; align-items: center; justify-content: flex-end; gap: 18px; padding: 14px clamp(16px, 3vw, 36px); border-bottom: 1px solid var(--border); }

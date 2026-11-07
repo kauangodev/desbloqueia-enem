@@ -123,7 +123,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   overflow: hidden;
   border: 1px solid rgb(167 243 208 / 32%);
   border-radius: 20px;
-  background: linear-gradient(135deg, #07553c, #063e2d);
+  background: linear-gradient(135deg, var(--bg-sidebar), var(--bg-sidebar));
   color: #fff;
   box-shadow: 0 14px 30px rgb(6 62 45 / 20%);
 }
@@ -150,11 +150,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 /* Portal shells: keep the sidebar readable on tablet; switch to a real drawer
    on phones instead of shrinking the application into a sliver. */
 .admin-app, .portal { min-width: 0; }
-.admin-sidebar, .portal .sidebar { background: #063e2d; color: #fff; }
+.admin-sidebar, .portal .sidebar { background: var(--bg-sidebar); color: #fff; }
 .admin-sidebar :is(a,button), .portal .sidebar :is(a,button) { color: rgb(255 255 255 / 92%); }
 .admin-sidebar :is(a,button):hover, .portal .sidebar :is(a,button):hover { background: rgb(255 255 255 / 12%); color: #fff; }
-.admin-side-link[aria-current="page"], .portal .sidebar nav a[aria-current="page"] { background: #e8f7ee; color: #063e2d; }
-.admin-side-link[aria-current="page"] .admin-side-icon, .portal .sidebar nav a[aria-current="page"] .portal-nav-icon { background: transparent; color: #063e2d; }
+.admin-side-link[aria-current="page"], .portal .sidebar nav a[aria-current="page"] { background: var(--surface); color: var(--text-primary); }
+.admin-side-link[aria-current="page"] .admin-side-icon, .portal .sidebar nav a[aria-current="page"] .portal-nav-icon { background: transparent; color: var(--text-primary); }
 .admin-workspace, .portal .workspace { background: var(--release-bg); min-width: 0; }
 .admin-topbar, .portal .workspace-bar { background: var(--release-surface); border-color: var(--release-line); }
 .admin-content, .student-dashboard { min-width: 0; max-width: 1500px; color: var(--release-ink); }
@@ -276,7 +276,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-shell.landing-dark .site-header .button.primary {
   background: var(--release-green);
   border-color: var(--release-green);
-  color: #0a160f;
+  color: var(--text-primary);
   box-shadow: 0 0 0 1px rgb(185 255 61 / 24%), 0 12px 32px rgb(185 255 61 / 22%);
 }
 .landing-shell.landing-dark .landing-actions .ref-button-primary:hover,
@@ -284,8 +284,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-shell.landing-dark .ref-button-primary:hover,
 .landing-shell.landing-dark .ref-button-primary:focus-visible,
 .landing-shell.landing-dark .site-header .button.primary:hover {
-  background: #d0ff78;
-  color: #07110b;
+  background: var(--surface-soft);
+  color: var(--text-primary);
   box-shadow: 0 0 0 3px rgb(185 255 61 / 22%), 0 16px 42px rgb(185 255 61 / 34%);
 }
 .landing-shell.landing-dark .reformulated-landing .ref-button-link,
@@ -308,9 +308,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-shell.landing-dark .material-carousel-card.is-active { border-color: var(--release-green); box-shadow: 0 0 0 1px rgb(185 255 61 / 35%), 0 24px 56px rgb(185 255 61 / 17%); }
 .landing-shell.landing-dark .material-carousel-arrow { background: var(--release-surface); border-color: var(--release-line); color: var(--release-ink); }
 .landing-shell.landing-dark .material-carousel-arrow:hover,
-.landing-shell.landing-dark .material-carousel-arrow:focus-visible { background: var(--release-green); color: #07110b; }
+.landing-shell.landing-dark .material-carousel-arrow:focus-visible { background: var(--release-green); color: var(--text-primary); }
 .landing-shell.landing-dark .ref-price-card.is-premium {
-  background: linear-gradient(145deg, #153523, #0d1d16 70%);
+  background: linear-gradient(145deg, var(--bg-sidebar), #0d1d16 70%);
   border-color: var(--release-green);
   box-shadow: 0 0 0 1px rgb(185 255 61 / 38%), 0 18px 52px rgb(185 255 61 / 18%);
 }
@@ -326,16 +326,16 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 .landing-shell.landing-dark .ref-price-card :is(h3,.ref-price,li) { color: var(--release-ink); }
 .landing-shell.landing-dark .ref-price-card li span { color: var(--release-green); }
-.landing-shell.landing-dark .ref-badge { background: var(--release-green); color: #07110b; }
-.landing-shell.landing-dark .ref-price-card.is-premium .ref-button-primary { color: #07110b; animation: premium-breathe-dark 3s ease-in-out infinite; }
-.landing-shell.landing-dark .ref-guarantee { background: linear-gradient(135deg, #123a28, #0c2117); border-color: rgb(185 255 61 / 34%); box-shadow: 0 16px 42px rgb(0 0 0 / 30%), 0 0 30px rgb(185 255 61 / 8%); }
+.landing-shell.landing-dark .ref-badge { background: var(--release-green); color: var(--text-primary); }
+.landing-shell.landing-dark .ref-price-card.is-premium .ref-button-primary { color: var(--text-primary); animation: premium-breathe-dark 3s ease-in-out infinite; }
+.landing-shell.landing-dark .ref-guarantee { background: linear-gradient(135deg, var(--bg-sidebar), var(--bg-sidebar)); border-color: rgb(185 255 61 / 34%); box-shadow: 0 16px 42px rgb(0 0 0 / 30%), 0 0 30px rgb(185 255 61 / 8%); }
 .landing-shell.landing-dark .ref-guarantee-copy strong { color: var(--release-ink); }
 .landing-shell.landing-dark .ref-guarantee-copy span,
 .landing-shell.landing-dark .ref-guarantee :is(span,a) { color: #c6e7d2; }
-.landing-shell.landing-dark .ref-guarantee-mark { color: var(--release-green); border-color: rgb(185 255 61 / 50%); background: rgb(185 255 61 / 12%); }
+.landing-shell.landing-dark .ref-guarantee-mark { color: var(--release-green); border-color: var(--border-subtle); background: rgb(185 255 61 / 12%); }
 .landing-shell.landing-dark .landing-faq .faq-list details { background: var(--release-soft); box-shadow: 0 12px 28px rgb(0 0 0 / 18%); }
 .landing-shell.landing-dark .landing-faq .faq-list details:hover,
-.landing-shell.landing-dark .landing-faq .faq-list details[open] { background: #173023; box-shadow: 0 16px 34px rgb(0 0 0 / 25%); }
+.landing-shell.landing-dark .landing-faq .faq-list details[open] { background: var(--bg-sidebar); box-shadow: 0 16px 34px rgb(0 0 0 / 25%); }
 .landing-shell.landing-dark .landing-faq .faq-list summary { color: var(--release-ink); }
 .landing-shell.landing-dark .landing-faq .faq-list summary span { color: var(--release-green); }
 .landing-shell.landing-dark .landing-faq .faq-list details p { color: var(--release-muted); }
@@ -345,7 +345,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-shell.landing-dark .premium-offer-description,
 .landing-shell.landing-dark .premium-offer-price span { color: var(--release-muted) !important; }
 .landing-shell.landing-dark .premium-offer-kicker { color: var(--release-green) !important; }
-.landing-shell.landing-dark .premium-offer-cta { background: var(--release-green); color: #07110b; }
+.landing-shell.landing-dark .premium-offer-cta { background: var(--release-green); color: var(--text-primary); }
 .landing-shell.landing-dark .premium-offer-secondary { color: var(--release-muted); border-color: var(--release-line); }
 @keyframes premium-sweep { 0%, 100% { transform: translateX(-18%); opacity: .25; } 50% { transform: translateX(18%); opacity: .72; } }
 @keyframes premium-breathe-dark { 0%, 100% { box-shadow: 0 0 0 1px rgb(185 255 61 / 25%), 0 10px 26px rgb(185 255 61 / 18%); } 50% { box-shadow: 0 0 0 4px rgb(185 255 61 / 15%), 0 14px 38px rgb(185 255 61 / 32%); } }
@@ -422,12 +422,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-shell.landing-dark .ref-price-card.is-premium { transform: translateY(-8px); }
 .landing-shell.landing-dark .ref-price-card.is-premium:hover,
 .landing-shell.landing-dark .ref-price-card.is-premium:focus-within { transform: translateY(-14px) scale(1.01); }
-.landing-shell.landing-dark .ref-price-card .ref-button-primary { color: #07110b !important; }
+.landing-shell.landing-dark .ref-price-card .ref-button-primary { color: var(--text-primary) !important; }
 
 .landing-shell.landing-dark .landing-faq .faq-list { background: transparent; box-shadow: none; }
 .landing-shell.landing-dark .landing-faq .faq-list details { background: #13271f; box-shadow: 0 12px 30px rgb(0 0 0 / 24%); }
 .landing-shell.landing-dark .landing-faq .faq-list details:hover,
-.landing-shell.landing-dark .landing-faq .faq-list details[open] { background: #193528; transform: translateY(-3px); box-shadow: 0 18px 38px rgb(0 0 0 / 34%); }
+.landing-shell.landing-dark .landing-faq .faq-list details[open] { background: var(--bg-sidebar); transform: translateY(-3px); box-shadow: 0 18px 38px rgb(0 0 0 / 34%); }
 
 @media (prefers-reduced-motion: reduce) {
   .landing-shell.landing-dark .demo-sidebar a,
