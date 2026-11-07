@@ -343,3 +343,37 @@ body.godev-app.godev-app .catalog-chip-matematica { color: #e2d4ff; background: 
 body.godev-app.godev-app input[type="checkbox"], body.godev-app.godev-app input[type="radio"] { width: 20px; height: 20px; min-width: 20px; padding: 0; flex: none; }
 body.godev-app.godev-app .portal-search input { min-height: 44px; }
 body.godev-app.godev-app :is(.admin-logout, .portal-notification, .admin-profile button, .student-inline-action, .overview-text-link) { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* ---------- Demo: resultado, ações e progresso ---------- */
+body.godev-app.godev-app [class*="previewResultActions"] { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
+body.godev-app.godev-app [class*="previewPrimaryButton"], body.godev-app.godev-app [class*="previewNextButton"] {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 999px;
+  background: var(--accent) !important; color: var(--on-accent) !important; font-weight: 700; text-decoration: none; border: 0;
+}
+body.godev-app.godev-app [class*="previewPrimaryButton"]:hover, body.godev-app.godev-app [class*="previewNextButton"]:hover { background: var(--accent-hover) !important; }
+body.godev-app.godev-app [class*="conversionSecondary"] {
+  min-height: 48px; padding: 0 22px; border-radius: 999px; border: 1.5px solid var(--border-control);
+  background: transparent; color: var(--text-primary); font-weight: 700; cursor: pointer;
+}
+body.godev-app.godev-app [class*="conversionSecondary"]:hover { border-color: var(--accent); background: rgb(110 231 183 / 12%); }
+body.godev-app.godev-app [class*="previewProgressTrack"] { height: 10px; border-radius: 999px; background: var(--surface-soft); border: 1px solid var(--border-subtle); overflow: hidden; }
+body.godev-app.godev-app [class*="previewProgressTrack"] > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--highlight)); border-radius: inherit; }
+body.godev-app.godev-app .demo-number-grid span { min-width: 36px; min-height: 36px; display: inline-grid; place-items: center; border-radius: 10px; border: 1.5px solid var(--border-control); color: var(--text-primary); font-weight: 700; }
+body.godev-app.godev-app .demo-number-grid span.is-answered { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+body.godev-app.godev-app .demo-number-grid span.is-active { border-color: var(--highlight); box-shadow: 0 0 0 3px rgb(199 244 100 / 40%); }
+
+/* ---------- Benefícios com ícone (landing) ---------- */
+body.godev-app .petroleum-benefits article { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: start; }
+body.godev-app .petroleum-benefits article > svg { grid-row: span 2; width: 44px; height: 44px; padding: 10px; border-radius: 50%; border: 1.5px solid var(--border-control); color: var(--accent); background: var(--surface-soft); }
+body.godev-app .petroleum-benefits article > strong, body.godev-app .petroleum-benefits article > p { grid-column: 2; margin: 0; }
+
+/* ---------- Admin: título do topo ---------- */
+body.godev-app.godev-app .admin-topbar > div:first-child { display: grid; gap: 4px; }
+
+/* ---------- Landing: faixa de números e abas da demo sem corte ---------- */
+body.godev-app.godev-app .reformulated-landing .landing-stat-strip { flex-wrap: wrap; justify-content: center; row-gap: .5rem; column-gap: 1.25rem; }
+@media (max-width: 760px) {
+  body.godev-app.godev-app .landing-demo .demo-sidebar { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible; padding: 12px; }
+  body.godev-app.godev-app .landing-demo .demo-sidebar > strong { flex: 1 0 100%; }
+  body.godev-app.godev-app .landing-demo .demo-sidebar a { flex: 1 1 calc(50% - 6px); min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-align: center; white-space: normal; border: 1px solid var(--border-subtle); border-radius: 12px; }
+}
