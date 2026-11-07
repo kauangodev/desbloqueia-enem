@@ -25,7 +25,7 @@ export default async function StudentLayout({
       <main className="workspace" id="conteudo">
         <header className="portal-topbar">
           <ResponsiveDrawerToggle target="student" label="do aluno" />
-          <label className="portal-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="5.8" /><path d="m15.2 15.2 4.3 4.3" /></svg><input aria-label="Buscar nos estudos" placeholder="Buscar nos estudos" /></label>
+          <form className="portal-search" role="search" action="/aluno/materiais" method="get"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="5.8" /><path d="m15.2 15.2 4.3 4.3" /></svg><input name="q" type="search" aria-label="Buscar nos materiais" placeholder="Buscar nos materiais" enterKeyHint="search" /></form>
           <button className="portal-notification" type="button" aria-label="Notificações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 10a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8M10 21h4" /></svg></button>
           <span className="portal-user-avatar" aria-hidden="true">{(who.profile?.name || "E").slice(0, 1).toUpperCase()}</span>
           <span className="portal-user-name">{who.profile?.name?.split(" ")[0] || "Estudante"}</span>

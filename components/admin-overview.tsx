@@ -102,6 +102,34 @@ export default function AdminOverview({
 
   return (
     <section className="admin-overview" aria-labelledby="overview-title">
+      <div className="admin-overview-metrics">
+        {metrics.map((metric) => (
+          <article className={"overview-metric " + metric.tone} key={metric.label}>
+            <span className="overview-metric-icon" aria-hidden="true">↗</span>
+            <div>
+              <strong>{metric.value}</strong>
+              <span>{metric.label}</span>
+              <small>{metric.hint}</small>
+            </div>
+          </article>
+        ))}
+        <article className="overview-metric overview-metric-tracking">
+          <span className="overview-metric-icon" aria-hidden="true">◉</span>
+          <div>
+            <strong>{trackedAccesses}</strong>
+            <span>Acessos registrados</span>
+            <small>dispositivos com atividade identificada</small>
+          </div>
+        </article>
+        <article className="overview-metric overview-metric-roi">
+          <span className="overview-metric-icon" aria-hidden="true">%</span>
+          <div>
+            <strong>{roi === null ? "—" : `${roi.toFixed(1)}%`}</strong>
+            <span>ROI de mídia</span>
+            <small>{roi === null ? "Informe o investimento para calcular" : "receita líquida sobre investimento"}</small>
+          </div>
+        </article>
+      </div>
       <div className="overview-grid">
         <article className="overview-revenue-card">
           <div className="overview-card-topline">
@@ -157,34 +185,6 @@ export default function AdminOverview({
         </aside>
       </div>
 
-      <div className="admin-overview-metrics">
-        {metrics.map((metric) => (
-          <article className={"overview-metric " + metric.tone} key={metric.label}>
-            <span className="overview-metric-icon" aria-hidden="true">↗</span>
-            <div>
-              <strong>{metric.value}</strong>
-              <span>{metric.label}</span>
-              <small>{metric.hint}</small>
-            </div>
-          </article>
-        ))}
-        <article className="overview-metric overview-metric-tracking">
-          <span className="overview-metric-icon" aria-hidden="true">◉</span>
-          <div>
-            <strong>{trackedAccesses}</strong>
-            <span>Acessos registrados</span>
-            <small>dispositivos com atividade identificada</small>
-          </div>
-        </article>
-        <article className="overview-metric overview-metric-roi">
-          <span className="overview-metric-icon" aria-hidden="true">%</span>
-          <div>
-            <strong>{roi === null ? "—" : `${roi.toFixed(1)}%`}</strong>
-            <span>ROI de mídia</span>
-            <small>{roi === null ? "Informe o investimento para calcular" : "receita líquida sobre investimento"}</small>
-          </div>
-        </article>
-      </div>
 
       <article className="overview-white-card quiz-funnel-card" aria-labelledby="quiz-funnel-title">
         <div className="overview-white-heading">

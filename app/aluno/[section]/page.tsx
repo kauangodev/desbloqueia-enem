@@ -10,6 +10,7 @@ import AssessmentPlayer from "../../../components/assessment-player";
 import EssayMaintenance from "../../../components/essay-maintenance";
 import ActivityCatalog from "../../../components/activity-catalog";
 import Resources, { type Material } from "../../../components/resources";
+import MaterialsBrowser from "../../../components/materials-browser";
 import { questionBank, questionsFor, questionsForCollection, toPublicQuestion } from "../../../data/question-bank";
 import type { Question } from "../../../data/question-bank";
 import { officialMaterials } from "../../../data/official-exams";
@@ -49,7 +50,7 @@ export default async function Section({
   searchParams,
 }: {
   params: Promise<{ section: string }>;
-  searchParams?: Promise<{ simulado?: string; lista?: string; area?: string }>;
+  searchParams?: Promise<{ simulado?: string; lista?: string; area?: string; q?: string }>;
 }) {
   const { section } = await params;
   const search = (await searchParams) || {};
@@ -284,7 +285,7 @@ export default async function Section({
     if (section === "simulados") query = query.eq("category", "Simulados");
     if (section === "checklists") query = query.eq("category", "Checklists");
     const { data } = await query;
-    content = <Resources items={data || []} />;
+    content = section === "materiais" ? <MaterialsBrowser items={(data || []) as Material[]} controls initialQuery={search.q || ""} /> : <Resources items={data || []} />;
   }
   return (
     <>

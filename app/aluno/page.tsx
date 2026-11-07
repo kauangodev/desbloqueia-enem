@@ -1,5 +1,5 @@
 import { identity } from "../../lib/supabase";
-import Resources from "../../components/resources";
+import MaterialsBrowser from "../../components/materials-browser";
 import Link from "next/link";
 import GamificationPanel from "../../components/gamification-panel";
 
@@ -134,7 +134,7 @@ export default async function Dashboard() {
               </div>
               <span className="student-count">{visibleMaterials.length} itens</span>
             </div>
-            <Resources items={visibleMaterials} />
+            <MaterialsBrowser items={visibleMaterials} defaultView="list" />
           </section>
         </div>
 

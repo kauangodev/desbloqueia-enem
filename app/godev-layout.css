@@ -1,0 +1,111 @@
+/* =====================================================================
+   Navegação: altura, rolagem e densidade (área do aluno e administrativo)
+   Arquitetura: o documento rola o conteúdo; a sidebar é sticky na altura
+   da viewport e só rola por dentro se as opções excederem a tela.
+   ===================================================================== */
+:root, body.godev-app { --topbar-h: 56px; --nav-item-h: 40px; }
+
+@media (min-width: 900px) {
+  body.godev-app.godev-app .portal .sidebar { padding: 12px; gap: 6px; scrollbar-width: thin; scrollbar-color: var(--border-control) transparent; overscroll-behavior: contain; }
+  body.godev-app.godev-app .portal .sidebar .brand { min-height: 40px; margin: 0 0 4px; }
+  body.godev-app.godev-app .portal .sidebar nav:not(.portal-mobile-nav) { display: flex; flex-direction: column; gap: 2px; }
+  body.godev-app.godev-app .portal .sidebar nav:not(.portal-mobile-nav) a { min-height: var(--nav-item-h); padding-block: 0; font-size: .875rem; }
+  body.godev-app.godev-app .portal .sidebar .portal-admin-link { margin-top: 6px; }
+  body.godev-app.godev-app .portal .sidebar form { margin-top: auto; position: sticky; bottom: 0; padding-top: 8px; background: var(--bg-sidebar); }
+  body.godev-app.godev-app .portal .sidebar form button { min-height: 40px; width: 100%; }
+
+  body.godev-app.godev-app .admin-app { padding: 12px; gap: 12px; }
+  body.godev-app.godev-app .admin-sidebar { height: calc(100dvh - 24px); padding: 14px 12px; gap: 2px; scrollbar-width: thin; scrollbar-color: var(--border-control) transparent; overscroll-behavior: contain; }
+  body.godev-app.godev-app .admin-brand { min-height: 40px; margin-bottom: 4px; }
+  body.godev-app.godev-app .admin-sidebar-label { margin: 10px 8px 4px; }
+  body.godev-app.godev-app .admin-side-nav { display: flex; flex-direction: column; gap: 2px; }
+  body.godev-app.godev-app .admin-side-link { min-height: var(--nav-item-h); padding-block: 0; font-size: .875rem; }
+  body.godev-app.godev-app .admin-sidebar-footer { margin-top: auto; position: sticky; bottom: 0; padding-top: 8px; background: var(--bg-sidebar); }
+}
+
+body.godev-app.godev-app :is(.portal-topbar, .admin-topbar) { min-height: var(--topbar-h); height: auto; padding-block: 8px; }
+
+body.godev-app.godev-app :is(.portal .workspace, .admin-content) .page-title { font-size: clamp(1.75rem, 1.35rem + 1.2vw, 2.25rem); line-height: 1.15; margin: 12px 0 4px; }
+body.godev-app.godev-app .portal .workspace > p { margin: 0 0 16px; max-width: 68ch; }
+body.godev-app.godev-app .admin-hero, body.godev-app.godev-app .admin-page-header { margin: 0 0 12px; gap: 2px; padding: 0; }
+body.godev-app.godev-app .admin-hero p, body.godev-app.godev-app .admin-page-header p { margin: 2px 0 0; }
+body.godev-app.godev-app .admin-content { padding-block: 16px 32px; }
+
+body.godev-app.godev-app .student-dashboard { gap: 16px; }
+body.godev-app.godev-app .student-welcome { padding: 14px 20px; min-height: 0; gap: 12px; }
+body.godev-app.godev-app .student-welcome h1 { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); margin: 2px 0; }
+body.godev-app.godev-app .student-welcome p { margin: 0; }
+body.godev-app.godev-app .student-stat-grid { gap: 12px; }
+body.godev-app.godev-app .student-stat-card { padding: 12px 16px; min-height: 0; gap: 2px; }
+body.godev-app.godev-app .student-stat-card strong { font-size: 1.5rem; line-height: 1.1; }
+body.godev-app.godev-app .student-section-block { gap: 10px; }
+
+/* Materiais: filtros, contagem e modos de exibição */
+body.godev-app.godev-app .materials-toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; margin: 0 0 8px; }
+body.godev-app.godev-app .materials-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+body.godev-app.godev-app .materials-chips button, body.godev-app.godev-app .materials-view button {
+  min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border-control); background: transparent; color: var(--text-primary) !important; font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer;
+}
+body.godev-app.godev-app .materials-chips button span { margin-left: 4px; color: var(--text-secondary); font-weight: 500; }
+body.godev-app.godev-app :is(.materials-chips button, .materials-view button)[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent) !important; }
+body.godev-app.godev-app .materials-chips button[aria-pressed="true"] span { color: var(--on-accent); }
+body.godev-app.godev-app .materials-view { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--border-subtle); border-radius: 999px; }
+body.godev-app.godev-app .materials-view button { border-color: transparent; min-height: 32px; }
+body.godev-app.godev-app .materials-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; font-size: .875rem; color: var(--text-secondary); }
+body.godev-app.godev-app .materials-tag { padding: 2px 10px; border-radius: 999px; background: var(--surface-soft); border: 1px solid var(--border-subtle); color: var(--text-primary); }
+body.godev-app.godev-app .materials-clear { min-height: 32px; padding: 0 8px; background: none; border: 0; color: var(--accent); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+body.godev-app.godev-app .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); gap: 14px; }
+body.godev-app.godev-app .resource-grid .resource { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+body.godev-app.godev-app .resource-info { padding: 10px 12px 12px; display: grid; gap: 4px; }
+body.godev-app.godev-app .resource-info h3 { font-size: .9375rem; line-height: 1.25; margin: 0; }
+body.godev-app.godev-app .resource-info p { margin: 0; font-size: .8125rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+body.godev-app.godev-app .resource-info small { font-size: .75rem; color: var(--text-secondary); }
+
+body.godev-app.godev-app .resource-grid[data-view="list"] { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
+body.godev-app.godev-app .resource-grid[data-view="list"] .resource { flex-direction: row; align-items: center; gap: 12px; padding: 8px 12px 8px 8px; min-height: 64px; }
+body.godev-app.godev-app .resource-grid[data-view="list"] .resource-cover { width: 40px; flex: none; border-radius: 6px; }
+body.godev-app.godev-app .resource-grid[data-view="list"] .resource-info { padding: 0; }
+body.godev-app.godev-app .resource-grid[data-view="list"] .resource-info p { display: none; }
+
+@media (max-width: 899px) {
+  body.godev-app.godev-app .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  body.godev-app.godev-app .resource-grid[data-view="list"] { grid-template-columns: 1fr; }
+  body.godev-app.godev-app .materials-chips button, body.godev-app.godev-app .materials-view button { min-height: 44px; }
+  body.godev-app.godev-app .materials-chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; width: 100%; }
+  body.godev-app.godev-app .materials-chips button { flex: none; }
+}
+
+/* Admin: indicadores primeiro, em grade compacta */
+body.godev-app.godev-app .admin-overview { display: grid; gap: 16px; }
+body.godev-app.godev-app .admin-overview-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+body.godev-app.godev-app .overview-metric { padding: 12px 14px; min-height: 0; }
+body.godev-app.godev-app .overview-grid { gap: 16px; }
+body.godev-app.godev-app :is(.overview-revenue-card, .overview-activity-card, .overview-white-card) { padding: 16px 18px; }
+
+/* Mobile: barra superior do admin em uma linha e indicadores em 2 colunas */
+@media (max-width: 899px) {
+  body.godev-app.godev-app .admin-topbar { display: flex; align-items: center; flex-wrap: nowrap; gap: 12px; min-height: 56px; padding: 8px 16px; }
+  body.godev-app.godev-app .admin-topbar > div:not(.admin-topbar-actions) { flex: 1; min-width: 0; display: grid; gap: 0; }
+  body.godev-app.godev-app .admin-topbar-actions { margin-left: auto; }
+}
+@media (max-width: 640px) {
+  body.godev-app.godev-app .admin-overview-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  body.godev-app.godev-app .overview-metric { padding: 10px 12px; }
+  body.godev-app.godev-app .overview-metric-icon { display: none; }
+  body.godev-app.godev-app .admin-live-indicator { font-size: .75rem; padding: 4px 8px; }
+}
+
+@media (max-width: 899px) {
+  body.godev-app.godev-app .admin-topbar { flex-direction: row; }
+  body.godev-app.godev-app .admin-topbar-actions { width: auto; }
+  body.godev-app.godev-app .resource-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+/* Faixa de ícones (900–1199px): o botão Sair continua acessível */
+@media (min-width: 900px) and (max-width: 1199px) {
+  body.godev-app.godev-app .portal .sidebar form { display: block; }
+  body.godev-app.godev-app .portal .sidebar form button { padding: 0; font-size: .75rem; }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+  body.godev-app.godev-app .portal .sidebar { top: 16px; height: calc(100dvh - 32px); }
+}
