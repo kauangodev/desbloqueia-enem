@@ -90,3 +90,8 @@ body.godev-app .consent-toggle:hover { color: var(--text-primary) !important; bo
   body.godev-app:has(.portal) .consent-toggle, body.godev-app:has(.admin-app) .consent-toggle { left: auto; right: 12px; bottom: calc(84px + env(safe-area-inset-bottom)); }
   body.godev-app.godev-app .portal .workspace, body.godev-app.godev-app .admin-content { padding-bottom: 128px; }
 }
+
+@media (max-width: 899px) {
+  body.godev-app:has(.portal) .consent-toggle, body.godev-app:has(.admin-app) .consent-toggle { bottom: calc(12px + env(safe-area-inset-bottom)); }
+  body.godev-app.godev-app .portal .workspace, body.godev-app.godev-app .admin-content { padding-bottom: 80px; }
+}
