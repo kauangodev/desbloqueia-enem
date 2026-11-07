@@ -2,16 +2,46 @@
    Keeps existing behavior intact while giving every surface one readable visual contract. */
 
 :root {
+  --modern-bg: #f7f8fa;
+  --modern-surface: #ffffff;
+  --modern-surface-soft: #eef7f2;
+  --modern-ink: #142033;
+  --modern-muted: #526174;
+  --modern-line: #d9e2dc;
+  --modern-brand: #087f5b;
+  --modern-brand-dark: #07553c;
+  --modern-accent: #c9f66a;
+  --modern-accent-ink: #17331f;
+  --modern-shadow: 0 18px 44px rgb(20 32 51 / 8%);
   --modern-radius: 16px;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 :root[data-theme="dark"], :root.dark {
+  --modern-bg: #08130e;
+  --modern-surface: #10231a;
+  --modern-surface-soft: #153326;
+  --modern-ink: #f7fbf8;
+  --modern-muted: #c3d4ca;
+  --modern-line: #315743;
+  --modern-brand: #69d39d;
+  --modern-brand-dark: #9af0bd;
+  --modern-accent: #c9f66a;
+  --modern-accent-ink: #17331f;
+  --modern-shadow: 0 22px 48px rgb(0 0 0 / 28%);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme-choice="system"] {
+    --modern-bg: #08130e;
+    --modern-surface: #10231a;
+    --modern-surface-soft: #153326;
+    --modern-ink: #f7fbf8;
+    --modern-muted: #c3d4ca;
+    --modern-line: #315743;
+    --modern-brand: #69d39d;
+    --modern-brand-dark: #9af0bd;
     color-scheme: dark;
   }
 }
