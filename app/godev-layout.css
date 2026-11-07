@@ -121,3 +121,6 @@ body.godev-app.godev-app .student-welcome-meta { align-self: center; }
 /* Modo lista: a miniatura herdava padding de 22px e a imagem colapsava para 0px */
 body.godev-app.godev-app .resource-grid[data-view="list"] .resource-cover { padding: 0; width: 44px; min-width: 44px; display: block; }
 body.godev-app.godev-app .resource-grid[data-view="list"] .resource-cover img { width: 100%; height: 100%; }
+
+/* Contadores do CRM: texto claro sobre fundo claro (1,04:1) -> pílula escura legível */
+body.godev-app.godev-app .crm-count { background: var(--surface-soft); color: var(--text-secondary); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 4px 12px; font-size: .8125rem; }
