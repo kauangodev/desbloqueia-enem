@@ -1,0 +1,86 @@
+/* =====================================================================
+   Shell de aplicação — área do aluno e administrativo (≥ 900px)
+   Estrutura: janela (100dvh) > grid [sidebar | área de trabalho]
+              área de trabalho > header fixo + conteúdo com rolagem própria.
+   Abaixo de 900px o documento volta a rolar (drawer + navegação inferior).
+   ===================================================================== */
+
+@media (min-width: 900px) {
+  body.godev-app:has(.portal), body.godev-app:has(.admin-app) { height: 100dvh; overflow: hidden; }
+
+  /* ---- Aluno ---- */
+  body.godev-app.godev-app .portal {
+    display: grid; grid-template-columns: 248px minmax(0, 1fr);
+    height: 100dvh; min-height: 0; padding: 0; gap: 0; overflow: hidden; background: var(--bg-base);
+  }
+  body.godev-app.godev-app .portal .sidebar {
+    position: relative; top: auto; inset-block: auto; height: 100%; max-height: none; width: auto; margin: 0;
+    border: 0; border-right: 1px solid var(--border-subtle); border-radius: 0; box-shadow: none; overflow-y: auto;
+  }
+  body.godev-app.godev-app .portal .workspace {
+    display: flex; flex-direction: column; height: 100%; min-height: 0; min-width: 0; padding: 0; margin: 0;
+    overflow: hidden; background: var(--bg-base); border-radius: 0;
+  }
+  body.godev-app.godev-app .portal-topbar {
+    flex: none; position: static; display: flex; align-items: center; gap: 12px; height: var(--topbar-h); min-height: var(--topbar-h);
+    margin: 0; padding: 0 clamp(16px, 2.5vw, 32px); border: 0; border-bottom: 1px solid var(--border-subtle); border-radius: 0;
+    background: var(--bg-base); box-shadow: none;
+  }
+  body.godev-app.godev-app .portal-topbar .portal-search { flex: 0 1 460px; min-width: 0; margin-right: auto; }
+  body.godev-app.godev-app .workspace-scroll {
+    flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+    padding: 20px clamp(16px, 2.5vw, 32px) 72px;
+  }
+
+  /* ---- Admin ---- */
+  body.godev-app.godev-app .admin-app {
+    display: grid; grid-template-columns: 248px minmax(0, 1fr);
+    height: 100dvh; min-height: 0; padding: 0; gap: 0; overflow: hidden; background: var(--bg-base);
+  }
+  body.godev-app.godev-app .admin-sidebar {
+    position: relative; top: auto; height: 100%; max-height: none; width: auto; margin: 0;
+    border: 0; border-right: 1px solid var(--border-subtle); border-radius: 0; box-shadow: none; overflow-y: auto;
+  }
+  body.godev-app.godev-app .admin-workspace {
+    display: flex; flex-direction: column; height: 100%; min-height: 0; min-width: 0; margin: 0; border: 0; border-radius: 0;
+    overflow: hidden; background: var(--bg-base); box-shadow: none;
+  }
+  body.godev-app.godev-app .admin-topbar {
+    flex: none; display: flex; align-items: center; gap: 12px; height: var(--topbar-h); min-height: var(--topbar-h);
+    margin: 0; padding: 0 clamp(16px, 2.5vw, 32px); border: 0; border-bottom: 1px solid var(--border-subtle); border-radius: 0;
+    background: var(--bg-base); box-shadow: none;
+  }
+  body.godev-app.godev-app .admin-content {
+    flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+    padding: 20px clamp(16px, 2.5vw, 32px) 72px;
+  }
+
+  /* Controle de cookies: no canto inferior direito, sem criar altura nem cobrir a sidebar */
+  body.godev-app:has(.portal) .consent-toggle, body.godev-app:has(.admin-app) .consent-toggle,
+  body.godev-app:has(.portal) .consent, body.godev-app:has(.admin-app) .consent { left: auto; right: 16px; }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+  body.godev-app.godev-app .portal, body.godev-app.godev-app .admin-app { grid-template-columns: 76px minmax(0, 1fr); }
+}
+
+/* Barra superior: itens alinhados e avatar/nome sem quebra */
+body.godev-app.godev-app :is(.portal-topbar, .admin-topbar) > * { align-self: center; }
+body.godev-app.godev-app .portal-user-name { white-space: nowrap; }
+
+/* Controle de cookies como botão discreto, integrado ao produto */
+body.godev-app .consent-toggle {
+  position: fixed; bottom: 12px; z-index: var(--z-sticky, 20); min-height: 36px; padding: 0 12px; border-radius: 999px;
+  background: var(--bg-sidebar); border: 1px solid var(--border-subtle); color: var(--text-secondary) !important;
+  font-size: .75rem; text-decoration: none; cursor: pointer;
+}
+body.godev-app .consent-toggle:hover { color: var(--text-primary) !important; border-color: var(--border-control); }
+
+/* Abaixo de 900px: documento rola; o contêiner interno vira fluxo normal */
+@media (max-width: 899px) {
+  body.godev-app.godev-app .workspace-scroll { overflow: visible; padding: 0; }
+}
+
+@media (min-width: 900px) {
+  body.godev-app.godev-app .workspace-scroll, body.godev-app.godev-app .admin-content { padding: 16px clamp(16px, 2.5vw, 32px) 56px; }
+}

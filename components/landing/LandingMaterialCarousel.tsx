@@ -1,37 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { materials } from "../../lib/config";
 
-const offsets = [-2, -1, 0, 1, 2] as const;
+/** No desktop mostra três capas completas (central em destaque); no celular, uma por vez. Sem avanço automático. */
+const offsets = [-1, 0, 1] as const;
 
 export function LandingMaterialCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const pointerStart = useRef<number | null>(null);
   const pointerMoved = useRef(false);
   const length = materials.length;
 
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    if (paused || reducedMotion) return;
-    const timer = window.setInterval(() => setActiveIndex((current) => (current + 1) % length), 3600);
-    return () => window.clearInterval(timer);
-  }, [length, paused, reducedMotion]);
-
-  const visible = useMemo(() => offsets.map((offset) => {
-    const index = (activeIndex + offset + length) % length;
-    return { item: materials[index], offset };
-  }), [activeIndex, length]);
+  const visible = offsets.map((offset) => ({ item: materials[(activeIndex + offset + length) % length], offset }));
   const active = materials[activeIndex];
   const move = (direction: number) => setActiveIndex((current) => (current + direction + length) % length);
 
@@ -39,7 +21,6 @@ export function LandingMaterialCarousel() {
     if (event.pointerType === "mouse") return;
     pointerStart.current = event.clientX;
     pointerMoved.current = false;
-    setPaused(true);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
@@ -51,29 +32,50 @@ export function LandingMaterialCarousel() {
     if (pointerStart.current === null) return;
     const delta = event.clientX - pointerStart.current;
     pointerStart.current = null;
-    setPaused(false);
     if (!pointerMoved.current || Math.abs(delta) < 42) return;
     move(delta < 0 ? 1 : -1);
   }
 
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "ArrowLeft") { event.preventDefault(); move(-1); }
+    if (event.key === "ArrowRight") { event.preventDefault(); move(1); }
+  }
+
   return (
-    <div className="landing-material-carousel" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerCancel={handlePointerUp}>
-      <div className="material-carousel-stage" aria-label="Carrossel dos 16 e-books didáticos">
-        {visible.map(({ item, offset }) => (
-          <button
-            className={`material-carousel-card ${offset === 0 ? "is-active" : ""}`}
-            data-offset={offset}
-            key={item.id}
-            type="button"
-            aria-label={`Exibir ${item.title}`}
-            aria-current={offset === 0 ? "true" : undefined}
-            onClick={() => setActiveIndex(materials.findIndex((entry) => entry.id === item.id))}
-          >
-            <Image src={item.cover} width={320} height={453} sizes="(max-width: 640px) 48vw, 190px" alt={`Capa do e-book ${item.title}`} />
-          </button>
-        ))}
-        <button className="material-carousel-arrow is-prev" type="button" aria-label="Material anterior" onClick={() => move(-1)}>‹</button>
-        <button className="material-carousel-arrow is-next" type="button" aria-label="Próximo material" onClick={() => move(1)}>›</button>
+    <div
+      className="landing-material-carousel"
+      role="region"
+      aria-roledescription="carrossel"
+      aria-label="E-books didáticos"
+      onKeyDown={handleKeyDown}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => { pointerStart.current = null; }}
+    >
+      <div className="material-carousel-stage">
+        <button className="material-carousel-arrow is-prev" type="button" aria-label="Material anterior" onClick={() => move(-1)}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6" /></svg>
+        </button>
+        <div className="material-carousel-track">
+          {visible.map(({ item, offset }) => (
+            <button
+              className={`material-carousel-card ${offset === 0 ? "is-active" : ""}`}
+              data-offset={offset}
+              key={item.id}
+              type="button"
+              aria-label={offset === 0 ? `${item.title} (selecionado)` : `Exibir ${item.title}`}
+              aria-current={offset === 0 ? "true" : undefined}
+              tabIndex={offset === 0 ? 0 : -1}
+              onClick={() => setActiveIndex(materials.findIndex((entry) => entry.id === item.id))}
+            >
+              <Image src={item.cover} width={320} height={453} sizes="(max-width: 640px) 60vw, 210px" alt={`Capa do e-book ${item.title}`} />
+            </button>
+          ))}
+        </div>
+        <button className="material-carousel-arrow is-next" type="button" aria-label="Próximo material" onClick={() => move(1)}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
       </div>
       <div className="material-carousel-caption" aria-live="polite">
         <span className="landing-eyebrow">{active.category}</span>
@@ -89,4 +91,3 @@ export function LandingMaterialCarousel() {
     </div>
   );
 }
-

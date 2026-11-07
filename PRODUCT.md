@@ -7,7 +7,7 @@ Estudantes brasileiros preparando a revisão final para o ENEM, no celular e com
 ## Product Purpose
 Desbloqueia ENEM 2026 organiza materiais digitais, leitura, cronograma e referências históricas.
 ## Capabilities and Constraints
-Next.js existente. Planos Essencial R$19,90 e Premium R$32,90. Integrações externas serão conectadas pelo proprietário depois. Nenhum pagamento ou entrega pode ser simulado como real.
+Next.js existente. Planos Essencial R$10,90 e Premium R$19,90. Integrações externas serão conectadas pelo proprietário depois. Nenhum pagamento ou entrega pode ser simulado como real.
 ## Brand Commitments
 GoDev Education é a empresa; Desbloqueia ENEM 2026 é o produto. Preservar a marca textual e a logo existente. A direção visual aprovada é editorial, calma, clara e responsiva, sem tema escuro obrigatório, neon, limão ou glassmorphism.
 ## Evidence on Hand

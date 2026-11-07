@@ -10,7 +10,7 @@ export const plans = [
   {
     id: "essencial",
     name: "Essencial",
-    cents: 1990,
+    cents: 1090,
     description: "Uma base clara para retomar o que importa.",
     features: [
       "E-books essenciais de Linguagens, Humanas, Natureza e Matemática",
@@ -22,7 +22,7 @@ export const plans = [
   {
     id: "premium",
     name: "Premium",
-    cents: 3290,
+    cents: 1990,
     description: "Mais prática. Mais repertório. Tudo conectado.",
     features: [
       "Tudo do Essencial",

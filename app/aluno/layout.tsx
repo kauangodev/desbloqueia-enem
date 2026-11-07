@@ -30,7 +30,7 @@ export default async function StudentLayout({
           <span className="portal-user-avatar" aria-hidden="true">{(who.profile?.name || "E").slice(0, 1).toUpperCase()}</span>
           <span className="portal-user-name">{who.profile?.name?.split(" ")[0] || "Estudante"}</span>
         </header>
-        {children}
+        <div className="workspace-scroll">{children}</div>
       </main>
     </div>
   );

@@ -1,0 +1,82 @@
+/* Simulados e exercícios: composição enxuta, duas colunas quando há espaço. */
+
+body.godev-app.godev-app .assessment { display: grid; gap: 12px; max-width: 1180px; margin-inline: auto; }
+body.godev-app.godev-app .assessment-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 0; }
+body.godev-app.godev-app .assessment-head h2 { margin: 2px 0 0; font-size: clamp(1.25rem, 1rem + .8vw, 1.625rem); line-height: 1.2; }
+body.godev-app.godev-app .assessment-head p { margin: 2px 0 0; font-size: .9375rem; max-width: 62ch; }
+body.godev-app.godev-app .assessment-counter { font-size: 1.5rem; font-weight: 800; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+body.godev-app.godev-app .assessment-counter small { font-size: .875rem; font-weight: 600; color: var(--text-secondary); }
+body.godev-app.godev-app .progress-track { height: 6px; margin: 0; border-radius: 999px; background: var(--surface-soft); border: 1px solid var(--border-subtle); overflow: hidden; }
+body.godev-app.godev-app .progress-track > span { display: block; height: 100%; background: var(--accent); border-radius: inherit; transition: width var(--dur, 180ms) var(--ease, ease-out); }
+
+body.godev-app.godev-app .assessment-layout { display: grid; grid-template-columns: minmax(0, 1fr) 232px; gap: 20px; align-items: start; }
+body.godev-app.godev-app .assessment-main { display: grid; gap: 12px; min-width: 0; }
+
+body.godev-app.godev-app .question-card { padding: 16px 20px; display: grid; gap: 10px; }
+body.godev-app.godev-app .question-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; font-size: .8125rem; color: var(--text-secondary); }
+body.godev-app.godev-app .question-meta span { padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border-subtle); background: var(--surface-soft); }
+body.godev-app.godev-app .question-card h3 { margin: 0; max-width: 76ch; font-size: 1.0625rem; line-height: 1.6; font-weight: 600; color: var(--text-primary); }
+body.godev-app.godev-app .question-card fieldset { display: grid; gap: 8px; margin: 4px 0 0; padding: 0; border: 0; min-width: 0; }
+body.godev-app.godev-app .question-card legend { padding: 0; margin-bottom: 6px; font-size: .8125rem; color: var(--text-secondary); }
+
+body.godev-app.godev-app .option {
+  display: grid; grid-template-columns: auto 28px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 48px; padding: 10px 14px;
+  border: 1.5px solid var(--border-control); border-radius: 12px; background: transparent; color: var(--text-primary); cursor: pointer;
+  transition: border-color var(--dur-fast, 120ms), background-color var(--dur-fast, 120ms);
+}
+body.godev-app.godev-app .option:hover { border-color: var(--accent); background: rgb(110 231 183 / 8%); }
+body.godev-app.godev-app .option.selected { border-color: var(--accent); background: rgb(110 231 183 / 14%); box-shadow: inset 0 0 0 1px var(--accent); }
+body.godev-app.godev-app .option input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+body.godev-app.godev-app .option b { color: var(--accent); font-weight: 800; }
+body.godev-app.godev-app .option span { color: var(--text-primary); line-height: 1.5; }
+body.godev-app.godev-app .option:focus-within { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+/* Barra de ações: dentro da área rolável, fixa à base sem cobrir alternativas */
+body.godev-app.godev-app .assessment-actions {
+  position: sticky; bottom: 0; z-index: 2; display: flex; justify-content: space-between; gap: 12px; margin: 0; padding: 12px 0;
+  background: var(--bg-base); border-top: 1px solid var(--border-subtle);
+}
+body.godev-app.godev-app .assessment-actions .button { min-width: 140px; }
+body.godev-app.godev-app .assessment-source { margin: 0; font-size: .8125rem; color: var(--text-secondary); }
+
+/* Coluna auxiliar: navegação das questões */
+body.godev-app.godev-app .assessment-aside { position: sticky; top: 0; display: grid; gap: 10px; padding: 16px; border: 1px solid var(--border-subtle); border-radius: 16px; background: var(--surface); }
+body.godev-app.godev-app .assessment-aside h3 { margin: 0; font-size: .9375rem; }
+body.godev-app.godev-app .question-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+body.godev-app.godev-app .question-nav button {
+  min-height: 40px; border-radius: 10px; border: 1.5px solid var(--border-control); background: transparent; color: var(--text-primary) !important;
+  font: inherit; font-weight: 700; cursor: pointer; font-variant-numeric: tabular-nums;
+}
+body.godev-app.godev-app .question-nav button.is-answered { border-color: var(--accent); background: var(--surface-elevated); }
+body.godev-app.godev-app .question-nav button.is-current { background: var(--accent); border-color: var(--accent); color: var(--on-accent) !important; }
+body.godev-app.godev-app .assessment-summary { margin: 0; font-size: .8125rem; color: var(--text-secondary); }
+
+@media (max-width: 1100px) {
+  body.godev-app.godev-app .assessment-layout { grid-template-columns: minmax(0, 1fr); }
+  body.godev-app.godev-app .assessment-aside { order: -1; position: static; padding: 12px 14px; }
+  body.godev-app.godev-app .question-nav { grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); }
+}
+@media (max-width: 640px) {
+  body.godev-app.godev-app .question-card { padding: 14px; }
+  body.godev-app.godev-app .assessment-actions .button { flex: 1; min-width: 0; }
+}
+
+/* ---- Ajustes de densidade: 5 alternativas + ações cabem em 1366×768 ---- */
+body.godev-app.godev-app .assessment { background: none; border: 0; padding: 0; box-shadow: none; border-radius: 0; gap: 10px; }
+body.godev-app.godev-app .assessment-head { align-items: center; }
+body.godev-app.godev-app .assessment-head > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
+body.godev-app.godev-app .assessment-head .eyebrow { order: 0; }
+body.godev-app.godev-app .assessment-head p { display: none; }
+body.godev-app.godev-app .question-card { padding: 14px 18px; gap: 8px; background: var(--surface); }
+body.godev-app.godev-app .question-card legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+body.godev-app.godev-app .question-card fieldset { gap: 6px; margin: 0; }
+body.godev-app.godev-app .option { min-height: 44px; padding: 8px 14px; background: var(--surface-soft); }
+body.godev-app.godev-app .option span { font-weight: 500; }
+body.godev-app.godev-app .option input {
+  appearance: none; -webkit-appearance: none; width: 20px; height: 20px; min-height: 0; padding: 0; border: 2px solid var(--border-control); border-radius: 50%; background: transparent; display: grid; place-content: center; flex: none;
+}
+body.godev-app.godev-app .option input:checked { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 0 42%, transparent 46%); }
+body.godev-app.godev-app .assessment-actions { position: static; padding: 4px 0 0; border: 0; background: none; }
+body.godev-app.godev-app .assessment-source { font-size: .75rem; }
+body.godev-app.godev-app .workspace-scroll > .page-title { margin-top: 0; }
+body.godev-app.godev-app .workspace-scroll > .page-title + p { margin-bottom: 12px; }

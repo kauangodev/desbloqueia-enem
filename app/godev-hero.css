@@ -1,16 +1,15 @@
-/* Hero animada: vitrine de capas reais + painel de estudo de demonstração.
-   Só transform/opacity; pausa por data-running; estática em prefers-reduced-motion. */
+/* Hero: entrada curta do texto de apoio e demonstração em vídeo com moldura discreta. */
 
 body.godev-app .petroleum-hero { position: relative; isolation: isolate; }
 
-/* Entrada curta do texto de apoio (o H1 não anima, para não atrasar o LCP) */
+/* O H1 não anima (LCP); texto de apoio e ações entram em 560ms */
 body.godev-app .petroleum-hero-copy > p,
 body.godev-app .petroleum-hero-copy .landing-actions { animation: hero-rise 560ms var(--ease, cubic-bezier(.2, 0, 0, 1)) both; }
 body.godev-app .petroleum-hero-copy > p { animation-delay: 80ms; }
 body.godev-app .petroleum-hero-copy .landing-actions { animation-delay: 160ms; }
 @keyframes hero-rise { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
 
-/* Sublinhado que se desenha sob o destaque do título */
+/* Sublinhado desenhado uma vez sob o destaque do título */
 body.godev-app .petroleum-hero h1 em {
   width: fit-content; padding-bottom: .06em;
   background: linear-gradient(var(--highlight), var(--highlight)) no-repeat left 100% / 0 3px;
@@ -18,98 +17,22 @@ body.godev-app .petroleum-hero h1 em {
 }
 @keyframes hero-underline { to { background-size: 100% 3px; } }
 
-/* Palco */
-.hero-stage { --mx: 0; --my: 0; position: relative; isolation: isolate; width: min(100%, 30rem); aspect-ratio: 1 / 1.04; justify-self: center; }
-.hero-stage__glow {
-  position: absolute; inset: 4% -4%; z-index: -1; pointer-events: none;
-  background: radial-gradient(closest-side, rgb(110 231 183 / 20%), transparent 72%);
-  animation: hero-drift 14s ease-in-out infinite alternate;
+/* Demonstração */
+.hero-demo { margin: 0; justify-self: center; width: min(100%, 30rem); display: grid; gap: 10px; }
+.hero-demo__frame { position: relative; aspect-ratio: 600 / 580; overflow: hidden; border: 1px solid var(--border-control); border-radius: 16px; background: var(--surface); box-shadow: var(--elev-2); }
+.hero-demo__frame video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hero-demo figcaption { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: .8125rem; color: var(--text-secondary); }
+.hero-demo__control {
+  min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--border-control); background: transparent;
+  color: var(--text-primary); font: inherit; font-size: .8125rem; font-weight: 600; cursor: pointer;
 }
-@keyframes hero-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(3%, 3%, 0) scale(1.08); } }
+.hero-demo__control:hover { border-color: var(--accent); background: rgb(110 231 183 / 10%); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-.hero-stage__deck {
-  position: absolute; inset: 0; margin: 0; padding: 0; list-style: none;
-  transform: translate3d(calc(var(--mx) * 10px), calc(var(--my) * 8px), 0); transition: transform 240ms var(--ease, ease-out);
-}
-.hero-cover {
-  position: absolute; left: 50%; top: 50%; width: 52%; aspect-ratio: 2 / 3; margin: 0;
-  transform-origin: 50% 60%; will-change: transform, opacity;
-  transition: transform 700ms cubic-bezier(.2, .8, .2, 1), opacity 500ms ease;
-}
-.hero-cover img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; border: 1px solid rgb(110 231 183 / 45%); box-shadow: 0 22px 40px -20px rgb(0 0 0 / 65%); }
-.hero-cover.pos-0 { transform: translate(-50%, -52%) rotate(-3deg) scale(1); z-index: 4; }
-.hero-cover.pos-1 { transform: translate(-6%, -55%) rotate(7deg) scale(.86); z-index: 3; opacity: .92; }
-.hero-cover.pos-2 { transform: translate(-94%, -48%) rotate(-11deg) scale(.8); z-index: 2; opacity: .8; }
-.hero-cover.pos-3 { transform: translate(-50%, -50%) rotate(0deg) scale(.7); z-index: 1; opacity: 0; }
+@media (max-width: 900px) { .hero-demo { width: min(100%, 28rem); } }
+@media (max-width: 640px) { .hero-demo figcaption { justify-content: center; text-align: center; } }
 
-.hero-chip {
-  position: absolute; z-index: 6; top: 4%; left: 2%; max-width: 70%;
-  padding: 6px 12px; border-radius: 999px; font-size: .8125rem; font-weight: 600; line-height: 1.2;
-  background: var(--highlight); color: #1b2a08; animation: hero-chip-in 420ms var(--ease, ease-out) both;
-}
-@keyframes hero-chip-in { from { opacity: 0; transform: translate3d(0, 6px, 0); } to { opacity: 1; transform: none; } }
-
-/* Cartões de demonstração */
-.hero-card {
-  position: absolute; z-index: 6; display: grid; gap: 4px; padding: 12px 14px; border-radius: 14px;
-  background: var(--surface-elevated); border: 1px solid var(--border-control); color: var(--text-primary);
-  box-shadow: 0 16px 32px -16px rgb(0 0 0 / 55%);
-}
-.hero-card small { color: var(--text-secondary); font-size: .75rem; line-height: 1.3; }
-.hero-card strong { font-size: .9375rem; line-height: 1.2; }
-.hero-card--progress { left: 0; bottom: 7%; width: min(58%, 15rem); animation: hero-float 7s ease-in-out infinite alternate; }
-.hero-card--xp { right: 0; top: 0; padding: 8px 14px; animation: hero-float 8s ease-in-out -2s infinite alternate; }
-@keyframes hero-float { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -7px, 0); } }
-
-.hero-bar { height: 6px; border-radius: 999px; background: var(--surface-soft); border: 1px solid var(--border-subtle); overflow: hidden; margin-top: 2px; }
-.hero-bar span { display: block; height: 100%; background: var(--accent); transform-origin: left center; transform: scaleX(.2); animation: hero-fill 6s ease-in-out infinite; }
-@keyframes hero-fill { 0%, 10% { transform: scaleX(.2); } 52%, 92% { transform: scaleX(.6); } 100% { transform: scaleX(.2); } }
-
-.hero-status { position: relative; min-height: 1.1em; font-size: .75rem; color: var(--text-secondary); }
-.hero-status span { position: absolute; inset: 0 auto auto 0; white-space: nowrap; }
-.hero-status .s1 { animation: hero-s1 6s linear infinite; }
-.hero-status .s2 { color: var(--accent); font-weight: 600; opacity: 0; animation: hero-s2 6s linear infinite; }
-@keyframes hero-s1 { 0%, 48% { opacity: 1; } 54%, 96% { opacity: 0; } 100% { opacity: 1; } }
-@keyframes hero-s2 { 0%, 48% { opacity: 0; } 54%, 92% { opacity: 1; } 98%, 100% { opacity: 0; } }
-
-.hero-xp-plus { font-size: 1.25rem; font-weight: 800; color: var(--highlight); line-height: 1; transform-origin: left center; animation: hero-xp 6s ease-in-out infinite; }
-@keyframes hero-xp { 0%, 50%, 70%, 100% { transform: scale(1); } 58% { transform: scale(1.18); } }
-
-/* Pausa por estado (aba oculta, fora da tela, hover/foco ou botão) */
-.hero-stage[data-running="false"] :is(.hero-stage__glow, .hero-card, .hero-bar span, .hero-status span, .hero-xp-plus) { animation-play-state: paused; }
-
-.hero-stage__pause {
-  position: absolute; z-index: 7; right: 0; bottom: -6px; min-height: 44px; padding: 0 14px; border-radius: 999px;
-  background: var(--bg-sidebar); color: var(--text-secondary); border: 1px solid var(--border-subtle); font: inherit; font-size: .8125rem; cursor: pointer;
-}
-.hero-stage__pause:hover { color: var(--text-primary); border-color: var(--border-control); }
-
-/* Responsivo */
-@media (max-width: 900px) {
-  .hero-stage { width: min(100%, 26rem); }
-}
-@media (max-width: 640px) {
-  .hero-stage { width: min(100%, 21rem); aspect-ratio: 1 / 1.08; }
-  .hero-cover { width: 56%; }
-  .hero-chip { font-size: .75rem; padding: 5px 10px; }
-  .hero-card { padding: 10px 12px; }
-  .hero-card--progress { width: 62%; bottom: 8%; }
-  .hero-card--xp { top: 0; }
-  .hero-stage__pause { right: 50%; transform: translateX(50%); bottom: -14px; }
-}
-@media (max-width: 360px) {
-  .hero-card--xp { display: none; }
-}
-
-/* Sem animação: estado estático e completo */
 @media (prefers-reduced-motion: reduce) {
   body.godev-app .petroleum-hero-copy > p, body.godev-app .petroleum-hero-copy .landing-actions { animation: none; }
   body.godev-app .petroleum-hero h1 em { animation: none; background-size: 100% 3px; }
-  .hero-stage__glow, .hero-card, .hero-chip { animation: none; }
-  .hero-cover { transition: none; }
-  .hero-stage__deck { transform: none; transition: none; }
-  .hero-bar span { animation: none; transform: scaleX(.6); }
-  .hero-status .s1 { animation: none; opacity: 0; }
-  .hero-status .s2 { animation: none; opacity: 1; }
-  .hero-xp-plus { animation: none; }
 }
