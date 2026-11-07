@@ -26,8 +26,12 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
     total + (answer === privateQuestions[Number(index)]?.answer ? 1 : 0)
   ), 0);
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("godev:demo-state", { detail: { currentIndex, answers, complete, showReport } }));
+  }, [answers, complete, currentIndex, showReport]);
+
   function chooseAnswer(option: string) {
-    if (answered || complete) return;
+    if (complete) return;
     setAnswers((current) => ({ ...current, [currentIndex]: option }));
   }
 
@@ -60,6 +64,7 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
 
   if (complete) {
     const passed = score >= 3;
+    const perfect = score === questions.length;
     return (
       <article className={`${styles.productPreview} ${styles.previewResult} ${showReport ? styles.previewReportVisible : styles.previewCelebration} ${passed ? styles.previewPassed : styles.previewNeedsPractice}`} id="demo-questao" aria-labelledby="demo-result-title">
         <div className={styles.previewResultIcon} aria-hidden="true">
@@ -73,9 +78,9 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
         {!showReport ? (
           <>
             <strong className={styles.previewResultTitle} id="demo-result-title">
-              {passed ? "Parabéns! Você está no caminho certo." : "Poxa, não foi dessa vez."}
+              {perfect ? "Parabéns! Você fechou a demonstração." : passed ? "Muito bem! Você está no caminho certo." : "Poxa, ainda dá para evoluir."}
             </strong>
-            <p className={styles.previewCelebrationHint} aria-live="polite">{passed ? "Sua conquista está sendo registrada." : "Cada tentativa é um novo passo para evoluir."}</p>
+            <p className={styles.previewCelebrationHint} aria-live="polite">{passed ? "Você concluiu as cinco questões." : "Cada tentativa é um novo passo para evoluir."}</p>
           </>
         ) : (
           <>
@@ -84,7 +89,7 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
             </strong>
             <p className={styles.previewResultScore}>Você acertou <b>{score} de {questions.length}</b> questões · <b>{score * 20}%</b> de aproveitamento.</p>
             <div className={styles.previewProgressTrack} aria-label={`${score * 20}% de aproveitamento`}><span style={{ width: `${score * 20}%` }} /></div>
-            <p className={styles.previewResultNote}>{passed ? "Continue praticando para transformar consistência em confiança." : "Revise as explicações e tente novamente para acompanhar sua evolução."}</p>
+            <p className={styles.previewResultNote}>{perfect ? "Excelente domínio nesta amostra." : passed ? "Continue praticando para transformar consistência em confiança." : "Revise as explicações e tente novamente para acompanhar sua evolução."}</p>
             {!passed && <div className={styles.previewFocusAreas} role="note">
               <strong>Prioridade para revisar</strong>
               <span>{questions.filter((item, index) => answers[index] !== privateQuestions[index]?.answer).map((item) => item.area).filter((area, index, areas) => areas.indexOf(area) === index).join(" · ") || "os fundamentos desta seleção"}</span>
@@ -110,7 +115,8 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
         </ol>}
         {showReport && <div className={styles.previewResultActions}>
           <a className={styles.previewPrimaryButton} href="#planos">Conhecer os planos</a>
-          <button className={styles.conversionSecondary} type="button" onClick={restartDemo}>Refazer demonstração</button>
+            <button className={styles.conversionSecondary} type="button" onClick={() => window.dispatchEvent(new Event("godev:premium-request"))}>Ver benefícios do Premium</button>
+            <button className={styles.conversionSecondary} type="button" onClick={restartDemo}>Refazer demonstração</button>
         </div>}
       </article>
     );
@@ -140,6 +146,25 @@ export function HeroProductPreview({ question, demoAnswer, demoExplanation, demo
             aria-checked={selected === option.id}
             className={selected === option.id ? styles.previewOptionSelected : styles.previewOption}
             onClick={() => chooseAnswer(option.id)}
+            onKeyDown={(event) => {
+              const optionIndex = currentQuestion.options.findIndex((item) => item.id === option.id);
+              if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                event.preventDefault();
+                const next = currentQuestion.options[(optionIndex + 1) % currentQuestion.options.length];
+                chooseAnswer(next.id);
+                document.getElementById(`demo-option-${next.id}`)?.focus();
+              } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+                event.preventDefault();
+                const previous = currentQuestion.options[(optionIndex - 1 + currentQuestion.options.length) % currentQuestion.options.length];
+                chooseAnswer(previous.id);
+                document.getElementById(`demo-option-${previous.id}`)?.focus();
+              } else if (event.key === "Enter") {
+                event.preventDefault();
+                nextQuestion();
+              }
+            }}
+            id={`demo-option-${option.id}`}
+            aria-label={`Alternativa ${option.id}: ${option.text}`}
             data-analytics-event="hero_question_answer"
           >
             <b>{option.id}</b>

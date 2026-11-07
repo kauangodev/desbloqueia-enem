@@ -27,15 +27,27 @@ export default function ResponsiveDrawerToggle({ target, label }: { target: "stu
 
   useEffect(() => {
     if (!open) return;
+    const navigation = document.getElementById(`${target}-navigation`);
+    const focusables = () => Array.from(navigation?.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled]),[tabindex="0"]') || []).filter((node) => node.getClientRects().length);
+    const frame = requestAnimationFrame(() => focusables()[0]?.focus());
+    const close = () => { setOpen(false); triggerRef.current?.focus(); };
+    const onNavigate = (event: MouseEvent) => { if ((event.target as Element).closest('a[href]')) close(); };
+    navigation?.addEventListener('click', onNavigate);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setOpen(false);
-        triggerRef.current?.focus();
+        event.preventDefault(); close();
+      }
+      if (event.key === "Tab") {
+        const items = [...focusables(), triggerRef.current].filter((node): node is HTMLElement => !!node);
+        const index = items.indexOf(document.activeElement as HTMLElement);
+        if (index < 0 || (!event.shiftKey && index === items.length - 1) || (event.shiftKey && index === 0)) {
+          event.preventDefault(); items[event.shiftKey ? items.length - 1 : 0]?.focus();
+        }
       }
     };
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+    return () => { cancelAnimationFrame(frame); navigation?.removeEventListener('click', onNavigate); document.removeEventListener("keydown", onKeyDown); };
+  }, [open, target]);
 
   return (
     <>

@@ -2,20 +2,13 @@
    be retired incrementally without changing component class names. */
 :root {
   --green-900: #0b3d2c; --green-800: #0f4a35; --green-700: #1e6b47;
-  --green-500: #3f9a68; --green-300: #9fd3b2; --green-100: #e6f2ea; --green-50: #f2f8f4;
-  --bg: #fafaf7; --surface: #fff; --border: #e7e9e4;
-  --bg-primary: #fafaf7; --surface-soft: #f4fbf7; --surface-muted: #edf5ef;
-  --text-primary: #16211b; --text-secondary: #5b6660; --border-subtle: #dce5dc; --border-strong: #91a69a;
-  --brand-green: #047857; --brand-soft: #e8f7ee; --btn-text: #ffffff; --shadow-soft: 0 18px 42px rgb(16 33 27 / 8%);
-  --text: #16211b; --text-2: #5b6660; --text-3: #66736c;
-  --warning: #f2b233; --focus: #1e6b47;
+  --green-500: #3f9a68; --green-300: #9fd3b2; --green-100: #e6f2ea; --green-50: #f2f8f4; --surface-muted: #edf5ef; --shadow-soft: 0 18px 42px rgb(16 33 27 / 8%); --text-2: #5b6660; --text-3: #66736c; --focus: #1e6b47;
   --font-serif: var(--font-newsreader), Georgia, serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --fs-display: clamp(2.25rem, 1.6rem + 3vw, 3.75rem);
   --fs-metric: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
   --fs-body: 1rem; --lh-title: 1.12; --lh-body: 1.55; --tracking-title: -.015em;
   --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px;
-  --shadow-card: 0 1px 2px rgb(16 33 27 / 4%);
   --shadow-raised: 0 12px 32px rgb(16 33 27 / 8%);
   --sidebar-w: 260px; --topbar-h: 84px;
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
@@ -56,9 +49,9 @@ a, button, input, select, textarea, [role="button"] { min-height: 44px; }
 .guarantee p { font-size: var(--fs-sm); }
 .guarantee-number span { font-size: var(--fs-xs); }
 
-:root[data-theme="light"] { --color-text: #111827; --color-text-secondary: #475569; --color-surface: #fff; --color-surface-muted: #f0fdf4; }
-:root[data-theme="light"] { --bg-primary: #ffffff; --surface: #ffffff; --surface-soft: #f4fbf7; --surface-muted: #f0fdf4; --text-primary: #111827; --text-secondary: #475569; --border-subtle: #dbe5df; --border-strong: #94a3b8; --brand-green: #047857; --brand-soft: #e8f7ee; --btn-text: #ffffff; }
-:root[data-theme="dark"] { --color-text: #f8fafc; --color-text-secondary: #cbd5e1; --color-surface: #0b1912; --color-surface-muted: #112a1d; --bg-primary: #0b1912; --surface: #112a1d; --surface-soft: #163524; --surface-muted: #1b4332; --text-primary: #f8fafc; --text-secondary: #cbd5e1; --border-subtle: #315742; --border-strong: #74a88a; --brand-green: #34d399; --brand-soft: #183f2d; --btn-text: #022c22; --shadow-soft: 0 18px 42px rgb(0 0 0 / 26%); }
+:root[data-theme="light"] { --color-surface-muted: #f0fdf4; }
+:root[data-theme="light"] { --surface-muted: #f0fdf4; }
+:root[data-theme="dark"] { --color-surface-muted: #112a1d; --surface-muted: #1b4332; --shadow-soft: 0 18px 42px rgb(0 0 0 / 26%); }
 :root[data-theme="dark"] body { background: var(--color-surface); color: var(--color-text); }
 :root[data-theme="dark"] .guarantee,
 :root[data-theme="dark"] .price-card,

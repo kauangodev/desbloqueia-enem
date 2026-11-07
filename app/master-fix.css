@@ -2,33 +2,17 @@
    Keeps the editorial reference direction while neutralising legacy theme and
    responsive rules that were fighting the portal shell. */
 :root {
-  --master-bg: #fafaf7;
-  --master-surface: #ffffff;
-  --master-soft: #f2f8f4;
-  --master-ink: #16211b;
-  --master-muted: #5b6660;
-  --master-subtle: #6f7a73;
   --master-green-950: #072a1f;
   --master-green-900: #0b3d2c;
   --master-green-700: #1e6b47;
   --master-green-100: #e6f2ea;
-  --master-line: #e1e7e2;
-  --master-shadow: 0 14px 34px rgb(22 33 27 / 7%);
 }
 
 :root[data-theme="dark"], :root.dark {
-  --master-bg: #08140f;
-  --master-surface: #10231a;
-  --master-soft: #153326;
-  --master-ink: #f4faf6;
-  --master-muted: #c2d1c7;
-  --master-subtle: #a9bbb0;
   --master-green-950: #052319;
   --master-green-900: #0b4932;
   --master-green-700: #63bd8c;
   --master-green-100: #194634;
-  --master-line: #315544;
-  --master-shadow: 0 16px 38px rgb(0 0 0 / 24%);
 }
 
 html, body { min-width: 0; overflow-x: clip; }

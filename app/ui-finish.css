@@ -1,6 +1,6 @@
 /* GoDev Education: shared finishing layer for the public preview and portals. */
 /* Light-only product surface: the public brand uses one predictable contrast system. */
-:root[data-theme="dark"], :root[data-theme="system"] { color-scheme: light; }
+:root[data-theme="dark"], :root[data-theme="system"] { color-scheme: dark; }
 .theme-toggle { display: none !important; }
 
 .study-quiz {
@@ -34,7 +34,7 @@
 .study-quiz-result h2 { max-width: 18ch; margin: 10px auto 12px; color: var(--color-text); font-family: var(--font-inter-tight), Inter, sans-serif; font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: 1; letter-spacing: -.06em; }
 .study-quiz-result p { max-width: 52ch; margin: 0 auto; color: var(--color-text-secondary); line-height: 1.6; }
 .study-quiz-result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 26px; }
-.admin-app, .portal { color-scheme: light; }
+.admin-app, .portal { color-scheme: dark; }
 .admin-sidebar, .sidebar { background: #063b29; }
 .admin-sidebar *, .sidebar * { color: inherit; }
 .admin-side-link, .portal-nav a { color: #f1fff7; }

@@ -1,14 +1,4 @@
 /* GoDev Education reference direction: editorial landing + focused workspaces. */
-:root {
-  --ref-ink: #101828;
-  --ref-muted: #667085;
-  --ref-soft: #f7f9f7;
-  --ref-pale: #edf7f0;
-  --ref-green: #086b4b;
-  --ref-green-dark: #03442f;
-  --ref-line: #e2e9e4;
-  --ref-shadow: 0 18px 48px rgb(16 24 40 / 7%);
-}
 
 html, body { background: #fff; color: var(--ref-ink); }
 body { -webkit-font-smoothing: antialiased; }

@@ -1,29 +1,4 @@
 /* Final UI layer: the last stylesheet in the cascade owns the shipped surfaces. */
-:root {
-  --godev-page: #f7f8fa;
-  --godev-surface: #ffffff;
-  --godev-surface-soft: #f0fdf4;
-  --godev-ink: #0f172a;
-  --godev-muted: #475569;
-  --godev-green: #047857;
-  --godev-green-bright: #10b981;
-  --godev-green-soft: #d1fae5;
-  --godev-line: #d8e2dc;
-  --godev-shadow: 0 18px 48px rgb(15 23 42 / 9%);
-}
-
-:root[data-theme="dark"], :root.dark {
-  --godev-page: #06150d;
-  --godev-surface: #0f2419;
-  --godev-surface-soft: #112a1d;
-  --godev-ink: #f8fafc;
-  --godev-muted: #c3d5ca;
-  --godev-green: #34d399;
-  --godev-green-bright: #6ee7b7;
-  --godev-green-soft: #164e35;
-  --godev-line: #315743;
-  --godev-shadow: 0 18px 48px rgb(0 0 0 / 28%);
-}
 
 /* Public landing: predictable surfaces and strong text contrast. */
 .reformulated-landing { background: var(--godev-page); color: var(--godev-ink); }

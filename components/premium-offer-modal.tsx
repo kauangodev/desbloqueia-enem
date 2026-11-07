@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 type PremiumOfferModalProps = {
   enabled: boolean;
   delayMs: number;
-  trigger?: "load" | "demo-report";
+  trigger?: "load" | "demo-report" | "manual";
   cooldownDays: number;
   campaignId: string;
   checkoutHref: string;
@@ -40,6 +40,7 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
   const reportReadyRef = useRef(false);
   const reportReadyAtRef = useRef<number | null>(null);
   const demoTimerRef = useRef<number | null>(null);
+  const requestedRef = useRef(false);
 
   useEffect(() => {
     if (!enabled || !["/", "/landing"].includes(pathname)) return;
@@ -50,6 +51,7 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
       pendingRef.current = false;
     };
     const attemptOpen = () => {
+      if (trigger === "manual" && !requestedRef.current) return;
       if (trigger === "load" && activeMsRef.current < delayMs) return;
       if (trigger === "demo-report") {
         if (!reportReadyRef.current || reportReadyAtRef.current === null) return;
@@ -106,6 +108,8 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
     document.addEventListener("visibilitychange", onVisibilityChange);
     document.addEventListener("focusin", onInteraction);
     document.addEventListener("click", onInteraction);
+    const onRequest = () => { requestedRef.current = true; shownRef.current = false; attemptOpen(); };
+    if (trigger === "manual") window.addEventListener("godev:premium-request", onRequest);
     if (trigger === "demo-report") {
       window.addEventListener("godev:demo-report-ready", onDemoReportReady);
       if (document.documentElement.dataset.godevDemoReportReady === "true") {
@@ -122,6 +126,7 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
       document.removeEventListener("visibilitychange", onVisibilityChange);
       document.removeEventListener("focusin", onInteraction);
       document.removeEventListener("click", onInteraction);
+      window.removeEventListener("godev:premium-request", onRequest);
       if (trigger === "demo-report") window.removeEventListener("godev:demo-report-ready", onDemoReportReady);
     };
   }, [campaignId, delayMs, enabled, pathname, trigger]);

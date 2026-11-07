@@ -10,6 +10,7 @@ import "./master-fix.css";
 import "./godev-release.css";
 import "./modern-interface.css";
 import "./tokens.css";
+import "./light-redesign.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 

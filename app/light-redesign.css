@@ -1,0 +1,350 @@
+/* GoDev light redesign
+   A single editorial system for the public landing page and authenticated workspaces.
+   The material carousel remains the visual anchor; the surrounding surfaces become
+   quieter, clearer and easier to scan. */
+
+body.godev-app {
+  --bg-base: #f6f8f7;
+  --bg-primary: #f6f8f7;
+  --bg-secondary: #edf5f0;
+  --bg-sidebar: #0b3d2e;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-soft: #eaf5ef;
+  --text-primary: #14231f;
+  --text-secondary: #53645e;
+  --border-subtle: #d8e5df;
+  --border-control: #99b5a9;
+  --accent: #087f5b;
+  --accent-hover: #056348;
+  --on-accent: #ffffff;
+  --highlight: #d9f99d;
+  --font-display: var(--godev-font-body), Inter, ui-sans-serif, system-ui, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+}
+
+body.godev-app :is(h1,h2,h3,h4) {
+  font-family: var(--font-display);
+  letter-spacing: -.035em;
+  color: var(--text-primary);
+}
+
+body.godev-app :is(button,a,input,textarea,select) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.godev-app :is(a,button):focus-visible {
+  outline: 3px solid #2aa878;
+  outline-offset: 3px;
+}
+
+/* Public shell */
+.landing-shell.landing-light,
+.landing-shell.landing-light .reformulated-landing {
+  background: #f6f8f7;
+  color: var(--text-primary);
+}
+
+.landing-shell.landing-light .site-header {
+  background: rgb(255 255 255 / 92%);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 8px 24px rgb(20 35 31 / 5%);
+  backdrop-filter: blur(14px);
+}
+
+.landing-shell.landing-light .site-header .brand,
+.landing-shell.landing-light .site-header .brand b,
+.landing-shell.landing-light .site-header .brand-wordmark {
+  color: var(--text-primary) !important;
+}
+
+.landing-shell.landing-light .site-header .brand-sub,
+.landing-shell.landing-light .site-header .nav a {
+  color: var(--text-secondary) !important;
+}
+
+.landing-shell.landing-light .site-header .nav a:hover,
+.landing-shell.landing-light .site-header .nav a:focus-visible {
+  color: var(--accent-hover) !important;
+  background: var(--surface-soft);
+}
+
+.landing-shell.landing-light .site-header .button.primary,
+.landing-shell.landing-light .header-actions .button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 8px 18px rgb(8 127 91 / 18%);
+}
+
+.landing-shell.landing-light .site-header .button.primary:hover,
+.landing-shell.landing-light .header-actions .button.primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.landing-shell.landing-light .petroleum-hero {
+  position: relative;
+  min-height: 560px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(220px, .75fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 6rem);
+  padding-block: clamp(4.5rem, 9vw, 7.5rem) clamp(3rem, 6vw, 5rem);
+  overflow: clip;
+}
+
+.landing-shell.landing-light .petroleum-hero::before {
+  content: "";
+  position: absolute;
+  inset: 12% -8% auto auto;
+  width: 34rem;
+  height: 34rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(182 236 206 / 46%), rgb(182 236 206 / 0) 68%);
+  pointer-events: none;
+}
+
+.landing-shell.landing-light .petroleum-hero-copy,
+.landing-shell.landing-light .petroleum-hero-book { position: relative; z-index: 1; }
+
+.landing-shell.landing-light .petroleum-hero-copy { max-width: 42rem; }
+
+.landing-shell.landing-light .petroleum-hero h1 {
+  max-width: 11ch;
+  margin: 0;
+  color: var(--text-primary) !important;
+  font-size: clamp(3.25rem, 7vw, 6.9rem);
+  line-height: .94;
+  letter-spacing: -.065em;
+}
+
+.landing-shell.landing-light .petroleum-hero h1 em {
+  display: block;
+  color: var(--accent) !important;
+  font-style: normal;
+}
+
+.landing-shell.landing-light .petroleum-hero-copy > p {
+  max-width: 39rem;
+  margin: 1.5rem 0 0;
+  color: var(--text-secondary) !important;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.landing-shell.landing-light .landing-actions { margin-top: 2rem; gap: .8rem; }
+
+.landing-shell.landing-light .ref-button-primary,
+.landing-shell.landing-light .landing-actions .ref-button-primary {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 25px rgb(8 127 91 / 20%);
+}
+
+.landing-shell.landing-light .ref-button-primary:hover,
+.landing-shell.landing-light .ref-button-primary:focus-visible {
+  background: var(--accent-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgb(8 127 91 / 26%);
+}
+
+.landing-shell.landing-light .ref-button-link,
+.landing-shell.landing-light .reformulated-landing a:not(.ref-button-primary) {
+  color: var(--accent-hover) !important;
+}
+
+.landing-shell.landing-light .petroleum-hero-book {
+  justify-self: center;
+  width: min(100%, 19rem);
+  padding: .8rem;
+  border-radius: 1.25rem;
+  background: #fff;
+  box-shadow: 0 28px 65px rgb(20 35 31 / 17%);
+  transform: rotate(3deg);
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+
+.landing-shell.landing-light .petroleum-hero-book:hover {
+  transform: rotate(0) translateY(-8px);
+  box-shadow: 0 34px 74px rgb(20 35 31 / 22%);
+}
+
+.landing-shell.landing-light .petroleum-hero-book img { display: block; width: 100%; height: auto; border-radius: .8rem; }
+
+.landing-shell.landing-light .petroleum-hero-book > span {
+  position: absolute;
+  top: 1.3rem;
+  right: 1.3rem;
+  z-index: 2;
+  padding: .35rem .6rem;
+  border-radius: 999px;
+  background: var(--highlight);
+  color: #20350f;
+  font-size: .7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.landing-shell.landing-light .petroleum-benefits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.15rem;
+  background: var(--border-subtle);
+}
+
+.landing-shell.landing-light .petroleum-benefits article {
+  padding: 1.5rem clamp(1rem, 3vw, 2.2rem);
+  background: #fff;
+}
+
+.landing-shell.landing-light .petroleum-benefits strong { color: var(--text-primary); font-size: 1.05rem; }
+.landing-shell.landing-light .petroleum-benefits p { margin: .4rem 0 0; color: var(--text-secondary); line-height: 1.5; }
+
+/* The demo is the product moment: cleaner chrome, generous type and one action. */
+.landing-shell.landing-light .landing-demo {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr) 190px;
+  margin-top: clamp(4rem, 8vw, 7rem);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.25rem;
+  background: #fff;
+  box-shadow: 0 24px 70px rgb(20 35 31 / 10%);
+}
+
+.landing-shell.landing-light .demo-sidebar,
+.landing-shell.landing-light .demo-aside { background: #fbfdfc; border-color: var(--border-subtle); }
+.landing-shell.landing-light .demo-sidebar strong { color: var(--text-primary) !important; }
+.landing-shell.landing-light .demo-sidebar a:not(.is-active) { color: var(--text-secondary) !important; }
+.landing-shell.landing-light .demo-sidebar a.is-active { background: var(--surface-soft); color: var(--accent-hover) !important; }
+.landing-shell.landing-light .demo-sidebar a:hover { transform: translateX(3px); }
+.landing-shell.landing-light .demo-aside,
+.landing-shell.landing-light .demo-aside * { color: var(--text-secondary); }
+.landing-shell.landing-light .demo-aside .demo-tab.is-active,
+.landing-shell.landing-light .demo-number-grid span.is-active { color: var(--accent-hover); border-color: var(--accent); }
+.landing-shell.landing-light .productPreview { background: #fff; color: var(--text-primary); }
+.landing-shell.landing-light .productPreview :is(.previewStatement,.previewResultTitle,.previewReport strong) { color: var(--text-primary) !important; }
+.landing-shell.landing-light .productPreview :is(.previewMeta span,.previewFooter,.previewResultNote,.previewReport p) { color: var(--text-secondary) !important; }
+.landing-shell.landing-light .productPreview :is(.previewOption,.previewOptionSelected) { color: var(--text-primary) !important; background: #fff; border-color: var(--border-subtle); }
+.landing-shell.landing-light .productPreview .previewOption:hover { border-color: var(--accent); background: var(--surface-soft); transform: translateX(3px); }
+
+/* The demo is rendered by a CSS-module component, so target its stable class fragments too. */
+.landing-shell.landing-light [class*="productPreview"] { background: #fff; color: var(--text-primary); }
+.landing-shell.landing-light [class*="previewTopbar"] strong,
+.landing-shell.landing-light [class*="previewStatement"],
+.landing-shell.landing-light [class*="previewOption"] { color: var(--text-primary) !important; }
+.landing-shell.landing-light [class*="previewMeta"] span,
+.landing-shell.landing-light [class*="previewFooter"],
+.landing-shell.landing-light [class*="previewResultNote"],
+.landing-shell.landing-light [class*="previewReport"] p { color: var(--text-secondary) !important; }
+.landing-shell.landing-light [class*="previewOption"] { background: #fff; border-color: var(--border-subtle); }
+.landing-shell.landing-light [class*="previewOption"]:hover,
+.landing-shell.landing-light [class*="previewOption"]:focus-visible { background: var(--surface-soft); border-color: var(--accent); transform: translateX(3px); }
+
+.landing-shell.landing-light .landing-steps { padding-block: clamp(4rem, 8vw, 7rem); }
+.landing-shell.landing-light .landing-steps article { padding-inline: 1rem; }
+.landing-shell.landing-light .landing-steps .step-number { background: #fff; border-color: var(--border-control); color: var(--accent-hover); }
+.landing-shell.landing-light .landing-steps h3 { color: var(--text-primary) !important; }
+.landing-shell.landing-light .landing-steps p { color: var(--text-secondary) !important; }
+
+/* Keep the material carousel intact, but give it a quieter editorial frame. */
+.landing-shell.landing-light .landing-materials { background: #edf7f1; border-block: 1px solid var(--border-subtle); color: var(--text-primary); }
+.landing-shell.landing-light .landing-materials :is(h2,h3,p,span) { color: inherit; }
+.landing-shell.landing-light .material-carousel-card { border-color: transparent; box-shadow: 0 18px 40px rgb(20 35 31 / 15%); }
+.landing-shell.landing-light .material-carousel-card.is-active { box-shadow: 0 24px 50px rgb(8 127 91 / 20%); }
+.landing-shell.landing-light .material-carousel-arrow { background: #fff; border-color: var(--border-subtle); color: var(--accent-hover); }
+.landing-shell.landing-light .material-carousel-arrow:hover { background: var(--accent); color: #fff; }
+.landing-shell.landing-light .landing-stat-strip { color: var(--text-primary); border-color: var(--border-subtle); }
+
+.landing-shell.landing-light .landing-pricing { background: #f6f8f7; }
+.landing-shell.landing-light .landing-pricing > .container > h2,
+.landing-shell.landing-light .landing-faq > h2 { color: var(--text-primary) !important; }
+.landing-shell.landing-light .ref-price-card {
+  background: #fff;
+  background-image: none !important;
+  border-color: var(--border-subtle);
+  box-shadow: 0 14px 36px rgb(20 35 31 / 8%);
+  opacity: 1 !important;
+  transform: none;
+  animation: none !important;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.landing-shell.landing-light .ref-price-card:hover,
+.landing-shell.landing-light .ref-price-card:focus-within { transform: translateY(-7px); box-shadow: 0 24px 56px rgb(20 35 31 / 14%); border-color: #7db59c; }
+.landing-shell.landing-light .ref-price-card.is-premium { background: #effaf4; border: 2px solid var(--accent); box-shadow: 0 18px 42px rgb(8 127 91 / 16%); }
+.landing-shell.landing-light .ref-price-card :is(h3,.ref-price,li) { color: var(--text-primary) !important; }
+.landing-shell.landing-light .ref-price-card li span { color: var(--accent); }
+.landing-shell.landing-light .ref-badge { background: var(--accent); color: #fff; }
+.landing-shell.landing-light .ref-guarantee { background: var(--bg-sidebar); border-color: var(--bg-sidebar); box-shadow: 0 16px 36px rgb(20 35 31 / 12%); }
+.landing-shell.landing-light .ref-guarantee :is(strong,span,a) { color: #fff; }
+.landing-shell.landing-light .ref-guarantee-mark { color: var(--highlight); border-color: #77c9a4; background: rgb(255 255 255 / 10%); }
+
+.landing-shell.landing-light .landing-faq { padding-block: clamp(4rem, 8vw, 7rem); }
+.landing-shell.landing-light .landing-faq .faq-list { background: transparent; border: 0; box-shadow: none; display: grid; gap: .75rem; }
+.landing-shell.landing-light .landing-faq .faq-list details { background: #fff; border: 1px solid var(--border-subtle); border-radius: .9rem; box-shadow: 0 8px 22px rgb(20 35 31 / 5%); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+.landing-shell.landing-light .landing-faq .faq-list details:hover,
+.landing-shell.landing-light .landing-faq .faq-list details[open] { transform: translateY(-2px); border-color: #9ccbb3; box-shadow: 0 16px 30px rgb(20 35 31 / 9%); }
+.landing-shell.landing-light .landing-faq .faq-list summary { color: var(--text-primary) !important; }
+.landing-shell.landing-light .landing-faq .faq-list summary span { color: var(--accent); }
+.landing-shell.landing-light .landing-faq .faq-list details p { color: var(--text-secondary) !important; }
+
+.landing-shell.landing-light .site-footer { background: #fff; border-top: 1px solid var(--border-subtle); color: var(--text-secondary); }
+.landing-shell.landing-light .site-footer :is(.brand-wordmark,.brand-sub,.footer-grid b) { color: var(--text-primary) !important; }
+.landing-shell.landing-light .site-footer :is(p,a,small) { color: var(--text-secondary) !important; }
+
+/* Authenticated product surfaces: calm light workspace, green navigation rail. */
+body.godev-app :is(.admin-app,.portal) { background: var(--bg-base); }
+body.godev-app :is(.admin-sidebar,.portal .sidebar) { background: var(--bg-sidebar); color: #fff; border-color: var(--bg-sidebar); box-shadow: 8px 0 30px rgb(20 35 31 / 8%); }
+body.godev-app :is(.admin-brand,.portal .sidebar .brand) { color: #fff; }
+body.godev-app :is(.admin-brand small,.portal .sidebar .brand-sub,.admin-sidebar-label,.admin-profile small) { color: rgb(255 255 255 / 70%); }
+body.godev-app :is(.admin-side-link,.portal .sidebar nav a) { color: rgb(255 255 255 / 84%); border-radius: .7rem; transition: background .2s ease, color .2s ease, transform .2s ease; }
+body.godev-app :is(.admin-side-link:hover,.admin-side-link:focus-visible,.portal .sidebar nav a:hover,.portal .sidebar nav a:focus-visible) { background: rgb(255 255 255 / 12%); color: #fff; transform: translateX(2px); }
+body.godev-app :is(.admin-side-link,.portal .sidebar nav a)[aria-current="page"] { background: #e0f3e9; color: #0b3d2e; box-shadow: inset 3px 0 #75c89e; }
+body.godev-app :is(.admin-side-link,.portal .sidebar nav a)[aria-current="page"] :is(span,svg) { color: inherit; }
+body.godev-app :is(.admin-workspace,.portal .workspace) { background: var(--bg-base); color: var(--text-primary); }
+body.godev-app :is(.admin-topbar,.portal-topbar) { min-height: 76px; background: rgb(255 255 255 / 94%); border-color: var(--border-subtle); box-shadow: 0 5px 20px rgb(20 35 31 / 4%); }
+body.godev-app :is(.admin-content,.student-dashboard) { background: var(--bg-base); color: var(--text-primary); }
+body.godev-app :is(.admin-content h1,.admin-content h2,.admin-content h3,.student-dashboard h1,.student-dashboard h2,.student-dashboard h3) { color: var(--text-primary) !important; }
+body.godev-app :is(.admin-content p,.admin-content small,.admin-content label,.student-dashboard p,.student-dashboard small) { color: var(--text-secondary) !important; }
+body.godev-app :is(.admin-content > article,.admin-content > section,.admin-content > div:not(.admin-hero),.admin-content table,.admin-content .card,.admin-content .panel,.admin-content .admin-card,.student-stat-card,.student-welcome,.student-section-block,.student-context-section,.student-continue-card,.student-profile-card,.student-empty-card,.student-dashboard .resource) { background: #fff; border-color: var(--border-subtle); box-shadow: 0 10px 28px rgb(20 35 31 / 6%); }
+body.godev-app :is(.admin-content input,.admin-content textarea,.admin-content select,.portal input,.portal textarea,.portal select) { background: #fff; color: var(--text-primary); border-color: var(--border-control); }
+body.godev-app :is(.admin-content button,.admin-content .button.primary,.student-dashboard button,.student-primary-action) { background: var(--accent); border-color: var(--accent); color: #fff; }
+body.godev-app :is(.admin-content button:hover,.admin-content .button.primary:hover,.student-dashboard button:hover,.student-primary-action:hover) { background: var(--accent-hover); color: #fff; }
+body.godev-app :is(.admin-content a,.student-dashboard a) { color: var(--accent-hover); }
+body.godev-app :is(.admin-content a:hover,.student-dashboard a:hover) { color: #064e3b; }
+body.godev-app .student-stat-card strong { color: var(--text-primary); }
+body.godev-app .portal-search { background: #fff; border-color: var(--border-subtle); }
+body.godev-app .portal-search input { color: var(--text-primary); }
+
+@media (max-width: 800px) {
+  .landing-shell.landing-light .petroleum-hero { grid-template-columns: 1fr; min-height: 0; gap: 2.5rem; text-align: center; }
+  .landing-shell.landing-light .petroleum-hero-copy { margin-inline: auto; }
+  .landing-shell.landing-light .petroleum-hero h1 { margin-inline: auto; font-size: clamp(3rem, 14vw, 5rem); }
+  .landing-shell.landing-light .petroleum-hero-copy > p { margin-inline: auto; }
+  .landing-shell.landing-light .landing-actions { justify-content: center; flex-wrap: wrap; }
+  .landing-shell.landing-light .petroleum-hero-book { width: min(58vw, 17rem); }
+  .landing-shell.landing-light .petroleum-benefits { grid-template-columns: 1fr; }
+  .landing-shell.landing-light .petroleum-benefits article { text-align: center; }
+  .landing-shell.landing-light .landing-demo { margin-top: 3rem; }
+}
+
+@media (max-width: 560px) {
+  .landing-shell.landing-light .petroleum-hero { padding-top: 3.5rem; }
+  .landing-shell.landing-light .petroleum-hero h1 { font-size: clamp(2.65rem, 15vw, 4.2rem); }
+  .landing-shell.landing-light .landing-actions { align-items: stretch; flex-direction: column; }
+  .landing-shell.landing-light .landing-actions .ref-button { width: 100%; }
+  .landing-shell.landing-light .petroleum-hero-book { width: min(66vw, 15rem); }
+  .landing-shell.landing-light .landing-demo { border-radius: .9rem; }
+  .landing-shell.landing-light .landing-stat-strip { justify-content: flex-start; overflow-x: auto; }
+  body.godev-app :is(.admin-content,.student-dashboard) { padding-inline: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-shell.landing-light * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

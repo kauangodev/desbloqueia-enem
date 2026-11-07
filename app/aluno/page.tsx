@@ -63,12 +63,11 @@ export default async function Dashboard() {
       <section className="student-welcome" aria-labelledby="student-welcome-title">
         <div className="student-welcome-copy">
           <span className="student-eyebrow">Seu espaço de estudo</span>
-          <h1 id="student-welcome-title">Olá, {firstName}</h1>
-          <p>Acompanhe seu progresso e continue seus estudos.</p>
+          <h1 id="student-welcome-title">Seu próximo passo</h1>
+          <p>{firstName}, mantenha a consistência e acompanhe seus estudos.</p>
         </div>
         <div className="student-welcome-meta">
-          <span className="demo-badge">Dados demonstrativos</span>
-          <Link className="period-control" href="/aluno/cronograma">Últimos 30 dias <span aria-hidden="true">⌄</span></Link>
+          <Link className="period-control" href="/aluno/cronograma">Meu cronograma <span aria-hidden="true">→</span></Link>
         </div>
       </section>
 

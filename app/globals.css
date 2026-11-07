@@ -1,71 +1,6 @@
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f0fdf4;
-  --surface: #ffffff;
-  --surface-elevated: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  --brand-green: #047857;
-  --brand-green-hover: #047857;
-  --brand-soft: #d1fae5;
-  --btn-text: #ffffff;
-  --link: #047857;
-  --border-subtle: #bbf7d0;
-  --border-control: #86efac;
-  --focus-ring: #047857;
-  --success-bg: #dcfce7;
-  --success-text: #166534;
-  --warning-bg: #fef3c7;
-  --warning-text: #92400e;
-  --error-bg: #fee2e2;
-  --error-text: #991b1b;
-  --selection-bg: #a7f3d0;
-  --selection-text: #064e3b;
   /* Compatibility aliases for existing components. */
-  --bg: var(--bg-primary);
-  --ink: var(--text-primary);
-  --muted: var(--text-secondary);
-  --navy: var(--text-primary);
-  --blue: var(--link);
-  --teal: var(--brand-green);
-  --lime: var(--brand-green);
-  --line: var(--border-subtle);
   --radius: 10px;
-}
-:root[data-theme="dark"],
-:root.dark {
-  --bg-primary: #06150d;
-  --bg-secondary: #112a1d;
-  --surface: #101a14;
-  --surface-elevated: #16251c;
-  --text-primary: #f8fafc;
-  --text-secondary: #a7f3d0;
-  --text-muted: #94a3b8;
-  --brand-green: #34d399;
-  --brand-green-hover: #6ee7b7;
-  --brand-soft: #143c2b;
-  --btn-text: #022c22;
-  --link: #a7f3d0;
-  --border-subtle: #28533b;
-  --border-control: #4ade80;
-  --focus-ring: #6ee7b7;
-  --success-bg: #123b27;
-  --success-text: #bbf7d0;
-  --warning-bg: #422b0b;
-  --warning-text: #fde68a;
-  --error-bg: #451a1a;
-  --error-text: #fecaca;
-  --selection-bg: #14532d;
-  --selection-text: #d1fae5;
-  --bg: var(--bg-primary);
-  --ink: var(--text-primary);
-  --muted: var(--text-secondary);
-  --navy: var(--text-primary);
-  --blue: var(--link);
-  --teal: var(--brand-green);
-  --lime: var(--brand-green);
-  --line: var(--border-subtle);
 }
 * {
   box-sizing: border-box;
@@ -1681,7 +1616,6 @@ th {
   border-color: rgb(8 72 45 / 14%);
 }
 .landing-main .materials-section {
-  --muted: #51645a;
   background: #e8f0df;
 }
 .landing-main .material-stage {
@@ -1770,7 +1704,6 @@ th {
   background: #0b5938;
 }
 .site-footer {
-  --muted: #53645b;
   background: #e4ecd9;
   color: #101410;
 }
@@ -2203,20 +2136,6 @@ th {
 }
 
 /* WCAG 2.1 AA theme contract: every shared surface owns its foreground. */
-:root,
-:root[data-theme="light"],
-:root[data-theme="dark"],
-:root.dark {
-  --lime: var(--brand-green);
-  --action-bg: #047857;
-  --action-bg-hover: #065f46;
-  --action-text: #ffffff;
-  --color-link: var(--link);
-  --color-accent: var(--action-bg);
-  --color-accent-hover: var(--action-bg-hover);
-  --color-accent-ink: var(--action-text);
-  --color-accent-secondary: var(--brand-green);
-}
 
 body,
 .landing-main,
@@ -2549,10 +2468,6 @@ button.primary:hover,
   .reader-actions > button { flex: 1 1 auto; }
   .reader-page-indicator { justify-content: center; flex: 1 1 100%; order: -1; }
   .reader-notice { flex-basis: 100%; }
-}
-.materials-section,
-.site-footer {
-  --muted: #536174;
 }
 .hero h1 > span {
   display: block;
@@ -3563,31 +3478,7 @@ button.primary:hover,
 
 /* GoDev Education visual system v2: dark study-room surfaces, restrained neon, clear focus. */
 :root {
-  --bg: #070b09;
-  --surface: #101a14;
-  --ink: #f4f8f2;
-  --muted: #a9bbb0;
-  --navy: #b7ff3c;
-  --blue: #32d583;
-  --teal: #32d583;
-  --lime: #b7ff3c;
-  --line: rgb(183 255 60 / 16%);
   --radius: 16px;
-  --color-bg: #070b09;
-  --color-surface: #101a14;
-  --color-surface-elevated: #1d2c23;
-  --color-text: #f4f8f2;
-  --color-text-secondary: #b4c1b4;
-  --color-text-muted: #8ea092;
-  --color-link: #b7ff3c;
-  --color-accent: #b7ff3c;
-  --color-accent-hover: #d2ff79;
-  --color-accent-ink: #142018;
-  --color-accent-secondary: #32d583;
-  --color-border: #748c78;
-  --color-success: #65d391;
-  --color-warning: #ffd166;
-  --color-danger: #ff7f7f;
   color-scheme: dark;
 }
 body { background: var(--bg); color: var(--ink); }
@@ -3694,31 +3585,7 @@ h1, h2, h3 { color: var(--ink); }
 .theme-toggle button[aria-pressed="true"] { background: var(--color-accent); color: var(--color-accent-ink); }
 .workspace-bar-tools { display: inline-flex; align-items: center; gap: 12px; }
 :root[data-theme="light"] {
-  --bg: #f6f8f5;
-  --surface: #ffffff;
-  --ink: #142018;
-  --muted: #47564a;
-  --navy: #246033;
-  --blue: #246033;
-  --teal: #246033;
-  --lime: #b7ff3c;
-  --line: #c4d0c1;
-  --color-bg: #f6f8f5;
-  --color-surface: #ffffff;
-  --color-surface-elevated: #edf3ea;
-  --color-text: #142018;
-  --color-text-secondary: #47564a;
-  --color-text-muted: #657466;
-  --color-link: #246033;
-  --color-accent: #b7ff3c;
-  --color-accent-hover: #a8eb31;
-  --color-accent-ink: #142018;
-  --color-accent-secondary: #246033;
-  --color-border: #71826f;
-  --color-success: #237342;
-  --color-warning: #946b00;
-  --color-danger: #a52a2a;
-  color-scheme: light;
+  color-scheme: dark;
 }
 :root[data-theme="light"] body { background: var(--color-bg); color: var(--color-text); }
 :root[data-theme="light"] .site-header { background: rgb(246 248 245 / 90%); border-bottom-color: #d5ded2; }
@@ -4096,58 +3963,6 @@ h1, h2, h3 { color: var(--ink); }
 
 /* Final theme contract: this block is intentionally last so legacy component
    rules cannot reintroduce low-contrast neon text or washed-out surfaces. */
-:root,
-:root[data-theme="light"] {
-  --color-bg: var(--bg-primary);
-  --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-text: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --action-bg: #34d399;
-  --action-bg-hover: #6ee7b7;
-  --action-text: #022c22;
-  --color-link: var(--link);
-  --color-accent: var(--action-bg);
-  --color-accent-hover: var(--action-bg-hover);
-  --color-accent-ink: var(--action-text);
-  --color-accent-secondary: var(--brand-green);
-  --color-border: var(--border-control);
-  --bg: var(--bg-primary);
-  --surface: var(--surface);
-  --ink: var(--text-primary);
-  --muted: var(--text-secondary);
-  --navy: var(--text-primary);
-  --blue: var(--link);
-  --teal: var(--brand-green);
-  --lime: var(--brand-green);
-  --line: var(--border-subtle);
-}
-
-:root[data-theme="dark"],
-:root.dark {
-  --color-bg: var(--bg-primary);
-  --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-text: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --color-link: var(--link);
-  --color-accent: var(--brand-green);
-  --color-accent-hover: var(--brand-green-hover);
-  --color-accent-ink: var(--btn-text);
-  --color-accent-secondary: var(--brand-green);
-  --color-border: var(--border-control);
-  --bg: var(--bg-primary);
-  --surface: var(--surface);
-  --ink: var(--text-primary);
-  --muted: var(--text-secondary);
-  --navy: var(--text-primary);
-  --blue: var(--link);
-  --teal: var(--brand-green);
-  --lime: var(--brand-green);
-  --line: var(--border-subtle);
-}
 
 :root[data-theme="light"] .site-header,
 :root[data-theme="light"] .nav,
@@ -4767,13 +4582,6 @@ textarea::placeholder {
   --godev-blue: #4667e8;
   --godev-blue-hover: #3653c7;
   --godev-blue-soft: #e8edff;
-  --godev-green: #167a56;
-  --lime: var(--godev-blue);
-  --color-link: var(--godev-blue);
-  --color-accent: var(--godev-blue);
-  --color-accent-hover: var(--godev-blue-hover);
-  --color-accent-ink: #fff;
-  --color-accent-secondary: #90a3ff;
 }
 :root[data-theme="light"] .button.primary,
 :root[data-theme="light"] .button.lime,
@@ -4910,53 +4718,6 @@ textarea::placeholder {
 
 /* Authoritative final overrides: keep theme aliases and high-risk text layers
    on the WCAG palette after all legacy component rules. */
-:root,
-:root[data-theme="light"] {
-  --color-bg: var(--bg-primary);
-  --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-text: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --color-link: var(--link);
-  --color-accent: var(--brand-green);
-  --color-accent-hover: var(--brand-green-hover);
-  --color-accent-ink: var(--btn-text);
-  --color-accent-secondary: var(--brand-green);
-  --color-border: var(--border-control);
-  --bg: var(--bg-primary);
-  --ink: var(--text-primary);
-  --muted: var(--text-secondary);
-  --navy: var(--text-primary);
-  --blue: var(--link);
-  --teal: var(--brand-green);
-  --lime: var(--brand-green);
-  --line: var(--border-subtle);
-}
-
-:root[data-theme="dark"],
-:root.dark {
-  --color-bg: var(--bg-primary);
-  --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-text: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --color-link: var(--link);
-  --color-accent: var(--brand-green);
-  --color-accent-hover: var(--brand-green-hover);
-  --color-accent-ink: var(--btn-text);
-  --color-accent-secondary: var(--brand-green);
-  --color-border: var(--border-control);
-  --bg: var(--bg-primary);
-  --ink: var(--text-primary);
-  --muted: var(--text-secondary);
-  --navy: var(--text-primary);
-  --blue: var(--link);
-  --teal: var(--brand-green);
-  --lime: var(--brand-green);
-  --line: var(--border-subtle);
-}
 
 .button.primary,
 .button.lime,

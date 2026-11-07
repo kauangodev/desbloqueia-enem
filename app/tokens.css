@@ -1,56 +1,191 @@
+:root {
+  --bg-base: #07191f;
+  --bg-sidebar: #0b2730;
+  --surface: #153a43;
+  --surface-elevated: #1b4650;
+  --text-primary: #f6fcfc;
+  --text-secondary: #c9e0e5;
+  --border-subtle: #537d86;
+  --border-control: #80abb4;
+  --accent: #6ee7b7;
+  --accent-hover: #a2f3d0;
+  --on-accent: #07291f;
+  --highlight: #c7f464;
+  --success-bg: #143b34;
+  --success-text: #6ee7b7;
+  --warning-bg: #41351c;
+  --warning-text: #ffe099;
+  --error-bg: #44272f;
+  --error-text: #ffb5bd;
+  --danger: #ffb5bd;
+  --warning: #ffe099;
+  --shadow-card: 0 18px 42px rgb(0 0 0 / 22%);
+  --bg-primary: var(--bg-base);
+  --bg-secondary: var(--bg-sidebar);
+  --surface-raised: var(--surface-elevated);
+  --surface-soft: var(--surface-elevated);
+  --text-muted: var(--text-secondary);
+  --brand-green: var(--accent);
+  --brand-green-strong: var(--accent-hover);
+  --brand-green-hover: var(--accent-hover);
+  --brand-green-deep: var(--on-accent);
+  --accent-lime: var(--highlight);
+  --accent-ink: var(--on-accent);
+  --btn-text: var(--on-accent);
+  --link: var(--accent);
+  --focus-ring: var(--highlight);
+  --border-strong: var(--border-control);
+  --brand-soft: var(--surface-elevated);
+  --bg: var(--bg-base);
+  --ink: var(--text-primary);
+  --text: var(--text-primary);
+  --muted: var(--text-secondary);
+  --navy: var(--text-primary);
+  --blue: var(--accent);
+  --teal: var(--accent);
+  --lime: var(--highlight);
+  --line: var(--border-subtle);
+  --border: var(--border-subtle);
+  --action-bg: var(--accent);
+  --action-bg-hover: var(--accent-hover);
+  --action-text: var(--on-accent);
+  --selection-bg: var(--accent);
+  --selection-text: var(--on-accent);
+  --color-bg: var(--bg-base);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-secondary);
+  --color-link: var(--accent);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--on-accent);
+  --color-accent-secondary: var(--accent);
+  --color-border: var(--border-control);
+  --color-success: var(--success-text);
+  --color-warning: var(--warning-text);
+  --color-danger: var(--error-text);
+  --modern-bg: var(--bg-base);
+  --modern-page: var(--bg-base);
+  --modern-surface: var(--surface);
+  --modern-surface-soft: var(--surface-elevated);
+  --modern-soft: var(--surface-elevated);
+  --modern-pale: var(--surface-elevated);
+  --modern-ink: var(--text-primary);
+  --modern-muted: var(--text-secondary);
+  --modern-subtle: var(--text-secondary);
+  --modern-line: var(--border-subtle);
+  --modern-brand: var(--accent);
+  --modern-brand-dark: var(--on-accent);
+  --modern-accent: var(--highlight);
+  --modern-accent-ink: var(--on-accent);
+  --modern-green: var(--accent);
+  --modern-green-strong: var(--accent-hover);
+  --modern-green-dark: var(--on-accent);
+  --modern-green-bright: var(--accent);
+  --modern-green-soft: var(--surface-elevated);
+  --modern-focus: var(--highlight);
+  --modern-shadow: var(--shadow-card);
+  --release-bg: var(--bg-base);
+  --release-page: var(--bg-base);
+  --release-surface: var(--surface);
+  --release-surface-soft: var(--surface-elevated);
+  --release-soft: var(--surface-elevated);
+  --release-pale: var(--surface-elevated);
+  --release-ink: var(--text-primary);
+  --release-muted: var(--text-secondary);
+  --release-subtle: var(--text-secondary);
+  --release-line: var(--border-subtle);
+  --release-brand: var(--accent);
+  --release-brand-dark: var(--on-accent);
+  --release-accent: var(--highlight);
+  --release-accent-ink: var(--on-accent);
+  --release-green: var(--accent);
+  --release-green-strong: var(--accent-hover);
+  --release-green-dark: var(--on-accent);
+  --release-green-bright: var(--accent);
+  --release-green-soft: var(--surface-elevated);
+  --release-focus: var(--highlight);
+  --release-shadow: var(--shadow-card);
+  --master-bg: var(--bg-base);
+  --master-page: var(--bg-base);
+  --master-surface: var(--surface);
+  --master-surface-soft: var(--surface-elevated);
+  --master-soft: var(--surface-elevated);
+  --master-pale: var(--surface-elevated);
+  --master-ink: var(--text-primary);
+  --master-muted: var(--text-secondary);
+  --master-subtle: var(--text-secondary);
+  --master-line: var(--border-subtle);
+  --master-brand: var(--accent);
+  --master-brand-dark: var(--on-accent);
+  --master-accent: var(--highlight);
+  --master-accent-ink: var(--on-accent);
+  --master-green: var(--accent);
+  --master-green-strong: var(--accent-hover);
+  --master-green-dark: var(--on-accent);
+  --master-green-bright: var(--accent);
+  --master-green-soft: var(--surface-elevated);
+  --master-focus: var(--highlight);
+  --master-shadow: var(--shadow-card);
+  --godev-bg: var(--bg-base);
+  --godev-page: var(--bg-base);
+  --godev-surface: var(--surface);
+  --godev-surface-soft: var(--surface-elevated);
+  --godev-soft: var(--surface-elevated);
+  --godev-pale: var(--surface-elevated);
+  --godev-ink: var(--text-primary);
+  --godev-muted: var(--text-secondary);
+  --godev-subtle: var(--text-secondary);
+  --godev-line: var(--border-subtle);
+  --godev-brand: var(--accent);
+  --godev-brand-dark: var(--on-accent);
+  --godev-accent: var(--highlight);
+  --godev-accent-ink: var(--on-accent);
+  --godev-green: var(--accent);
+  --godev-green-strong: var(--accent-hover);
+  --godev-green-dark: var(--on-accent);
+  --godev-green-bright: var(--accent);
+  --godev-green-soft: var(--surface-elevated);
+  --godev-focus: var(--highlight);
+  --godev-shadow: var(--shadow-card);
+  --ref-bg: var(--bg-base);
+  --ref-page: var(--bg-base);
+  --ref-surface: var(--surface);
+  --ref-surface-soft: var(--surface-elevated);
+  --ref-soft: var(--surface-elevated);
+  --ref-pale: var(--surface-elevated);
+  --ref-ink: var(--text-primary);
+  --ref-muted: var(--text-secondary);
+  --ref-subtle: var(--text-secondary);
+  --ref-line: var(--border-subtle);
+  --ref-brand: var(--accent);
+  --ref-brand-dark: var(--on-accent);
+  --ref-accent: var(--highlight);
+  --ref-accent-ink: var(--on-accent);
+  --ref-green: var(--accent);
+  --ref-green-strong: var(--accent-hover);
+  --ref-green-dark: var(--on-accent);
+  --ref-green-bright: var(--accent);
+  --ref-green-soft: var(--surface-elevated);
+  --ref-focus: var(--highlight);
+  --ref-shadow: var(--shadow-card);
+}
 /* GoDev visual contract: one semantic surface system for public and authenticated UI. */
 :root {
   color-scheme: dark;
-  --bg-primary: #07120d;
-  --bg-secondary: #0d2117;
-  --surface: #102a1c;
-  --surface-raised: #153622;
-  --surface-soft: #183d28;
-  --text-primary: #f5fbf7;
-  --text-secondary: #c4d8cb;
-  --text-muted: #9eb9a9;
-  --border-subtle: #315b42;
-  --border-strong: #4b8964;
-  --brand-green: #36d879;
-  --brand-green-strong: #16b862;
-  --brand-green-deep: #063e29;
-  --accent-lime: #c8ff66;
-  --accent-ink: #102b1b;
-  --danger: #ff8f8f;
-  --warning: #ffd27a;
-  --focus-ring: #b9ff62;
   --font-body: var(--godev-font-body), Inter, ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--godev-font-display), Bricolage Grotesque, Inter, ui-sans-serif, system-ui, sans-serif;
   --font-inter: var(--font-body);
   --font-inter-tight: var(--font-body);
   --font-serif: var(--font-display);
-  --godev-ink: var(--text-primary);
-  --godev-muted: var(--text-secondary);
-  --godev-line: var(--border-subtle);
-  --godev-surface: var(--surface);
-  --godev-shadow: 0 24px 70px rgb(0 0 0 / 24%);
 }
 
 html[data-theme="light"],
 html.light,
 html:has(body[data-theme="light"]) {
-  color-scheme: light;
-  --bg-primary: #f7faf8;
-  --bg-secondary: #edf7f0;
-  --surface: #ffffff;
-  --surface-raised: #ffffff;
-  --surface-soft: #eaf6ef;
-  --text-primary: #102019;
-  --text-secondary: #40564a;
-  --text-muted: #5c7366;
-  --border-subtle: #c4d8cb;
-  --border-strong: #7eae91;
-  --brand-green: #087f50;
-  --brand-green-strong: #05633f;
-  --brand-green-deep: #06452e;
-  --accent-lime: #b9ee4e;
-  --accent-ink: #17331f;
-  --focus-ring: #07553c;
+  color-scheme: dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -164,4 +299,148 @@ a { color: var(--brand-green); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+/* Contrast remediation: legacy layers used dark green ink on dark petroleum
+   surfaces. Keep these selectors narrow so the shared component contract wins
+   without changing interaction or content behavior. */
+body.godev-app .landing-shell.landing-dark .site-header .nav a,
+body.godev-app .landing-shell.landing-dark .site-header .brand-sub,
+body.godev-app .landing-shell.landing-dark .site-footer :is(p,a,span),
+body.godev-app .landing-shell.landing-dark .site-footer .footer-bottom,
+body.godev-app .landing-shell.landing-dark .landing-stat-strip :is(span,i),
+body.godev-app .landing-shell.landing-dark .demo-aside-note {
+  color: var(--text-secondary) !important;
+}
+
+body.godev-app .landing-shell.landing-dark .site-footer .brand-wordmark,
+body.godev-app .landing-shell.landing-dark .site-footer .brand-sub,
+body.godev-app .landing-shell.landing-dark .site-footer .footer-grid > div > b,
+body.godev-app .landing-shell.landing-dark .landing-stat-strip,
+body.godev-app .landing-shell.landing-dark .landing-stat-strip :is(strong,span),
+body.godev-app .landing-shell.landing-dark .preview-caption b {
+  color: var(--text-primary) !important;
+}
+
+/* Cookie choices sit on a light surface; keep their text independent from the
+   dark landing-page palette so the consent action remains readable. */
+body.godev-app .consent {
+  color: #0f172a;
+}
+body.godev-app .consent > b,
+body.godev-app .consent p {
+  color: #0f172a !important;
+}
+body.godev-app .consent .button.secondary {
+  color: #064e3b !important;
+  border-color: #064e3b;
+}
+
+body.godev-app .landing-shell.landing-dark .landing-stat-strip {
+  background: var(--surface);
+  border-color: var(--border-subtle);
+}
+
+body.godev-app .landing-shell.landing-dark .landing-stat-strip i {
+  background: var(--border-control) !important;
+}
+
+body.godev-app .landing-shell.landing-dark .preview-caption p,
+body.godev-app .landing-shell.landing-dark .preview-caption > span,
+body.godev-app .landing-shell.landing-dark .productPreview :is(.previewMeta span,.previewProgress i,.previewFooter,.previewFooter span,.previewResultNote,.previewCelebrationHint,.previewReport small,.previewReport p,.previewFocusAreas span) {
+  color: var(--text-secondary) !important;
+}
+
+body.godev-app .landing-shell.landing-dark .productPreview :is(.previewStatement,.previewResultTitle,.previewReport strong,.previewFocusAreas strong) {
+  color: var(--text-primary) !important;
+}
+
+body.godev-app .landing-shell.landing-dark .productPreview :is(.previewOption,.previewOptionSelected) {
+  background: var(--surface);
+  border-color: var(--border-subtle);
+  color: var(--text-primary) !important;
+}
+
+/* Petroleum / emerald component contract. Layout stays fluid; surface and ink travel together. */
+html body.godev-app { min-width: 0; overflow-x: visible; background: var(--bg-base); color: var(--text-primary); }
+html { overflow-x: visible; color-scheme: dark; scrollbar-color: var(--border-control) var(--bg-base); }
+::selection { background: var(--accent); color: var(--on-accent); }
+input, textarea { caret-color: var(--accent); }
+body.godev-app :is(h1,h2,h3,h4) { font-family: var(--font-body); letter-spacing: -.035em; font-weight: 750; }
+body.godev-app :is(button,a,input,select,textarea):focus-visible { outline: 3px solid var(--highlight); outline-offset: 4px; }
+body.godev-app :is(input,select,textarea) { background: var(--bg-sidebar); color: var(--text-primary); border-color: var(--border-control); }
+body.godev-app :is(input,textarea)::placeholder { color: var(--text-secondary); opacity: 1; }
+body.godev-app :is(button,a)[aria-disabled="true"], body.godev-app button:disabled { opacity: .65; cursor: not-allowed; }
+body.godev-app :is(.site-header,.site-footer,.admin-topbar,.portal-topbar) { background: var(--bg-sidebar); color: var(--text-primary); border-color: var(--border-subtle); }
+body.godev-app :is(.brand-wordmark,.brand-sub,.brand,.admin-brand) { color: var(--text-primary); }
+body.godev-app :is(.nav a,.site-footer a,.site-footer p) { color: var(--text-secondary); }
+body.godev-app :is(.login-link,.ref-button-primary,.button.primary,.student-primary-action) { display: inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:3rem; padding:.75rem 1.5rem; border:1px solid var(--accent); border-radius:999px; background:var(--accent); color:var(--on-accent); font-weight:750; text-decoration:none; box-shadow:none; }
+body.godev-app :is(.login-link,.ref-button-primary,.button.primary,.student-primary-action):hover { background:var(--accent-hover); color:var(--on-accent); transform:translateY(-2px); }
+body.godev-app .ref-button-link { display:inline-flex; align-items:center; justify-content:center; min-height:3rem; padding:.75rem 1.5rem; border:1px solid var(--border-control); border-radius:999px; color:var(--text-primary); text-decoration:none; }
+body.godev-app .ref-button-link:hover { background:var(--surface); }
+body.godev-app .petroleum-hero { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:clamp(2rem,6vw,6rem); align-items:center; padding-block:clamp(3rem,6vw,6rem); text-align:left; }
+body.godev-app .petroleum-hero-copy { min-width:0; }
+body.godev-app .petroleum-hero h1 { font-size:clamp(2.5rem,4.6vw,4.75rem); line-height:1.04; max-width:12ch; margin:0 0 1.5rem; }
+body.godev-app .petroleum-hero h1 em { display:block; font-style:normal; color:var(--highlight); }
+body.godev-app .petroleum-hero p { max-width:42ch; margin:0 0 1.75rem; color:var(--text-secondary); font-size:clamp(1rem,1.6vw,1.2rem); line-height:1.6; }
+body.godev-app .petroleum-hero .landing-actions { justify-content:flex-start; margin:0; flex-wrap:wrap; gap:.75rem; }
+.petroleum-hero-book { position:relative; width:min(70%,19rem); justify-self:center; isolation:isolate; transform:rotate(-5deg); }
+.petroleum-hero-book::before { content:""; position:absolute; inset:20% -20% 0; background:radial-gradient(ellipse,var(--accent),transparent 65%); opacity:.25; filter:blur(2rem); z-index:-1; }
+.petroleum-hero-book img { display:block; width:100%; height:auto; border:1px solid var(--accent); border-radius:1rem; box-shadow:var(--shadow-card); }
+.petroleum-hero-book > span { position:absolute; top:1rem; right:1rem; border-radius:999px; padding:.25rem .75rem; background:var(--highlight); color:var(--on-accent); font-size:.75rem; font-weight:750; }
+.petroleum-benefits { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1.5rem; border-block:1px solid var(--border-subtle); padding-block:1.5rem; margin-bottom:3rem; }
+.petroleum-benefits article { padding-inline:1rem; }
+.petroleum-benefits article + article { border-left:1px solid var(--border-subtle); }
+.petroleum-benefits strong { color:var(--text-primary); font-size:1.125rem; }
+.petroleum-benefits p { margin:.5rem 0 0; color:var(--text-secondary); font-size:1rem; }
+body.godev-app .landing-demo { border-radius:1.25rem; overflow:clip; margin-block:2rem 4rem; border:1px solid var(--border-subtle); }
+body.godev-app .landing-steps { padding-block:2rem; }
+body.godev-app .ref-price-card { border-radius:1.25rem; padding:clamp(1.25rem,3vw,2rem); background:var(--surface); border:1px solid var(--border-subtle); box-shadow:none; }
+body.godev-app .ref-price-card.is-premium { background:linear-gradient(145deg,var(--surface-elevated),var(--surface)); border-color:var(--highlight); }
+body.godev-app .ref-price-card.is-premium h3 { color:var(--highlight); }
+body.godev-app .ref-price-card :is(h3,.ref-price,li) { color:var(--text-primary); }
+body.godev-app .ref-price-card .ref-button-primary { color:var(--on-accent); background:var(--accent); border-radius:999px; }
+body.godev-app .ref-price-card.is-premium .ref-button-primary { background:var(--highlight); border-color:var(--highlight); color:var(--on-accent); }
+body.godev-app .ref-price-card .ref-badge { background:var(--highlight); color:var(--on-accent); }
+body.godev-app .ref-guarantee { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; padding:1.5rem; background:var(--bg-sidebar); border-radius:1.25rem; }
+body.godev-app .ref-guarantee-copy { flex:1 1 15rem; }
+body.godev-app .ref-guarantee-copy strong { display:block; color:var(--text-primary); }
+body.godev-app .ref-guarantee-copy span { color:var(--text-secondary); }
+body.godev-app .landing-faq .faq-list details { background:var(--surface); border:1px solid var(--border-subtle); box-shadow:none; }
+body.godev-app .landing-faq :is(summary,p) { color:var(--text-primary); }
+body.godev-app :is(.admin-sidebar,.portal .sidebar) { background:var(--bg-sidebar); color:var(--text-primary); border-color:var(--border-subtle); }
+body.godev-app :is(.admin-side-link,.portal .sidebar nav a) { border-radius:.75rem; min-height:2.75rem; color:var(--text-secondary); }
+body.godev-app :is(.admin-side-link,.portal .sidebar nav a)[aria-current="page"] { background:var(--highlight); color:var(--on-accent); box-shadow:none; }
+body.godev-app :is(.admin-side-link,.portal .sidebar nav a)[aria-current="page"] :is(span,svg) { color:inherit; }
+body.godev-app :is(.admin-side-icon,.portal-nav-icon) { background:transparent; color:var(--accent); }
+body.godev-app :is(.admin-sidebar-label,.admin-profile small) { color:var(--text-secondary); }
+body.godev-app :is(.admin-workspace,.workspace,.admin-content,.student-dashboard) { background:var(--bg-base); color:var(--text-primary); min-width:0; }
+body.godev-app :is(.admin-hero,.student-welcome) { background:transparent; border:0; box-shadow:none; padding:0 0 1.5rem; }
+body.godev-app :is(.admin-hero h1,.student-welcome h1,.admin-page-header h1) { font-size:clamp(1.8rem,3vw,2.7rem); line-height:1.15; }
+body.godev-app :is(.overview-white-card,.overview-revenue-card,.overview-activity-card,.overview-metric,.admin-card,.student-stat-card,.student-section-block,.student-context-section,.student-continue-card,.student-profile-card,.student-empty-card,.resource,.panel,.card) { background:var(--surface); color:var(--text-primary); border-color:var(--border-subtle); border-radius:1rem; box-shadow:none; }
+body.godev-app :is(.admin-content,.workspace) :is(h1,h2,h3,h4,strong,th) { color:var(--text-primary); }
+body.godev-app :is(.admin-content,.workspace) :is(p,small,label,td) { color:var(--text-secondary); }
+body.godev-app :is(.admin-content,.workspace) :is(table,thead,tbody,tr) { background:transparent; border-color:var(--border-subtle); }
+body.godev-app :is(.admin-content,.workspace) :is(button,.button.primary) { color:var(--on-accent); }
+body.godev-app :is(.admin-content,.workspace) :is(button,.button.primary) :is(span,strong) { color:inherit; }
+body.godev-app .admin-overview-metrics { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+body.godev-app :is(.overview-metric,.student-stat-card) strong { font-variant-numeric:tabular-nums; }
+body.godev-app .premium-offer-dialog { background:var(--surface); color:var(--text-primary); border-color:var(--border-control); }
+body.godev-app .premium-offer-dialog :is(h2,p,li,strong) { color:var(--text-primary); }
+body.godev-app .premium-offer-dialog button { color:var(--text-primary); }
+body.godev-app .premium-offer-dialog .premium-offer-cta { color:var(--on-accent); }
+@media (max-width: 767px) {
+ body.godev-app .petroleum-hero { grid-template-columns:1fr; padding-block:2.5rem; gap:2rem; }
+ body.godev-app .petroleum-hero h1 { font-size:clamp(2.25rem,9vw,3.5rem); max-width:16ch; }
+ .petroleum-hero-book { width:min(52%,13rem); }
+ .petroleum-benefits { grid-template-columns:1fr; gap:1rem; }
+ .petroleum-benefits article + article { border-left:0; border-top:1px solid var(--border-subtle); padding-top:1rem; }
+ body.godev-app .ref-pricing-grid { grid-template-columns:1fr; }
+ body.godev-app :is(.admin-content,.student-dashboard) { width:100%; padding-inline:1rem; }
+ body.godev-app .admin-overview-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ body.godev-app .landing-demo { grid-template-columns:minmax(0,1fr); }
+}
+@media (prefers-reduced-motion:no-preference) {
+ .petroleum-hero-book { animation:book-settle 800ms cubic-bezier(.16,1,.3,1) both; }
+ @keyframes book-settle { from { opacity:.3; transform:translateY(1.5rem) rotate(0deg); } to { opacity:1; transform:rotate(-5deg); } }
 }
