@@ -127,7 +127,7 @@ button:disabled, .button[aria-disabled="true"] { opacity: 1; background: var(--s
 .site-header a, .site-header .nav a { color: var(--text-secondary); }
 .site-header .nav a:hover { color: var(--text-primary); }
 .brand, .brand b, .brand-wordmark { color: var(--text-primary) !important; }
-.brand-sub { color: var(--text-secondary) !important; letter-spacing: .14em; }
+.brand-sub { color: var(--text-secondary) !important; letter-spacing: .01em; }
 
 .site-footer { background: var(--bg-sidebar); border-top: 1px solid var(--border-subtle); color: var(--text-secondary); }
 .site-footer p, .site-footer .footer-bottom, .footer-bottom { color: var(--text-secondary); }
@@ -139,7 +139,7 @@ button:disabled, .button[aria-disabled="true"] { opacity: 1; background: var(--s
 /* ---------- Landing ---------- */
 .landing-shell, .reformulated-landing { background: var(--bg-base); color: var(--text-primary); }
 .landing-hero h1 em { color: var(--highlight); }
-.landing-eyebrow { color: var(--highlight) !important; letter-spacing: .14em; font-weight: 700; text-transform: uppercase; }
+.landing-eyebrow { color: var(--highlight) !important; letter-spacing: .01em; font-weight: 700; text-transform: none; }
 .petroleum-benefits article { background: transparent; border-color: var(--border-subtle); }
 .petroleum-benefits strong { color: var(--text-primary); }
 
@@ -227,7 +227,7 @@ body.godev-app.godev-app :is(.student-welcome, .student-stat-card, .student-cont
   box-shadow: none;
 }
 .student-welcome h1, .admin-hero h1, .admin-page-header h1, .page-title { color: var(--text-primary); font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem); }
-.student-eyebrow, .admin-eyebrow, .admin-topbar-kicker, .eyebrow { color: var(--highlight) !important; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.student-eyebrow, .admin-eyebrow, .admin-topbar-kicker, .eyebrow { color: var(--highlight) !important; font-weight: 700; letter-spacing: .01em; text-transform: none; }
 .student-stat-card strong, .overview-metric strong, .stat strong, .metric-value { color: var(--text-primary); font-variant-numeric: tabular-nums; }
 .student-stat-card span, .student-stat-card small, .overview-metric span, .stat span, .stat small { color: var(--text-secondary); }
 .student-status-pill, .crm-badge, .status-dot + span, .integration-state, .pending, .success, .warning {
@@ -240,7 +240,7 @@ body.godev-app.godev-app :is(.student-welcome, .student-stat-card, .student-cont
 
 /* Tabelas */
 table { color: var(--text-primary); border-collapse: collapse; width: 100%; }
-th { background: var(--bg-sidebar); color: var(--text-primary); text-align: left; font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; }
+th { background: var(--bg-sidebar); color: var(--text-primary); text-align: left; font-size: .8125rem; letter-spacing: .01em; text-transform: none; }
 th, td { border-bottom: 1px solid var(--border-subtle); padding: 14px 16px; }
 tbody tr:nth-child(even) td { background: rgb(255 255 255 / 3%); }
 tbody tr:hover td { background: rgb(110 231 183 / 8%); }
@@ -386,3 +386,66 @@ body.godev-app.godev-app .reformulated-landing :is(h2, h3) { letter-spacing: -.0
 body.godev-app.godev-app .admin-topbar-kicker { display: block; margin-bottom: 2px; }
 body.godev-app.godev-app .admin-topbar-kicker + strong { display: block; }
 body.godev-app.godev-app .library-entry a[target="_blank"] { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 6px; text-decoration: underline; text-underline-offset: 3px; }
+
+/* =====================================================================
+   Minimalismo editorial: menos ornamento, uma elevação, movimento curto
+   ===================================================================== */
+:root, body.godev-app {
+  --ease: cubic-bezier(.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --elev-1: 0 1px 2px rgb(0 0 0 / 28%);
+  --elev-2: 0 12px 28px -12px rgb(0 0 0 / 45%);
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
+  --z-sticky: 20; --z-drawer: 60; --z-modal: 100;
+}
+
+/* Rótulos em frase, sem caixa alta */
+body.godev-app.godev-app :is(.landing-eyebrow, .student-eyebrow, .admin-eyebrow, .admin-topbar-kicker, .eyebrow, .activity-card-type, .student-status-pill, .ref-badge, th, .admin-sidebar-label, [class*="previewLabel"]) {
+  text-transform: none; letter-spacing: .01em;
+}
+body.godev-app.godev-app :is(.landing-eyebrow, .student-eyebrow, .admin-eyebrow, .admin-topbar-kicker, .eyebrow) { font-weight: 600; }
+
+/* Superfícies planas: sem gradiente decorativo */
+body.godev-app.godev-app .ref-price-card.is-premium { background: var(--surface-elevated); }
+body.godev-app.godev-app .student-welcome { background: var(--surface); }
+body.godev-app.godev-app .overview-chart-bar { background: var(--accent); }
+body.godev-app.godev-app .ref-button-primary, body.godev-app.godev-app .button.primary { background-image: none; }
+
+/* Elevação: apenas uma sombra discreta onde há sobreposição real */
+body.godev-app.godev-app :is(.landing-demo, .demo-sidebar, .demo-aside, .ref-price-card, .ref-guarantee, .admin-sidebar, .admin-workspace, .admin-overview, .portal .sidebar, .portal .workspace, .student-dashboard, .site-header) { box-shadow: none; }
+body.godev-app.godev-app :is(.landing-demo, .ref-price-card.is-premium) { box-shadow: var(--elev-2); }
+body.godev-app.godev-app .petroleum-hero-book img, body.godev-app.godev-app .material-carousel-card.is-active { box-shadow: var(--elev-2); }
+
+/* Movimento: curto, discreto e sem deslocamentos que causem sobreposição */
+body.godev-app.godev-app :is(a, button, input, select, textarea, summary, .ref-button, .button, .ref-price-card, .library-entry, .faq-list details) {
+  transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+body.godev-app.godev-app :is(.ref-price-card, .library-entry, .student-continue-card, .overview-metric):hover { transform: none; }
+body.godev-app.godev-app :is(.ref-button, .button):hover { transform: none; }
+body.godev-app.godev-app :is(.ref-button, .button):active { transform: translateY(1px); }
+body.godev-app.godev-app .material-carousel-card, body.godev-app.godev-app .material-carousel-card.is-active { transition-duration: 220ms; }
+body.godev-app.godev-app .petroleum-hero-book, body.godev-app.godev-app .landing-demo, body.godev-app.godev-app .ref-price-card, body.godev-app.godev-app .student-dashboard .resource { animation: none; opacity: 1; transform: none; }
+body.godev-app.godev-app .ref-price-card.is-premium::before, body.godev-app.godev-app .ref-price-card.is-premium::after, body.godev-app.godev-app .ref-price-card.is-premium .ref-button-primary::after { animation: none; display: none; }
+
+/* Proporção correta da capa do hero (arquivo 2:3) */
+body.godev-app.godev-app .petroleum-hero-book img { width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; object-position: center top; border-radius: var(--r-md); }
+
+/* Ícone único e consistente nas listas de planos (substitui o caractere ✓) */
+body.godev-app.godev-app .ref-price-card li > span[aria-hidden="true"] {
+  flex: none; display: inline-block; width: 18px; height: 18px; font-size: 0; line-height: 0; margin-top: 3px; color: var(--on-accent); background: var(--accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 4 4L19 6'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 4 4L19 6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+body.godev-app.godev-app .ref-price-card li { display: flex; gap: 10px; align-items: flex-start; }
+
+/* CTA final */
+body.godev-app.godev-app .landing-final-cta { text-align: center; padding-block: clamp(56px, 8vw, 104px); display: grid; justify-items: center; gap: 16px; }
+body.godev-app.godev-app .landing-final-cta h2 { max-width: 20ch; margin: 0; }
+body.godev-app.godev-app .landing-final-cta p { max-width: 52ch; margin: 0; font-size: 1.125rem; }
+body.godev-app.godev-app .landing-final-cta .ref-button { margin-top: 8px; min-width: 200px; }
+
+/* Raios consolidados */
+body.godev-app.godev-app :is(.ref-price-card, .landing-demo, .student-welcome, .student-stat-card, .overview-white-card, .overview-metric, .library-entry, .faq-list details) { border-radius: var(--r-lg); }
+body.godev-app.godev-app .ref-price small { letter-spacing: 0; line-height: 1.4; margin-top: 6px; }
+body.godev-app.godev-app :is(.ref-button, .button, .ref-button-primary, .button.primary, .student-primary-action) { box-shadow: none; }

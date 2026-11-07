@@ -37,7 +37,7 @@ export function Header() {
           className={open ? "nav open" : "nav"}
         >
           {[
-            ["Recursos", "/landing#conteudo"],
+            ["Como funciona", "/landing#como-funciona"],
             ["Planos", "/landing#planos"],
             ["E-books", "/landing#materiais"],
             ["Dúvidas", "/landing#duvidas"],

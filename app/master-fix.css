@@ -238,7 +238,7 @@ body { background: var(--master-bg); color: var(--master-ink); }
   position: relative;
   min-height: 2.7rem;
   border-radius: .55rem;
-  font-size: .85rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: -.01em;
   transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease;
@@ -276,7 +276,7 @@ body { background: var(--master-bg); color: var(--master-ink); }
   border-top: 1px solid var(--master-line);
 }
 .reformulated-landing .landing-demo {
-  animation: landing-card-in 650ms cubic-bezier(.2,.8,.2,1) both;
+  animation: none;
 }
 .reformulated-landing .landing-steps article,
 .reformulated-landing .landing-areas .area-grid > div,
@@ -288,7 +288,7 @@ body { background: var(--master-bg); color: var(--master-ink); }
 .reformulated-landing .landing-areas .area-grid > div:hover,
 .reformulated-landing .material-covers > span:hover,
 .reformulated-landing .ref-price-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 .reformulated-landing .landing-steps article:hover .step-number,
 .reformulated-landing .landing-areas .area-grid > div:hover .area-icon {
@@ -323,7 +323,7 @@ body { background: var(--master-bg); color: var(--master-ink); }
 .overview-activity-card, .overview-white-card { padding: 18px; border-radius: 18px; }
 .admin-overview-metrics { gap: 10px; }
 .overview-metric { min-height: 84px; padding: 12px 14px; border-radius: 15px; }
-.overview-metric strong { font-size: 1.45rem; }
+.overview-metric strong { font-size: 1.5rem; }
 .quiz-funnel-card { padding-block: 16px; }
 .overview-quick-actions { margin-top: 12px; }
 @media (max-width: 760px) {

@@ -74,7 +74,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .reformulated-landing .landing-material-carousel { min-width: 0; }
 .reformulated-landing .material-carousel-stage { position: relative; min-height: 330px; overflow: hidden; }
 .reformulated-landing .landing-material-carousel { touch-action: pan-y; }
-.reformulated-landing .material-carousel-card { position: absolute; top: 8px; left: 50%; display: block; width: clamp(132px, 18vw, 190px); padding: 0; border: 1px solid var(--release-line); border-radius: 14px; background: var(--release-surface); box-shadow: 0 14px 28px rgb(16 24 40 / 10%); cursor: pointer; transform: translateX(-50%) scale(.78); opacity: .35; transition: transform .55s cubic-bezier(.2,.8,.2,1), opacity .55s ease, box-shadow .55s ease; }
+.reformulated-landing .material-carousel-card { position: absolute; top: 8px; left: 50%; display: block; width: clamp(132px, 18vw, 190px); padding: 0; border: 1px solid var(--release-line); border-radius: 12px; background: var(--release-surface); box-shadow: 0 14px 28px rgb(16 24 40 / 10%); cursor: pointer; transform: translateX(-50%) scale(.78); opacity: .35; transition: transform 200ms cubic-bezier(.2,.8,.2,1), opacity 200ms ease, box-shadow 200ms ease; }
 .reformulated-landing .material-carousel-card img { display: block; width: 100%; height: auto; border-radius: inherit; }
 .reformulated-landing .material-carousel-card[data-offset="-1"] { transform: translateX(-155%) scale(.9); opacity: .72; }
 .reformulated-landing .material-carousel-card[data-offset="1"] { transform: translateX(55%) scale(.9); opacity: .72; }
@@ -89,13 +89,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .reformulated-landing .material-carousel-caption { display: grid; gap: 5px; margin: 10px auto 0; max-width: 34ch; text-align: center; }
 .reformulated-landing .material-carousel-caption .landing-eyebrow { font-size: 0.75rem; }
 .reformulated-landing .material-carousel-caption h3 { margin: 0; color: var(--release-ink); font-size: clamp(1.2rem, 2vw, 1.5rem); }
-.reformulated-landing .material-carousel-caption p { margin: 0; color: var(--release-muted); font-size: .88rem; line-height: 1.5; }
+.reformulated-landing .material-carousel-caption p { margin: 0; color: var(--release-muted); font-size: 0.875rem; line-height: 1.5; }
 .reformulated-landing .material-carousel-caption > span:last-child { color: var(--release-muted); font-size: 0.75rem; }
 .reformulated-landing .material-carousel-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
 .reformulated-landing .material-carousel-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: var(--release-line); cursor: pointer; }
 .reformulated-landing .material-carousel-dots button[aria-selected="true"] { width: 22px; border-radius: 999px; background: var(--release-green); }
 .reformulated-landing .ref-price-card.is-premium { background: var(--release-soft); border-color: var(--release-green); }
-.reformulated-landing .ref-price-card.is-premium { transform: translateY(-8px); box-shadow: 0 18px 42px color-mix(in srgb, var(--release-green) 20%, transparent), 0 0 0 1px color-mix(in srgb, var(--release-green) 42%, transparent); }
+.reformulated-landing .ref-price-card.is-premium { transform: translateY(-2px); box-shadow: 0 18px 42px color-mix(in srgb, var(--release-green) 20%, transparent), 0 0 0 1px color-mix(in srgb, var(--release-green) 42%, transparent); }
 .reformulated-landing .ref-price-card.is-premium::before { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 28%); }
 .reformulated-landing .ref-price-card :is(h3,.ref-price,li) { color: var(--release-ink); }
 .reformulated-landing .ref-price-card li span { color: var(--release-green-strong); }
@@ -104,7 +104,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   position: relative;
   isolation: isolate;
   box-shadow: 0 0 0 1px rgb(255 255 255 / 22%), 0 10px 24px rgb(16 185 129 / 28%);
-  animation: premium-breathe 3.2s ease-in-out infinite;
+  animation: none;
 }
 .reformulated-landing .ref-price-card.is-premium .ref-button-primary:hover,
 .reformulated-landing .ref-price-card.is-premium .ref-button-primary:focus-visible {
@@ -129,7 +129,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 .reformulated-landing .ref-guarantee-copy { display: grid; gap: 4px; min-width: 0; }
 .reformulated-landing .ref-guarantee-copy strong { color: #fff; font-size: 1rem; }
-.reformulated-landing .ref-guarantee-copy span { color: #d7f6e4; font-size: .86rem; line-height: 1.45; }
+.reformulated-landing .ref-guarantee-copy span { color: #d7f6e4; font-size: 0.875rem; line-height: 1.45; }
 .reformulated-landing .ref-guarantee-mark { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(167 243 208 / 46%); border-radius: 50%; background: rgb(167 243 208 / 16%); color: #d7f6e4; }
 .reformulated-landing .ref-guarantee-mark svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5; }
 .reformulated-landing .ref-guarantee :is(span,a) { color: #d7f6e4; }
@@ -322,12 +322,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
   border-radius: inherit;
   background: linear-gradient(120deg, transparent 20%, rgb(185 255 61 / 25%), transparent 72%);
   opacity: .6;
-  animation: premium-sweep 4.8s ease-in-out infinite;
+  animation: none;
 }
 .landing-shell.landing-dark .ref-price-card :is(h3,.ref-price,li) { color: var(--release-ink); }
 .landing-shell.landing-dark .ref-price-card li span { color: var(--release-green); }
 .landing-shell.landing-dark .ref-badge { background: var(--release-green); color: var(--text-primary); }
-.landing-shell.landing-dark .ref-price-card.is-premium .ref-button-primary { color: var(--text-primary); animation: premium-breathe-dark 3s ease-in-out infinite; }
+.landing-shell.landing-dark .ref-price-card.is-premium .ref-button-primary { color: var(--text-primary); animation: none; }
 .landing-shell.landing-dark .ref-guarantee { background: linear-gradient(135deg, var(--bg-sidebar), var(--bg-sidebar)); border-color: rgb(185 255 61 / 34%); box-shadow: 0 16px 42px rgb(0 0 0 / 30%), 0 0 30px rgb(185 255 61 / 8%); }
 .landing-shell.landing-dark .ref-guarantee-copy strong { color: var(--release-ink); }
 .landing-shell.landing-dark .ref-guarantee-copy span,
@@ -411,15 +411,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-shell.landing-dark .material-carousel-card:hover,
 .landing-shell.landing-dark .material-carousel-card:focus-visible { transform: translateX(-50%) translateY(-6px) scale(1.06); }
 .landing-shell.landing-dark .material-carousel-card.is-active { border-color: transparent; box-shadow: 0 30px 60px rgb(0 0 0 / 52%), 0 0 34px rgb(185 255 61 / 22%); }
-.landing-shell.landing-dark .material-carousel-card[data-offset="-1"]:hover { transform: translateX(-155%) translateY(-5px) scale(.94); }
-.landing-shell.landing-dark .material-carousel-card[data-offset="1"]:hover { transform: translateX(55%) translateY(-5px) scale(.94); }
-.landing-shell.landing-dark .material-carousel-card[data-offset="-2"]:hover { transform: translateX(-245%) translateY(-5px) scale(.8); }
-.landing-shell.landing-dark .material-carousel-card[data-offset="2"]:hover { transform: translateX(145%) translateY(-5px) scale(.8); }
+.landing-shell.landing-dark .material-carousel-card[data-offset="-1"]:hover { transform: translateX(-155%) translateY(-2px) scale(.94); }
+.landing-shell.landing-dark .material-carousel-card[data-offset="1"]:hover { transform: translateX(55%) translateY(-2px) scale(.94); }
+.landing-shell.landing-dark .material-carousel-card[data-offset="-2"]:hover { transform: translateX(-245%) translateY(-2px) scale(.8); }
+.landing-shell.landing-dark .material-carousel-card[data-offset="2"]:hover { transform: translateX(145%) translateY(-2px) scale(.8); }
 
 .landing-shell.landing-dark .ref-price-card { transform: translateY(0); }
 .landing-shell.landing-dark .ref-price-card:hover,
 .landing-shell.landing-dark .ref-price-card:focus-within { transform: translateY(-6px); box-shadow: 0 24px 58px rgb(0 0 0 / 42%); }
-.landing-shell.landing-dark .ref-price-card.is-premium { transform: translateY(-8px); }
+.landing-shell.landing-dark .ref-price-card.is-premium { transform: translateY(-2px); }
 .landing-shell.landing-dark .ref-price-card.is-premium:hover,
 .landing-shell.landing-dark .ref-price-card.is-premium:focus-within { transform: translateY(-14px) scale(1.01); }
 .landing-shell.landing-dark .ref-price-card .ref-button-primary { color: var(--text-primary) !important; }
@@ -427,7 +427,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .landing-shell.landing-dark .landing-faq .faq-list { background: transparent; box-shadow: none; }
 .landing-shell.landing-dark .landing-faq .faq-list details { background: #13271f; box-shadow: 0 12px 30px rgb(0 0 0 / 24%); }
 .landing-shell.landing-dark .landing-faq .faq-list details:hover,
-.landing-shell.landing-dark .landing-faq .faq-list details[open] { background: var(--bg-sidebar); transform: translateY(-3px); box-shadow: 0 18px 38px rgb(0 0 0 / 34%); }
+.landing-shell.landing-dark .landing-faq .faq-list details[open] { background: var(--bg-sidebar); transform: translateY(-2px); box-shadow: 0 18px 38px rgb(0 0 0 / 34%); }
 
 @media (prefers-reduced-motion: reduce) {
   .landing-shell.landing-dark .demo-sidebar a,

@@ -69,7 +69,7 @@ body { background: var(--modern-bg); color: var(--modern-ink); font-family: var(
 .reformulated-landing .ref-button {
   min-height: 46px;
   border-radius: 999px;
-  font-weight: 750;
+  font-weight: 700;
   letter-spacing: -.01em;
   transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;
 }
@@ -122,7 +122,7 @@ body { background: var(--modern-bg); color: var(--modern-ink); font-family: var(
 .reformulated-landing .demo-aside { gap: 12px; }
 .reformulated-landing .demo-aside .demo-tab { min-height: 32px; color: var(--modern-muted); }
 .reformulated-landing .demo-aside .demo-tab.is-active { color: var(--modern-brand-dark); border-color: var(--modern-brand-dark); }
-.reformulated-landing .demo-status { min-height: 28px; color: var(--modern-muted); font-size: .82rem; }
+.reformulated-landing .demo-status { min-height: 28px; color: var(--modern-muted); font-size: 0.875rem; }
 .reformulated-landing .demo-status > span { flex: 0 0 auto; border-color: var(--modern-brand); }
 .reformulated-landing .demo-status > span.answered { background: var(--modern-brand); }
 .reformulated-landing .demo-number-grid { gap: 8px; }
@@ -165,7 +165,7 @@ body { background: var(--modern-bg); color: var(--modern-ink); font-family: var(
 .reformulated-landing .ref-pricing-grid { align-items: stretch; }
 .reformulated-landing .ref-price-card { border-radius: var(--modern-radius); transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
 .reformulated-landing .ref-price-card:hover,
-.reformulated-landing .ref-price-card:focus-within { transform: translateY(-5px); box-shadow: 0 24px 54px rgb(20 32 51 / 14%); }
+.reformulated-landing .ref-price-card:focus-within { transform: translateY(-2px); box-shadow: 0 24px 54px rgb(20 32 51 / 14%); }
 .reformulated-landing .ref-price-card.is-premium { border-color: var(--modern-brand); background: color-mix(in srgb, var(--modern-surface-soft) 68%, var(--modern-surface)); }
 .reformulated-landing .ref-price-card.is-premium:hover,
 .reformulated-landing .ref-price-card.is-premium:focus-within { box-shadow: 0 24px 56px color-mix(in srgb, var(--modern-brand) 23%, transparent); }
@@ -177,7 +177,7 @@ body { background: var(--modern-bg); color: var(--modern-ink); font-family: var(
 .reformulated-landing .ref-guarantee { background: var(--modern-brand-dark); border-color: color-mix(in srgb, var(--modern-brand) 45%, transparent); box-shadow: var(--modern-shadow); }
 .reformulated-landing .ref-guarantee :is(strong, span, a) { color: #f0fff6; }
 .reformulated-landing .landing-faq .faq-list { background: transparent; border: 0; box-shadow: none; }
-.reformulated-landing .landing-faq .faq-list details { background: var(--modern-surface); border: 1px solid var(--modern-line); border-radius: 14px; box-shadow: 0 8px 24px rgb(20 32 51 / 6%); }
+.reformulated-landing .landing-faq .faq-list details { background: var(--modern-surface); border: 1px solid var(--modern-line); border-radius: 12px; box-shadow: 0 8px 24px rgb(20 32 51 / 6%); }
 .reformulated-landing .landing-faq .faq-list details:hover,
 .reformulated-landing .landing-faq .faq-list details[open] { border-color: color-mix(in srgb, var(--modern-brand) 55%, var(--modern-line)); }
 .reformulated-landing .landing-faq .faq-list summary { color: var(--modern-ink); }
