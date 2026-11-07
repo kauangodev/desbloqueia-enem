@@ -62,14 +62,16 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
         <Link
           key={slug}
           href={`/aluno${slug ? "/" + slug : ""}`}
-          aria-current={path === `/aluno${slug ? "/" + slug : ""}` ? "page" : undefined}
+          aria-label={label}
+          title={label}
+          aria-current={path ===`/aluno${slug ? "/" + slug : ""}` ? "page" : undefined}
         >
           <span className="portal-nav-icon"><PortalIcon name={icon} /></span>
           <span>{label}</span>
         </Link>
       ))}
       {isAdmin ? (
-        <Link href="/admin" className="portal-admin-link" aria-current={path === "/admin" ? "page" : undefined}>
+        <Link href="/admin" className="portal-admin-link" aria-label="Administração" title="Administração" aria-current={path === "/admin" ? "page" : undefined}>
           <span className="portal-nav-icon"><PortalIcon name="admin" /></span>
           <span>Administração</span>
         </Link>

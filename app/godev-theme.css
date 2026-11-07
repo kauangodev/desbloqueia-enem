@@ -449,3 +449,25 @@ body.godev-app.godev-app .landing-final-cta .ref-button { margin-top: 8px; min-w
 body.godev-app.godev-app :is(.ref-price-card, .landing-demo, .student-welcome, .student-stat-card, .overview-white-card, .overview-metric, .library-entry, .faq-list details) { border-radius: var(--r-lg); }
 body.godev-app.godev-app .ref-price small { letter-spacing: 0; line-height: 1.4; margin-top: 6px; }
 body.godev-app.godev-app :is(.ref-button, .button, .ref-button-primary, .button.primary, .student-primary-action) { box-shadow: none; }
+
+/* Estados desabilitados legíveis (sem opacidade que derrube o contraste) */
+body.godev-app.godev-app :is(button, .button, .ref-button)[disabled], body.godev-app.godev-app :is(button, .button, .ref-button):disabled {
+  opacity: 1; background: var(--surface-elevated) !important; color: #b4cdd3 !important; border: 1px solid var(--border-subtle) !important; cursor: not-allowed;
+}
+body.godev-app.godev-app :is(.question-card, .plan-dot, .plan-dot.premium, span.premium) { box-shadow: none; }
+body.godev-app.godev-app :is(.student-section-heading a, .student-context-heading a, .overview-white-heading a, .overview-card-topline a, .student-profile-card button) { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; padding-inline: 8px; }
+
+/* Diagnóstico: passos legíveis em todos os estados */
+body.godev-app.godev-app .study-quiz-aside li { color: var(--text-secondary); }
+body.godev-app.godev-app .study-quiz-aside li.is-current { background: var(--surface-soft); color: var(--text-primary); font-weight: 700; }
+body.godev-app.godev-app .study-quiz-aside li span { background: var(--surface); color: var(--text-primary); border: 1.5px solid var(--border-control); }
+body.godev-app.godev-app .study-quiz-aside li.is-current span, body.godev-app.godev-app .study-quiz-aside li.is-done span { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+
+/* Drawer do aluno no celular: marca no topo e links em coluna */
+@media (max-width: 899px) {
+  body.godev-app.godev-app .portal .sidebar { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 16px; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); overflow-y: auto; width: min(320px, 86vw); }
+  body.godev-app.godev-app .portal .sidebar .brand { align-self: flex-start; }
+  body.godev-app.godev-app .portal .sidebar nav:not(.portal-mobile-nav) { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+  body.godev-app.godev-app .portal .sidebar nav:not(.portal-mobile-nav) a { width: 100%; justify-content: flex-start; gap: 12px; padding-inline: 12px; }
+  body.godev-app.godev-app .portal .sidebar nav:not(.portal-mobile-nav) a > span:last-child { display: inline; }
+}
