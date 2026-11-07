@@ -377,3 +377,7 @@ body.godev-app.godev-app .reformulated-landing .landing-stat-strip { flex-wrap: 
   body.godev-app.godev-app .landing-demo .demo-sidebar > strong { flex: 1 0 100%; }
   body.godev-app.godev-app .landing-demo .demo-sidebar a { flex: 1 1 calc(50% - 6px); min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-align: center; white-space: normal; border: 1px solid var(--border-subtle); border-radius: 12px; }
 }
+
+/* Título do hero: espaçamento legível (o legado usava -.06em, que colava as letras) */
+body.godev-app.godev-app :is(.landing-hero h1, .petroleum-hero-copy h1, .study-quiz-heading h2) { letter-spacing: -.035em; line-height: 1.04; }
+body.godev-app.godev-app .reformulated-landing :is(h2, h3) { letter-spacing: -.025em; }
