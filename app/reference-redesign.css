@@ -152,7 +152,7 @@ a, button { -webkit-tap-highlight-color: transparent; }
 }
 @media (max-width: 720px) {
   .diagnostico-header { padding-inline: 16px; }
-  .diagnostico-meta { gap: 8px; font-size: .62rem; letter-spacing: .1em; }
+  .diagnostico-meta { gap: 8px; font-size: 0.75rem; letter-spacing: .1em; }
   .site-header .nav { display: none; }
   .header-inner { padding-inline: 16px; }
   .study-quiz { padding-inline: 16px; padding-top: 58px; }

@@ -87,10 +87,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .reformulated-landing .material-carousel-arrow.is-prev { left: 2px; }
 .reformulated-landing .material-carousel-arrow.is-next { right: 2px; }
 .reformulated-landing .material-carousel-caption { display: grid; gap: 5px; margin: 10px auto 0; max-width: 34ch; text-align: center; }
-.reformulated-landing .material-carousel-caption .landing-eyebrow { font-size: .68rem; }
+.reformulated-landing .material-carousel-caption .landing-eyebrow { font-size: 0.75rem; }
 .reformulated-landing .material-carousel-caption h3 { margin: 0; color: var(--release-ink); font-size: clamp(1.2rem, 2vw, 1.5rem); }
 .reformulated-landing .material-carousel-caption p { margin: 0; color: var(--release-muted); font-size: .88rem; line-height: 1.5; }
-.reformulated-landing .material-carousel-caption > span:last-child { color: var(--release-muted); font-size: .72rem; }
+.reformulated-landing .material-carousel-caption > span:last-child { color: var(--release-muted); font-size: 0.75rem; }
 .reformulated-landing .material-carousel-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
 .reformulated-landing .material-carousel-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: var(--release-line); cursor: pointer; }
 .reformulated-landing .material-carousel-dots button[aria-selected="true"] { width: 22px; border-radius: 999px; background: var(--release-green); }

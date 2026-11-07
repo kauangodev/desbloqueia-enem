@@ -320,3 +320,12 @@ body.godev-app.godev-app .portal-search:focus-within { border-color: var(--accen
 body.godev-app.godev-app .portal-search input { border: 0; background: transparent; min-height: 0; padding: 0; outline: 0; box-shadow: none; width: 100%; }
 body.godev-app.godev-app .student-count { color: var(--text-secondary); background: var(--surface-soft); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 4px 10px; }
 body.godev-app.godev-app .student-welcome { padding: clamp(20px, 3vw, 32px); background: linear-gradient(135deg, #1b4650 0%, var(--surface) 70%); }
+
+/* ---------- Admin: ícones, atividade e métricas ---------- */
+body.godev-app.godev-app .overview-metric-icon {
+  background: var(--surface-elevated); color: var(--accent); border: 1px solid var(--border-control);
+}
+body.godev-app.godev-app .activity-icon { background: var(--surface-elevated); color: var(--text-primary); border: 1px solid var(--border-control); }
+body.godev-app.godev-app .activity-icon.is-success { background: var(--success-bg); color: var(--success-text); border-color: var(--success-text); }
+body.godev-app.godev-app .activity-icon.is-warning { background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-text); }
+body.godev-app.godev-app .activity-icon.is-danger, body.godev-app.godev-app .activity-icon.is-error { background: var(--error-bg); color: var(--error-text); border-color: var(--error-text); }

@@ -40,7 +40,7 @@ h1, h2, h3 { line-height: var(--lh-tight); letter-spacing: var(--tracking-tight)
 a, button, input, select, textarea, [role="button"] { min-height: 44px; }
 .button, .text-link, .login-link, .menu-button { display: inline-flex; align-items: center; justify-content: center; }
 .brand { min-height: 44px; }
-.brand-sub { font-size: 10px; }
+.brand-sub { font-size: 12px; }
 .brand-sub, .eyebrow, .consent-toggle, .material-index-heading small { font-size: var(--fs-xs); }
 .material-index-heading, .material-index-heading small, .material-index button > span:first-child,
 .material-index button small, .footer-grid > div > a:not(.brand), .footer-bottom,
@@ -226,7 +226,7 @@ body [class*="previewReport"] small { font-size: .8rem; }
 .diagnostico-page { min-height: 100svh; background: var(--bg-primary); color: var(--text-primary); }
 .diagnostico-header { width: min(1240px, calc(100% - 2 * var(--gutter))); margin: 0 auto; padding: 24px 0; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--border-subtle); }
 .diagnostico-header .brand { color: var(--text-primary); }
-.diagnostico-meta { display: flex; align-items: center; gap: 14px; color: var(--text-secondary); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; }
+.diagnostico-meta { display: flex; align-items: center; gap: 14px; color: var(--text-secondary); font-size: 0.75rem; letter-spacing: .16em; text-transform: uppercase; }
 .diagnostico-meta i { width: 1px; height: 18px; background: var(--border-strong); }
 .study-quiz { width: min(1240px, calc(100% - 2 * var(--gutter))); margin: 0 auto; padding: clamp(48px, 8vw, 104px) 0 96px; }
 .study-quiz-heading { max-width: 920px; margin: 0 auto clamp(32px, 5vw, 64px); text-align: center; }
@@ -274,7 +274,7 @@ body [class*="previewReport"] small { font-size: .8rem; }
   .study-quiz-grid { grid-template-columns: 1fr; }
   .study-quiz-aside { order: -1; }
   .study-quiz-aside ol { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-  .study-quiz-aside li { display: block; min-height: auto; font-size: .72rem; text-align: center; }
+  .study-quiz-aside li { display: block; min-height: auto; font-size: 0.75rem; text-align: center; }
   .study-quiz-aside li span { margin: 0 auto 6px; }
 }
 @media (max-width: 900px) {

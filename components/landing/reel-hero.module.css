@@ -206,7 +206,7 @@
 
 .card figcaption span {
   margin-bottom: 4px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -642,7 +642,7 @@
 }
 
 .previewTopbar div { display: grid; gap: 6px; }
-.previewLabel { color: var(--hero-accent); font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.previewLabel { color: var(--hero-accent); font-size: 0.75rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .previewTopbar strong { font-size: clamp(1.2rem, 2vw, 1.55rem); letter-spacing: -.03em; }
 .previewProgress { color: var(--hero-ink); font-size: 1.15rem; font-weight: 800; }
 .previewProgress i { color: var(--hero-muted); font-size: .8rem; font-style: normal; font-weight: 500; }
@@ -659,7 +659,7 @@
   border: 1px solid var(--hero-line);
   border-radius: 999px;
   color: var(--hero-muted);
-  font-size: .72rem;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
@@ -749,7 +749,7 @@
 .previewFeedbackCorrect p { margin: 0; color: var(--hero-muted); font-size: .82rem; line-height: 1.5; }
 .previewFeedback small,
 .previewFeedbackCorrect small { color: var(--hero-muted); font-size: .76rem; line-height: 1.4; }
-.previewProgressLabel { color: var(--hero-muted); font-size: .72rem; }
+.previewProgressLabel { color: var(--hero-muted); font-size: 0.75rem; }
 .previewProgressLabel b { color: var(--hero-ink); }
 .previewProgressTrack { height: 6px; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--hero-ink) 14%, transparent); }
 .previewProgressTrack span { display: block; height: 100%; border-radius: inherit; background: var(--hero-accent); transition: width 280ms ease; }
@@ -814,10 +814,10 @@
   text-align: left;
 }
 .previewReport li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding: 10px; border: 1px solid var(--hero-line); border-radius: 10px; background: var(--hero-surface); }
-.previewReport li > span { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--hero-accent) 15%, var(--hero-surface)); color: var(--hero-accent); font-size: .72rem; font-weight: 850; }
+.previewReport li > span { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--hero-accent) 15%, var(--hero-surface)); color: var(--hero-accent); font-size: 0.75rem; font-weight: 850; }
 .previewReport div { display: grid; gap: 3px; min-width: 0; }
 .previewReport strong { color: var(--hero-ink); font-size: .78rem; }
-.previewReport small, .previewReport p { margin: 0; color: var(--hero-muted); font-size: .7rem; line-height: 1.4; }
+.previewReport small, .previewReport p { margin: 0; color: var(--hero-muted); font-size: 0.75rem; line-height: 1.4; }
 .previewReportCorrect { border-color: color-mix(in srgb, #34d399 55%, var(--hero-line)) !important; }
 .previewReportCorrect > span { background: #34d399 !important; color: var(--text-primary) !important; }
 .previewReportMissed > span { background: color-mix(in srgb, #f59e0b 20%, var(--hero-surface)) !important; color: #d69a28 !important; }
@@ -872,7 +872,7 @@
   .trustStrip li { min-width: 33.33%; padding-inline: 12px; }
   .trustStrip li:first-child { padding-left: 0; }
   .trustStrip strong { font-size: 1.05rem; }
-  .trustStrip span { font-size: .7rem; }
+  .trustStrip span { font-size: 0.75rem; }
   .productPreview { padding: 16px; border-radius: 14px; }
   .previewFooter { align-items: flex-start; flex-direction: column; }
   .previewNextRow { align-items: stretch; flex-direction: column; }
