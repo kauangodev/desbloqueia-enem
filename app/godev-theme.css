@@ -471,3 +471,13 @@ body.godev-app.godev-app .study-quiz-aside li.is-current span, body.godev-app.go
   body.godev-app.godev-app .portal .sidebar nav:not(.portal-mobile-nav) a { width: 100%; justify-content: flex-start; gap: 12px; padding-inline: 12px; }
   body.godev-app.godev-app .portal .sidebar nav:not(.portal-mobile-nav) a > span:last-child { display: inline; }
 }
+
+/* Drawer do admin no celular: marca no topo, grupos e links em coluna */
+@media (max-width: 899px) {
+  body.godev-app.godev-app .admin-sidebar { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 12px; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); overflow-y: auto; width: min(320px, 86vw); }
+  body.godev-app.godev-app .admin-sidebar .admin-brand { align-self: flex-start; justify-content: flex-start; padding-inline: 4px; }
+  body.godev-app.godev-app .admin-sidebar .admin-side-nav { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+  body.godev-app.godev-app .admin-sidebar .admin-side-link { width: 100%; justify-content: flex-start; gap: 12px; padding-inline: 12px; }
+  body.godev-app.godev-app .admin-sidebar .admin-side-link > span:last-child, body.godev-app.godev-app .admin-sidebar .admin-sidebar-label { display: inline; }
+  body.godev-app.godev-app .admin-sidebar .admin-sidebar-footer { margin-top: auto; justify-content: space-between; }
+}
