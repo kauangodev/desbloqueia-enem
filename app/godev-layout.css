@@ -117,3 +117,7 @@ body.godev-app.godev-app .demo-number-grid { display: flex; flex-wrap: wrap; gap
 body.godev-app.godev-app .student-welcome-copy { min-height: 0; height: auto; padding: 0; margin: 0; display: grid; gap: 2px; align-content: center; }
 body.godev-app.godev-app .student-welcome { align-items: center; }
 body.godev-app.godev-app .student-welcome-meta { align-self: center; }
+
+/* Modo lista: a miniatura herdava padding de 22px e a imagem colapsava para 0px */
+body.godev-app.godev-app .resource-grid[data-view="list"] .resource-cover { padding: 0; width: 44px; min-width: 44px; display: block; }
+body.godev-app.godev-app .resource-grid[data-view="list"] .resource-cover img { width: 100%; height: 100%; }
