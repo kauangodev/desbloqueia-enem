@@ -1,0 +1,306 @@
+/* GoDev Education — Petróleo e Esmeralda (tema escuro).
+   Camada final e única fonte de verdade visual para landing, área do aluno e admin.
+   Regra: nada aqui usa cor escura como texto sobre fundo escuro. Pares validados por script. */
+
+:root,
+html[data-theme="light"],
+html[data-theme="dark"],
+body.godev-app {
+  color-scheme: dark;
+
+  /* Superfícies */
+  --bg-base: #07191f;
+  --bg-primary: #07191f;
+  --bg-secondary: #0b2730;
+  --bg-sidebar: #0b2730;
+  --surface: #153a43;
+  --surface-elevated: #1b4650;
+  --surface-raised: #1b4650;
+  --surface-soft: #123741;
+  --surface-muted: #123741;
+
+  /* Texto (todos ≥ 4,5:1 sobre as superfícies acima) */
+  --text-primary: #f6fcfc;
+  --text-secondary: #c9e0e5;
+  --text-muted: #b4cdd3;
+  --text-2: #c9e0e5;
+  --text-3: #b4cdd3;
+
+  /* Bordas */
+  --border-subtle: #3d6670;
+  --border-control: #7fb0ba;
+  --border-strong: #7fb0ba;
+
+  /* Ação e destaque */
+  --accent: #6ee7b7;
+  --accent-hover: #a2f3d0;
+  --accent-press: #4ccf9d;
+  --on-accent: #07291f;
+  --highlight: #c7f464;
+  --focus-ring: #c7f464;
+  --focus: #c7f464;
+
+  /* Estados */
+  --success-bg: #143b34; --success-text: #8ef0c2;
+  --warning-bg: #41351c; --warning-text: #ffe099;
+  --error-bg: #44272f;   --error-text: #ffb5bd;
+  --danger: #ffb5bd; --warning: #ffe099;
+
+  /* Escala verde legada, invertida para o tema escuro:
+     900 = tom mais legível (texto), 50 = superfície mais discreta. */
+  --green-900: #f6fcfc;
+  --green-800: #e3f6ef;
+  --green-700: #6ee7b7;
+  --green-500: #4ccf9d;
+  --green-300: #2f6f73;
+  --green-100: #1b4650;
+  --green-50:  #123741;
+  --master-green-950: #f6fcfc;
+  --master-green-900: #0f6b4e;
+  --master-green-700: #6ee7b7;
+  --master-green-100: #1b4650;
+
+  --shadow-card: 0 18px 42px rgb(0 0 0 / 28%);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md: 0 12px 28px rgb(0 0 0 / 30%);
+  --shadow-soft: 0 18px 42px rgb(0 0 0 / 28%);
+  --shadow-raised: 0 12px 32px rgb(0 0 0 / 30%);
+
+  --font-display: var(--godev-font-display), "Bricolage Grotesque", var(--godev-font-body), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--godev-font-body), Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+html, body, body.godev-app {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+::selection { background: var(--accent); color: var(--on-accent); }
+
+/* ---------- Tipografia ---------- */
+body.godev-app :is(h1, h2, h3, h4) { color: var(--text-primary); letter-spacing: -.03em; }
+body.godev-app :is(h1, h2) { font-family: var(--font-display); font-weight: 800; text-wrap: balance; }
+body.godev-app :is(h3, h4) { font-family: var(--font-body); font-weight: 700; }
+body.godev-app p, body.godev-app li, body.godev-app label, body.godev-app small { color: var(--text-secondary); }
+body.godev-app a { color: var(--accent); }
+body.godev-app a:hover { color: var(--accent-hover); }
+body.godev-app strong, body.godev-app b { color: var(--text-primary); }
+body.godev-app em { color: var(--highlight); font-style: normal; }
+
+/* Nenhum texto de leitura abaixo de 12px */
+.brand-sub, .eyebrow, .landing-eyebrow, .ref-badge, .consent-toggle,
+[class*="previewLabel"], .material-index-heading small { font-size: max(.75rem, 12px) !important; }
+
+/* Foco visível em todos os controles */
+body.godev-app :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* ---------- Botões ---------- */
+.ref-button, .button, .btn, .student-primary-action {
+  min-height: 48px;
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  border-radius: 999px; font-weight: 700; text-decoration: none;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, transform .16s ease;
+}
+.ref-button-primary, .button.primary, .button.lime, .student-primary-action, .button:not(.secondary):not(.ghost):not(.subtle) {
+  background: var(--accent) !important; color: var(--on-accent) !important; border: 1px solid transparent !important;
+  box-shadow: none;
+}
+.ref-button-primary:hover, .button.primary:hover, .button.lime:hover, .student-primary-action:hover {
+  background: var(--accent-hover) !important; color: var(--on-accent) !important; transform: translateY(-1px);
+}
+.ref-button-link, .button.secondary, .button.ghost, .button.subtle, .secondary {
+  background: transparent; color: var(--text-primary) !important;
+  border: 1.5px solid var(--border-control) !important;
+}
+.ref-button-link:hover, .button.secondary:hover, .button.ghost:hover, .secondary:hover {
+  background: rgb(110 231 183 / 12%); border-color: var(--accent) !important; color: var(--text-primary) !important;
+}
+button:disabled, .button[aria-disabled="true"] { opacity: 1; background: var(--surface-elevated) !important; color: #9fbcc3 !important; border-color: var(--border-subtle) !important; cursor: not-allowed; }
+
+/* ---------- Cabeçalho e rodapé ---------- */
+.site-header { background: rgb(7 25 31 / 88%); border-bottom: 1px solid var(--border-subtle); backdrop-filter: blur(14px); }
+.site-header a, .site-header .nav a { color: var(--text-secondary); }
+.site-header .nav a:hover { color: var(--text-primary); }
+.brand, .brand b, .brand-wordmark { color: var(--text-primary) !important; }
+.brand-sub { color: var(--text-secondary) !important; letter-spacing: .14em; }
+
+.site-footer { background: var(--bg-sidebar); border-top: 1px solid var(--border-subtle); color: var(--text-secondary); }
+.site-footer p, .site-footer .footer-bottom, .footer-bottom { color: var(--text-secondary); }
+.site-footer a:not(.brand) { color: var(--text-primary); }
+.site-footer a:not(.brand):hover { color: var(--accent); }
+.site-footer h2, .site-footer h3, .site-footer h4, .site-footer strong { color: var(--text-primary); }
+.site-footer .brand, .site-footer .brand b, .site-footer .brand-wordmark { color: var(--text-primary) !important; }
+
+/* ---------- Landing ---------- */
+.landing-shell, .reformulated-landing { background: var(--bg-base); color: var(--text-primary); }
+.landing-hero h1 em { color: var(--highlight); }
+.landing-eyebrow { color: var(--highlight) !important; letter-spacing: .14em; font-weight: 700; text-transform: uppercase; }
+.petroleum-benefits article { background: transparent; border-color: var(--border-subtle); }
+.petroleum-benefits strong { color: var(--text-primary); }
+
+.landing-demo, .landing-demo .demo-sidebar, .landing-demo .demo-aside { background: var(--surface); border-color: var(--border-subtle); color: var(--text-primary); }
+.landing-demo .demo-sidebar { background: var(--bg-sidebar); }
+.demo-sidebar a { color: var(--text-secondary); }
+.demo-sidebar a.is-active { background: rgb(110 231 183 / 16%); color: var(--accent); }
+.landing-demo [class*="previewStatement"], .landing-demo h2, .landing-demo h3 { color: var(--text-primary) !important; }
+.landing-demo [class*="previewOption"] { color: var(--text-primary); border-color: var(--border-control); background: transparent; }
+.landing-demo [class*="previewOptionSelected"], .landing-demo [class*="previewOption"][aria-checked="true"] { background: rgb(110 231 183 / 16%); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.landing-demo [class*="previewOption"] b, .landing-demo [class*="previewOption"] > span:first-child { color: var(--accent); }
+
+.landing-steps .step-number {
+  background: var(--surface-elevated); color: var(--text-primary) !important;
+  border: 1.5px solid var(--border-control);
+}
+.landing-steps h3 { color: var(--text-primary) !important; }
+.landing-steps p { color: var(--text-secondary) !important; }
+
+.landing-materials { background: var(--bg-sidebar); }
+.landing-stat-strip span { color: var(--text-secondary); }
+
+/* Planos */
+.landing-pricing { background: var(--bg-base); }
+.landing-pricing h2 { color: var(--text-primary); }
+.ref-price-card { background: var(--surface); border: 1px solid var(--border-subtle); color: var(--text-primary); box-shadow: var(--shadow-card); }
+.ref-price-card h3 { color: var(--text-primary); }
+.ref-price-card li { color: var(--text-primary); }
+.ref-price-card li > span { color: var(--accent) !important; }
+.ref-price-card.is-premium { border-color: var(--accent); background: linear-gradient(180deg, #194a54 0%, var(--surface) 100%); }
+.ref-price, .ref-price small { color: var(--text-primary); }
+.ref-price small { display: block; color: var(--text-secondary); font-size: .875rem; font-weight: 500; }
+.ref-badge { background: var(--highlight) !important; color: #1b2a08 !important; }
+.ref-price-card .ref-button-primary { width: 100%; }
+.ref-guarantee { background: var(--surface-soft) !important; border: 1px solid var(--border-subtle); color: var(--text-primary) !important; }
+.ref-guarantee strong { color: var(--text-primary); }
+.ref-guarantee span, .ref-guarantee-copy span { color: var(--text-secondary) !important; }
+.ref-guarantee a { color: var(--accent) !important; text-decoration: underline; text-underline-offset: 3px; }
+.ref-guarantee-mark { background: var(--surface-elevated) !important; color: var(--accent) !important; border: 1px solid var(--border-control); }
+.ref-guarantee-mark svg { stroke: currentColor; fill: none; }
+
+/* FAQ */
+.landing-faq .faq-list details { background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 18px; box-shadow: none; }
+.landing-faq .faq-list details[open], .landing-faq .faq-list details:hover { background: var(--surface-elevated); border-color: var(--border-control); }
+.landing-faq .faq-list summary { color: var(--text-primary); min-height: 56px; }
+.landing-faq .faq-list summary span { color: var(--accent); }
+.landing-faq .faq-list details p { color: var(--text-secondary); }
+
+/* Cookies */
+.consent { background: var(--surface-elevated); color: var(--text-primary); border: 1px solid var(--border-control); box-shadow: 0 18px 48px rgb(0 0 0 / 45%); }
+.consent p, .consent strong, .consent h2 { color: var(--text-primary); }
+.consent button { min-height: 44px; }
+.consent-toggle { color: var(--text-primary) !important; background: var(--bg-sidebar); border: 1px solid var(--border-control); }
+
+/* Pular para o conteúdo */
+.skip-link { background: var(--highlight); color: #1b2a08; }
+
+
+/* ---------- Portais (aluno e admin) ---------- */
+.portal, .admin-app, .portal .workspace, .admin-workspace, .student-dashboard, .admin-content { background: var(--bg-base); color: var(--text-primary); }
+.portal .sidebar, .admin-sidebar { background: var(--bg-sidebar) !important; color: var(--text-primary) !important; border-color: var(--border-subtle) !important; }
+.portal .sidebar a, .admin-sidebar a, .admin-side-link { color: var(--text-secondary) !important; border-radius: 12px; min-height: 44px; }
+.portal .sidebar a:hover, .admin-side-link:hover { background: rgb(110 231 183 / 10%); color: var(--text-primary) !important; }
+.portal .sidebar a[aria-current="page"], .portal .sidebar a.active, .portal .sidebar a.is-active,
+.admin-side-link[aria-current="page"], .admin-side-link.active, .admin-side-link.is-active {
+  background: var(--accent) !important; color: var(--on-accent) !important; font-weight: 700;
+}
+.portal .sidebar a[aria-current="page"] *, .admin-side-link.active *, .admin-side-link[aria-current="page"] * { color: inherit !important; }
+.admin-sidebar-label { color: var(--text-secondary) !important; }
+
+.portal-topbar, .admin-topbar { background: var(--bg-sidebar); border-bottom: 1px solid var(--border-subtle); color: var(--text-primary); }
+.portal-search { background: var(--surface); border: 1px solid var(--border-control); color: var(--text-primary); }
+.portal-search input { background: transparent; color: var(--text-primary); }
+.portal-search input::placeholder, input::placeholder, textarea::placeholder { color: #9fbcc3; opacity: 1; }
+.portal-search svg { stroke: var(--text-secondary); }
+.portal-user-avatar, .admin-avatar, .student-avatar { background: var(--accent); color: var(--on-accent); font-weight: 800; }
+.portal-user-name { color: var(--text-primary); }
+.portal-notification { color: var(--text-primary); }
+
+/* Cartões */
+.student-welcome, .student-stat-card, .student-continue-card, .student-profile-card, .student-context-panel, .student-empty-card,
+.stat, .overview-white-card, .overview-metric, .overview-activity-card, .overview-revenue-card, .quiz-funnel-card,
+.crm-table, .table-wrap, .library-entry, .admin-form, .panel, .card, .card-grid > *, .admin-kpis > * {
+  background: var(--surface); border: 1px solid var(--border-subtle); color: var(--text-primary); border-radius: 18px;
+  box-shadow: none;
+}
+.student-welcome h1, .admin-hero h1, .admin-page-header h1, .page-title { color: var(--text-primary); font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem); }
+.student-eyebrow, .admin-eyebrow, .admin-topbar-kicker, .eyebrow { color: var(--highlight) !important; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.student-stat-card strong, .overview-metric strong, .stat strong, .metric-value { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.student-stat-card span, .student-stat-card small, .overview-metric span, .stat span, .stat small { color: var(--text-secondary); }
+.student-status-pill, .crm-badge, .status-dot + span, .integration-state, .pending, .success, .warning {
+  border: 1px solid currentColor; border-radius: 999px;
+}
+.success { color: var(--success-text); background: var(--success-bg); }
+.warning, .pending { color: var(--warning-text); background: var(--warning-bg); }
+.error, .status-message.error { color: var(--error-text); background: var(--error-bg); }
+.status-message { background: var(--surface-soft); color: var(--text-primary); border: 1px solid var(--border-subtle); }
+
+/* Tabelas */
+table { color: var(--text-primary); border-collapse: collapse; width: 100%; }
+th { background: var(--bg-sidebar); color: var(--text-primary); text-align: left; font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; }
+th, td { border-bottom: 1px solid var(--border-subtle); padding: 14px 16px; }
+tbody tr:nth-child(even) td { background: rgb(255 255 255 / 3%); }
+tbody tr:hover td { background: rgb(110 231 183 / 8%); }
+.table-wrap { overflow-x: auto; }
+
+/* Formulários */
+input, select, textarea {
+  background: var(--bg-base); color: var(--text-primary);
+  border: 1.5px solid var(--border-control); border-radius: 12px; min-height: 46px; padding: 10px 14px; font: inherit;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: 3px solid rgb(199 244 100 / 55%); outline-offset: 1px; }
+input[type="checkbox"], input[type="radio"] { min-height: 0; accent-color: var(--accent); }
+label, .field > span { color: var(--text-primary); font-weight: 600; }
+.error { color: var(--error-text); }
+
+/* Barra de progresso e abas */
+progress, .progress, [role="progressbar"] { accent-color: var(--accent); }
+[role="tab"] { color: var(--text-secondary); }
+[role="tab"][aria-selected="true"] { color: var(--on-accent); background: var(--accent); }
+
+/* Modais */
+dialog, [role="dialog"], .modal { background: var(--surface-elevated); color: var(--text-primary); border: 1px solid var(--border-control); }
+
+/* ---------- Responsividade ---------- */
+html, body { max-width: 100%; overflow-x: clip; }
+img, svg, video { max-width: 100%; }
+@media (max-width: 640px) {
+  .landing-actions { flex-direction: column; align-items: stretch; }
+  .landing-actions .ref-button { width: 100%; }
+  .landing-demo { overflow: hidden; }
+  .table-wrap { -webkit-overflow-scrolling: touch; }
+  .ref-price-card { padding: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ---------- Alta especificidade: vence as camadas legadas restantes ---------- */
+body.godev-app.godev-app .skip-link { background: var(--highlight); color: #1b2a08; }
+body.godev-app.godev-app .consent { background: var(--surface-elevated); border: 1px solid var(--border-control); }
+body.godev-app.godev-app .consent b, body.godev-app.godev-app .consent p, body.godev-app.godev-app .consent strong { color: var(--text-primary); }
+body.godev-app.godev-app .consent .button.secondary { color: var(--text-primary) !important; border: 1.5px solid var(--border-control) !important; background: transparent !important; }
+body.godev-app.godev-app .consent .button.primary { background: var(--accent) !important; color: var(--on-accent) !important; }
+body.godev-app.godev-app .consent-toggle { color: var(--text-primary) !important; }
+body.godev-app.godev-app .reformulated-landing .demo-aside, body.godev-app.godev-app .reformulated-landing .demo-aside * { color: var(--text-secondary); }
+body.godev-app.godev-app .reformulated-landing .demo-aside .demo-tab.is-active { color: var(--accent); border-color: var(--accent); }
+body.godev-app.godev-app .reformulated-landing .demo-aside .demo-tab { font-weight: 700; }
+@media (max-width: 640px) {
+  body.godev-app .reformulated-landing .landing-stat-strip { flex-wrap: wrap; justify-content: center; row-gap: .5rem; }
+  body.godev-app .reformulated-landing .landing-stat-strip i { display: none; }
+}
+
+/* Carrossel: pontos com alvo de toque 24×44 e visual de ponto preservado */
+body.godev-app.godev-app .reformulated-landing .material-carousel-dots { gap: 0; }
+body.godev-app.godev-app .reformulated-landing .material-carousel-dots button {
+  width: 24px; min-width: 24px; height: 44px; min-height: 44px; border-radius: 0;
+  background: radial-gradient(circle, #7fb0ba 0 3.5px, transparent 4px) center / 100% 100% no-repeat;
+}
+body.godev-app.godev-app .reformulated-landing .material-carousel-dots button[aria-selected="true"] {
+  width: 24px; background: radial-gradient(circle, var(--accent) 0 5.5px, transparent 6px) center / 100% 100% no-repeat;
+}
+/* Preços em destaque */
+body.godev-app .ref-price { font-family: var(--font-display); font-size: clamp(2.25rem, 1.8rem + 1.6vw, 3rem); font-weight: 800; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }

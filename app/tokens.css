@@ -322,19 +322,11 @@ body.godev-app .landing-shell.landing-dark .preview-caption b {
   color: var(--text-primary) !important;
 }
 
-/* Cookie choices sit on a light surface; keep their text independent from the
-   dark landing-page palette so the consent action remains readable. */
-body.godev-app .consent {
-  color: #0f172a;
-}
+/* Banner de cookies: superfície escura elevada, texto claro. */
+body.godev-app .consent { color: var(--text-primary); }
 body.godev-app .consent > b,
-body.godev-app .consent p {
-  color: #0f172a !important;
-}
-body.godev-app .consent .button.secondary {
-  color: #064e3b !important;
-  border-color: #064e3b;
-}
+body.godev-app .consent p { color: var(--text-primary) !important; }
+body.godev-app .consent .button.secondary { color: var(--text-primary) !important; border-color: var(--border-control); }
 
 body.godev-app .landing-shell.landing-dark .landing-stat-strip {
   background: var(--surface);

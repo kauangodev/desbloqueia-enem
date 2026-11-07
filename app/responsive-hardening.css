@@ -70,8 +70,8 @@ a, button, input, select, textarea, [role="button"] { min-height: 44px; }
 .section-heading > *, .large-copy, .benefit-lines, .library-note, .study-section { min-width: 0; }
 .large-copy, .library-note p { max-width: 72ch; }
 
-.landing-main .guarantee, .guarantee { background: #f0fdf4; border-color: #86a994; color: #0f172a; }
-.landing-main .guarantee h3, .guarantee h3, .landing-main .guarantee p, .guarantee p { color: #0f172a; }
+.landing-main .guarantee, .guarantee { background: var(--surface-soft); border-color: var(--border-subtle); color: var(--text-primary); }
+.landing-main .guarantee h3, .guarantee h3, .landing-main .guarantee p, .guarantee p { color: var(--text-primary); }
 .landing-main .guarantee .text-link, .guarantee .text-link { color: #064e3b; border-color: #064e3b; }
 :root[data-theme="dark"] .landing-main .guarantee, :root[data-theme="dark"] .guarantee { background: #112a1d; border-color: #5eead4; }
 :root[data-theme="dark"] .landing-main .guarantee h3, :root[data-theme="dark"] .guarantee h3,
