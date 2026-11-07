@@ -381,3 +381,8 @@ body.godev-app.godev-app .reformulated-landing .landing-stat-strip { flex-wrap: 
 /* Título do hero: espaçamento legível (o legado usava -.06em, que colava as letras) */
 body.godev-app.godev-app :is(.landing-hero h1, .petroleum-hero-copy h1, .study-quiz-heading h2) { letter-spacing: -.035em; line-height: 1.04; }
 body.godev-app.godev-app .reformulated-landing :is(h2, h3) { letter-spacing: -.025em; }
+
+/* ---------- Acabamentos finais ---------- */
+body.godev-app.godev-app .admin-topbar-kicker { display: block; margin-bottom: 2px; }
+body.godev-app.godev-app .admin-topbar-kicker + strong { display: block; }
+body.godev-app.godev-app .library-entry a[target="_blank"] { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 6px; text-decoration: underline; text-underline-offset: 3px; }
