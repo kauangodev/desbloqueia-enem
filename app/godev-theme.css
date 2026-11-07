@@ -329,3 +329,5 @@ body.godev-app.godev-app .activity-icon { background: var(--surface-elevated); c
 body.godev-app.godev-app .activity-icon.is-success { background: var(--success-bg); color: var(--success-text); border-color: var(--success-text); }
 body.godev-app.godev-app .activity-icon.is-warning { background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-text); }
 body.godev-app.godev-app .activity-icon.is-danger, body.godev-app.godev-app .activity-icon.is-error { background: var(--error-bg); color: var(--error-text); border-color: var(--error-text); }
+body.godev-app.godev-app .overview-chart-bar { min-height: 6px; background: linear-gradient(180deg, #a2f3d0 0%, #6ee7b7 55%, #2fb59a 100%); border-radius: 8px 8px 3px 3px; }
+body.godev-app.godev-app .overview-chart-column small, body.godev-app.godev-app .overview-revenue-card .overview-chart-column small { color: var(--text-secondary); }
