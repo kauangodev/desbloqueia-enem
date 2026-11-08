@@ -178,3 +178,9 @@ body .site-footer .cookie-link:hover { color: #fff; text-decoration: underline; 
   .hj-option { min-height: 44px; }
   .hj-statement { font-size: .9375rem; }
 }
+
+@media (max-width: 640px) {
+  .hero-journey__stage { height: 24rem; }
+  .hj-options ~ .hj-note { display: none; }
+  .hj-card ul li:nth-child(3) { display: none; }
+}
