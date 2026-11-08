@@ -68,7 +68,7 @@ export default async function OperacaoHome() {
           <p className="op-muted">Você já passou por todos os módulos publicados. Pratique questões ou faça um treino.</p>
         )}
         {progress && !progress.hasAnyActivity ? <p className="op-muted">Você ainda não começou. Cada módulo leva de 15 a 30 minutos.</p> : null}
-        {progress && progress.toReview > 0 ? <p className="op-note">Você tem {progress.toReview} questão(ões) para rever no <Link href={`${base}/erros`}>caderno de erros</Link>.</p> : null}
+        {progress && progress.toReview > 0 ? <p className="op-note">Você tem {progress.toReview} {progress.toReview === 1 ? "questão" : "questões"} para rever no <Link href={`${base}/erros`}>caderno de erros</Link>.</p> : null}
       </section>
 
       {progress ? (

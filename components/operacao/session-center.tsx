@@ -217,7 +217,7 @@ function Player({ data, basePath, onFinished, onExit }: { data: Loaded; basePath
         </div>
       </header>
       {data.shortfall && (data.shortfall.math > 0 || data.shortfall.nature > 0) ? <p className="op-note" role="note">Aviso: esta versão tem {mathCount} questões de Matemática e {questions.length - mathCount} de Natureza, menos que o formato de {data.shortfall.per}+{data.shortfall.per}, porque o acervo publicado ainda é menor. O resultado vale apenas para estas questões.</p> : null}
-      {data.seenCount ? <p className="op-note" role="note">{data.seenCount} questão(ões) desta atividade você já praticou antes, porque ainda não há itens inéditos suficientes.</p> : null}
+      {data.seenCount ? <p className="op-note" role="note">{data.seenCount} {data.seenCount === 1 ? "questão desta atividade você já praticou" : "questões desta atividade você já praticou"} antes, porque ainda não há itens inéditos suficientes.</p> : null}
       {warning ? <p className="op-warning" role="status">{warning}</p> : null}
       {saveState === "fail" ? <p className="op-error" role="alert">Não conseguimos salvar suas respostas agora. Elas ficam nesta tela e uma nova tentativa é feita automaticamente. <button type="button" className="op-btn" onClick={() => void save()}>Tentar agora</button></p> : null}
       <div className="op-player-layout">
@@ -253,7 +253,7 @@ function Player({ data, basePath, onFinished, onExit }: { data: Loaded; basePath
         <div className="op-modal" role="dialog" aria-modal="true" aria-labelledby="fin-t">
           <div className="op-card">
             <h3 id="fin-t">Finalizar agora?</h3>
-            <p>{blank ? `Você deixou ${blank} questão(ões) em branco. Elas contam como não respondidas.` : "Todas as questões foram respondidas."} Depois de finalizar, não dá para alterar as respostas.</p>
+            <p>{blank ? `Você deixou ${blank} ${blank === 1 ? "questão em branco. Ela conta como não respondida." : "questões em branco. Elas contam como não respondidas."}` : "Todas as questões foram respondidas."} Depois de finalizar, não dá para alterar as respostas.</p>
             {saveState !== "ok" ? <p className="op-note">Suas últimas alterações serão enviadas antes de finalizar.</p> : null}
             {finishError ? <p className="op-error" role="alert">{finishError}</p> : null}
             <div className="op-q-foot">

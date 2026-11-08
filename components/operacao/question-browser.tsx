@@ -117,7 +117,7 @@ export default function QuestionBrowser({ questions, moduleTitles, basePath, vie
         <button type="button" className="op-btn op-btn-ghost" onClick={reset}>Limpar filtros</button>
       </form>
       {moduleId ? <p className="op-muted">Filtrando pelo módulo “{moduleTitles[moduleId] || moduleId}”. <button type="button" className="op-link" onClick={() => setModuleId("")}>Remover</button></p> : null}
-      <p className="op-muted" role="status" aria-live="polite">{filtered.length ? `${filtered.length} questão(ões) neste filtro.` : ""}</p>
+      <p className="op-muted" role="status" aria-live="polite">{filtered.length ? `${filtered.length} ${filtered.length === 1 ? "questão" : "questões"} neste filtro.` : ""}</p>
       {meta && !q ? <div className="op-card op-muted" role="status">{loadError || "Carregando a questão…"} {loadError ? <button type="button" className="op-btn" onClick={() => setLoaded((p) => ({ ...p }))}>Tentar de novo</button> : null}</div> : null}
       {q ? (
         <>

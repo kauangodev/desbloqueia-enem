@@ -98,7 +98,7 @@ body.godev-app.godev-app .qmap .qmap-tab.is-on, body.godev-app.godev-app .qmap .
 .hero-journey__step.is-on .hero-journey__num { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .hero-journey__step:focus-visible, .hj-option:focus-visible, .hero-journey__control:focus-visible { outline: 3px solid var(--highlight); outline-offset: 2px; }
 .hero-journey__stage { position: relative; height: 22rem; padding: 18px; overflow: hidden; border: 1px solid var(--border-control); border-radius: 16px; background: var(--surface); transform: perspective(900px) rotateX(var(--tilt-y)) rotateY(var(--tilt-x)); transition: transform 200ms var(--ease-out, ease-out); }
-.hero-journey__badge { position: absolute; top: 10px; right: 12px; padding: 2px 9px; border-radius: 999px; background: rgb(255 255 255 / 9%); color: var(--text-secondary); font-size: .6875rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.hero-journey__badge { position: absolute; top: 10px; right: 12px; padding: 2px 9px; border-radius: 999px; background: rgb(255 255 255 / 9%); color: var(--text-secondary); font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .hj-card { display: grid; align-content: start; gap: 10px; padding-top: 14px; }
 @media (prefers-reduced-motion: no-preference) { .hj-card { animation: hj-in var(--motion-slow, 380ms) var(--ease-out, ease-out) both; } .hj-bar i { animation: hj-fill 700ms var(--ease-out, ease-out) both; } }
 @keyframes hj-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -123,7 +123,11 @@ body.godev-app.godev-app .qmap .qmap-tab.is-on, body.godev-app.godev-app .qmap .
   .hero-journey__stage { height: 20.5rem; padding: 14px; transform: none; }
   .hero-journey__step small { display: none; }
   .hero-journey__step { min-height: 44px; padding: 6px; }
-  .hero-journey__step strong { font-size: .75rem; }
+  .hero-journey__step strong { font-size: .75rem; white-space: nowrap; }
+  .hero-journey__steps { gap: 4px; }
+  .hero-journey__row { justify-content: center; width: 100%; }
+  .hero-journey__num { display: none; }
+  .hero-journey__step { align-items: center; }
   .hj-options { grid-template-columns: 1fr; }
   .hj-option { min-height: 40px; }
 }
@@ -142,3 +146,21 @@ body.godev-app.godev-app .qmap .qmap-tab.is-on, body.godev-app.godev-app .qmap .
 .op-offer-obj { margin: 0 0 8px; color: var(--text-primary); }
 .op-offer-meta { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 2px; font-size: .875rem; color: var(--text-secondary); }
 .op-offer-meta li.is-active { color: var(--op-amber); font-weight: 700; }
+
+/* Auditoria mobile: blocos da área do aluno sem respiro lateral e cabeçalhos de seção apertados. */
+@media (max-width: 900px) {
+  body.godev-app.godev-app .student-section-block { padding: 18px 16px; }
+  body.godev-app.godev-app .student-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  body.godev-app.godev-app .student-section-heading > a,
+  body.godev-app.godev-app .student-section-heading > span { white-space: nowrap; }
+}
+
+/* Rodapé: link de cookies com o mesmo tratamento dos demais links; tamanho legível. */
+body .site-footer .footer-grid a, body .site-footer .cookie-link { font-size: .875rem; line-height: 1.4; }
+body .site-footer .cookie-link { color: rgb(201 224 229); text-decoration: none; opacity: 1; min-height: 24px; }
+body .site-footer .cookie-link:hover { color: #fff; text-decoration: underline; }
+
+/* Carrossel de materiais no celular: 16 pontos quebram em duas linhas; o contador "1 de 16" já informa a posição. */
+@media (max-width: 640px) {
+  .material-carousel-dots { display: none; }
+}
