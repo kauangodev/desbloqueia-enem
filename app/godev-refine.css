@@ -164,3 +164,9 @@ body .site-footer .cookie-link:hover { color: #fff; text-decoration: underline; 
 @media (max-width: 640px) {
   .material-carousel-dots { display: none; }
 }
+
+@media (max-width: 640px) {
+  body .material-carousel-dots { display: none !important; }
+  .hero-journey__stage { height: 21.5rem; padding-top: 40px; }
+  .hero-journey__badge { top: 8px; right: 10px; }
+}
