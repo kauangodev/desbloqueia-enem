@@ -170,3 +170,11 @@ body .site-footer .cookie-link:hover { color: #fff; text-decoration: underline; 
   .hero-journey__stage { height: 21.5rem; padding-top: 40px; }
   .hero-journey__badge { top: 8px; right: 10px; }
 }
+
+/* Hero no celular: o passo "Praticar" cortava as alternativas C/D; alternativas em 2 colunas e palco mais alto. */
+@media (max-width: 640px) {
+  .hero-journey__stage { height: 23rem; }
+  .hj-options { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hj-option { min-height: 44px; }
+  .hj-statement { font-size: .9375rem; }
+}
