@@ -3,13 +3,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Icon, type IconName } from "./icons";
+import { features } from "../lib/features";
 
-export const links = [
+const allLinks = [
   ["", "Visão geral", "home"], ["operacao-segundo-domingo", "Operação 2º Domingo", "zap"], ["materiais", "Meus materiais", "book"], ["exercicios", "Exercícios", "check"],
-  ["simulados", "Simulados", "target"], ["redacao", "Redação (em manutenção)", "pen"], ["cronograma", "Meu cronograma", "calendar"],
+  ["simulados", "Simulados", "target"], ...(features.redacao ? [["redacao", "Redação", "pen"]] : []), ["cronograma", "Meu cronograma", "calendar"],
   ["checklists", "Fichas e checklists", "list"], ["correcoes", "Minhas correções", "trend"], ["biblioteca", "Biblioteca ENEM", "library"],
   ["conta", "Minha conta", "user"], ["suporte", "Atendimento", "help"],
 ];
+export const links = allLinks;
 
 const portalIcons: Record<string, IconName> = { home: "layout-dashboard", book: "book-open", check: "clipboard-check", target: "timer", pen: "pen-line", calendar: "calendar-days", list: "list-checks", trend: "circle-check-big", library: "library", user: "user-round", help: "life-buoy", admin: "shield-check", more: "ellipsis", zap: "zap" };
 const OPERACAO = "operacao-segundo-domingo";
@@ -31,9 +33,9 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const moreLinks = [
     ["operacao-segundo-domingo", "Operação 2º Domingo", "zap"],
     ["simulados", "Simulados", "target"],
+    ...(features.redacao ? [["redacao", "Redação", "pen"] as const] : []),
     ["cronograma", "Cronograma", "calendar"],
     ["checklists", "Checklists", "list"],
-    ["redacao", "Redação", "pen"],
     ["correcoes", "Correções", "trend"],
     ["biblioteca", "Biblioteca", "library"],
     ["conta", "Minha conta", "user"],

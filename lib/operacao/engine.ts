@@ -1,8 +1,9 @@
 import { operacao } from "./config";
+import { isSimulado, sessionKinds, type KindDef, type SessionKind } from "./kinds";
 import { questions, questionById } from "./catalog";
 import type { Discipline, Question } from "./types";
 
-export type SessionKind = "diagnostico" | "treino-1" | "treino-2" | "treino-3" | "simulado";
+export type { SessionKind } from "./kinds";
 export type SessionMode = "prova" | "pratica" | "cronometrado" | "livre";
 
 export type Session = {
@@ -53,10 +54,18 @@ const natureOrder: Discipline[] = ["fisica", "quimica", "biologia"];
 
 /** Seleção por tipo de sessão. Retorna o que existe no acervo publicado (sem completar com itens inexistentes). */
 export function selectQuestions(kind: SessionKind, seen: Set<string>) {
-  const math = questions.filter((q) => q.discipline === "matematica");
-  const nature = questions.filter((q) => q.discipline !== "matematica");
-  const per = kind === "diagnostico" ? 8 : kind === "simulado" ? 45 : 10;
+  const def: KindDef = sessionKinds[kind];
+  const pool = questions.filter((q) => def.bank === "all" || (q.bank ?? "base") === def.bank);
+  const per = def.per;
   const seed = kind;
+  const thematic = (items: Question[], modules: string[] | undefined) => {
+    if (!modules) return items;
+    const inside = items.filter((q) => modules.includes(q.moduleId));
+    // Se o tema não tiver itens suficientes, completa com o restante do acervo (sem repetir).
+    return inside.length >= per ? inside : [...inside, ...items.filter((q) => !modules.includes(q.moduleId))];
+  };
+  const math = thematic(pool.filter((q) => q.discipline === "matematica"), def.math);
+  const nature = thematic(pool.filter((q) => q.discipline !== "matematica"), def.nature);
   const m = roundRobin(math, per, seed, seen, (q) => q.topic);
   // Natureza: alterna as três disciplinas para cobrir Física, Química e Biologia.
   const byDisc = natureOrder.map((d) => roundRobin(nature.filter((q) => q.discipline === d), per, seed + d, seen, (q) => q.topic));
@@ -67,7 +76,7 @@ export function selectQuestions(kind: SessionKind, seen: Set<string>) {
 
 export function limitFor(kind: SessionKind, mode: SessionMode, count: number): number | null {
   if (mode === "pratica" || mode === "livre") return null;
-  if (kind === "simulado") return Math.round((operacao.simulado.referenceMinutes / operacao.simulado.targetQuestions) * count) * 60000;
+  if (isSimulado(kind)) return Math.round((operacao.simulado.referenceMinutes / operacao.simulado.targetQuestions) * count) * 60000;
   return Math.round(count * 2.5) * 60000;
 }
 

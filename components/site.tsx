@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { materials } from "../lib/config";
+import CookiePreferencesLink from "./cookie-preferences-link";
 export function Brand() {
   return (
     <Link href="/" className="brand" aria-label="Ir para o início do GoDev Education">
@@ -100,6 +101,7 @@ export function Footer() {
           <Link href="/politicas/reembolso">Reembolsos</Link>
           <Link href="/politicas/privacidade">Privacidade</Link>
           <Link href="/politicas/termos">Termos de uso</Link>
+          <CookiePreferencesLink />
         </div>
       </div>
       <div className="container footer-bottom">

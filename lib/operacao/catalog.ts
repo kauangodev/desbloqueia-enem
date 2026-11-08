@@ -4,7 +4,7 @@ import { modulesMat2 } from "../../data/operacao/modules-mat2";
 import { modulesNat2 } from "../../data/operacao/modules-nat2";
 import { operacaoQuestions } from "../../data/operacao/questions";
 import { renderInline, renderRich } from "./rich";
-import { disciplineLabel, originLabel, type Correction, type Discipline, type FormulaCard, type PublicQuestion, type Question, type StudyModule } from "./types";
+import { disciplineLabel, originLabel, type Correction, type Discipline, type FormulaCard, type PublicQuestion, type Question, type QuestionMeta, type StudyModule } from "./types";
 
 /** A interface do aluno só enxerga conteúdo com status "publicado". */
 const disciplineOrder = ["matematica", "fisica", "quimica", "biologia"];
@@ -41,6 +41,8 @@ export function toPublic(q: Question): PublicQuestion {
     options: q.options.map((option) => ({ id: option.id, html: renderInline(option.text) })),
   };
 }
+
+export const toMeta = (q: Question): QuestionMeta => ({ id: q.id, discipline: q.discipline, topic: q.topic, moduleId: q.moduleId, origin: q.origin, difficulty: q.difficulty, minutes: q.minutes });
 
 export function grade(q: Question, selected: string | null): Correction {
   const correct = selected === q.answer;

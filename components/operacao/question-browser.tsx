@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import QuestionCard from "./question-card";
 import { local, post, useOperacaoState } from "./client";
-import type { Discipline, Difficulty, Origin, PublicQuestion } from "../../lib/operacao/types";
+import type { Discipline, Difficulty, Origin, PublicQuestion, QuestionMeta } from "../../lib/operacao/types";
 import { difficultyLabel, disciplineLabel } from "../../lib/operacao/types";
 
-type Props = { questions: PublicQuestion[]; moduleTitles: Record<string, string>; basePath: string; view: "questoes" | "erros"; initialModule?: string };
+type Props = { questions: QuestionMeta[]; moduleTitles: Record<string, string>; basePath: string; view: "questoes" | "erros"; initialModule?: string };
 
 const statusOptions = [
   ["todas", "Todas"], ["nao", "Ainda não respondidas"], ["erradas", "Errei na última vez"], ["acertadas", "Acertei na última vez"], ["favoritas", "Favoritas"], ["depois", "Revisar depois"],
@@ -21,6 +21,11 @@ export default function QuestionBrowser({ questions, moduleTitles, basePath, vie
   const [status, setStatus] = useState<Status>("todas");
   const [moduleId, setModuleId] = useState(initialModule || "");
   const [cursor, setCursor] = useState(0);
+  const [search, setSearch] = useState("");
+  const [minutes, setMinutes] = useState<"" | "curta" | "media" | "longa">("");
+  const [loaded, setLoaded] = useState<Record<string, PublicQuestion>>({});
+  const [loadError, setLoadError] = useState("");
+  const inflight = useRef<Set<string>>(new Set());
   const key = `godev-operacao-${view}-cursor`;
 
   useEffect(() => { const saved = Number(local.get(key)); if (Number.isFinite(saved) && saved > 0) setCursor(saved); }, [key]);
@@ -37,6 +42,10 @@ export default function QuestionBrowser({ questions, moduleTitles, basePath, vie
       if (origin && q.origin !== origin) return false;
       if (difficulty && q.difficulty !== difficulty) return false;
       if (moduleId && q.moduleId !== moduleId) return false;
+      if (minutes === "curta" && q.minutes > 2) return false;
+      if (minutes === "media" && q.minutes !== 3) return false;
+      if (minutes === "longa" && q.minutes < 4) return false;
+      if (search.trim()) { const term = search.trim().toLowerCase(); if (!`${q.topic} ${moduleTitles[q.moduleId] || ""} ${q.id}`.toLowerCase().includes(term)) return false; }
       switch (status) {
         case "nao": return !a;
         case "erradas": return a?.last === false;
@@ -46,11 +55,29 @@ export default function QuestionBrowser({ questions, moduleTitles, basePath, vie
         default: return true;
       }
     });
-  }, [questions, state, view, discipline, topic, origin, difficulty, moduleId, status]);
+  }, [questions, state, view, discipline, topic, origin, difficulty, moduleId, status, search, minutes, moduleTitles]);
 
   const safeCursor = Math.min(cursor, Math.max(filtered.length - 1, 0));
   useEffect(() => { local.set(key, String(safeCursor)); }, [key, safeCursor]);
-  const q = filtered[safeCursor];
+  const meta = filtered[safeCursor];
+  const q: PublicQuestion | undefined = meta ? loaded[meta.id] : undefined;
+
+  // Carrega o enunciado da questão atual (e antecipa as próximas), em vez de enviar centenas de enunciados de uma vez.
+  useEffect(() => {
+    const wanted = filtered.slice(safeCursor, safeCursor + 3).map((m) => m.id).filter((id) => !loaded[id] && !inflight.current.has(id));
+    if (!wanted.length) return;
+    wanted.forEach((id) => inflight.current.add(id));
+    (async () => {
+      try {
+        const response = await fetch(`/api/operacao/questions?ids=${wanted.join(",")}`);
+        if (!response.ok) throw new Error();
+        const data = (await response.json()) as { questions: PublicQuestion[] };
+        setLoaded((prev) => ({ ...prev, ...Object.fromEntries(data.questions.map((x) => [x.id, x])) }));
+        setLoadError("");
+      } catch { setLoadError("Não foi possível carregar a questão. Verifique sua conexão."); }
+      finally { wanted.forEach((id) => inflight.current.delete(id)); }
+    })();
+  }, [filtered, safeCursor, loaded]);
 
   async function toggle(kind: "fav" | "later", id: string) {
     const list = kind === "fav" ? "fav" : "later";
@@ -65,7 +92,7 @@ export default function QuestionBrowser({ questions, moduleTitles, basePath, vie
     try { await post({ action: "review", questionId: id, reviewed }); } catch { void reload(); }
   }
 
-  const reset = () => { setDiscipline(""); setTopic(""); setOrigin(""); setDifficulty(""); setModuleId(""); setStatus("todas"); setCursor(0); };
+  const reset = () => { setSearch(""); setMinutes(""); setDiscipline(""); setTopic(""); setOrigin(""); setDifficulty(""); setModuleId(""); setStatus("todas"); setCursor(0); };
   const sel = (label: string, value: string, set: (v: never) => void, options: [string, string][]) => (
     <label className="op-field"><span>{label}</span>
       <select value={value} onChange={(e) => { set(e.target.value as never); setCursor(0); }}>
@@ -84,11 +111,14 @@ export default function QuestionBrowser({ questions, moduleTitles, basePath, vie
         {sel("Tópico", topic, setTopic, [["", "Todos"], ...topics.map((t): [string, string] => [t, t])])}
         {sel("Origem", origin, setOrigin, [["", "Todas"], ["oficial", "Oficial do Enem"], ["autoral", "Autoral no estilo Enem"], ["adaptada", "Adaptada"]])}
         {sel("Dificuldade", difficulty, setDifficulty, [["", "Todas"], ...(Object.keys(difficultyLabel) as Difficulty[]).map((d): [string, string] => [d, difficultyLabel[d]])])}
+        <label className="op-field"><span>Buscar por assunto</span><input type="search" value={search} onChange={(e) => { setSearch(e.target.value); setCursor(0); }} placeholder="Ex.: juros, mol, genética" /></label>
+        {sel("Duração", minutes, setMinutes, [["", "Qualquer"], ["curta", "Curta (até 2 min)"], ["media", "Média (3 min)"], ["longa", "Longa (4 min ou mais)"]])}
         {sel("Status", status, setStatus, statusOptions.map(([v, l]): [string, string] => [v, l]))}
         <button type="button" className="op-btn op-btn-ghost" onClick={reset}>Limpar filtros</button>
       </form>
       {moduleId ? <p className="op-muted">Filtrando pelo módulo “{moduleTitles[moduleId] || moduleId}”. <button type="button" className="op-link" onClick={() => setModuleId("")}>Remover</button></p> : null}
       <p className="op-muted" role="status" aria-live="polite">{filtered.length ? `${filtered.length} questão(ões) neste filtro.` : ""}</p>
+      {meta && !q ? <div className="op-card op-muted" role="status">{loadError || "Carregando a questão…"} {loadError ? <button type="button" className="op-btn" onClick={() => setLoaded((p) => ({ ...p }))}>Tentar de novo</button> : null}</div> : null}
       {q ? (
         <>
           <QuestionCard q={q} index={safeCursor} total={filtered.length} moduleTitle={moduleTitles[q.moduleId]} basePath={basePath} favorite={state.fav.includes(q.id)} later={state.later.includes(q.id)} attemptCount={state.attempts[q.id]?.n || 0} onToggle={toggle} onAnswered={answered} context={view === "erros" ? "erros" : "estudo"} />
@@ -98,7 +128,7 @@ export default function QuestionBrowser({ questions, moduleTitles, basePath, vie
             <button type="button" className="op-btn op-btn-primary" disabled={safeCursor >= filtered.length - 1} onClick={() => setCursor(safeCursor + 1)}>Próxima</button>
           </div>
         </>
-      ) : (
+      ) : meta ? null : (
         <div className="op-card op-empty">
           <h3>{view === "erros" ? "Nada para revisar por aqui" : "Nenhuma questão neste filtro"}</h3>
           <p>{view === "erros" ? "Quando você errar uma questão ou marcar uma para revisar depois, ela aparece neste caderno com a resolução e o erro comum." : "Mude ou limpe os filtros para ver outras questões."}</p>

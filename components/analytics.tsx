@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { META_PIXEL_ID, trackMetaEvent } from "../lib/meta-pixel";
+import { OPEN_CONSENT_EVENT, readConsent, saveConsent } from "../lib/consent";
 
 declare global {
   interface Window {
@@ -47,7 +48,13 @@ function loadMetaPixel(pixel: string) {
 }
 
 export default function Analytics() {
-  const [choice, setChoice] = useState<string | null>("loading");
+  // "loading": ainda lendo a preferência (nada é exibido, evitando o flash do aviso); null: sem escolha válida.
+  const [choice, setChoice] = useState<"loading" | "accepted" | "rejected" | null>("loading");
+  const [open, setOpen] = useState(false);
+  const [custom, setCustom] = useState(false);
+  const [metrics, setMetrics] = useState(false);
+  const returnFocus = useRef<HTMLElement | null>(null);
+  const panelRef = useRef<HTMLElement | null>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const lastPageRef = useRef<string | null>(null);
@@ -57,8 +64,22 @@ export default function Analytics() {
   const pageKey = `${pathname}?${searchParams.toString()}`;
 
   useEffect(() => {
-    setChoice(localStorage.getItem("godev-consent"));
+    const stored = readConsent();
+    setChoice(stored ? (stored.analytics ? "accepted" : "rejected") : null);
+    setOpen(!stored);
+    setMetrics(Boolean(stored?.analytics));
   }, []);
+
+  // Reabertura voluntária pelo link "Preferências de cookies".
+  useEffect(() => {
+    const reopen = () => { returnFocus.current = document.activeElement as HTMLElement | null; setCustom(true); setOpen(true); };
+    window.addEventListener(OPEN_CONSENT_EVENT, reopen);
+    return () => window.removeEventListener(OPEN_CONSENT_EVENT, reopen);
+  }, []);
+
+  useEffect(() => {
+    if (open && choice !== "loading") { const id = requestAnimationFrame(() => panelRef.current?.focus()); return () => cancelAnimationFrame(id); }
+  }, [open, choice]);
 
   useEffect(() => {
     if (choice !== "accepted") return;
@@ -116,9 +137,13 @@ export default function Analytics() {
     return () => document.removeEventListener("click", click);
   }, [choice, ga, pageKey, pixel]);
 
-  function choose(value: string) {
-    localStorage.setItem("godev-consent", value);
+  function close() { setOpen(false); setCustom(false); const el = returnFocus.current; returnFocus.current = null; if (el && document.contains(el)) el.focus(); }
+
+  function choose(value: "accepted" | "rejected") {
+    saveConsent(value === "accepted");
     setChoice(value);
+    setMetrics(value === "accepted");
+    close();
     if (value === "rejected") {
       sessionStorage.removeItem("godev-utm");
       window.fbq?.("consent", "revoke");
@@ -134,21 +159,32 @@ export default function Analytics() {
   }
 
   if (!pixel && !ga) return null;
+  if (!open || choice === "loading") return null;
   return (
-    <>
-      {choice === null && (
-        <aside className="consent" aria-label="Preferências de cookies">
-          <b>Seu estudo, sua escolha.</b>
-          <p>
-            Usamos cookies essenciais para acesso. Você pode permitir métricas opcionais para melhorar a experiência.
-          </p>
-          <div>
-            <button className="button secondary" onClick={() => choose("rejected")}>Só essenciais</button>
-            <button className="button primary" onClick={() => choose("accepted")}>Permitir métricas</button>
-          </div>
-        </aside>
-      )}
-      <button className="consent-toggle" onClick={() => setChoice(null)}>Preferências de cookies</button>
-    </>
+    <aside className="consent" aria-labelledby="consent-title" role="dialog" aria-modal="false" tabIndex={-1} ref={panelRef} onKeyDown={(e) => { if (e.key === "Escape" && choice !== null) close(); }}>
+      <b id="consent-title">Seu estudo, sua escolha.</b>
+      <p>Usamos cookies essenciais para o acesso funcionar. Métricas opcionais ajudam a melhorar a experiência e só são ativadas se você permitir.</p>
+      {custom ? (
+        <fieldset className="consent-options">
+          <legend className="sr-only">Categorias de cookies</legend>
+          <label><input type="checkbox" checked disabled /> <span><strong>Essenciais</strong> — login, segurança e preferências. Sempre ativos.</span></label>
+          <label><input type="checkbox" checked={metrics} onChange={(e) => setMetrics(e.target.checked)} /> <span><strong>Métricas opcionais</strong> — medição de acessos e campanhas.</span></label>
+        </fieldset>
+      ) : null}
+      <div>
+        {custom ? (
+          <>
+            <button type="button" className="button secondary" onClick={() => choose(metrics ? "accepted" : "rejected")}>Salvar escolha</button>
+            {choice !== null ? <button type="button" className="button secondary" onClick={close}>Cancelar</button> : <button type="button" className="button secondary" onClick={() => setCustom(false)}>Voltar</button>}
+          </>
+        ) : (
+          <>
+            <button type="button" className="button secondary" onClick={() => choose("rejected")}>Só essenciais</button>
+            <button type="button" className="button secondary" onClick={() => setCustom(true)}>Personalizar</button>
+            <button type="button" className="button primary" onClick={() => choose("accepted")}>Permitir métricas</button>
+          </>
+        )}
+      </div>
+    </aside>
   );
 }

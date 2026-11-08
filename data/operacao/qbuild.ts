@@ -1,4 +1,4 @@
-import type { Difficulty, Discipline, Question } from "../../lib/operacao/types";
+import type { Bank, Difficulty, Discipline, Question } from "../../lib/operacao/types";
 
 type Letter = "A" | "B" | "C" | "D" | "E";
 const L: Letter[] = ["A", "B", "C", "D", "E"];
@@ -40,3 +40,6 @@ export const Q = (
     source: { label: "Autoria GoDev Education", reuse: "Conteúdo autoral." },
   };
 };
+
+/** Construtor para um conjunto específico (simulados novos s1–s4). */
+export const makeQ = (bank: Bank) => (...args: Parameters<typeof Q>): Question => ({ ...Q(...args), bank });

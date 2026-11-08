@@ -71,6 +71,29 @@ export default async function OperacaoHome() {
         {progress && progress.toReview > 0 ? <p className="op-note">Você tem {progress.toReview} questão(ões) para rever no <Link href={`${base}/erros`}>caderno de erros</Link>.</p> : null}
       </section>
 
+      {progress ? (
+        <section className="op-card" aria-labelledby="op-avanco">
+          <h3 id="op-avanco">Seu avanço</h3>
+          <div className="op-avanco-grid">
+            <div>
+              <p className="op-muted">Meta de hoje: {progress.gamification.dailyGoal} questões ou 1 módulo</p>
+              <p className="op-big">{progress.gamification.questionsToday}<span> / {progress.gamification.dailyGoal} questões</span></p>
+              <span className="op-bar" role="progressbar" aria-valuemin={0} aria-valuemax={progress.gamification.dailyGoal} aria-valuenow={Math.min(progress.gamification.questionsToday, progress.gamification.dailyGoal)} aria-label="Meta diária de questões"><i style={{ width: `${Math.min(100, (progress.gamification.questionsToday / progress.gamification.dailyGoal) * 100)}%` }} /></span>
+              <p className="op-muted">{progress.gamification.questionsToday >= progress.gamification.dailyGoal || progress.gamification.modulesReadToday > 0 ? "Meta do dia cumprida. Descansar também faz parte da preparação." : "Sem pressa: uma sessão curta já conta."}</p>
+            </div>
+            <ul className="op-stats">
+              <li><strong>{progress.gamification.firstTry}</strong><span>acertos de primeira</span></li>
+              <li><strong>{progress.gamification.recovered}</strong><span>dificuldades recuperadas</span></li>
+              <li><strong>{progress.gamification.practiced}</strong><span>questões praticadas{progress.gamification.nextMilestone ? ` · próximo marco: ${progress.gamification.nextMilestone}` : ""}</span></li>
+            </ul>
+          </div>
+          <ul className="op-achievements" aria-label="Conquistas">
+            {progress.gamification.achievements.map((a) => <li key={a.id} className={a.done ? "is-done" : ""}><span aria-hidden="true">{a.done ? "✓" : "○"}</span> {a.label}<span className="op-sr">{a.done ? " (conquistada)" : " (ainda não)"}</span></li>)}
+          </ul>
+          <p className="op-muted op-fine">“De primeira” conta só o acerto na 1ª tentativa; acertar depois de ver a resolução entra em “dificuldades recuperadas”.</p>
+        </section>
+      ) : null}
+
       <section aria-labelledby="op-disc">
         <h3 id="op-disc" className="op-section-title">Seu progresso por disciplina</h3>
         <div className="op-grid op-grid-4">

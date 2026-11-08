@@ -160,3 +160,34 @@ test("com o acervo completo, o simulado tem 45 + 45 e o diagnóstico 8 + 8, sem 
   const natureByDiscipline = new Set(sim.nature.map((q) => q.discipline));
   assert.equal(natureByDiscipline.size, 3);
 });
+
+test("acervo ampliado: 600 questões únicas, 4 simulados novos de 90 sem repetição e 8 treinos novos de 20", async () => {
+  const { kindIds, sessionKinds } = await import("../lib/operacao/kinds");
+  assert.equal(new Set(questions.map((q) => q.id)).size, 600);
+  const simKinds = kindIds.filter((k) => sessionKinds[k].group === "simulado" && k.startsWith("sim-"));
+  assert.equal(simKinds.length, 4);
+  const used = new Set<string>();
+  for (const kind of simKinds) {
+    const pick = selectQuestions(kind, new Set());
+    assert.equal(pick.math.length, 45, kind); assert.equal(pick.nature.length, 45, kind);
+    for (const d of ["fisica", "quimica", "biologia"]) assert.equal(pick.nature.filter((x) => x.discipline === d).length, 15, `${kind} ${d}`);
+    for (const id of pick.ids) { assert.ok(!used.has(id), `${id} repetida entre simulados`); used.add(id); }
+  }
+  assert.equal(used.size, 360);
+  const treinos = kindIds.filter((k) => /^treino-(4|5|6|7|8|9|10|11)$/.test(k));
+  assert.equal(treinos.length, 8);
+  for (const kind of treinos) { const p = selectQuestions(kind, new Set()); assert.equal(p.math.length, 10, kind); assert.equal(p.nature.length, 10, kind); assert.equal(new Set(p.ids).size, 20, kind); }
+});
+
+test("o acervo base (240) e os simulados novos (360) não se misturam; oficiais ficam no acervo base", () => {
+  const base = questions.filter((q) => (q.bank ?? "base") === "base");
+  assert.equal(base.length, 240);
+  assert.ok(questions.filter((q) => q.origin === "oficial").every((q) => (q.bank ?? "base") === "base"));
+  for (const bank of ["s1", "s2", "s3", "s4"]) assert.equal(questions.filter((q) => q.bank === bank).length, 90, bank);
+});
+
+test("treinos novos preferem itens inéditos", () => {
+  const first = selectQuestions("treino-11", new Set());
+  const next = selectQuestions("treino-11", new Set(first.ids));
+  assert.equal(next.ids.filter((id) => first.ids.includes(id)).length, 0, "com 600 itens há inéditos suficientes");
+});

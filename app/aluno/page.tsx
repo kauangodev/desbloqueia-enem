@@ -5,7 +5,8 @@ import GamificationPanel from "../../components/gamification-panel";
 
 export const dynamic = "force-dynamic";
 
-export default async function Dashboard() {
+export default async function Dashboard({ searchParams }: { searchParams?: Promise<{ aviso?: string }> }) {
+  const notice = (await searchParams)?.aviso;
   const who = await identity();
   if (!who) return null;
   const [
@@ -60,6 +61,7 @@ export default async function Dashboard() {
 
   return (
     <div className="student-dashboard">
+      {notice === "redacao" ? <p className="portal-notice" role="status">A área de Redação está temporariamente indisponível. Seus textos e correções anteriores continuam guardados.</p> : null}
       <section className="student-welcome" aria-labelledby="student-welcome-title">
         <div className="student-welcome-copy">
           <span className="student-eyebrow">Seu espaço de estudo</span>

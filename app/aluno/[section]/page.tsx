@@ -1,5 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { features } from "../../../lib/features";
 import { identity, canAccess } from "../../../lib/supabase";
+import CookiePreferencesLink from "../../../components/cookie-preferences-link";
 import Library from "../../../components/library";
 import Schedule from "../../../components/schedule";
 import Support from "../../../components/support";
@@ -55,6 +57,8 @@ export default async function Section({
   const { section } = await params;
   const search = (await searchParams) || {};
   if (!sections[section]) notFound();
+  // Redação está temporariamente indisponível: volta ao painel com uma orientação discreta.
+  if (section === "redacao" && !features.redacao) redirect("/aluno?aviso=redacao");
   const who = await identity();
   if (!who) return null;
   const [title, description] = sections[section];
@@ -76,6 +80,7 @@ export default async function Section({
         <p>
           <b>Nome:</b> {who.profile?.name || "Não informado"}
         </p>
+        <p><b>Privacidade:</b> <CookiePreferencesLink /></p>
         <h2>Seus acessos</h2>
         {data?.length ? (
           data.map((e) => (

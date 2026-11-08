@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { identity } from "../../lib/supabase";
 import { Brand } from "../../components/site";
 import PortalNav from "../../components/portal-nav";
+import CookiePreferencesLink from "../../components/cookie-preferences-link";
 import ResponsiveDrawerToggle from "../../components/responsive-drawer-toggle";
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
@@ -21,6 +22,7 @@ export default async function StudentLayout({
         <form method="post" action="/api/auth/logout">
           <button>Sair</button>
         </form>
+        <CookiePreferencesLink className="cookie-link cookie-link-side" />
       </aside>
       <main className="workspace" id="conteudo">
         <header className="portal-topbar">

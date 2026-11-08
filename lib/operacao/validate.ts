@@ -53,4 +53,6 @@ export function validateCatalog(modules: StudyModule[], questions: Question[], f
 }
 
 export type Targets = { modules: number; questions: Record<string, number>; total: number };
-export const editorialTargets: Targets = { modules: 32, total: 240, questions: { matematica: 120, fisica: 40, quimica: 40, biologia: 40 } };
+export const editorialTargets: Targets = { modules: 32, total: 600, questions: { matematica: 300, fisica: 100, quimica: 100, biologia: 100 } };
+/** Conjuntos dos simulados novos: 45 de Matemática e 15 de cada disciplina de Natureza em cada um, sem repetição entre eles. */
+export const newSimuladoBanks = ["s1", "s2", "s3", "s4"] as const;

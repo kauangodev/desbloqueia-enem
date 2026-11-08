@@ -7,7 +7,7 @@ export type OperacaoState = {
   attempts: Record<string, AttemptSummary>;
   fav: string[]; later: string[]; formulas: string[];
   reads: Record<string, boolean>; planMinutes: number | null; planDone: string[];
-  reviewed: Record<string, boolean>; active: Record<string, string>; finished: FinishedSession[];
+  reviewed: Record<string, boolean>; active: Record<string, string>; finished: FinishedSession[]; lastByKind?: Record<string, { percent: number; correct: number; total: number; finishedAt: string }>;
 };
 
 export class ApiError extends Error {}

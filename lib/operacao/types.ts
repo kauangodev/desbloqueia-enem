@@ -3,6 +3,8 @@ export type Area = "Matemática" | "Ciências da Natureza";
 export type Origin = "oficial" | "autoral" | "adaptada";
 export type Difficulty = "facil" | "media" | "dificil";
 export type Status = "rascunho" | "revisado" | "publicado";
+/** Conjunto editorial: "base" (acervo original) ou um dos quatro simulados novos (s1–s4). */
+export type Bank = "base" | "s1" | "s2" | "s3" | "s4";
 
 export const disciplineLabel: Record<Discipline, string> = {
   matematica: "Matemática",
@@ -35,6 +37,8 @@ export type Question = {
   minutes: number;
   difficulty: Difficulty;
   status: Status;
+  /** Conjunto a que a questão pertence (padrão: base). Os simulados novos usam itens exclusivos. */
+  bank?: Bank;
   reviewedAt: string;
   source: { label: string; url?: string; reuse: string };
 };
@@ -105,3 +109,6 @@ export type Correction = {
   misconception: string;
   moduleId: string;
 };
+
+/** Metadados leves para listagens (sem enunciado, gabarito ou resolução). */
+export type QuestionMeta = { id: string; discipline: Discipline; topic: string; moduleId: string; origin: Origin; difficulty: Difficulty; minutes: number };

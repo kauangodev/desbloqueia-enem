@@ -3,11 +3,11 @@ import { z } from "zod";
 import { jsonError, sameOrigin } from "../../../lib/http";
 import { grade, questionById, toPublic } from "../../../lib/operacao/catalog";
 import { limitFor, remainingMs, selectQuestions, summarize, type Attempt, type Session, type SessionKind } from "../../../lib/operacao/engine";
+import { kindIds, type SessionKind as KindId } from "../../../lib/operacao/kinds";
 import { operacaoUser, type OperacaoUser } from "../../../lib/operacao/store";
 
 export const dynamic = "force-dynamic";
 
-const kinds = ["diagnostico", "treino-1", "treino-2", "treino-3", "simulado"] as const;
 const modes = ["prova", "pratica", "cronometrado", "livre"] as const;
 const choice = z.enum(["A", "B", "C", "D", "E"]);
 
@@ -18,7 +18,7 @@ const body = z.discriminatedUnion("action", [
   z.object({ action: z.literal("plan"), minutes: z.union([z.literal(30), z.literal(60), z.literal(120)]) }),
   z.object({ action: z.literal("planDone"), taskId: z.string().min(3).max(96), done: z.boolean() }),
   z.object({ action: z.literal("review"), questionId: z.string().min(3).max(64), reviewed: z.boolean() }),
-  z.object({ action: z.literal("sessionStart"), kind: z.enum(kinds), mode: z.enum(modes), restart: z.boolean().optional() }),
+  z.object({ action: z.literal("sessionStart"), kind: z.enum(kindIds as [KindId, ...KindId[]]), mode: z.enum(modes), restart: z.boolean().optional() }),
   z.object({ action: z.literal("sessionSave"), sessionId: z.string().min(3).max(96), answers: z.record(z.string(), choice), flags: z.record(z.string(), z.boolean()) }),
   z.object({ action: z.literal("sessionFinish"), sessionId: z.string().min(3).max(96) }),
 ]);
@@ -73,7 +73,11 @@ export async function GET() {
       attemptsMap(user), user.kv.list("fav"), user.kv.list("later"), user.kv.list<{ concluded: boolean }>("read"), user.kv.get<{ minutes: number }>("plan", "config"),
       user.kv.list("plandone"), user.kv.list("formula"), user.kv.list<{ reviewed: boolean }>("review"), user.kv.list<Session>("session"), user.kv.list<{ id: string }>("active"),
     ]);
+    const done = finished.filter((r) => r.data.finishedAt).sort((a, b) => Date.parse(b.data.finishedAt!) - Date.parse(a.data.finishedAt!));
+    const lastByKind: Record<string, { percent: number; correct: number; total: number; finishedAt: string }> = {};
+    for (const r of done) if (r.data.result && !lastByKind[r.data.kind]) lastByKind[r.data.kind] = { percent: r.data.result.percent, correct: r.data.result.correct, total: r.data.result.total, finishedAt: r.data.finishedAt! };
     return NextResponse.json({
+      lastByKind,
       attempts, fav: favs.map((r) => r.ref), later: later.map((r) => r.ref), formulas: saved.map((r) => r.ref),
       reads: Object.fromEntries(reads.map((r) => [r.ref, Boolean(r.data.concluded)])), planMinutes: plan?.minutes ?? null, planDone: planDone.map((r) => r.ref),
       reviewed: Object.fromEntries(reviews.map((r) => [r.ref, Boolean(r.data.reviewed)])),

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Header, Footer, FAQ } from "../../components/site";
 import { HeroProductPreview } from "./HeroProductPreview";
-import { HeroDemo } from "./HeroDemo";
+import { HeroJourney } from "./HeroJourney";
 import { DemoStatusPanel } from "./DemoStatusPanel";
 import { LandingMaterialCarousel } from "./LandingMaterialCarousel";
 import PremiumOfferModal from "../../components/premium-offer-modal";
@@ -21,7 +21,7 @@ export default async function LandingPage() {
     <main id="conteudo" className="reformulated-landing landing-light">
       <section className="landing-hero container petroleum-hero" aria-labelledby="landing-title">
         <div className="petroleum-hero-copy"><h1 id="landing-title">Sua próxima conquista <em>começa aqui.</em></h1><p>Estude com materiais completos, exercícios, simulados e um plano de estudos focado no ENEM.</p><div className="landing-actions"><Link className="ref-button ref-button-primary" href="#planos">Ver planos</Link><Link className="ref-button ref-button-link" href="#demo-questao">Experimentar uma questão</Link></div></div>
-        <HeroDemo />
+        <HeroJourney />
       </section>
       <section className="petroleum-benefits container" aria-label="Recursos para estudar"><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 3v2" /></svg><strong>Foco no ENEM</strong><p>Conteúdo direcionado à sua preparação.</p></article><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 3 8l9 5 9-5-9-5ZM3 12l9 5 9-5M3 16l9 5 9-5" /></svg><strong>Estudo completo</strong><p>Teoria, exercícios, simulados e e-books.</p></article><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M5 20V11M12 20V5M19 20v-6" /></svg><strong>Acompanhamento</strong><p>Veja sua evolução e ajuste sua rotina.</p></article></section>
       <section className="landing-demo container" aria-label="Demonstração da plataforma"><nav className="demo-sidebar" aria-label="Módulos demonstrados"><strong>GoDev</strong>{[["Resolver questões", "#demo-questao"], ["Simulados", "/entrar?redirect=/aluno/simulados"], ["Listas de exercícios", "/entrar?redirect=/aluno/exercicios"], ["E-books", "#materiais"], ["Meu progresso", "/entrar?redirect=/aluno"]].map(([item, href], index) => <Link className={index === 0 ? "is-active" : ""} href={index === 0 ? href : "#planos"} key={item}>{item}</Link>)}</nav><HeroProductPreview question={demoQuestion} demoAnswer={questionBank[0].answer} demoExplanation={questionBank[0].explanation} demoNextStep={questionBank[0].nextStep} /><DemoStatusPanel /></section>

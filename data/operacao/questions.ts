@@ -3,6 +3,10 @@ import { placeAnswer } from "./qbuild";
 import { questionsMat2 } from "./questions-mat2";
 import { questionsMat3 } from "./questions-mat3";
 import { questionsNat2 } from "./questions-nat2";
+import { questionsS1 } from "./questions-s1";
+import { questionsS2 } from "./questions-s2";
+import { questionsS3 } from "./questions-s3";
+import { questionsS4 } from "./questions-s4";
 
 /**
  * Banco de questões — Operação 2º Domingo.
@@ -517,4 +521,4 @@ const authored: Question[] = [
   }),
 ];
 
-export const operacaoQuestions: Question[] = [...official, ...authored, ...questionsMat2, ...questionsMat3, ...questionsNat2];
+export const operacaoQuestions: Question[] = [...official, ...authored, ...questionsMat2, ...questionsMat3, ...questionsNat2, ...questionsS1, ...questionsS2, ...questionsS3, ...questionsS4];
