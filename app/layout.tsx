@@ -16,6 +16,7 @@ import "./godev-shell.css";
 import "./godev-study.css";
 import "./godev-carousel.css";
 import "./godev-hero.css";
+import "./godev-operacao.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 

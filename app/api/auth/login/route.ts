@@ -82,7 +82,8 @@ export async function POST(req: Request) {
     const { data: profile } = await db.from("profiles").select("role").eq("id", signedIn.user.id).maybeSingle();
     const role = String(profile?.role || signedIn.user.role || "").trim().toLowerCase();
     const safeRedirect = /^\/(?:admin|aluno)(?:[/?#]|$)/.test(requestedRedirect) ? requestedRedirect : "";
-    const destination = role === "admin" && safeRedirect ? safeRedirect : role === "admin" ? "/admin" : "/aluno";
+    const studentRedirect = /^\/aluno(?:[/?#]|$)/.test(safeRedirect) ? safeRedirect : "";
+    const destination = role === "admin" ? safeRedirect || "/admin" : studentRedirect || "/aluno";
     return NextResponse.json({
       redirect: `${appUrl}${signedIn.user.must_change_password ? `/definir-senha?first=1${safeRedirect ? `&redirect=${encodeURIComponent(safeRedirect)}` : ""}` : destination}`,
     });

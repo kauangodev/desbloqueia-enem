@@ -5,13 +5,14 @@ import { useState } from "react";
 import { Icon, type IconName } from "./icons";
 
 export const links = [
-  ["", "Visão geral", "home"], ["materiais", "Meus materiais", "book"], ["exercicios", "Exercícios", "check"],
+  ["", "Visão geral", "home"], ["operacao-segundo-domingo", "Operação 2º Domingo", "zap"], ["materiais", "Meus materiais", "book"], ["exercicios", "Exercícios", "check"],
   ["simulados", "Simulados", "target"], ["redacao", "Redação (em manutenção)", "pen"], ["cronograma", "Meu cronograma", "calendar"],
   ["checklists", "Fichas e checklists", "list"], ["correcoes", "Minhas correções", "trend"], ["biblioteca", "Biblioteca ENEM", "library"],
   ["conta", "Minha conta", "user"], ["suporte", "Atendimento", "help"],
 ];
 
-const portalIcons: Record<string, IconName> = { home: "layout-dashboard", book: "book-open", check: "clipboard-check", target: "timer", pen: "pen-line", calendar: "calendar-days", list: "list-checks", trend: "circle-check-big", library: "library", user: "user-round", help: "life-buoy", admin: "shield-check", more: "ellipsis" };
+const portalIcons: Record<string, IconName> = { home: "layout-dashboard", book: "book-open", check: "clipboard-check", target: "timer", pen: "pen-line", calendar: "calendar-days", list: "list-checks", trend: "circle-check-big", library: "library", user: "user-round", help: "life-buoy", admin: "shield-check", more: "ellipsis", zap: "zap" };
+const OPERACAO = "operacao-segundo-domingo";
 function PortalIcon({ name }: { name: string }) {
   return <Icon name={portalIcons[name] || "layout-dashboard"} size={20} />;
 }
@@ -19,7 +20,8 @@ function PortalIcon({ name }: { name: string }) {
 export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const path = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
-  const active = (slug: string) => path === `/aluno${slug ? "/" + slug : ""}` ? "page" : undefined;
+  const isCurrent = (slug: string) => (slug === OPERACAO ? path === `/aluno/${slug}` || path.startsWith(`/aluno/${slug}/`) : path === `/aluno${slug ? "/" + slug : ""}`);
+  const active = (slug: string) => (isCurrent(slug) ? "page" : undefined);
   const mobileLinks = [
     ["", "Início", "home"],
     ["materiais", "Estudar", "book"],
@@ -27,6 +29,7 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
     ["simulados", "Simulados", "target"],
   ] as const;
   const moreLinks = [
+    ["operacao-segundo-domingo", "Operação 2º Domingo", "zap"],
     ["simulados", "Simulados", "target"],
     ["cronograma", "Cronograma", "calendar"],
     ["checklists", "Checklists", "list"],
@@ -37,9 +40,10 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
     ["suporte", "Atendimento", "help"],
   ] as const;
   const renderLink = ([slug, label, icon]: readonly [string, string, string]) => (
-    <Link key={slug} href={`/aluno${slug ? "/" + slug : ""}`} aria-current={active(slug)}>
+    <Link key={slug} href={`/aluno${slug ? "/" + slug : ""}`} className={slug === OPERACAO ? "portal-nav-op" : undefined} aria-current={active(slug)}>
     <span className="portal-nav-icon"><PortalIcon name={icon} /></span>
       <span>{label}</span>
+      {slug === OPERACAO ? <span className="portal-nav-badge">Reta final</span> : null}
     </Link>
   );
   return (
@@ -49,12 +53,14 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
         <Link
           key={slug}
           href={`/aluno${slug ? "/" + slug : ""}`}
-          aria-label={label}
-          title={label}
-          aria-current={path ===`/aluno${slug ? "/" + slug : ""}` ? "page" : undefined}
+          className={slug === OPERACAO ? "portal-nav-op" : undefined}
+          aria-label={slug === OPERACAO ? `${label} — reta final` : label}
+          title={slug === OPERACAO ? `${label} — reta final` : label}
+          aria-current={active(slug)}
         >
           <span className="portal-nav-icon"><PortalIcon name={icon} /></span>
           <span>{label}</span>
+          {slug === OPERACAO ? <span className="portal-nav-badge" aria-hidden="true">Reta final</span> : null}
         </Link>
       ))}
       {isAdmin ? (

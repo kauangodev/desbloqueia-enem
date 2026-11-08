@@ -21,10 +21,12 @@
     "cakto:plan": "node scripts/cakto-provision.mjs",
     "cakto:provision": "node scripts/cakto-provision.mjs --apply",
     "mysql:gamification:check": "node --import tsx scripts/migrate-gamification.ts",
+    "validate:operacao": "tsx scripts/validate-operacao.ts",
     "mysql:gamification:apply": "node --import tsx scripts/migrate-gamification.ts --apply"
   },
   "dependencies": {
     "@swc/helpers": "0.5.23",
+    "katex": "0.16.11",
     "mysql2": "^3.14.4",
     "next": "16.4.2",
     "pdfjs-dist": "^4.10.38",
