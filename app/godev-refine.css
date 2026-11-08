@@ -184,3 +184,7 @@ body .site-footer .cookie-link:hover { color: #fff; text-decoration: underline; 
   .hj-options ~ .hj-note { display: none; }
   .hj-card ul li:nth-child(3) { display: none; }
 }
+
+@media (max-width: 400px) {
+  .hero-journey__stage { height: 26rem; }
+}
