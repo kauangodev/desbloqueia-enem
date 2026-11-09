@@ -276,7 +276,7 @@ body.godev-app.godev-app :is(.stat, .materials-view, .manual-access-form, .admin
   box-shadow: var(--float-shadow);
 }
 /* Tabelas: rolagem horizontal própria, com sombras laterais que indicam colunas adicionais e foco por teclado. */
-body.godev-app.godev-app .table-wrap {
+body.godev-app.godev-app .table-wrap.table-wrap {
   background:
     linear-gradient(to right, var(--surface-elevated, #1b4650) 30%, transparent) left center / 36px 100% no-repeat local,
     linear-gradient(to left, var(--surface-elevated, #1b4650) 30%, transparent) right center / 36px 100% no-repeat local,
@@ -285,7 +285,7 @@ body.godev-app.godev-app .table-wrap {
     var(--surface-elevated, #1b4650);
   overscroll-behavior-x: contain;
 }
-body.godev-app.godev-app .table-wrap:focus-visible { outline: 3px solid var(--highlight, #c7f464); outline-offset: 2px; }
+body.godev-app.godev-app .table-wrap.table-wrap:focus-visible { outline: 3px solid var(--highlight, #c7f464); outline-offset: 2px; }
 
 /* Barra superior do aluno em telas muito estreitas: a busca não pode ficar com 22 px de campo. */
 @media (max-width: 420px) {
