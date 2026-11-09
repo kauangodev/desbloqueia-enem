@@ -15,8 +15,16 @@ export function Brand() {
 export function Header() {
   const [open, setOpen] = useState(false);
   const firstLink = useRef<HTMLAnchorElement>(null);
+  const toggle = useRef<HTMLButtonElement>(null);
+  const wasOpen = useRef(false);
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      // Devolve o foco ao botão do menu somente se ele estava aberto (Escape ou fechar), sem mexer na rolagem.
+      if (wasOpen.current && document.activeElement !== toggle.current && !(document.activeElement as HTMLElement | null)?.closest("a")) toggle.current?.focus({ preventScroll: true });
+      wasOpen.current = false;
+      return;
+    }
+    wasOpen.current = true;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
@@ -53,6 +61,7 @@ export function Header() {
             Entrar
           </Link>
           <button
+            ref={toggle}
             className="menu-button"
             onClick={() => setOpen(!open)}
             aria-expanded={open}

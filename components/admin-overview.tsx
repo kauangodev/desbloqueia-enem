@@ -81,9 +81,11 @@ export default function AdminOverview({
     return {
       label: new Intl.DateTimeFormat("pt-BR", { weekday: "short" }).format(day).replace(".", ""),
       value,
-      height: Math.max(8, Math.round((value / maxDay) * 100)),
+      height: value > 0 ? Math.max(8, Math.round((value / maxDay) * 100)) : 0,
+      date: new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit" }).format(day),
     };
   });
+  const weekTotal = chartDays.reduce((total, day) => total + day.value, 0);
   const metrics = [
     { label: "Alunos ativos", value: statValue(stats, "entitlements"), tone: "violet", hint: "acessos válidos" },
     { label: "Vendas aprovadas", value: paidOrders.length, tone: "pink", hint: "pedidos confirmados" },
@@ -95,7 +97,7 @@ export default function AdminOverview({
   const trackedAccesses = statValue(stats, "account_access_fingerprints");
   const roi = adSpendCents > 0 ? ((revenue - adSpendCents) / adSpendCents) * 100 : null;
   const quizViews = quizEvents.filter((event) => event.event_name === "view").length;
-  const quizStarts = quizEvents.filter((event) => event.event_name === "start" || event.event_name === "answer").length;
+  const quizStarts = quizEvents.filter((event) => event.event_name === "start").length;
   const quizCompletions = quizEvents.filter((event) => event.event_name === "complete").length;
   const quizAnswerEvents = quizEvents.filter((event) => event.event_name === "answer");
   const quizAnsweredByQuestion = Array.from({ length: 8 }, (_, index) => ({ index, count: quizAnswerEvents.filter((event) => event.question_index === index).length }));
@@ -141,16 +143,19 @@ export default function AdminOverview({
           </div>
           <div className="overview-total">
             <strong>{money(revenue)}</strong>
-            <span>Resumo operacional baseado nos pagamentos registrados</span>
+            <span>Receita aprovada, soma de todos os pagamentos registrados</span>
           </div>
-          <div className="overview-chart" aria-label="Receita bruta dos últimos sete dias">
+          <p className="overview-chart-caption">Receita bruta por dia, últimos 7 dias (R$, pedidos aprovados)</p>
+          <div className="overview-chart" role="img" aria-label={"Receita bruta por dia nos últimos sete dias. " + chartDays.map((day) => day.date + ": " + money(day.value)).join("; ")}>
             {chartDays.map((day) => (
-              <div className="overview-chart-column" key={day.label}>
-                <span className="overview-chart-bar" style={{ height: day.height + "%" }} title={money(day.value)} />
-                <small>{day.label}</small>
+              <div className="overview-chart-column" key={day.date}>
+                <b className="overview-chart-value" aria-hidden="true">{day.value > 0 ? money(day.value) : ""}</b>
+                <span className={"overview-chart-bar" + (day.value > 0 ? "" : " is-zero")} style={{ height: day.height + "%" }} />
+                <small>{day.label}<em>{day.date}</em></small>
               </div>
             ))}
           </div>
+          {weekTotal === 0 ? <p className="admin-empty-state">Nenhuma venda aprovada nos últimos 7 dias.</p> : null}
           <div className="overview-card-footer">
             <span><i className="status-dot success" /> {paidOrders.length} aprovadas</span>
             <span><i className="status-dot warning" /> {pending} pendentes</span>
@@ -192,11 +197,12 @@ export default function AdminOverview({
           <span className="overview-count">Base atual</span>
         </div>
         <div className="quiz-funnel-metrics">
-          <div><strong>{quizViews}</strong><span>Visitas</span></div>
+          <div><strong>{quizViews}</strong><span>Visualizações</span></div>
           <div><strong>{quizStarts}</strong><span>Inícios</span></div>
           <div><strong>{quizCompletions}</strong><span>Conclusões</span></div>
-          <div><strong>{quizViews ? Math.round((quizCompletions / quizViews) * 100) : 0}%</strong><span>Conclusão</span></div>
+          <div><strong>{quizStarts ? Math.min(100, Math.round((quizCompletions / quizStarts) * 100)) : 0}%</strong><span>Conclusão (sobre inícios)</span></div>
         </div>
+        <p className="overview-chart-caption">Contagem de eventos registrados, não de pessoas únicas.</p>
         <div className="quiz-abandonment"><span>Respostas por etapa</span><div>{quizAnsweredByQuestion.map((item) => <i key={item.index} title={`Pergunta ${item.index + 1}: ${item.count} respostas`} style={{ height: `${Math.max(8, Math.min(100, item.count ? 20 + item.count * 8 : 8))}%` }}><b>{item.index + 1}</b></i>)}</div></div>
         {!quizEvents.length && <p className="admin-empty-state">Os eventos aparecerão aqui depois da primeira visita ao diagnóstico.</p>}
       </article>

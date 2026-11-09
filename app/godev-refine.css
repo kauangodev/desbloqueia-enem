@@ -188,3 +188,54 @@ body .site-footer .cookie-link:hover { color: #fff; text-decoration: underline; 
 @media (max-width: 400px) {
   .hero-journey__stage { height: 26rem; }
 }
+
+/* ── Superfícies flutuantes e vidro (tokens reutilizáveis) ─────────────────────────── */
+:root {
+  --float-radius: 20px;
+  --float-bg: color-mix(in srgb, var(--surface, #153a43) 88%, transparent);
+  --float-shadow: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 14px 34px -18px rgb(0 0 0 / 55%);
+  --glass-bg: color-mix(in srgb, var(--surface-elevated, #1b4650) 74%, transparent);
+  --glass-bg-solid: var(--surface-elevated, #1b4650);
+  --glass-blur: 14px;
+  --glass-shadow: 0 18px 44px -20px rgb(0 0 0 / 60%);
+}
+/* Cards decorativos: sem moldura dura; separação por sombra suave e espaçamento. Tabelas, campos e controles mantêm seus limites. */
+body.godev-app.godev-app :is(.student-stat-card, .overview-metric, .student-section-block, .student-welcome, .student-continue-card, .overview-white-card, .overview-revenue-card, .overview-activity-card, .student-profile-card) {
+  border-color: transparent;
+  border-radius: var(--float-radius);
+  background: var(--float-bg);
+  box-shadow: var(--float-shadow);
+}
+/* Evita "card dentro de card" sem função no painel do aluno. */
+body.godev-app.godev-app .student-section-block :is(.student-continue-card, .student-stat-card) { box-shadow: none; background: color-mix(in srgb, var(--surface-elevated, #1b4650) 55%, transparent); }
+/* Vidro apenas onde há ganho: barras fixas e modais, com fallback opaco. */
+.portal-topbar, .site-header, .qmap-sheet, .consent-panel {
+  background: var(--glass-bg-solid);
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .portal-topbar, .site-header {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .portal-topbar, .site-header { background: var(--glass-bg-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* ── Painel administrativo: indicadores e gráfico ──────────────────────────────────── */
+@media (min-width: 901px) {
+  body.godev-app.godev-app .admin-overview-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1500px) {
+  body.godev-app.godev-app .admin-overview-metrics { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+.overview-chart-caption { margin: 0 0 6px; font-size: .8125rem; color: var(--text-secondary); }
+.overview-chart-column { position: relative; }
+.overview-chart-value { position: absolute; top: -2px; left: 50%; transform: translateX(-50%); font-size: .75rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+.overview-chart-column small { display: grid; justify-items: center; line-height: 1.2; }
+.overview-chart-column small em { font-style: normal; font-size: .6875rem; opacity: .75; }
+body.godev-app.godev-app .overview-chart-bar.is-zero { min-height: 3px; height: 3px !important; opacity: .45; background: var(--text-secondary); }
+@media (max-width: 640px) {
+  .overview-chart-value { display: none; }
+}
