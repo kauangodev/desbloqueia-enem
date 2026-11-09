@@ -22,7 +22,8 @@
     "cakto:provision": "node scripts/cakto-provision.mjs --apply",
     "mysql:gamification:check": "node --import tsx scripts/migrate-gamification.ts",
     "validate:operacao": "tsx scripts/validate-operacao.ts",
-    "mysql:gamification:apply": "node --import tsx scripts/migrate-gamification.ts --apply"
+    "mysql:gamification:apply": "node --import tsx scripts/migrate-gamification.ts --apply",
+    "generate:covers": "tsx scripts/generate-covers.ts"
   },
   "dependencies": {
     "@swc/helpers": "0.5.23",
@@ -32,6 +33,7 @@
     "pdfjs-dist": "^4.10.38",
     "react": "19.1.1",
     "react-dom": "19.1.1",
+    "three": "0.170.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -42,6 +44,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/three": "0.170.0",
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.2",
