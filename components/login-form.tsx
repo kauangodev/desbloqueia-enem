@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 export default function LoginForm({ configured, redirect }: { configured: boolean; redirect?: string }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const show = (text: string, error = false) => { setMessage(text); setIsError(error && Boolean(text)); };
   const [mode, setMode] = useState<"login" | "register">("login");
   const router = useRouter();
   return (
@@ -14,7 +16,7 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
         const data = new FormData(e.currentTarget);
         const password = String(data.get("password") || "");
         if (mode === "register" && password !== String(data.get("passwordConfirmation") || "")) {
-          setMessage("As senhas precisam ser iguais.");
+          show("As senhas precisam ser iguais.", true);
           return;
         }
         setBusy(true);
@@ -32,9 +34,9 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
           });
           const result = await res.json();
           if (result.redirect) router.push(result.redirect);
-          setMessage(result.message || result.error);
+          show(result.message || result.error, !res.ok || Boolean(result.error));
         } catch {
-          setMessage("Não foi possível conectar. Tente novamente.");
+          show("Não foi possível conectar. Tente novamente.", true);
         } finally {
           setBusy(false);
         }
@@ -53,6 +55,8 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
           type="email"
           autoComplete="email"
           required
+          aria-invalid={isError || undefined}
+          aria-describedby={message ? "form-message" : undefined}
           placeholder="voce@exemplo.com"
           maxLength={254}
         />
@@ -77,8 +81,8 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
       <button className="button primary" disabled={!configured || busy}>
         {busy ? "Aguarde…" : mode === "register" ? "Criar meu cadastro" : "Entrar na área de alunos"}
       </button>
-      <p role="status" className="status-message" hidden={!message}>
-        {message}
+      <p id="form-message" role={isError ? "alert" : "status"} className={"status-message" + (isError ? " error" : "")} hidden={!message}>
+        {isError ? <strong>Erro: </strong> : null}{message}
       </p>
       {!configured && (
         <p className="status-message">
@@ -101,9 +105,9 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
               body: JSON.stringify({ email }),
             });
             const result = await res.json();
-            setMessage(result.message || result.error);
+            show(result.message || result.error, !res.ok || Boolean(result.error));
           } catch {
-            setMessage("Não foi possível solicitar a configuração da senha.");
+            show("Não foi possível solicitar a configuração da senha.", true);
           } finally {
             setBusy(false);
           }

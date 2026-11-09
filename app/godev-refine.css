@@ -268,3 +268,32 @@ body .not-found-illustration { color: var(--text-secondary, #c9e0e5); font-size:
 body .not-found-page { min-width: 0; }
 body .not-found-page > * { max-width: 100%; min-width: 0; overflow-wrap: anywhere; }
 body .not-found-actions { flex-wrap: wrap; }
+
+/* ── Rodada 4: acabamento nas demais famílias de cards e formulários ─────────────── */
+body.godev-app.godev-app :is(.stat, .materials-view, .manual-access-form, .admin-form, .form-card) {
+  border-color: transparent;
+  border-radius: var(--float-radius);
+  box-shadow: var(--float-shadow);
+}
+/* Tabelas: rolagem horizontal própria, com sombras laterais que indicam colunas adicionais e foco por teclado. */
+body.godev-app.godev-app .table-wrap {
+  background:
+    linear-gradient(to right, var(--surface-elevated, #1b4650) 30%, transparent) left center / 36px 100% no-repeat local,
+    linear-gradient(to left, var(--surface-elevated, #1b4650) 30%, transparent) right center / 36px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 45%), transparent) left center / 14px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 45%), transparent) right center / 14px 100% no-repeat scroll,
+    var(--surface-elevated, #1b4650);
+  overscroll-behavior-x: contain;
+}
+body.godev-app.godev-app .table-wrap:focus-visible { outline: 3px solid var(--highlight, #c7f464); outline-offset: 2px; }
+
+/* Barra superior do aluno em telas muito estreitas: a busca não pode ficar com 22 px de campo. */
+@media (max-width: 420px) {
+  body.godev-app.godev-app .portal-topbar { gap: 8px; padding-inline: 10px; }
+  body.godev-app.godev-app .portal-topbar .portal-search { gap: 6px; padding-inline: 10px; min-width: 0; }
+}
+/* Selo da navegação com tamanho legível. */
+body.godev-app.godev-app .portal-nav-badge { font-size: .75rem; }
+
+/* Cookies: em paisagem/baixa altura o painel nunca excede a tela; rolagem interna única. */
+.consent { max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; }

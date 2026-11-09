@@ -186,7 +186,7 @@ export default async function Admin({
           <div className="stat"><strong>{duplicateRecords}</strong><span>Em grupos duplicados</span></div>
           <div className="stat"><strong>1.793</strong><span>Biblioteca pendente</span></div>
         </div>
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0} role="region" aria-label="Tabela com rolagem horizontal">
           <table className="crm-table">
             <thead><tr><th>Área</th><th>Itens</th><th>Status</th><th>Ação segura</th></tr></thead>
             <tbody>{byArea.map((item) => <tr key={item.area}><td><strong>{item.area}</strong></td><td>{item.count}</td><td><span className="crm-badge pending">Revisão controlada</span></td><td><small>Sem publicação automática</small></td></tr>)}</tbody>
@@ -355,7 +355,7 @@ export default async function Admin({
           <button className="button primary">Buscar</button>
         </form>
         <ManualAccessForm />
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0} role="region" aria-label="Tabela com rolagem horizontal">
           <table className="crm-table">
             <thead>
               <tr>
