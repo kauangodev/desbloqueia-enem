@@ -150,7 +150,6 @@ body.godev-app.godev-app .qmap .qmap-tab.is-on, body.godev-app.godev-app .qmap .
 
 /* Auditoria mobile: blocos da área do aluno sem respiro lateral e cabeçalhos de seção apertados. */
 @media (max-width: 900px) {
-  body.godev-app.godev-app .student-section-block { padding: 18px 16px; }
   body.godev-app.godev-app .student-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
   body.godev-app.godev-app .student-section-heading > a,
   body.godev-app.godev-app .student-section-heading > span { white-space: nowrap; }
@@ -201,14 +200,14 @@ body .site-footer .cookie-link:hover { color: #fff; text-decoration: underline; 
   --glass-shadow: 0 18px 44px -20px rgb(0 0 0 / 60%);
 }
 /* Cards decorativos: sem moldura dura; separação por sombra suave e espaçamento. Tabelas, campos e controles mantêm seus limites. */
-body.godev-app.godev-app :is(.student-stat-card, .overview-metric, .student-section-block, .student-welcome, .student-continue-card, .overview-white-card, .overview-revenue-card, .overview-activity-card, .student-profile-card) {
+body.godev-app.godev-app :is(.student-stat-card, .overview-metric, .student-welcome, .student-continue-card, .overview-white-card, .overview-revenue-card, .overview-activity-card, .student-profile-card) {
   border-color: transparent;
   border-radius: var(--float-radius);
   background: var(--float-bg);
   box-shadow: var(--float-shadow);
 }
 /* Evita "card dentro de card" sem função no painel do aluno. */
-body.godev-app.godev-app .student-section-block :is(.student-continue-card, .student-stat-card) { box-shadow: none; background: color-mix(in srgb, var(--surface-elevated, #1b4650) 55%, transparent); }
+body.godev-app.godev-app .gamification-panel :is(.student-continue-card, .student-stat-card) { box-shadow: none; background: color-mix(in srgb, var(--surface-elevated, #1b4650) 55%, transparent); }
 /* Vidro apenas onde há ganho: barras fixas e modais, com fallback opaco. */
 .portal-topbar, .site-header, .qmap-sheet, .consent-panel {
   background: var(--glass-bg-solid);
@@ -297,3 +296,27 @@ body.godev-app.godev-app .portal-nav-badge { font-size: .75rem; }
 
 /* Cookies: em paisagem/baixa altura o painel nunca excede a tela; rolagem interna única. */
 .consent { max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; }
+
+/* ── Contêineres organizadores: só controlam grid/espaçamento; não desenham superfície ──────────────
+   Causa: regras genéricas (".admin-content > section", ".admin-content > div", ".student-section-block" etc., em
+   godev-release/modern-interface/godev-shell) pintavam todo filho direto do conteúdo como se fosse um card,
+   criando uma placa externa atrás de formulário + tabela, cards de estatística e seções do aluno.
+   Cada painel interno continua dono da própria superfície. */
+body.godev-app.godev-app :is(.team-manager, .admin-overview, .stat-grid, .student-dashboard, .student-context-panel, .student-section-block:not(.gamification-panel)) {
+  background: transparent;
+  background-image: none;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body.godev-app.godev-app .team-manager { gap: 20px; }
+body.godev-app.godev-app .team-manager > .table-wrap { margin: 0; width: 100%; }
+
+/* Sidebar em modo ícone (900–1199 px): o item "Operação" e o link de cookies mostravam texto cortado. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op > span:not(.portal-nav-icon) {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+  body.godev-app.godev-app .portal .sidebar .cookie-link-side { display: none; }
+}
