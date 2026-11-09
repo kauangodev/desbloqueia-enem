@@ -4,7 +4,7 @@ import { plans } from "./config";
 /** Funcionalidade indisponível (correção automática de redações) não é divulgada como benefício; o texto no banco permanece intacto. */
 export function withoutUnavailableBenefits(features: string[]) {
   return features
-    .map((feature) => feature.replace(/s*[;,.–—-]?s*(em manutençãos*[—–-]s*)?corre[cç][aã]o autom[aá]tica[^;]*$/i, "").trim())
+    .map((feature) => feature.replace(/\s*[;,.–—-]?\s*(em manutenção\s*[—–-]\s*)?corre[cç][aã]o autom[aá]tica[^;]*$/i, "").trim())
     .filter((feature) => feature && !/^(em manutenção|corre[cç][aã]o autom)/i.test(feature));
 }
 export async function publicPlans() {
