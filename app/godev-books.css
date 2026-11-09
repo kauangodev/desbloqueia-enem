@@ -21,16 +21,8 @@
   box-shadow: 0 18px 28px -12px rgb(0 0 0 / 55%);
 }
 
-/* Legenda e pausa em uma única linha discreta */
-.hl-foot { display: flex; align-items: center; justify-content: space-between; gap: 6px 14px; flex-wrap: wrap; min-height: 36px; }
+/* Legenda discreta (sem controles: a animação é contínua) */
 .hl-caption { margin: 0; font-size: .8125rem; line-height: 1.35; color: var(--text-secondary, #c9e0e5); }
-.hl-pause-slot { min-height: 36px; display: flex; align-items: center; }
-.hl-pause {
-  min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border-control, #7fb0ba);
-  background: transparent; color: var(--text-primary, #f6fcfc); font: inherit; font-size: .8125rem; cursor: pointer;
-}
-.hl-pause:hover { background: color-mix(in srgb, var(--accent, #6ee7b7) 10%, transparent); }
-.hl-pause:focus-visible { outline: 3px solid var(--highlight, #c7f464); outline-offset: 2px; }
 
 /* Hero em duas colunas com mais espaço para a biblioteca; no desktop largo ela sangra um pouco para a margem direita. */
 @media (min-width: 1024px) {

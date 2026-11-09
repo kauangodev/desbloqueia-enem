@@ -39,7 +39,6 @@ export default function BookLibraryHero() {
   const stage = useRef<HTMLDivElement>(null);
   const scene = useRef<BookScene | null>(null);
   const [mode, setMode] = useState<Mode>("static");
-  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     const element = root.current;
@@ -59,7 +58,6 @@ export default function BookLibraryHero() {
       scene.current = null;
       delete (element as HTMLElement & { __bookScene?: BookScene }).__bookScene;
       setMode("static");
-      setPaused(false);
     };
 
     const start = async () => {
@@ -119,14 +117,8 @@ export default function BookLibraryHero() {
     };
   }, []);
 
-  function toggle() {
-    const next = !paused;
-    setPaused(next);
-    scene.current?.setPaused(next);
-  }
-
   return (
-    <div className="hl" data-mode={mode} data-paused={paused ? "true" : "false"} ref={root}>
+    <div className="hl" data-mode={mode} ref={root}>
       <div className="hl-stage" ref={stage} aria-hidden="true">
         <div className="hl-static">
           {staticBooks.map((book, index) => (
@@ -135,16 +127,7 @@ export default function BookLibraryHero() {
           ))}
         </div>
       </div>
-      <div className="hl-foot">
-        <p className="hl-caption">Materiais da GoDev para revisar Matemática e Natureza.</p>
-        <div className="hl-pause-slot">
-          {mode === "webgl" ? (
-            <button type="button" className="hl-pause" aria-pressed={paused} onClick={toggle}>
-              {paused ? "Retomar animação" : "Pausar animação"}
-            </button>
-          ) : null}
-        </div>
-      </div>
+      <p className="hl-caption">Materiais da GoDev para revisar Matemática e Natureza.</p>
     </div>
   );
 }
