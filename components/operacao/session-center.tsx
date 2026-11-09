@@ -27,6 +27,7 @@ export default function SessionCenter({ offers, basePath }: Props) {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [finished, setFinished] = useState<Finished | null>(null);
   const [starting, setStarting] = useState("");
+  const [confirmRestart, setConfirmRestart] = useState<string | null>(null);
   const [startError, setStartError] = useState("");
   const [modeByKind, setModeByKind] = useState<Record<string, string>>({});
 
@@ -80,9 +81,19 @@ export default function SessionCenter({ offers, basePath }: Props) {
                     <div className="op-q-foot">
                       {activeId ? (<>
                         <button type="button" className="op-btn op-btn-primary" disabled={Boolean(starting)} onClick={() => start(offer.kind)}>Retomar de onde parei</button>
-                        <button type="button" className="op-btn op-btn-ghost" disabled={Boolean(starting)} onClick={() => { if (window.confirm("Recomeçar descarta as respostas desta tentativa em andamento. Continuar?")) void start(offer.kind, true); }}>Recomeçar</button>
+                        {confirmRestart === offer.kind ? null : <button type="button" className="op-btn op-btn-ghost" disabled={Boolean(starting)} aria-haspopup="dialog" onClick={() => setConfirmRestart(offer.kind)}>Recomeçar…</button>}
                       </>) : <button type="button" className="op-btn op-btn-primary" disabled={Boolean(starting) || !offer.planned} onClick={() => start(offer.kind)} data-analytics-event={`operacao_start_${offer.kind}`}>{starting === offer.kind ? "Preparando…" : "Começar"}</button>}
                     </div>
+                    {confirmRestart === offer.kind ? (
+                      <div className="op-confirm" role="alertdialog" aria-labelledby={`rc-${offer.kind}`} aria-describedby={`rd-${offer.kind}`} onKeyDown={(e) => { if (e.key === "Escape") setConfirmRestart(null); }}>
+                        <strong id={`rc-${offer.kind}`}>Recomeçar esta atividade?</strong>
+                        <p id={`rd-${offer.kind}`}>As respostas e marcações da tentativa em andamento deixarão de poder ser retomadas e uma nova tentativa começará do zero. Resultados já concluídos no histórico não são afetados.</p>
+                        <div className="op-q-foot">
+                          <button type="button" className="op-btn op-btn-ghost" autoFocus onClick={() => setConfirmRestart(null)}>Cancelar, manter tentativa</button>
+                          <button type="button" className="op-btn op-btn-danger" disabled={Boolean(starting)} onClick={() => { setConfirmRestart(null); void start(offer.kind, true); }}>Sim, descartar e recomeçar</button>
+                        </div>
+                      </div>
+                    ) : null}
                   </article>
                 );
               })}

@@ -30,7 +30,7 @@ export const plans = [
       "2.100 questões autorais no estilo ENEM",
       "30 simulados com 600 questões",
       "60 listas de exercícios com 1.500 questões",
-      "E-book de Redação; em manutenção — correção automática de redações em desenvolvimento.",
+      "E-book de Redação",
       "Biblioteca histórica com 1.800 questões de referência",
       "Fichas e checklists para a reta final",
     ],

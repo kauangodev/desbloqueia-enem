@@ -54,7 +54,7 @@ export default function Analytics() {
   const [custom, setCustom] = useState(false);
   const [metrics, setMetrics] = useState(false);
   const returnFocus = useRef<HTMLElement | null>(null);
-  const panelRef = useRef<HTMLElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const lastPageRef = useRef<string | null>(null);
@@ -161,7 +161,7 @@ export default function Analytics() {
   if (!pixel && !ga) return null;
   if (!open || choice === "loading") return null;
   return (
-    <aside className="consent" aria-labelledby="consent-title" role="dialog" aria-modal="false" tabIndex={-1} ref={panelRef} onKeyDown={(e) => { if (e.key === "Escape" && choice !== null) close(); }}>
+    <div className="consent" aria-labelledby="consent-title" role="dialog" aria-modal="false" tabIndex={-1} ref={panelRef} onKeyDown={(e) => { if (e.key === "Escape" && choice !== null) close(); }}>
       <b id="consent-title">Seu estudo, sua escolha.</b>
       <p>Usamos cookies essenciais para o acesso funcionar. Métricas opcionais ajudam a melhorar a experiência e só são ativadas se você permitir.</p>
       {custom ? (
@@ -185,6 +185,6 @@ export default function Analytics() {
           </>
         )}
       </div>
-    </aside>
+    </div>
   );
 }

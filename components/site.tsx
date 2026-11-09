@@ -6,7 +6,7 @@ import { materials } from "../lib/config";
 import CookiePreferencesLink from "./cookie-preferences-link";
 export function Brand() {
   return (
-    <Link href="/" className="brand" aria-label="Ir para o início do GoDev Education">
+    <Link href="/" className="brand" aria-label="GoDev Educação, ir para o início">
       <span className="brand-wordmark">GoDev</span>
       <span className="brand-sub">EDUCAÇÃO</span>
     </Link>

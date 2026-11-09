@@ -95,7 +95,7 @@ export function HeroJourney() {
         {step === 0 ? (
           <div className="hj-card" key="s0">
             <p className="hj-eyebrow">Módulo · Matemática · 25 min</p>
-            <h3>Porcentagem e variações percentuais</h3>
+            <p className="hj-title">Porcentagem e variações percentuais</p>
             <p>Calcule aumentos e descontos sucessivos sem confundir pontos percentuais com porcentagem.</p>
             <ul><li>Fator de variação: aumento de 25% → ×1,25</li><li>Descontos sucessivos multiplicam os fatores</li><li>Erros comuns e exemplos resolvidos</li></ul>
           </div>
@@ -113,7 +113,7 @@ export function HeroJourney() {
         {step === 2 ? (
           <div className="hj-card" key="s2">
             <p className="hj-eyebrow">{picked ? (correct ? "Correto" : "Quase lá — veja o caminho") : "Resolução em etapas"}</p>
-            <h3>Resposta: R$ 80,00</h3>
+            <p className="hj-title">Resposta: R$ 80,00</p>
             <ol><li>Aumento de 25%: 80 × 1,25 = 100</li><li>Desconto de 20%: 100 × 0,80 = 80</li></ol>
             <p className="hj-warn"><b>Erro comum:</b> somar +25% e −20% como se fosse +5%.</p>
           </div>
@@ -121,7 +121,7 @@ export function HeroJourney() {
         {step === 3 ? (
           <div className="hj-card" key="s3">
             <p className="hj-eyebrow">Meta diária · exemplo</p>
-            <h3>2 de 3 atividades</h3>
+            <p className="hj-title">2 de 3 atividades</p>
             <div className="hj-bar" role="progressbar" aria-label="Meta diária de exemplo" aria-valuemin={0} aria-valuemax={3} aria-valuenow={2}><i /></div>
             <p>Módulo concluído e 1 questão corrigida. <strong>Próximo:</strong> Gráficos e tabelas.</p>
             <p className="hj-note">O seu progresso real aparece na área do aluno, depois do acesso.</p>
