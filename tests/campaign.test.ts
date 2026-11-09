@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { campaign, campaignView } from "../lib/campaign";
-import { grade, questionById, toPublic } from "../lib/operacao/catalog";
 
 test("antes da prova: selo, contagem e título dependem da data real", () => {
   const v = campaignView("2026-11-09");
@@ -37,17 +36,6 @@ test("depois da prova: campanha encerrada, sem contagem negativa nem 'próximo d
     const text = [v.headline, v.emphasis, v.support, v.primaryCta].join(" ");
     assert.ok(!/domingo|faltam|falta /i.test(text));
   }
-});
-
-test("prévia pública: questão publicada, sem gabarito nos dados públicos, correção só pela API", () => {
-  const q = questionById(campaign.previewQuestionId);
-  assert.ok(q, "questão da prévia precisa existir e estar publicada");
-  assert.equal(q.discipline, "matematica");
-  const pub = toPublic(q) as Record<string, unknown>;
-  assert.ok(!("answer" in pub) && !("resolutionHtml" in pub));
-  assert.equal(grade(q, q.answer).correct, true);
-  const wrong = (["A", "B", "C", "D", "E"] as const).find((x) => x !== q.answer)!;
-  assert.equal(grade(q, wrong).correct, false);
 });
 
 test("destinos da campanha usam rotas existentes e preservam o destino no login", () => {

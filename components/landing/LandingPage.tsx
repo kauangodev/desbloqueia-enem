@@ -11,7 +11,6 @@ import { checkoutConfigured } from "../../lib/readiness";
 import { questionBank, toPublicQuestion } from "../../data/question-bank";
 import { campaign, campaignView } from "../../lib/campaign";
 import { campaignFacts } from "../../lib/operacao/campaign-facts";
-import { questionById, toPublic } from "../../lib/operacao/catalog";
 import { canAccess } from "../../lib/supabase";
 import { CampaignHeroFacts, CampaignHeroLead, CampaignJourney, CampaignOfferNote } from "./CampaignSections";
 
@@ -23,20 +22,17 @@ export default async function LandingPage() {
   const demoQuestion = toPublicQuestion(questionBank[0]);
   const view = campaignView();
   const facts = campaignFacts();
-  const previewSource = questionById(campaign.previewQuestionId);
-  const previewPublic = previewSource ? toPublic(previewSource) : null;
-  const preview = previewPublic ? { statementHtml: previewPublic.statementHtml, options: previewPublic.options, topic: previewPublic.topic, originLabel: previewPublic.originLabel } : null;
   // Quem já tem acesso ao conteúdo vê "Continuar minha revisão"; falha na consulta nunca quebra a landing.
   const hasAccess = view.active ? Boolean(await canAccess("essencial").catch(() => null)) : false;
   return <div className="landing-shell landing-light">
     <Header />
     <main id="conteudo" className="reformulated-landing landing-light">
       <section className="landing-hero container petroleum-hero" aria-labelledby="landing-title">
-        <div className="petroleum-hero-copy"><CampaignHeroLead view={view} /><h1 id="landing-title">{view.headline} <em>{view.emphasis}</em></h1><p>{view.support}</p><div className="landing-actions">{view.active && hasAccess ? <Link className="ref-button ref-button-primary" href={campaign.destinations.studyArea} data-analytics-event="campaign_hero_cta">Continuar minha revisão</Link> : <Link className="ref-button ref-button-primary" href="#planos" data-analytics-event={view.active ? "campaign_hero_cta" : undefined}>{view.primaryCta}</Link>}<Link className="ref-button ref-button-link" href={view.active && preview ? campaign.destinations.preview : "#demo-questao"}>{view.secondaryCta}</Link></div><CampaignHeroFacts view={view} facts={facts} /></div>
+        <div className="petroleum-hero-copy"><CampaignHeroLead view={view} /><h1 id="landing-title">{view.headline} <em>{view.emphasis}</em></h1><p>{view.support}</p><div className="landing-actions">{view.active && hasAccess ? <Link className="ref-button ref-button-primary" href={campaign.destinations.studyArea} data-analytics-event="campaign_hero_cta">Continuar minha revisão</Link> : <Link className="ref-button ref-button-primary" href="#planos" data-analytics-event={view.active ? "campaign_hero_cta" : undefined}>{view.primaryCta}</Link>}<Link className="ref-button ref-button-link" href="#demo-questao">{view.secondaryCta}</Link></div><CampaignHeroFacts view={view} facts={facts} /></div>
         <BookLibraryHero />
       </section>
       <section className="petroleum-benefits container" aria-label="Recursos para estudar"><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 3v2" /></svg><strong>Foco no ENEM</strong><p>Conteúdo direcionado à sua preparação.</p></article><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 3 8l9 5 9-5-9-5ZM3 12l9 5 9-5M3 16l9 5 9-5" /></svg><strong>Estudo completo</strong><p>Teoria, exercícios, simulados e e-books.</p></article><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M5 20V11M12 20V5M19 20v-6" /></svg><strong>Acompanhamento</strong><p>Veja sua evolução e ajuste sua rotina.</p></article></section>
-      <CampaignJourney view={view} facts={facts} preview={preview} hasAccess={hasAccess} />
+      <CampaignJourney view={view} facts={facts} hasAccess={hasAccess} />
       <section className="landing-demo container" aria-label="Demonstração da plataforma"><nav className="demo-sidebar" aria-label="Módulos demonstrados"><strong>GoDev</strong>{[["Resolver questões", "#demo-questao"], ["Simulados", "/entrar?redirect=/aluno/simulados"], ["Listas de exercícios", "/entrar?redirect=/aluno/exercicios"], ["E-books", "#materiais"], ["Meu progresso", "/entrar?redirect=/aluno"]].map(([item, href], index) => <Link className={index === 0 ? "is-active" : ""} href={index === 0 ? href : "#planos"} key={item}>{item}</Link>)}</nav><HeroProductPreview question={demoQuestion} demoAnswer={questionBank[0].answer} demoExplanation={questionBank[0].explanation} demoNextStep={questionBank[0].nextStep} /><DemoStatusPanel /></section>
       <section className="landing-steps container" id="como-funciona" aria-label="Como funciona">{steps.map(([title, body], index) => <article key={title}><span className="step-number">{index + 1}</span><h3>{title}</h3><p>{body}</p></article>)}</section>
       <section className="landing-materials" id="materiais" aria-labelledby="materials-title"><div className="container materials-intro"><div><span className="landing-eyebrow">E-books</span><h2 id="materials-title">Materiais completos para aprofundar o seu estudo.</h2><p>Conteúdos organizados, objetivos e alinhados com o que mais cai no ENEM.</p><Link className="ref-button ref-button-link" href="#planos">Ver todos os e-books</Link></div><LandingMaterialCarousel /></div><div className="landing-stat-strip container"><span>16 e-books</span><i /> <span>30 simulados</span><i /> <span>60 listas</span><i /> <span>5 questões demonstrativas</span></div></section>

@@ -28,6 +28,8 @@ export type BookSceneOptions = {
   textureScale: number;
   maxPixelRatio: number;
   coarsePointer: boolean;
+  /** Movimento reduzido: sem entrada elástica nem onda automática; só reage ao ponteiro do próprio usuário, de forma mais suave. */
+  reduced?: boolean;
   /** Ajustes de composição (padrões abaixo; usados também em testes visuais). */
   layout?: Partial<{ angle: number; sep: number; pitch: number; camX: number; yaw: number }>;
   onReady: () => void;
@@ -111,6 +113,9 @@ const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2,
 
 export async function createBookScene(opts: BookSceneOptions): Promise<BookScene | null> {
   const { container, pointerArea, count } = opts;
+  const reduced = Boolean(opts.reduced);
+  const liftMax = reduced ? LIFT * 0.7 : LIFT;
+  const damping = reduced ? 17 : DAMPING;
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
@@ -195,10 +200,10 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
     const restX = k * dirX;
     const restZ = k * dirZ;
     const restY = BOOK_H / 2;
-    mesh.position.set(restX, restY - 3.2, restZ);
-    mesh.visible = false;
+    mesh.position.set(restX, reduced ? restY : restY - 3.2, restZ);
+    mesh.visible = reduced;
     scene.add(mesh);
-    books.push({ mesh, restX, restY, restZ, lift: 0, liftV: 0, enter: -3.2, enterV: 0, delay: 0.12 + i * 0.045, started: false, sx: 0, sy: 0 });
+    books.push({ mesh, restX, restY, restZ, lift: 0, liftV: 0, enter: reduced ? 0 : -3.2, enterV: 0, delay: 0.12 + i * 0.045, started: reduced, sx: 0, sy: 0 });
   }
 
   const tmp = new Vector3();
@@ -303,17 +308,17 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
     for (const book of books) {
       const wantReal = pointerStrength * influenceAt(book, pointerX, pointerY, sigma);
       const wantWave = waveStrength * influenceAt(book, waveX, waveY, sigma);
-      const targetLift = LIFT * Math.max(wantReal, wantWave * (1 - pointerStrength));
+      const targetLift = liftMax * Math.max(wantReal, wantWave * (1 - pointerStrength));
       if (!book.started && (entranceStart >= 0) && (now - entranceStart) / 1000 >= book.delay) {
         book.started = true;
         book.mesh.visible = true;
       }
       for (let k = 0; k < SUBSTEPS; k++) {
-        const accel = STIFFNESS * (targetLift - book.lift) - DAMPING * book.liftV;
+        const accel = STIFFNESS * (targetLift - book.lift) - damping * book.liftV;
         book.liftV += accel * sub;
         book.lift += book.liftV * sub;
         if (book.started) {
-          const ea = STIFFNESS * (0 - book.enter) - DAMPING * book.enterV;
+          const ea = STIFFNESS * (0 - book.enter) - damping * book.enterV;
           book.enterV += ea * sub;
           book.enter += book.enterV * sub;
         }
@@ -335,7 +340,7 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
   function scheduleWake(now: number) {
     if (waking !== undefined) window.clearTimeout(waking);
     waking = undefined;
-    if (paused || disposed) return;
+    if (paused || disposed || !Number.isFinite(nextWaveAt)) return;
     const ms = Math.max(250, Math.max(nextWaveAt, lastMove + IDLE_BEFORE_WAVE) - now);
     waking = window.setTimeout(() => { waking = undefined; kick(); }, ms);
   }
@@ -387,14 +392,15 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
   resize();
   opts.onReady();
   entranceStart = performance.now() + 120;
-  if (opts.coarsePointer) nextWaveAt = performance.now() + 1600; // no toque a onda começa logo após a entrada
+  if (reduced) nextWaveAt = Infinity; // movimento reduzido: sem onda automática
+  else if (opts.coarsePointer) nextWaveAt = performance.now() + 1600; // no toque a onda começa logo após a entrada
   kick();
 
   return {
     setPaused(next: boolean) {
       paused = next;
       if (paused) { if (raf) cancelAnimationFrame(raf); raf = 0; if (waking !== undefined) window.clearTimeout(waking); waking = undefined; }
-      else { last = 0; nextWaveAt = performance.now() + 800; kick(); }
+      else { last = 0; nextWaveAt = reduced ? Infinity : performance.now() + 800; kick(); }
     },
     setVisible(next: boolean) {
       visible = next;

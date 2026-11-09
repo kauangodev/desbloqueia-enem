@@ -63,7 +63,9 @@ export default function BookLibraryHero() {
     };
 
     const start = async () => {
-      if (cancelled || started || reduce.matches || !hasWebGL()) return;
+      const coarse = window.matchMedia("(pointer: coarse)").matches;
+      // Movimento reduzido: só carrega o 3D onde há ponteiro fino (reação ao cursor do próprio usuário); no toque fica a composição estática.
+      if (cancelled || started || (reduce.matches && coarse) || !hasWebGL()) return;
       started = true;
       try {
         const { createBookScene } = await import("./hero-library/book-scene");
@@ -75,7 +77,8 @@ export default function BookLibraryHero() {
           count: quality.count,
           textureScale: quality.textureScale,
           maxPixelRatio: quality.maxPixelRatio,
-          coarsePointer: window.matchMedia("(pointer: coarse)").matches,
+          coarsePointer: coarse,
+          reduced: reduce.matches,
           onReady: () => { if (!cancelled) setMode("webgl"); },
           onFail: () => { if (!cancelled) teardown(); },
         });
@@ -102,8 +105,10 @@ export default function BookLibraryHero() {
     else window.addEventListener("load", schedule, { once: true });
 
     const onReduceChange = () => {
-      if (reduce.matches) { started = false; teardown(); }
-      else if (!started) schedule();
+      // Mudou a preferência: reinicia a cena com o modo correto.
+      started = false;
+      teardown();
+      schedule();
     };
     reduce.addEventListener("change", onReduceChange);
 

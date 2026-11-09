@@ -9,8 +9,6 @@ export const campaign = {
   id: "reta-final-enem-2026",
   edition: "2º dia · Matemática e Ciências da Natureza",
   enabled: true,
-  /** Questão pública da prévia (única, fixa; a API da prévia só conhece este id). */
-  previewQuestionId: "aut-mat-007",
   destinations: {
     /** Oferta/planos da própria landing (fluxo comercial existente; nada de checkout paralelo). */
     offer: "/landing#planos",
@@ -18,7 +16,6 @@ export const campaign = {
     studyArea: operacao.basePath,
     /** Quem tem conta mas ainda não entrou: o login preserva o destino. */
     login: `/entrar?redirect=${encodeURIComponent(operacao.basePath)}`,
-    preview: "#reta-final-questao",
     journey: "#reta-final",
   },
 } as const;
@@ -36,7 +33,6 @@ export type CampaignView = {
   support: string;
   primaryCta: string;
   secondaryCta: string;
-  previewTitle: string;
   journeyTitle: string;
 };
 
@@ -51,7 +47,6 @@ export function campaignView(today?: string): CampaignView {
     phase: status.phase,
     daysLeft: status.daysLeft,
     label,
-    previewTitle: "Experimente uma questão da reta final",
     journeyTitle: "Uma reta final com direção.",
   };
   if (!campaign.enabled || status.phase === "depois") {
@@ -64,8 +59,7 @@ export function campaignView(today?: string): CampaignView {
       support: "Estude com materiais completos, exercícios, simulados e um plano de estudos focado no ENEM.",
       primaryCta: "Ver planos",
       secondaryCta: "Experimentar uma questão",
-      previewTitle: "Experimente uma questão de Matemática",
-      journeyTitle: "Revise, pratique e entenda seus erros.",
+        journeyTitle: "Revise, pratique e entenda seus erros.",
     };
   }
   if (status.phase === "dia") {

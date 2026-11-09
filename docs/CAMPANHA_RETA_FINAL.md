@@ -9,6 +9,7 @@ Estados (função pura `campaignView(today)`):
 - depois: campanha inativa; hero e quiz voltam ao texto geral; nada de contagem negativa. Materiais e histórico permanecem.
 
 Acesso: a Operação 2º Domingo exige plano Essencial ou Premium (`operacaoUser` → `canAccess("essencial")`; Premium inclui). Quem tem acesso vê "Continuar minha revisão" (landing e resultado do quiz).
-Prévia pública: `POST /api/campanha/preview` corrige somente `aut-mat-007`; gabarito só após a tentativa.
-Eventos (via `data-analytics-event`, só com consentimento): campaign_hero_cta, campaign_preview_start, campaign_preview_answer, campaign_preview_cta, campaign_journey_cta, campaign_access_continue, campaign_quiz_result_cta, campaign_quiz_result_preview. Compra continua registrada apenas pelo fluxo real existente (checkout/webhook).
-Testes: `tests/campaign.test.ts`.
+Quiz: aviso discreto na abertura (data e prazo); o fluxo é quiz → landing e quem abre `/` sempre vê o quiz. Não há mais questão de amostra na landing (a demonstração da plataforma é a seção existente).
+Eventos (via `data-analytics-event`, só com consentimento): campaign_hero_cta, campaign_journey_cta, campaign_access_continue. Compra continua registrada apenas pelo fluxo real existente (checkout/webhook).
+Hero 3D (movimento reduzido): a cena carrega só com ponteiro fino e reage apenas ao cursor do usuário (sem entrada elástica nem onda automática).
+Testes: `tests/campaign.test.ts`, `tests/covers.test.ts`.

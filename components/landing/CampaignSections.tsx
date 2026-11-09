@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { campaign, type CampaignView } from "../../lib/campaign";
 import type { campaignFacts } from "../../lib/operacao/campaign-facts";
-import CampaignQuestionPreview, { type PreviewQuestion } from "./CampaignQuestionPreview";
 
 type Facts = ReturnType<typeof campaignFacts>;
 
@@ -27,7 +26,7 @@ export function CampaignHeroFacts({ view, facts }: { view: CampaignView; facts: 
 }
 
 /** "Uma reta final com direção": jornada em 4 passos + prévia interativa. */
-export function CampaignJourney({ view, facts, preview, hasAccess }: { view: CampaignView; facts: Facts; preview: PreviewQuestion | null; hasAccess: boolean }) {
+export function CampaignJourney({ view, facts, hasAccess }: { view: CampaignView; facts: Facts; hasAccess: boolean }) {
   const steps = [
     { title: "Revise os conceitos", text: `${facts.modules} módulos objetivos e ${facts.formulas} fichas de fórmulas e conceitos, com exemplos resolvidos.` },
     { title: "Pratique com questões", text: `${facts.questions} questões comentadas: ${facts.byDiscipline.matematica} de Matemática, ${facts.byDiscipline.fisica} de Física, ${facts.byDiscipline.quimica} de Química e ${facts.byDiscipline.biologia} de Biologia.` },
@@ -52,7 +51,6 @@ export function CampaignJourney({ view, facts, preview, hasAccess }: { view: Cam
         ))}
       </ol>
       <div className="cp-split">
-        {preview ? <CampaignQuestionPreview question={preview} ctaHref={hasAccess ? campaign.destinations.studyArea : campaign.destinations.offer} title={view.previewTitle} /> : null}
         <aside className="cp-access" aria-label="Como ter acesso">
           <h3>Como ter acesso</h3>
           <ul>
@@ -60,9 +58,9 @@ export function CampaignJourney({ view, facts, preview, hasAccess }: { view: Cam
             <li>Depois do pagamento confirmado, entre com o e-mail usado na compra.</li>
             <li>A área fica em <strong>Operação 2º Domingo</strong>, no menu do aluno.</li>
           </ul>
-          {hasAccess
+          <div className="cp-access-actions">{hasAccess
             ? <Link className="ref-button ref-button-primary" href={campaign.destinations.studyArea} data-analytics-event="campaign_access_continue">Continuar minha revisão</Link>
-            : <><Link className="ref-button ref-button-primary" href={campaign.destinations.offer} data-analytics-event="campaign_journey_cta">Ver planos e acesso</Link><Link className="cp-login" href={campaign.destinations.login}>Já tenho acesso: entrar</Link></>}
+            : <><Link className="ref-button ref-button-primary" href={campaign.destinations.offer} data-analytics-event="campaign_journey_cta">Ver planos e acesso</Link><Link className="cp-login" href={campaign.destinations.login}>Já tenho acesso: entrar</Link></>}</div>
         </aside>
       </div>
     </section>

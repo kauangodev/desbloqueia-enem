@@ -75,3 +75,20 @@
   .cp-feedback { animation: none; }
   .cp-option { transition: none; }
 }
+
+/* Sem a prévia: a seção fica com os 4 passos e um cartão de acesso em largura total */
+.cp-split { display: block; }
+.cp-access { grid-template-columns: minmax(0, 1fr); }
+.cp-access-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
+@media (min-width: 900px) {
+  .cp-access { grid-template-columns: minmax(0, 1.2fr) auto; align-items: center; column-gap: 40px; }
+  .cp-access h3 { grid-column: 1 / -1; }
+  .cp-access-actions { justify-content: flex-end; }
+}
+/* Nota da oferta: centralizada com os planos */
+.cp-offer-note { margin: 0 auto 28px; text-align: center; max-width: 64ch; }
+
+.cp-quiz-tag { display: grid; justify-items: center; gap: 2px; margin: 0 0 16px; font-size: .8125rem; line-height: 1.35; text-align: center; }
+.cp-quiz-tag strong { color: var(--cp-amber); font-weight: 700; }
+.cp-quiz-tag span { color: var(--text-secondary, #c9e0e5); }
+.cp-offer-note { width: 100%; max-width: 740px; border-radius: 20px; padding: 14px 20px; }
