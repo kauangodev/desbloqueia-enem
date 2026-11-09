@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type Answer = { label: string; value: string };
@@ -21,8 +20,22 @@ const questions: Question[] = [
 const STORAGE_KEY = "godev-study-routine-quiz";
 const SESSION_KEY = "godev-quiz-session";
 
-export default function StudyRoutineQuiz() {
-  const router = useRouter();
+export type QuizCampaign = { active: boolean; tag: string; countdown: string | null; hasAccess: boolean; offerHref: string; studyHref: string; previewHref: string };
+
+const goalTips: Record<string, string> = {
+  base: "Você indicou que quer construir uma base: comece pelos módulos de revisão de Matemática e de Natureza.",
+  practice: "Você indicou que quer ganhar ritmo de exercícios: priorize as questões comentadas e os treinos curtos.",
+  review: "Você indicou que quer revisar e testar: alterne os simulados com o caderno de erros.",
+  organize: "Você indicou que quer organizar tudo em um só lugar: siga o plano da semana da área de reta final.",
+};
+const timeTips: Record<string, string> = {
+  short: "Com sessões de até 30 minutos, use um treino de 20 questões por dia.",
+  medium: "Com 30 a 60 minutos por sessão, combine um módulo de revisão com 10 questões.",
+  long: "Com mais de uma hora por sessão, faça um treino completo e revise os erros em seguida.",
+  varied: "Como seu tempo varia, escolha 30, 60 ou 120 minutos por dia no plano da semana.",
+};
+
+export default function StudyRoutineQuiz({ campaign }: { campaign?: QuizCampaign }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [complete, setComplete] = useState(false);
@@ -47,9 +60,9 @@ export default function StudyRoutineQuiz() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") as { answers?: Record<string, string>; complete?: boolean } | null;
       if (saved?.answers) setAnswers(saved.answers);
-      if (saved?.complete) router.replace("/landing");
+      if (saved?.complete) setComplete(true);
     } catch { /* local state remains available */ }
-  }, [router]);
+  }, []);
 
   const current = questions[index];
   const selected = answers[current.id];
@@ -63,7 +76,30 @@ export default function StudyRoutineQuiz() {
   function finish() {
     sendEvent("complete");
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, complete: true }));
-    router.push("/landing");
+    setComplete(true);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
+  }
+
+  if (complete && campaign?.active) {
+    const goal = answers.goal && goalTips[answers.goal];
+    const time = answers.time && timeTips[answers.time];
+    const tips = [goal, time].filter(Boolean) as string[];
+    return <section className="study-quiz study-quiz-result" id="diagnostico" aria-labelledby="study-quiz-result-title">
+      <div className="study-quiz-result-mark" aria-hidden="true">✓</div>
+      <p className="cp-quiz-tag">{campaign.tag}</p>
+      <h2 id="study-quiz-result-title">Seu próximo passo para o segundo dia.</h2>
+      <p>{campaign.countdown ? campaign.countdown + " " : ""}Este quiz não mede seu conhecimento de conteúdo: ele usa o que você contou sobre sua rotina para sugerir como organizar a revisão.</p>
+      <div className="cp-quiz-reco">
+        <h3>Recomendação</h3>
+        {tips.length ? <ul>{tips.map((tip) => <li key={tip}>{tip}</li>)}</ul> : <p>Para os dias restantes, organize sua revisão entre Matemática e Ciências da Natureza.</p>}
+        <p>Na área de reta final: módulos de revisão, questões comentadas, caderno de erros, treinos e simulados de Matemática, Física, Química e Biologia.</p>
+      </div>
+      <div className="study-quiz-result-actions">
+        <Link className="button primary" href={campaign.hasAccess ? campaign.studyHref : campaign.offerHref} data-analytics-event="campaign_quiz_result_cta" onClick={() => sendEvent("plans")}>{campaign.hasAccess ? "Continuar minha revisão" : "Quero acessar minha reta final"}</Link>
+        <Link className="button secondary" href={campaign.previewHref} data-analytics-event="campaign_quiz_result_preview">Experimentar uma questão</Link>
+      </div>
+      <button className="button secondary" type="button" onClick={() => { setIndex(0); setComplete(false); setAnswers({}); localStorage.removeItem(STORAGE_KEY); sendEvent("start"); }} data-analytics-event="study_quiz_restart">Refazer o quiz</button>
+    </section>;
   }
 
   if (complete) {
@@ -79,7 +115,7 @@ export default function StudyRoutineQuiz() {
   }
 
   return <section className="study-quiz" id="diagnostico" aria-labelledby="study-quiz-title">
-    <div className="study-quiz-heading"><span className="eyebrow">Seu ponto de partida</span><h2 id="study-quiz-title">Vamos entender sua <em>rotina</em> de estudos?</h2><p>Responda 8 perguntas rápidas sobre sua preparação para o ENEM e descubra um próximo passo possível para você.</p></div>
+    <div className="study-quiz-heading">{campaign?.active ? <p className="cp-quiz-tag">{campaign.tag}</p> : null}<span className="eyebrow">Seu ponto de partida</span><h2 id="study-quiz-title">Vamos entender sua <em>rotina</em> de estudos?</h2><p>Responda 8 perguntas rápidas sobre sua preparação para o ENEM e descubra um próximo passo possível para você.{campaign?.active ? " Ele não mede seu conhecimento de conteúdo: usa sua rotina para sugerir como organizar a revisão até o segundo dia do Enem." : ""}</p></div>
     <div className="study-quiz-grid">
     <div className="study-quiz-card">
       <div className="study-quiz-card-head"><span>Pergunta {index + 1} de {questions.length}</span><span>{Math.round(((index + 1) / questions.length) * 100)}%</span></div>

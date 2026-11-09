@@ -320,3 +320,6 @@ body.godev-app.godev-app .team-manager > .table-wrap { margin: 0; width: 100%; }
   }
   body.godev-app.godev-app .portal .sidebar .cookie-link-side { display: none; }
 }
+
+/* Aviso de cookies aberto: espaço reservado no fim das páginas públicas para que nenhuma ação fique atrás dele. */
+.landing-shell, .diagnostico-page { padding-bottom: var(--consent-h, 0px); }

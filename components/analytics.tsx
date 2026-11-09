@@ -77,6 +77,16 @@ export default function Analytics() {
     return () => window.removeEventListener(OPEN_CONSENT_EVENT, reopen);
   }, []);
 
+  // Reserva espaço no fim da página enquanto o aviso está aberto: nenhuma ação (ex.: "Continuar" do quiz) fica atrás dele.
+  useEffect(() => {
+    if (!open || choice === "loading") return;
+    const root = document.documentElement;
+    const apply = () => { const h = panelRef.current?.offsetHeight ?? 0; root.style.setProperty("--consent-h", h ? `${h + 24}px` : "0px"); };
+    apply();
+    const observer = typeof ResizeObserver !== "undefined" && panelRef.current ? new ResizeObserver(apply) : null;
+    if (observer && panelRef.current) observer.observe(panelRef.current);
+    return () => { observer?.disconnect(); root.style.removeProperty("--consent-h"); };
+  }, [open, choice]);
   useEffect(() => {
     if (open && choice !== "loading") { const id = requestAnimationFrame(() => panelRef.current?.focus()); return () => cancelAnimationFrame(id); }
   }, [open, choice]);
