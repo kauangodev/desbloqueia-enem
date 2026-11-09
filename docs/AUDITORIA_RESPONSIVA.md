@@ -87,3 +87,9 @@ Capturas de tela feitas no navegador embutido antes do primeiro commit desta rod
 ## 5. Vidro e sombras
 
 Tokens em `app/godev-refine.css` (`--float-*`, `--glass-*`). Vidro apenas na barra superior (`.portal-topbar`, `.site-header`), com fallback opaco e `prefers-reduced-transparency`. Cards decorativos sem moldura dura: cards do aluno e do admin (rodada anterior), `.stat`, `.materials-view`, `.manual-access-form`, `.admin-form`, `.form-card` (esta rodada). Leitor, tabelas e campos mantêm superfícies opacas e bordas.
+
+## 6. Superfícies: contêineres organizadores (2026-11-09)
+
+Problema: regras genéricas (`.admin-content > section`, `.admin-content > div:not(.admin-hero)`, `.admin-content form`, `.student-section-block`, em `godev-release`, `modern-interface` e `godev-shell`) pintavam todo filho direto do conteúdo como card. Em `section.team-manager` isso criava uma placa de 1292 px de altura atrás de formulário e tabelas; o mesmo ocorria em `.admin-overview`, `.stat-grid`, `.student-dashboard`, `.student-context-panel` e `.student-section-block`.
+Correção: bloco "Contêineres organizadores" em `app/godev-refine.css` com lista explícita de classes (sem fundo, sombra, borda visível ou desfoque); cada painel interno mantém a própria superfície. `.gamification-panel` mantém superfície por ter conteúdo próprio.
+Verificado em produção: equipe (360/768/1024/1440), aluno (360/768/1024/1440), CRM e visão do admin (360). Foco por teclado (anel de 3 px) preservado. Tema alternativo: não há tema claro ativo na interface autenticada atual; não testado.
