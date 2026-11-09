@@ -264,3 +264,7 @@ body .not-found-illustration { color: var(--text-secondary, #c9e0e5); font-size:
 @media (min-width: 1700px) {
   body.godev-app.godev-app .portal .workspace > :not(header):not(.portal-topbar) { max-width: 1560px; margin-inline: auto; width: 100%; }
 }
+
+body .not-found-page { min-width: 0; }
+body .not-found-page > * { max-width: 100%; min-width: 0; overflow-wrap: anywhere; }
+body .not-found-actions { flex-wrap: wrap; }

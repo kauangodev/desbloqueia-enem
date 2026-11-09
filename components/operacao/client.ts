@@ -33,6 +33,7 @@ export function useOperacaoState() {
       const response = await fetch("/api/operacao", { cache: "no-store" });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data?.error || "Não foi possível carregar seu progresso.");
+      if (!data || typeof data.active !== "object" || !data.attempts) throw new Error("Resposta inesperada ao carregar seu progresso. Atualize a página.");
       setState(data as OperacaoState); setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Não foi possível carregar seu progresso.");

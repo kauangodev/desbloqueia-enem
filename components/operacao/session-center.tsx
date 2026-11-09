@@ -46,7 +46,7 @@ export default function SessionCenter({ offers, basePath }: Props) {
   if (loaded && finished) return <Results finished={finished} loaded={loaded} basePath={basePath} onBack={() => { setLoaded(null); setFinished(null); void reload(); }} />;
 
   const statusOf = (kind: string) => {
-    if (state?.active[kind]) return "Em andamento";
+    if (state?.active?.[kind]) return "Em andamento";
     const last = state?.lastByKind?.[kind];
     return last ? `Último resultado: ${last.percent}% (${last.correct}/${last.total}) em ${new Date(last.finishedAt).toLocaleDateString("pt-BR")}` : "Não iniciado";
   };
@@ -63,7 +63,7 @@ export default function SessionCenter({ offers, basePath }: Props) {
             <div><h3 id={`g-${group.id}`} className="op-section-title">{group.title}</h3><p className="op-muted">{group.text}</p></div>
             <div className={`op-grid ${group.id === "treino" ? "op-grid-3" : "op-grid-2"}`}>
               {list.map((offer) => {
-                const activeId = state?.active[offer.kind];
+                const activeId = state?.active?.[offer.kind];
                 return (
                   <article key={offer.kind} className="op-card op-offer" aria-labelledby={`o-${offer.kind}`}>
                     <h4 id={`o-${offer.kind}`}>{offer.title}</h4>
