@@ -131,7 +131,7 @@ export default function BookLibraryHero() {
         <div className="hl-static">
           {staticBooks.map((book, index) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={index} className="hl-book" style={{ ["--i" as string]: index } as React.CSSProperties} src={book.cover640} alt="" width={640} height={960} loading="eager" decoding="async" draggable={false} />
+            <img key={index} className="hl-book" style={{ ["--i" as string]: index } as React.CSSProperties} src={book.cover320} srcSet={`${book.cover320} 320w, ${book.cover640} 640w`} sizes="(min-width: 900px) 230px, 40vw" alt="" width={640} height={960} loading="eager" fetchPriority="low" decoding="async" draggable={false} />
           ))}
         </div>
       </div>
