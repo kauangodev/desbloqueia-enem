@@ -42,10 +42,10 @@ Alturas: as indicadas na linha de cabeçalho; notebook baixo 1280×560 verificad
 ### Problemas encontrados na matriz e correções
 | Onde | Problema | Correção | Situação |
 |---|---|---|---|
-| Barra superior do aluno, 320 px | Campo de busca ficava com ~22 px de largura | Menos espaço entre itens e padding menor até 420 px | Corrigido (reteste após o deploy desta rodada) |
+| Barra superior do aluno, 320 px | Campo de busca ficava com ~22 px de largura | Menos espaço entre itens e padding menor até 420 px | Corrigido e retestado em produção (campo de 76 px, página sem rolagem) |
 | Navegação do aluno | Selo "Reta final" com 10 px | 12 px | Corrigido |
 | /aluno em 2560 px | Conteúdo esticado a 2312 px | Largura máxima 1560 px a partir de 1700 px | Corrigido e retestado (rodada anterior) |
-| Tabelas do admin | Rolagem interna existia, sem indicação de colunas extras nem foco por teclado | Sombras laterais, `tabIndex=0`, `role=region`, `aria-label` | Corrigido (reteste após o deploy) |
+| Tabelas do admin | Rolagem interna existia, sem indicação de colunas extras nem foco por teclado | Sombras laterais, `tabIndex=0`, `role=region`, `aria-label` | Corrigido e retestado em produção (região focável, sombras laterais ativas, página 390/390) |
 
 ## 2. Páginas públicas (Playwright, produção)
 
@@ -55,13 +55,13 @@ Alturas: as indicadas na linha de cabeçalho; notebook baixo 1280×560 verificad
 
 | Item | Verificação | Resultado | Situação |
 |---|---|---|---|
-| Tabelas (admin) | 2 tabelas no CRM/equipe com `.table-wrap` (overflow auto). Largura da tabela 680–1062 px em contêiner de 358 px | Página não transborda; rolagem horizontal própria | Corrigido (indicador e foco) |
+| Tabelas (admin) | 2 tabelas no CRM/equipe com `.table-wrap` (overflow auto). Largura da tabela 680–1062 px em contêiner de 358 px | Página não transborda; rolagem horizontal própria | Corrigido e retestado em produção |
 | Modal: mapa de questões | Sheet com foco preso, Escape, bloqueio de fundo (rodada anterior, 390 px) | ok | Verificado |
 | Modal: aviso de cookies | Foco, Escape, botão cortado ≤390 px; altura máxima em paisagem | Corrigido | Corrigido e retestado |
 | Modal: oferta Premium (landing) | Não aberto nesta rodada | — | Não iniciado |
 | Confirmação "Recomeçar" | Implementada; não exercitada na tentativa real | — | Bloqueado: requer conta de teste |
 | Toasts | Não existe componente de toast; o projeto usa mensagens inline com `role=status` | — | Não aplicável |
-| Formulário /entrar | Obrigatório, e-mail inválido, erro do servidor (resposta interceptada), falha de rede, resposta lenta + duplo clique | Dados preservados; botão reabilitado; 1 requisição no duplo clique. Antes: mensagem com `role=status` e sem `aria-invalid`/`aria-describedby` | Corrigido (reteste após deploy) |
+| Formulário /entrar | Obrigatório, e-mail inválido, erro do servidor (resposta interceptada), falha de rede, resposta lenta + duplo clique | Dados preservados; botão reabilitado; 1 requisição no duplo clique. Antes: mensagem com `role=status` e sem `aria-invalid`/`aria-describedby` | Corrigido e retestado em produção: `role=alert`, prefixo "Erro:", `aria-invalid`, `aria-describedby`; 1 requisição no duplo clique |
 | Formulários administrativos | Não enviados (alterariam dados reais) | — | Bloqueado: requer registro/conta de teste |
 | Teclado virtual | Aproximação com altura de viewport 190 px (não é teclado real) | Campo focado visível, página rolável | Limitação: sem dispositivo real |
 | Paisagem | 844×390, 667×375, 1024×600, 1180×820, 820×1180 em /landing; 844×390 em /entrar | Sem overflow; botões do banner visíveis | Verificado |
@@ -78,7 +78,11 @@ Não equivale ao Lighthouse. Três navegações por rota; valores individuais: F
 | /admin?tab=visao | 376, 156 | 0 | 415 | 385 |
 | /admin?tab=alunos | 164, 160 | 0 | 415 | 344 |
 
-Sem gargalo comprovado; nenhuma otimização aplicada. Lighthouse nas rotas autenticadas: **Bloqueado** (exige cookie de sessão que não deve ser extraído do navegador; menor ação: rodar o Lighthouse do próprio DevTools com a sessão aberta).
+Depois das mudanças desta rodada (uma execução por rota, mesmas condições): /aluno LCP 228; leitor 160 (CLS 0,035); questões 328; admin visão 204. Diferenças dentro da oscilação observada antes; **não há evidência de melhora nem de piora**. Sem gargalo comprovado; nenhuma otimização aplicada. Lighthouse nas rotas autenticadas: **Bloqueado** (exige cookie de sessão que não deve ser extraído do navegador; menor ação: rodar o Lighthouse do próprio DevTools com a sessão aberta).
+
+## 4b. Comparação visual antes/depois
+
+Capturas de tela feitas no navegador embutido antes do primeiro commit desta rodada e depois do último deploy, nas mesmas rotas e viewport: /aluno 1280×800, /aluno/operacao-segundo-domingo/treinos 1280×800, /admin?tab=equipe 390×844. Elas contêm nomes e e-mails reais da equipe e **não foram versionadas no repositório**; ficam apenas na sessão de trabalho. Diferenças visíveis: sombras laterais e foco nas tabelas, barra de busca em 320 px, selo com 12 px.
 
 ## 5. Vidro e sombras
 
