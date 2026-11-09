@@ -62,8 +62,8 @@ export default function BookLibraryHero() {
 
     const start = async () => {
       const coarse = window.matchMedia("(pointer: coarse)").matches;
-      // Movimento reduzido: só carrega o 3D onde há ponteiro fino (reação ao cursor do próprio usuário); no toque fica a composição estática.
-      if (cancelled || started || (reduce.matches && coarse) || !hasWebGL()) return;
+      // Movimento reduzido: o 3D só reage ao cursor ou ao dedo do próprio usuário (sem entrada elástica nem onda automática).
+      if (cancelled || started || !hasWebGL()) return;
       started = true;
       try {
         const { createBookScene } = await import("./hero-library/book-scene");

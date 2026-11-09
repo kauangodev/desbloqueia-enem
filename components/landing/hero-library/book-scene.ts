@@ -411,6 +411,28 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
     kick();
   };
   const onLeave = () => { pointerActive = false; kick(); };
+  // Toque: o dedo sobre a hero conduz a onda, sem capturar a rolagem (listeners passivos; a página continua rolando normalmente).
+  const onTouch = (event: TouchEvent) => {
+    const t = event.touches[0];
+    if (!t) { onTouchEnd(); return; }
+    const rect = container.getBoundingClientRect();
+    pointerX = t.clientX - rect.left;
+    pointerY = t.clientY - rect.top;
+    pointerActive = pointerX > -width * 0.1 && pointerX < width * 1.1 && pointerY > -height * 0.15 && pointerY < height * 1.15;
+    lastMove = performance.now();
+    waveStart = -1;
+    kick();
+  };
+  const onTouchEnd = () => {
+    pointerActive = false;
+    lastMove = performance.now();
+    if (!reduced) nextWaveAt = Math.max(nextWaveAt, performance.now() + IDLE_BEFORE_WAVE);
+    kick();
+  };
+  pointerArea.addEventListener("touchstart", onTouch, { passive: true });
+  pointerArea.addEventListener("touchmove", onTouch, { passive: true });
+  pointerArea.addEventListener("touchend", onTouchEnd, { passive: true });
+  pointerArea.addEventListener("touchcancel", onTouchEnd, { passive: true });
   pointerArea.addEventListener("pointermove", onMove, { passive: true });
   pointerArea.addEventListener("pointerleave", onLeave, { passive: true });
   const onVisibility = () => { tabVisible = !document.hidden; if (tabVisible) kick(); };
@@ -441,6 +463,10 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
       if (waking !== undefined) window.clearTimeout(waking);
       pointerArea.removeEventListener("pointermove", onMove);
       pointerArea.removeEventListener("pointerleave", onLeave);
+      pointerArea.removeEventListener("touchstart", onTouch);
+      pointerArea.removeEventListener("touchmove", onTouch);
+      pointerArea.removeEventListener("touchend", onTouchEnd);
+      pointerArea.removeEventListener("touchcancel", onTouchEnd);
       document.removeEventListener("visibilitychange", onVisibility);
       canvas.removeEventListener("webglcontextlost", onContextLost);
       resizeObserver.disconnect();
