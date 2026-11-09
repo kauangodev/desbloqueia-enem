@@ -282,7 +282,7 @@ body.godev-app.godev-app .table-wrap.table-wrap {
     linear-gradient(to left, var(--surface-elevated, #1b4650) 30%, transparent) right center / 36px 100% no-repeat local,
     radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 45%), transparent) left center / 14px 100% no-repeat scroll,
     radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 45%), transparent) right center / 14px 100% no-repeat scroll,
-    var(--surface-elevated, #1b4650);
+    var(--surface-elevated, #1b4650) !important; /* vence a regra !important de .admin-content .table-wrap */
   overscroll-behavior-x: contain;
 }
 body.godev-app.godev-app .table-wrap.table-wrap:focus-visible { outline: 3px solid var(--highlight, #c7f464); outline-offset: 2px; }
