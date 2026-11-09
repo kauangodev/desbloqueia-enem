@@ -90,10 +90,13 @@ export default function BookLibraryHero() {
       }
     };
 
+    // O 3D é aprimoramento: espera a página assentar (load + ~1,8 s) e a ociosidade, para não competir com título, CTA e quiz.
     const schedule = () => {
       const run = () => { void start(); };
-      if ("requestIdleCallback" in window) idle = (window as Window & { requestIdleCallback: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback(run, { timeout: 2000 });
-      else idle = globalThis.setTimeout(run, 600) as unknown as number;
+      idle = globalThis.setTimeout(() => {
+        const w = window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+        if (w.requestIdleCallback) w.requestIdleCallback(run, { timeout: 1500 }); else run();
+      }, 1800) as unknown as number;
     };
     if (document.readyState === "complete") schedule();
     else window.addEventListener("load", schedule, { once: true });
@@ -108,7 +111,7 @@ export default function BookLibraryHero() {
       cancelled = true;
       window.removeEventListener("load", schedule);
       reduce.removeEventListener("change", onReduceChange);
-      if (idle) { const w = window as unknown as { cancelIdleCallback?: (h: number) => void }; w.cancelIdleCallback?.(idle); globalThis.clearTimeout(idle); }
+      if (idle) globalThis.clearTimeout(idle);
       observer?.disconnect();
       scene.current?.dispose();
       scene.current = null;
@@ -127,7 +130,7 @@ export default function BookLibraryHero() {
         <div className="hl-static">
           {staticCovers.map((cover, index) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={cover.id} className="hl-book" style={{ ["--i" as string]: index } as React.CSSProperties} src={`/books/cover-${cover.id}.svg`} alt="" width={384} height={576} loading="eager" decoding="async" draggable={false} />
+            <img key={cover.id} className="hl-book" style={{ ["--i" as string]: index } as React.CSSProperties} src={`/books/cover-${cover.id}.svg`} alt="" width={384} height={576} loading="eager" fetchPriority="low" decoding="async" draggable={false} />
           ))}
         </div>
       </div>
