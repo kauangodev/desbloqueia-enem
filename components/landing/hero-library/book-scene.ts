@@ -11,51 +11,55 @@ import {
   PerspectiveCamera,
   Scene,
   SRGBColorSpace,
+  Texture,
   Vector3,
   WebGLRenderer,
 } from "three";
-import { COVER_H, COVER_W, disciplineStyle, interleaved, SPINE_W } from "../../../lib/covers";
+import { bookSequence, heroBooks, type HeroBook } from "../../../lib/hero-books";
 
 /**
- * Biblioteca 3D da hero. Sem React: a física roda fora do framework (nada de setState por frame).
- * Geometria 3D real (livros), molas com subpassos e dt limitado, onda por proximidade (gaussiana) no espaço de tela.
+ * Biblioteca 3D da hero (capas reais do catálogo). Sem React: a física roda fora do framework.
+ * Enquadramento por ESCALA-ALVO (altura projetada do livro da frente), não por "caber a fileira inteira":
+ * a fileira continua além do quadro, como na referência.
  */
 export type BookSceneOptions = {
   container: HTMLElement;
   /** Região em que o ponteiro influencia a cena (a hero). */
   pointerArea: HTMLElement;
+  /** Quantidade de livros criados (o enquadramento mostra só os da frente). */
   count: number;
-  textureScale: number;
   maxPixelRatio: number;
   coarsePointer: boolean;
-  /** Movimento reduzido: sem entrada elástica nem onda automática; só reage ao ponteiro do próprio usuário, de forma mais suave. */
+  /** Movimento reduzido: sem entrada elástica nem onda automática; reage só ao cursor do usuário, mais suave. */
   reduced?: boolean;
-  /** Ajustes de composição (padrões abaixo; usados também em testes visuais). */
-  layout?: Partial<{ angle: number; sep: number; pitch: number; camX: number; yaw: number }>;
+  /** Fração da altura do palco ocupada pelo livro da frente (padrão 0,56 desktop; maior no mobile). */
+  targetFraction: number;
+  /** Primeiro quadro significativo (livros em entrada): momento de trocar a composição estática. */
   onReady: () => void;
   onFail: (reason: string) => void;
+  layout?: Partial<{ sep: number; angle: number; yaw: number; pitch: number; camX: number; back: number; fov: number; ty: number }>;
 };
 
 export type BookScene = {
   setPaused: (paused: boolean) => void;
   setVisible: (visible: boolean) => void;
   dispose: () => void;
-  stats: () => { frames: number; running: boolean; paused: boolean; books: number; pixelRatio: number; maxLift: number; waving: boolean };
+  stats: () => { frames: number; running: boolean; paused: boolean; books: number; visibleBooks: number; pixelRatio: number; maxLift: number; waving: boolean; frontPx: number };
 };
 
-// Física (valores de referência ajustados à escala da cena)
-const LIFT = 0.78;
-const FORWARD = 0.35;
+// Física (valores de referência ajustados à escala atual: livros grandes na tela)
+const LIFT = 0.5;
+const FORWARD = 0.3;
 const STIFFNESS = 70;
 const DAMPING = 12.5;
 const MAX_DT = 1 / 30;
 const SUBSTEPS = 4;
 const IDLE_BEFORE_WAVE = 4000;
-const WAVE_DURATION = 6500;
+const WAVE_DURATION = 7000;
 const WAVE_GAP = 5000;
 
 const BOOK_W = 1;
-const BOOK_H = 1.5;
+const BOOK_H = 1.5; // proporção 2:3 das capas (640 × 960)
 const BOOK_D = 0.2;
 
 type Book = {
@@ -65,29 +69,61 @@ type Book = {
   restZ: number;
   lift: number;
   liftV: number;
-  enter: number; // deslocamento vertical de entrada (negativo = abaixo)
+  enter: number;
   enterV: number;
   delay: number;
   started: boolean;
-  sx: number; // centro projetado (px do canvas)
+  sx: number;
   sy: number;
+  inFrame: boolean;
 };
 
-async function textureFromUrl(url: string, w: number, h: number, anisotropy: number): Promise<CanvasTexture> {
+async function loadImage(url: string): Promise<HTMLImageElement> {
   const image = new Image();
   image.decoding = "async";
   image.src = url;
   await image.decode();
-  const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("canvas2d");
-  ctx.drawImage(image, 0, 0, w, h);
-  const texture = new CanvasTexture(canvas);
+  return image;
+}
+
+function coverTexture(image: HTMLImageElement, anisotropy: number): Texture {
+  const texture = new Texture(image);
   texture.colorSpace = SRGBColorSpace;
   texture.anisotropy = anisotropy;
   texture.minFilter = LinearMipmapLinearFilter;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+/** Lombada complementar discreta: verde da capa e o nome do material (dado do catálogo), sem texto inventado. */
+function spineTexture(book: HeroBook): CanvasTexture {
+  const w = 96;
+  const h = 960;
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d")!;
+  const g = ctx.createLinearGradient(0, 0, w, 0);
+  g.addColorStop(0, "#063a2a");
+  g.addColorStop(1, "#04271d");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = "rgba(190,242,100,0.9)";
+  ctx.fillRect(0, 0, 8, h);
+  ctx.save();
+  ctx.translate(60, h - 56);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle = "#f4fbe9";
+  ctx.font = "800 44px Inter, 'Segoe UI', Roboto, Arial, sans-serif";
+  ctx.textBaseline = "middle";
+  ctx.fillText(book.title.toUpperCase(), 0, 0);
+  ctx.restore();
+  ctx.fillStyle = "rgba(190,242,100,0.95)";
+  ctx.font = "800 26px Inter, 'Segoe UI', Roboto, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("GoDev", w / 2 + 6, 56);
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
   return texture;
 }
 
@@ -131,50 +167,45 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
   canvas.className = "hl-canvas";
   container.appendChild(canvas);
 
+  const lay = { sep: 0.55, angle: 0.45, yaw: -0.2, pitch: 0.26, camX: 0.1, back: 1.6, fov: 24, ty: 0.62, ...opts.layout };
   const scene = new Scene();
-  const camera = new PerspectiveCamera(24, 1, 0.1, 80);
-  scene.add(new HemisphereLight(0xffffff, 0x8aa0b4, 1.55));
-  scene.add(new AmbientLight(0xffffff, 0.55));
-  const key = new DirectionalLight(0xffffff, 1.1);
-  key.position.set(-3, 6, 9);
+  const camera = new PerspectiveCamera(lay.fov, 1, 0.1, 80);
+  // Luz que preserva o branco dos títulos e as cores das capas (sem brilho de plástico).
+  scene.add(new AmbientLight(0xffffff, 1.3));
+  scene.add(new HemisphereLight(0xffffff, 0xaec4b8, 0.35));
+  const key = new DirectionalLight(0xffffff, 0.35);
+  key.position.set(-3, 5, 8);
   scene.add(key);
 
   const disposables: { dispose: () => void }[] = [];
   const geometry = new BoxGeometry(BOOK_W, BOOK_H, BOOK_D);
   disposables.push(geometry);
   const anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-  const cw = Math.round(COVER_W * opts.textureScale);
-  const ch = Math.round(COVER_H * opts.textureScale);
-  const sw = Math.round(SPINE_W * opts.textureScale);
 
   let disposed = false;
   let lost = false;
-  const fail = (reason: string) => {
-    if (disposed) return;
-    opts.onFail(reason);
-  };
+  const fail = (reason: string) => { if (!disposed) opts.onFail(reason); };
   const onContextLost = (event: Event) => { event.preventDefault(); lost = true; fail("context-lost"); };
   canvas.addEventListener("webglcontextlost", onContextLost, false);
 
-  // Materiais: um conjunto por capa (compartilhado pelas duplicatas) + páginas compartilhadas.
+  // Quatro conjuntos de materiais (um por disciplina), compartilhados por todas as repetições.
   const pages = pagesTexture();
-  disposables.push(pages);
   const pageMaterial = new MeshLambertMaterial({ map: pages });
-  disposables.push(pageMaterial);
+  disposables.push(pages, pageMaterial);
   const sets = new Map<string, Material[]>();
-  const defs = interleaved.slice(0, Math.min(16, interleaved.length));
   try {
-    for (const def of defs) {
-      const [cover, spine] = await Promise.all([textureFromUrl(`/books/cover-${def.id}.svg`, cw, ch, anisotropy), textureFromUrl(`/books/spine-${def.id}.svg`, sw, ch, anisotropy)]);
-      if (disposed) { cover.dispose(); spine.dispose(); return null; }
-      const back = new MeshLambertMaterial({ color: disciplineStyle[def.discipline].spine });
+    const images = await Promise.all(heroBooks.map((b) => loadImage(b.cover640)));
+    if (disposed) return null;
+    heroBooks.forEach((b, i) => {
+      const cover = coverTexture(images[i], anisotropy);
+      const spine = spineTexture(b);
+      const back = new MeshLambertMaterial({ color: "#04271d" });
       const coverMat = new MeshLambertMaterial({ map: cover });
       const spineMat = new MeshLambertMaterial({ map: spine });
       disposables.push(cover, spine, back, coverMat, spineMat);
-      // BoxGeometry: +x, -x, +y, -y, +z, -z → lombada (+x, voltada para a câmera), páginas, páginas, páginas, capa (+z), verso
-      sets.set(def.id, [spineMat, pageMaterial, pageMaterial, pageMaterial, coverMat, back]);
-      await new Promise((r) => setTimeout(r, 0)); // não monopoliza a thread principal
-    }
+      // BoxGeometry: +x, -x, +y, -y, +z, -z → lombada (+x, voltada para a câmera), páginas ×3, capa (+z), verso
+      sets.set(b.slug, [spineMat, pageMaterial, pageMaterial, pageMaterial, coverMat, back]);
+    });
   } catch {
     disposables.forEach((d) => d.dispose());
     renderer.dispose();
@@ -184,64 +215,72 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
   }
   if (disposed) return null;
 
-  // Livros: fileira diagonal. O mais próximo (frente) fica à direita-embaixo; a fileira recua para a esquerda-acima,
-  // de modo que cada livro de trás mostre a região esquerda da capa (onde está o título).
+  // Fileira: índice 0 = fundo; último = livro da frente (direita-embaixo). Recua para a esquerda-acima.
+  const sequence = bookSequence(count).reverse(); // a frente (último índice) recebe Matemática
   const books: Book[] = [];
-  const lay = { angle: 0.75, sep: count >= 28 ? 0.31 : count >= 20 ? 0.4 : 0.56, pitch: 0.55, camX: 0.12, yaw: -0.4, ...opts.layout };
-  const sep = lay.sep;
-  const angle = lay.angle;
-  const dirX = Math.cos(angle) * sep;
-  const dirZ = Math.sin(angle) * sep;
+  const dirX = Math.cos(lay.angle) * lay.sep;
+  const dirZ = Math.sin(lay.angle) * lay.sep;
+  const frontIndex = count - 1;
   for (let i = 0; i < count; i++) {
-    const def = defs[i % defs.length];
-    const mesh = new Mesh(geometry, sets.get(def.id)!);
+    const def = sequence[i];
+    const mesh = new Mesh(geometry, sets.get(def.slug)!);
     mesh.rotation.y = lay.yaw;
-    const k = i - (count - 1) / 2;
+    const k = i - frontIndex; // 0 na frente, negativo para o fundo
     const restX = k * dirX;
     const restZ = k * dirZ;
     const restY = BOOK_H / 2;
-    mesh.position.set(restX, reduced ? restY : restY - 3.2, restZ);
+    mesh.position.set(restX, reduced ? restY : restY - 4.4, restZ);
     mesh.visible = reduced;
     scene.add(mesh);
-    books.push({ mesh, restX, restY, restZ, lift: 0, liftV: 0, enter: reduced ? 0 : -3.2, enterV: 0, delay: 0.12 + i * 0.045, started: reduced, sx: 0, sy: 0 });
+    books.push({ mesh, restX, restY, restZ, lift: 0, liftV: 0, enter: reduced ? 0 : -4.4, enterV: 0, delay: 0.1 + (i < count - 9 ? 0 : (i - (count - 9)) * 0.06), started: reduced, sx: 0, sy: 0, inFrame: false });
   }
+  // livros muito ao fundo (fora do quadro) entram junto, sem atraso próprio
+  for (let i = 0; i < count - 9; i++) books[i].delay = 0.05;
 
   const tmp = new Vector3();
   let width = 1;
   let height = 1;
-  const camDir = new Vector3(lay.camX, lay.pitch, 1).normalize();
-  const target = new Vector3(0, 0.55, 0);
+  let frontPx = 0;
+  let waveFrom = 0;
+  let waveTo = 1;
+  let sigma = 80;
 
   function frame() {
-    // distância da câmera para caber toda a fileira (com margem) no enquadramento atual
-    let lo = 4;
-    let hi = 60;
-    for (let n = 0; n < 14; n++) {
-      const mid = (lo + hi) / 2;
-      camera.position.copy(target).addScaledVector(camDir, mid);
-      camera.lookAt(target);
-      camera.updateMatrixWorld(true);
-      camera.updateProjectionMatrix();
-      let worst = 0;
-      for (const b of books) {
-        for (const sx of [-0.55, 0.55]) {
-          for (const sy of [0, 1.5 + LIFT]) {
-            tmp.set(b.restX + sx, b.restY - BOOK_H / 2 + sy, b.restZ).project(camera);
-            worst = Math.max(worst, Math.abs(tmp.x), Math.abs(tmp.y));
-          }
-        }
-      }
-      if (worst > 0.94) lo = mid; else hi = mid;
-    }
-    camera.position.copy(target).addScaledVector(camDir, hi);
+    // Distância pela escala-alvo: o livro da frente deve ter ~targetFraction da altura do palco.
+    const half = Math.tan((lay.fov * Math.PI) / 360);
+    const dist = (BOOK_H * 1) / (2 * half * opts.targetFraction);
+    const front = books[frontIndex];
+    // Ponto de interesse: um pouco atrás da frente, para que o livro da frente fique à direita-embaixo e a fileira recue para a esquerda.
+    const target = new Vector3(front.restX + lay.back * dirX * -1, lay.ty, front.restZ + lay.back * dirZ * -1);
+    const camDir = new Vector3(lay.camX, lay.pitch, 1).normalize();
+    camera.position.copy(target).addScaledVector(camDir, dist);
     camera.lookAt(target);
+    camera.aspect = width / height;
     camera.updateMatrixWorld(true);
     camera.updateProjectionMatrix();
-    for (const b of books) {
+    let n = 0;
+    const visibleIdx: number[] = [];
+    for (let i = 0; i < books.length; i++) {
+      const b = books[i];
       tmp.set(b.restX, b.restY, b.restZ).project(camera);
       b.sx = (tmp.x * 0.5 + 0.5) * width;
       b.sy = (-tmp.y * 0.5 + 0.5) * height;
+      b.inFrame = b.sx > -width * 0.05 && b.sx < width * 1.05 && b.sy > -height * 0.1 && b.sy < height * 1.1;
+      if (b.inFrame) { n++; visibleIdx.push(i); }
     }
+    waveFrom = visibleIdx.length ? visibleIdx[0] : 0;
+    waveTo = visibleIdx.length ? visibleIdx[visibleIdx.length - 1] : books.length - 1;
+    // altura projetada do livro da frente (verificação de escala)
+    tmp.set(front.restX, 0, front.restZ).project(camera);
+    const y0 = (-tmp.y * 0.5 + 0.5) * height;
+    tmp.set(front.restX, BOOK_H, front.restZ).project(camera);
+    const y1 = (-tmp.y * 0.5 + 0.5) * height;
+    frontPx = Math.abs(y0 - y1);
+    // área de influência do cursor/onda: ~1,2 espaçamento entre livros VISÍVEIS (recalibrada a cada enquadramento)
+    const a = books[frontIndex];
+    const bb = books[Math.max(0, frontIndex - 1)];
+    sigma = Math.max(40, Math.hypot(a.sx - bb.sx, (a.sy - bb.sy) * 0.6) * 1.25);
+    void n;
   }
 
   function resize() {
@@ -250,12 +289,10 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
     height = Math.max(1, Math.round(rect.height));
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width, height, false);
-    camera.aspect = width / height;
     frame();
     renderOnce();
   }
 
-  // Estado de interação (variáveis simples: sem estado do framework por frame)
   let pointerX = -1;
   let pointerY = -1;
   let pointerActive = false;
@@ -271,21 +308,16 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
   let frames = 0;
   let slowFrames = 0;
   let entranceStart = -1;
+  let readyFired = false;
   let waking: number | undefined;
 
   function renderOnce() {
     if (!disposed && !lost) renderer.render(scene, camera);
   }
 
-  function influenceAt(book: Book, px: number, py: number, sigma: number) {
-    const dx = book.sx - px;
-    const dy = (book.sy - py) * 0.6;
-    return gaussian(Math.hypot(dx, dy), sigma);
-  }
+  const influenceAt = (book: Book, px: number, py: number) => gaussian(Math.hypot(book.sx - px, (book.sy - py) * 0.6), sigma);
 
   function step(dt: number, now: number) {
-    const sigma = width * (count > 20 ? 0.075 : 0.1);
-    // ponteiro real (suavizado) ou onda automática
     const realTarget = pointerActive && pointerX >= 0 ? 1 : 0;
     pointerStrength += (realTarget - pointerStrength) * (1 - Math.exp(-dt * 9));
     let waveX = 0;
@@ -296,20 +328,20 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
       if (u >= 1) { waveStart = -1; nextWaveAt = now + WAVE_GAP; }
       else {
         const e = easeInOut(clamp(u, 0, 1));
-        const a = books[0];
-        const b = books[books.length - 1];
-        const s = -0.06 + e * 1.12;
+        const a = books[waveFrom];
+        const b = books[waveTo];
+        const s = -0.08 + e * 1.16; // percorre os livros visíveis (da esquerda/fundo até a frente)
         waveX = a.sx + (b.sx - a.sx) * s;
         waveY = a.sy + (b.sy - a.sy) * s;
-        waveStrength = Math.sin(Math.PI * clamp(u, 0, 1)) > 0.02 ? 1 : 0;
+        waveStrength = 1;
       }
     }
     const sub = dt / SUBSTEPS;
     for (const book of books) {
-      const wantReal = pointerStrength * influenceAt(book, pointerX, pointerY, sigma);
-      const wantWave = waveStrength * influenceAt(book, waveX, waveY, sigma);
+      const wantReal = pointerStrength * influenceAt(book, pointerX, pointerY);
+      const wantWave = waveStrength * influenceAt(book, waveX, waveY);
       const targetLift = liftMax * Math.max(wantReal, wantWave * (1 - pointerStrength));
-      if (!book.started && (entranceStart >= 0) && (now - entranceStart) / 1000 >= book.delay) {
+      if (!book.started && entranceStart >= 0 && (now - entranceStart) / 1000 >= book.delay) {
         book.started = true;
         book.mesh.visible = true;
       }
@@ -324,13 +356,12 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
         }
       }
       book.mesh.position.set(book.restX, book.restY + book.enter + book.lift, book.restZ + book.lift * (FORWARD / LIFT));
-      book.mesh.rotation.x = clamp(-book.liftV * 0.045, -0.22, 0.22);
+      book.mesh.rotation.x = clamp(-book.liftV * 0.04, -0.2, 0.2);
     }
   }
 
   function settled() {
-    if (waveStart >= 0 || pointerActive || pointerStrength > 0.001) return false;
-    if (entranceStart < 0) return false;
+    if (waveStart >= 0 || pointerActive || pointerStrength > 0.001 || entranceStart < 0) return false;
     for (const b of books) {
       if (!b.started || Math.abs(b.lift) > 0.002 || Math.abs(b.liftV) > 0.01 || Math.abs(b.enter) > 0.002 || Math.abs(b.enterV) > 0.01) return false;
     }
@@ -351,12 +382,12 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
     const dtRaw = last ? (now - last) / 1000 : 1 / 60;
     last = now;
     const dt = Math.min(dtRaw, MAX_DT);
-    // auto-onda: sem movimento real do ponteiro por ~4 s (ou toque), depois da entrada
     if (waveStart < 0 && entranceStart >= 0 && now >= nextWaveAt && now - lastMove >= IDLE_BEFORE_WAVE && !pointerActive) waveStart = now;
     step(dt, now);
     renderer.render(scene, camera);
     frames++;
-    // qualidade adaptativa: se os primeiros quadros forem lentos, reduz a resolução
+    // Só troca a composição estática quando já há livros visíveis em movimento (primeiro quadro significativo)
+    if (!readyFired && entranceStart >= 0 && now - entranceStart > 520) { readyFired = true; opts.onReady(); }
     if (frames <= 90 && dtRaw > 0.034) slowFrames++;
     if (frames === 90 && slowFrames > 40 && pixelRatio > 1) { pixelRatio = 1; renderer.setPixelRatio(1); renderer.setSize(width, height, false); }
     if (settled()) { last = 0; scheduleWake(now); return; }
@@ -369,13 +400,12 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
     raf = requestAnimationFrame(loop);
   }
 
-  // Listeners limitados à hero; removidos em dispose()
   const onMove = (event: PointerEvent) => {
-    if (event.pointerType === "touch") return; // toque: sem captura; a onda automática cuida da cena
+    if (event.pointerType === "touch") return;
     const rect = container.getBoundingClientRect();
     pointerX = event.clientX - rect.left;
     pointerY = event.clientY - rect.top;
-    pointerActive = pointerX > -width * 0.2 && pointerX < width * 1.2 && pointerY > -height * 0.2 && pointerY < height * 1.2;
+    pointerActive = pointerX > -width * 0.1 && pointerX < width * 1.1 && pointerY > -height * 0.1 && pointerY < height * 1.1;
     lastMove = performance.now();
     waveStart = -1;
     kick();
@@ -383,17 +413,15 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
   const onLeave = () => { pointerActive = false; kick(); };
   pointerArea.addEventListener("pointermove", onMove, { passive: true });
   pointerArea.addEventListener("pointerleave", onLeave, { passive: true });
-
   const onVisibility = () => { tabVisible = !document.hidden; if (tabVisible) kick(); };
   document.addEventListener("visibilitychange", onVisibility);
   const resizeObserver = new ResizeObserver(() => resize());
   resizeObserver.observe(container);
 
   resize();
-  opts.onReady();
-  entranceStart = performance.now() + 120;
-  if (reduced) nextWaveAt = Infinity; // movimento reduzido: sem onda automática
-  else if (opts.coarsePointer) nextWaveAt = performance.now() + 1600; // no toque a onda começa logo após a entrada
+  entranceStart = performance.now() + 80;
+  if (reduced) { nextWaveAt = Infinity; readyFired = true; opts.onReady(); }
+  else if (opts.coarsePointer) nextWaveAt = performance.now() + 1800;
   kick();
 
   return {
@@ -421,7 +449,6 @@ export async function createBookScene(opts: BookSceneOptions): Promise<BookScene
       renderer.forceContextLoss();
       canvas.remove();
     },
-    stats: () => ({ frames, running: raf !== 0, paused, books: books.length, pixelRatio, maxLift: Math.max(...books.map((b) => b.lift)), waving: waveStart >= 0 }),
+    stats: () => ({ frames, running: raf !== 0, paused, books: books.length, visibleBooks: books.filter((b) => b.inFrame).length, pixelRatio, maxLift: Math.max(...books.map((b) => b.lift)), waving: waveStart >= 0, frontPx: Math.round(frontPx) }),
   };
 }
-

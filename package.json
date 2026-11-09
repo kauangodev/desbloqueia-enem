@@ -22,8 +22,7 @@
     "cakto:provision": "node scripts/cakto-provision.mjs --apply",
     "mysql:gamification:check": "node --import tsx scripts/migrate-gamification.ts",
     "validate:operacao": "tsx scripts/validate-operacao.ts",
-    "mysql:gamification:apply": "node --import tsx scripts/migrate-gamification.ts --apply",
-    "generate:covers": "tsx scripts/generate-covers.ts"
+    "mysql:gamification:apply": "node --import tsx scripts/migrate-gamification.ts --apply"
   },
   "dependencies": {
     "@swc/helpers": "0.5.23",

@@ -1,25 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { interleaved } from "../../lib/covers";
+import { bookSequence } from "../../lib/hero-books";
 import type { BookScene } from "./hero-library/book-scene";
 
 /**
- * Biblioteca 3D da hero. Aprimoramento progressivo:
- *  1. HTML/SVG estático (SSR) já ocupa o espaço e funciona sem JavaScript, sem WebGL e com movimento reduzido;
- *  2. a cena Three.js carrega depois (ociosidade), apenas se houver WebGL e o usuário não pediu menos movimento;
+ * Biblioteca 3D da hero, com as capas reais dos materiais (catálogo `ebookMaterials`).
+ * Aprimoramento progressivo:
+ *  1. HTML estático (SSR) com as MESMAS capas ocupa o espaço e funciona sem JavaScript, sem WebGL e com movimento reduzido;
+ *  2. a cena Three.js carrega depois (ociosidade) e a composição estática só sai quando há livros em movimento (primeiro quadro significativo);
  *  3. qualquer falha (WebGL, textura, perda de contexto) mantém a composição estática.
  * Elemento decorativo: fora da árvore de acessibilidade; nada essencial depende dele.
  */
-const staticCovers = [0, 1, 2, 3, 4, 5, 6].map((i) => interleaved[i]);
+const staticBooks = bookSequence(5); // frente → fundo: Matemática, Física, Química, Biologia, Matemática
 
 type Mode = "static" | "webgl";
 
-function chooseQuality(stageWidth: number) {
+function framing(stageWidth: number) {
   const weak = (navigator.hardwareConcurrency || 4) <= 2 || ((navigator as Navigator & { deviceMemory?: number }).deviceMemory || 4) <= 2;
-  if (stageWidth >= 640) return { count: weak ? 24 : 32, textureScale: weak ? 0.75 : 1, maxPixelRatio: weak ? 1.25 : 2 };
-  if (stageWidth >= 460) return { count: 24, textureScale: 0.75, maxPixelRatio: 1.5 };
-  return { count: 16, textureScale: 0.6667, maxPixelRatio: weak ? 1.25 : 1.5 };
+  if (stageWidth < 640) return { count: 10, targetFraction: 0.62, maxPixelRatio: weak ? 1.25 : 1.5, layout: { back: 0.9, ty: 0.95, sep: 0.6, pitch: 0.2 } };
+  return { count: 14, targetFraction: 0.5, maxPixelRatio: weak ? 1.25 : 2, layout: { ty: 0.85 } };
 }
 
 function hasWebGL() {
@@ -70,13 +70,14 @@ export default function BookLibraryHero() {
       try {
         const { createBookScene } = await import("./hero-library/book-scene");
         if (cancelled) return;
-        const quality = chooseQuality(container.getBoundingClientRect().width);
+        const quality = framing(container.getBoundingClientRect().width);
         const created = await createBookScene({
           container,
           pointerArea: hero,
           count: quality.count,
-          textureScale: quality.textureScale,
+          targetFraction: quality.targetFraction,
           maxPixelRatio: quality.maxPixelRatio,
+          layout: quality.layout,
           coarsePointer: coarse,
           reduced: reduce.matches,
           onReady: () => { if (!cancelled) setMode("webgl"); },
@@ -104,12 +105,7 @@ export default function BookLibraryHero() {
     if (document.readyState === "complete") schedule();
     else window.addEventListener("load", schedule, { once: true });
 
-    const onReduceChange = () => {
-      // Mudou a preferência: reinicia a cena com o modo correto.
-      started = false;
-      teardown();
-      schedule();
-    };
+    const onReduceChange = () => { started = false; teardown(); schedule(); };
     reduce.addEventListener("change", onReduceChange);
 
     return () => {
@@ -133,19 +129,21 @@ export default function BookLibraryHero() {
     <div className="hl" data-mode={mode} data-paused={paused ? "true" : "false"} ref={root}>
       <div className="hl-stage" ref={stage} aria-hidden="true">
         <div className="hl-static">
-          {staticCovers.map((cover, index) => (
+          {staticBooks.map((book, index) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={cover.id} className="hl-book" style={{ ["--i" as string]: index } as React.CSSProperties} src={`/books/cover-${cover.id}.svg`} alt="" width={384} height={576} loading="eager" fetchPriority="low" decoding="async" draggable={false} />
+            <img key={index} className="hl-book" style={{ ["--i" as string]: index } as React.CSSProperties} src={book.cover640} alt="" width={640} height={960} loading="eager" decoding="async" draggable={false} />
           ))}
         </div>
       </div>
-      <p className="hl-caption">Capas ilustrativas dos temas de revisão de Matemática, Física, Química e Biologia.</p>
-      <div className="hl-pause-slot">
-        {mode === "webgl" ? (
-          <button type="button" className="hl-pause" aria-pressed={paused} onClick={toggle}>
-            {paused ? "Retomar animação" : "Pausar animação"}
-          </button>
-        ) : null}
+      <div className="hl-foot">
+        <p className="hl-caption">Materiais da GoDev para revisar Matemática e Natureza.</p>
+        <div className="hl-pause-slot">
+          {mode === "webgl" ? (
+            <button type="button" className="hl-pause" aria-pressed={paused} onClick={toggle}>
+              {paused ? "Retomar animação" : "Pausar animação"}
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   );
