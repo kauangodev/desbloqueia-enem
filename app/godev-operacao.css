@@ -232,3 +232,11 @@ body.godev-app.godev-app .op-root button.op-btn:disabled { color: var(--text-sec
 body.godev-app.godev-app .op-root button.op-btn.op-btn-primary:disabled { color: var(--op-ink); }
 body.godev-app.godev-app .op-modal button.op-btn, body.godev-app.godev-app .op-zoom button.op-btn { color: var(--text-primary); }
 body.godev-app.godev-app .op-modal button.op-btn.op-btn-primary { color: var(--op-ink); }
+
+/* ---------- Correção: alternativa marcada empurrava o aplicativo para cima (faixa escura na tela) ----------
+   O <input type="radio"> escondido era absoluto sem ancestral posicionado: ao receber foco, o navegador rolava o
+   <html> (que não deve rolar na shell ≥900px) para "mostrá-lo". Agora ele fica contido no próprio rótulo. */
+.op-root { position: relative; }
+.op-option { position: relative; }
+body.godev-app.godev-app .op-option input[type="radio"] { position: absolute; left: 12px; top: 12px; width: 20px; height: 20px; min-width: 0; margin: 0; opacity: 0; pointer-events: none; }
+.op-sr { position: absolute; }
