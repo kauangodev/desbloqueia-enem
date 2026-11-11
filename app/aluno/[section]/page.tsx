@@ -47,6 +47,13 @@ const sections: Record<string, [string, string]> = {
   conta: ["Minha conta", "Seus dados e acessos."],
   suporte: ["Atendimento", "Encontre os canais oficiais de suporte."],
 };
+/** Título distinto por seção (leitores de tela e abas do navegador). */
+export async function generateMetadata({ params }: { params: Promise<{ section: string }> }) {
+  const { section } = await params;
+  const entry = sections[section];
+  return { title: entry ? `${entry[0]} | GoDev Education` : "GoDev Education" };
+}
+
 export default async function Section({
   params,
   searchParams,

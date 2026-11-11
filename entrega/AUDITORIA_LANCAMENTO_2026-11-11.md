@@ -29,7 +29,7 @@ Direitos já concedidos não foram alterados (nenhum acesso removido).
 - Verificação estrutural de **todas** as 600 (Operação) e 2.100 (geral): ids duplicados, enunciado vazio, alternativas, gabarito válido, alternativas repetidas, resolução. Resultado Operação: 0 ids duplicados, 0 gabaritos inválidos, 10 resoluções telegráficas (apenas a conta). Banco geral: 332 distintas; 10 resoluções curtas; `reviewStatus` = "revisao_inicial" em todas.
 - Corrigidas (resolução expandida, resultado conferido, gabarito inalterado): `aut-mat-048, s1-mat-031, s1-mat-033, s1-mat-038, s1-mat-042, s2-mat-033, s4-mat-020, s4-mat-032, s4-mat-033, s4-mat-037`.
 - Heurística resolução × gabarito nos 600: 53 sinalizados por formato (R$, separador de milhar); revisei cada um e **todos coerentes**. Distribuição do gabarito equilibrada (A 122, B 117, C 120, D 120, E 121).
-- Revisão pedagógica **item a item**: só os 10 acima e as 5 amostras públicas da landing (`aut-mat-003, aut-fis-005, aut-qui-001, aut-mat-005, aut-bio-008`, cálculos refeitos). **Não** declaro revisão pedagógica dos demais; as 21 oficiais **não** foram recomparadas com gabaritos do Inep nesta rodada.
+- Revisão pedagógica **item a item**: só os 10 acima e as 5 amostras públicas da landing (`aut-mat-003, aut-fis-005, aut-qui-001, aut-mat-005, aut-bio-008`, cálculos refeitos). **Não** declaro revisão pedagógica dos demais; **As 21 questões oficiais foram conferidas contra os gabaritos oficiais do 2º dia (Caderno 7 Azul) de 2016 e 2017 que estão no repositório: 21 de 21 batem.** Anulações e retificações posteriores não foram consultadas.
 
 ## 5. Landing: exploração navegável
 - Hero com abas: Reta final (livros 3D preservados + disciplinas), Materiais (4 capas reais, amostra de leitura com fórmulas), Questões (feedback, resolução, erro comum), Simulado (mapa, dúvida, progresso, resultado demonstrativo "amostra de 5", sem TRI), Minha revisão (plano de exemplo com checklist). CTA comercial separado: "Acessar a preparação completa" (ou "Continuar minha revisão" para quem tem acesso).
@@ -44,8 +44,10 @@ Direitos já concedidos não foram alterados (nenhum acesso removido).
 | `/comprar/essencial`, `/comprar/premium` | Visitante | axe | Corrigido e retestado | link de reembolso sem sublinhado (link-in-text-block) → sublinhado; 0 violações em 6 larguras |
 | Marca (cabeçalho) | todos | axe label-in-name | Corrigido e retestado | nome acessível agora contém o texto visível |
 | `/aluno/operacao-segundo-domingo/*` (7 rotas) | Aluno (conta demo local) | overflow 320 | Corrigido e retestado (rodada anterior) | alternativa marcada rolava o `<html>`; corrigido em `godev-operacao.css` |
-| Demais rotas do aluno (`/aluno/*`) | Aluno | tudo | **Não verificado** nesta rodada | exige sessão; ver pendências |
-| `/admin/*` | Administrador | tudo | **Não verificado** nesta rodada | idem |
+| `/aluno`, `/aluno/{materiais,exercicios,simulados,checklists,correcoes,cronograma,biblioteca,conta,suporte}` | Aluno (conta administradora do proprietário, em produção, somente leitura) | 1600 px: overflow, h1, nomes de botões/links, alt, rótulos de campos, ids duplicados, sobreposições fixas | Verificado, 1 achado corrigido | script de DOM executado no navegador; 0 problemas estruturais. Achado: **título de aba idêntico** em todas as seções → `generateMetadata` por seção |
+| `/aluno/operacao-segundo-domingo/*` (7 rotas) | Aluno (produção, leitura) | 1600 px | Verificado, 1 achado corrigido | links isolados "Ver no módulo" com 20 px de altura → 32 px (WCAG 2.2, 2.5.8). Alternativa marcada: confirmado em produção que o `<html>` não rola mais |
+| `/admin?tab={visao,alunos,produtos,materiais,questoes,entregas,equipe,tickets}` | Administrador (produção, leitura) | 1600 px, mesmas checagens | Verificado sem alteração | 0 overflow, 0 controles sem nome, 0 ids duplicados. **Gráficos e tabelas só foram checados estruturalmente; dados, escala, legenda e toque não foram avaliados** |
+| Telas autenticadas em celular | Aluno/Admin | 320–768 px | **Não verificado** | o Chrome conectado não aplicou o redimensionamento ao viewport (continuou 1600 px); o único teste autenticado em 320 px foi o da Operação, em conta demo local |
 | Fluxo Cakto (compra→webhook→acesso) | — | funcional | **Não verificado** | requer sandbox/webhook; existe suíte `tests/payment.test.ts` (passa) |
 Larguras intermediárias (360/430/600/820/1280/1366/1536/2560), paisagem, zoom 200% e teclado virtual: **não testados**. Emulação apenas; nenhum dispositivo físico.
 
@@ -56,6 +58,6 @@ Larguras intermediárias (360/430/600/820/1280/1366/1536/2560), paisagem, zoom 2
 ## 8. Pendências reais (não concluídas)
 1. Auditoria autenticada completa da área do aluno e do painel administrativo (gráficos, tabelas, CRM, permissões).
 2. Teste ponta a ponta de compra/liberação (sandbox Cakto).
-3. Revisão pedagógica integral dos 600 + 332 itens e conferência das 21 oficiais com gabarito oficial.
+3. Revisão pedagógica integral dos 600 + 332 itens (as oficiais já têm gabarito conferido; falta o raciocínio das autorais).
 4. Banco geral: 332 questões distintas para 60 listas/30 simulados — para entregar 1.500/600 questões distintas é preciso produzir conteúdo novo.
 5. Texto da página do produto na Cakto.
