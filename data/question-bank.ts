@@ -320,6 +320,18 @@ questionBank.push(
   q("aut-300", "exercicios", 25, "Matemática", "MDC", "média", "O máximo divisor comum de 18 e 24 é", ["2", "3", "6", "9", "12"], "C", "Os divisores comuns incluem 1, 2, 3 e 6; o maior é 6.", "Liste divisores ou use fatoração", "lista-09"),
 );
 questionBank.push(...generatedQuestions);
+/**
+ * Correções de gabarito conferidas na revisão pedagógica (11/11/2026). Cada regra localiza o item pelo início do enunciado
+ * e aponta a alternativa pelo TEXTO, porque a posição das alternativas varia entre as cópias embaralhadas.
+ * aut-192: a resolução já calculava (6×1+8×2)/3 ≈ 7,3, mas o gabarito cadastrado era 7,0.
+ */
+const answerCorrections: { startsWith: string; correctText: string }[] = [{ startsWith: "Uma nota 6 tem peso 1 e uma nota 8 tem peso 2", correctText: "7,3" }];
+for (const question of questionBank) {
+  const rule = answerCorrections.find((item) => question.statement.startsWith(item.startsWith));
+  const option = rule ? question.options.find((candidate) => candidate.text.trim() === rule.correctText) : undefined;
+  if (option) question.answer = option.id;
+}
+
 export function questionsFor(activity: Question["activity"]) { return questionBank.filter((question) => question.activity === activity); }
 /** Chave canônica: enunciado + conjunto de alternativas + texto da correta (ignora a ordem em que as alternativas aparecem). */
 export function canonicalKey(question: Question) {

@@ -33,6 +33,11 @@ export function accurateFeatures(features: string[]) {
   const out: string[] = [];
   let inserted = false;
   for (const feature of features) {
+    // Essencial: "40 exercícios comentados" subestimava a entrega (as listas do banco geral e a Operação 2º Domingo também estão no plano).
+    if (/^40 exerc[ií]cios comentados/i.test(feature)) {
+      out.push(`Exercícios comentados e a Operação 2º Domingo (${inv.operacaoQuestions} questões de Matemática e Ciências da Natureza)`);
+      continue;
+    }
     if (inflated.some((pattern) => pattern.test(feature))) {
       if (!inserted) { out.push(...accurate); inserted = true; }
       continue;

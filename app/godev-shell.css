@@ -95,3 +95,12 @@ body.godev-app .consent-toggle:hover { color: var(--text-primary) !important; bo
   body.godev-app:has(.portal) .consent-toggle, body.godev-app:has(.admin-app) .consent-toggle { bottom: calc(12px + env(safe-area-inset-bottom)); }
   body.godev-app.godev-app .portal .workspace, body.godev-app.godev-app .admin-content { padding-bottom: 80px; }
 }
+
+/* Trilho lateral (900–1199 px): o logotipo de 30 px (87 px de largura) estourava o trilho de 76 px e o botão "Sair" ficava com 31 px. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  body.godev-app.godev-app .portal .sidebar .brand-wordmark { font-size: 1.0625rem; letter-spacing: -0.04em; }
+  body.godev-app.godev-app .portal .sidebar form button { min-width: 44px; min-height: 44px; }
+}
+
+/* Alvo de toque: o "Ver atividade" do CRM tinha 19 px de altura (WCAG 2.2, 2.5.8). */
+body.godev-app.godev-app .admin-content details > summary { display: flex; align-items: center; min-height: 32px; }

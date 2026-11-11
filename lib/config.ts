@@ -15,7 +15,7 @@ export const plans = [
     features: [
       "E-books essenciais de Linguagens, Humanas, Natureza e Matemática",
       "Cronograma e mapa da revisão",
-      "40 exercícios comentados para fixação",
+      "Exercícios comentados e a Operação 2º Domingo (600 questões de Matemática e Ciências da Natureza)",
       "Leitura online no celular, tablet ou computador",
     ],
   },

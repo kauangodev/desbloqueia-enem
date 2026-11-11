@@ -27,3 +27,17 @@ test("nenhuma coleção repete a mesma questão", () => {
     assert.equal(keys.size, list.length, id);
   }
 });
+
+test("média ponderada (aut-192) tem o gabarito coerente com a resolução (7,3)", () => {
+  const copies = questionBank.filter((q) => q.statement.startsWith("Uma nota 6 tem peso 1 e uma nota 8 tem peso 2"));
+  assert.ok(copies.length > 0);
+  for (const q of copies) assert.equal(q.options.find((o) => o.id === q.answer)?.text.trim(), "7,3", q.id);
+});
+
+test("Essencial: a linha de 40 exercícios é trocada pela entrega real", () => {
+  const inv = inventory();
+  const essencial = plans.find((p) => p.id === "essencial")!.features.join(" | ");
+  assert.ok(essencial.includes(`${inv.operacaoQuestions} questões`), "config do Essencial cita a Operação");
+  const out = accurateFeatures(["40 exercícios comentados para fixação", "Cronograma e mapa da revisão"]);
+  assert.ok(out[0].includes(`${inv.operacaoQuestions} questões`) && !/^40 /.test(out[0]));
+});
