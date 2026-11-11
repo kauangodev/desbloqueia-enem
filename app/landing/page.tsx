@@ -1,3 +1,4 @@
+import "katex/dist/katex.min.css";
 import LandingPage from "../../components/landing/LandingPage";
 
 export const dynamic = "force-dynamic";

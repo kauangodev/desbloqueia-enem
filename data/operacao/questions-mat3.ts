@@ -38,7 +38,7 @@ export const questionsMat3 = [
   Q("aut-mat-048", M, "Análise combinatória", "mat-combinatoria", "media", 3,
     "Quantos números de 3 algarismos distintos podem ser formados com os algarismos 1, 2, 3, 4 e 5?",
     ["10", "15", "60", "120", "125"], "C",
-    "$5\\cdot4\\cdot3=60$.",
+    "Como a ordem importa (os algarismos formam números diferentes), é um arranjo: 5 escolhas para o 1º algarismo, 4 para o 2º e 3 para o 3º. Total: $5\\cdot4\\cdot3=60$.",
     { E: "125 permitiria repetição ($5^3$).", A: "10 é $C_{5,3}$, que não conta a ordem." },
     "Confundir arranjo com combinação."),
   Q("aut-mat-049", M, "Análise combinatória", "mat-combinatoria", "dificil", 4,

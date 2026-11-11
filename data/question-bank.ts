@@ -321,5 +321,23 @@ questionBank.push(
 );
 questionBank.push(...generatedQuestions);
 export function questionsFor(activity: Question["activity"]) { return questionBank.filter((question) => question.activity === activity); }
-export function questionsForCollection(collectionId: string) { return questionBank.filter((question) => question.collectionId === collectionId); }
+/** Chave canônica: enunciado + conjunto de alternativas + texto da correta (ignora a ordem em que as alternativas aparecem). */
+export function canonicalKey(question: Question) {
+  const norm = (text: string) => text.trim().toLowerCase().replace(/s+/g, " ");
+  const correct = question.options.find((option) => option.id === question.answer)?.text ?? "";
+  return `${norm(question.statement)}|${question.options.map((option) => norm(option.text)).sort().join("|")}|${norm(correct)}`;
+}
+/** Questões realmente distintas do banco geral (o mesmo item reaparece embaralhado em várias listas e simulados). */
+export const distinctQuestionCount = () => new Set(questionBank.map(canonicalKey)).size;
+/** Uma coleção nunca mostra a mesma questão duas vezes (mantém a primeira ocorrência). */
+export function questionsForCollection(collectionId: string) {
+  const seen = new Set<string>();
+  return questionBank.filter((question) => {
+    if (question.collectionId !== collectionId) return false;
+    const key = canonicalKey(question);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 

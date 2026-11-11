@@ -20,6 +20,7 @@ import "./godev-operacao.css";
 import "./godev-refine.css";
 import "./godev-campaign.css";
 import "./godev-books.css";
+import "./godev-explorer.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
 

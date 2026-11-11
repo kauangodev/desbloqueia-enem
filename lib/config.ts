@@ -27,9 +27,8 @@ export const plans = [
     features: [
       "Tudo do Essencial",
       "Coleção completa com 16 e-books didáticos de 34 páginas",
-      "2.100 questões autorais no estilo ENEM",
-      "30 simulados com 600 questões",
-      "60 listas de exercícios com 1.500 questões",
+      "Operação 2º Domingo: 600 questões comentadas de Matemática e Ciências da Natureza",
+      "Banco geral com 332 questões distintas das quatro áreas, em 60 listas e 30 simulados (as questões se repetem entre coleções)",
       "E-book de Redação",
       "Biblioteca histórica com 1.800 questões de referência",
       "Fichas e checklists para a reta final",

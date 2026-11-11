@@ -11,7 +11,7 @@ import AdminOverview from "../../components/admin-overview";
 import TeamManager from "../../components/team-manager";
 import ManualAccessForm from "../../components/manual-access-form";
 import DeleteUserButton from "../../components/delete-user-button";
-import { questionBank } from "../../data/question-bank";
+import { questionBank, distinctQuestionCount } from "../../data/question-bank";
 import ResponsiveDrawerToggle from "../../components/responsive-drawer-toggle";
 import { Icon, type IconName } from "../../components/icons";
 export const dynamic = "force-dynamic";
@@ -182,7 +182,7 @@ export default async function Admin({
         <p className="status-message" role="status">A publicação em lote permanece bloqueada até existir backup verificável, fila persistida de revisão e confirmação dos metadados pedagógicos. Os 1.793 itens da biblioteca histórica continuam em pendência controlada.</p>
         <div className="stat-grid crm-stats admin-kpis">
           <div className="stat"><strong>{questionBank.length}</strong><span>Questões autorais</span></div>
-          <div className="stat"><strong>{new Set(questionBank.map((question) => question.id)).size}</strong><span>IDs únicos</span></div>
+          <div className="stat"><strong>{new Set(questionBank.map((question) => question.id)).size}</strong><span>IDs únicos</span></div><div className="stat"><strong>{distinctQuestionCount()}</strong><span>Questões distintas (sem repetição)</span></div>
           <div className="stat"><strong>{duplicateRecords}</strong><span>Em grupos duplicados</span></div>
           <div className="stat"><strong>1.793</strong><span>Biblioteca pendente</span></div>
         </div>

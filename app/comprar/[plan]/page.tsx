@@ -26,7 +26,7 @@ export default async function Buy({
           <ul>{p.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
           <p>
             Antes de comprar, confira os itens do plano e nossa{" "}
-            <Link href="/politicas/reembolso">
+            <Link href="/politicas/reembolso" style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>
               política de reembolso de sete dias
             </Link>
             .
