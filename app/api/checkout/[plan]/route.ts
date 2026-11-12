@@ -27,6 +27,12 @@ export async function GET(
   const productId = offer?.cakto_product_id || fallback.productId;
   const offerId = offer?.cakto_offer_id || fallback.offerId;
   const url = new URL(checkoutUrl);
+  // Atribuição: repassa só chaves conhecidas de campanha (utm_*, fbclid) ao checkout.
+  const incoming = new URL(req.url).searchParams;
+  for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "src", "sck"]) {
+    const value = incoming.get(key);
+    if (value && value.length <= 200) url.searchParams.set(key, value);
+  }
   if (
     url.protocol !== "https:" ||
     url.hostname !== "pay.cakto.com.br" ||

@@ -132,3 +132,12 @@ body.godev-app .landing-hero .hx .hl { order: 0; margin: 0; width: 100%; }
 body.godev-app .petroleum-hero .hx p { margin: 0; animation: none; }
 body.godev-app .petroleum-hero .hx .hx-rich p { margin: 0 0 8px; }
 body.godev-app .petroleum-hero .hx .hx-rich > :last-child, body.godev-app .petroleum-hero .hx .hx-option-text p { margin-bottom: 0; }
+
+/* Aviso de cookies no celular: o painel de ~300 px cobria a hero e o CTA na primeira visita. Compacto, mantendo as três escolhas. */
+@media (max-width: 640px) {
+  body.godev-app .consent:not(:has(.consent-options)) { left: 10px; right: 10px; bottom: 10px; max-width: none; padding: 12px 14px; border-radius: 14px; }
+  body.godev-app .consent:not(:has(.consent-options)) > b { display: block; font-size: .9375rem; line-height: 1.2; }
+  body.godev-app .consent:not(:has(.consent-options)) > p { margin: 4px 0 10px; font-size: .78rem; line-height: 1.35; }
+  body.godev-app .consent:not(:has(.consent-options)) > div:has(> button) > .button { min-height: 40px; font-size: .8125rem; }
+}
+.ref-fee-note { margin: 14px auto 0; max-width: 62ch; text-align: center; font-size: .875rem; line-height: 1.5; color: var(--text-secondary, #c9e0e5); }
