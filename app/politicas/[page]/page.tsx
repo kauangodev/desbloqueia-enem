@@ -21,7 +21,7 @@ const policies: Record<
       ],
       [
         "Cookies e métricas",
-        "Cookies de autenticação são necessários para manter sua sessão. Métricas de marketing só são carregadas com consentimento e quando configuradas. Você pode alterar sua preferência pelo controle de cookies no rodapé. Não usamos cliques como prova de compra.",
+        "Cookies de autenticação são necessários para manter sua sessão. Métricas de marketing (pixels da Meta e do TikTok) só são carregadas com consentimento e quando configuradas. Você pode alterar sua preferência pelo controle de cookies no rodapé. Não usamos cliques como prova de compra.",
       ],
       [
         "Retenção e seus direitos",

@@ -47,6 +47,49 @@ function loadMetaPixel(pixel: string) {
   window.__godevMetaPixelInitialized = pixel;
 }
 
+const TIKTOK_PIXEL_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || "DBQU4L3C77U7CBT5U5AG";
+
+type TikTokQueue = Record<string, (...args: unknown[]) => void> & unknown[] & { _i?: Record<string, unknown>; _t?: Record<string, number>; _o?: Record<string, unknown>; load?: (id: string, options?: unknown) => void; page?: () => void; track?: (...args: unknown[]) => void };
+
+// Mesmo código oficial do TikTok Pixel, carregado só depois do consentimento de métricas.
+function loadTikTokPixel(id: string) {
+  const w = window as unknown as { TiktokAnalyticsObject?: string; ttq?: TikTokQueue; __godevTikTokInitialized?: string };
+  if (w.__godevTikTokInitialized === id) return;
+  w.__godevTikTokInitialized = id;
+  if (w.ttq) return;
+  w.TiktokAnalyticsObject = "ttq";
+  const ttq = ([] as unknown) as TikTokQueue;
+  w.ttq = ttq;
+  const methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias", "group", "enableCookie", "disableCookie", "holdConsent", "revokeConsent", "grantConsent"];
+  const defer = (target: Record<string, unknown>, method: string) => {
+    target[method] = (...args: unknown[]) => { (target as unknown as unknown[]).push([method, ...args]); };
+  };
+  for (const method of methods) defer(ttq as unknown as Record<string, unknown>, method);
+  ttq.load = (sdk: string, options?: unknown) => {
+    ttq._i = ttq._i || {};
+    ttq._i[sdk] = [];
+    ttq._t = ttq._t || {};
+    ttq._t[sdk] = Date.now();
+    ttq._o = ttq._o || {};
+    ttq._o[sdk] = options || {};
+    if (!document.querySelector('script[data-analytics="tiktok-pixel"]')) {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = `https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=${encodeURIComponent(sdk)}&lib=ttq`;
+      script.dataset.analytics = "tiktok-pixel";
+      document.head.appendChild(script);
+    }
+  };
+  ttq.load(id);
+  ttq.page?.();
+}
+
+function trackTikTok(event: string, parameters?: Record<string, string | number>) {
+  const ttq = (window as unknown as { ttq?: TikTokQueue }).ttq;
+  if (localStorage.getItem("godev-consent") !== "accepted" || !ttq?.track) return;
+  ttq.track(event, parameters || {});
+}
+
 export default function Analytics() {
   // "loading": ainda lendo a preferência (nada é exibido, evitando o flash do aviso); null: sem escolha válida.
   const [choice, setChoice] = useState<"loading" | "accepted" | "rejected" | null>("loading");
@@ -102,6 +145,8 @@ export default function Analytics() {
       }
     }
 
+    if (/^[A-Z0-9]+$/.test(TIKTOK_PIXEL_ID)) loadTikTokPixel(TIKTOK_PIXEL_ID);
+
     const heroVariant = document.querySelector<HTMLElement>("[data-hero-variant]")?.dataset.heroVariant;
     const heroKey = `${pageKey}:${heroVariant || "none"}`;
     if (heroVariant && (heroVariant === "a" || heroVariant === "b") && lastHeroRef.current !== heroKey) {
@@ -140,6 +185,7 @@ export default function Analytics() {
       }
       if (anchor?.getAttribute("href")?.startsWith("/api/checkout/")) {
         trackMetaEvent("InitiateCheckout", { content_name: "Desbloqueia ENEM 2026" });
+        trackTikTok("InitiateCheckout", { content_name: "Desbloqueia ENEM 2026" });
         window.gtag?.("event", "begin_checkout");
       }
     };
@@ -165,6 +211,10 @@ export default function Analytics() {
       delete window.fbq;
       delete window.gtag;
       delete window.__godevMetaPixelInitialized;
+      const tt = window as unknown as { ttq?: { revokeConsent?: () => void }; __godevTikTokInitialized?: string; TiktokAnalyticsObject?: string };
+      tt.ttq?.revokeConsent?.();
+      delete tt.ttq;
+      delete tt.__godevTikTokInitialized;
     }
   }
 
