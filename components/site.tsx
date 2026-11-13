@@ -15,7 +15,7 @@ export function Brand() {
 }
 const NAV_LINKS: [string, string][] = [
   ["Planos", "/landing#planos"],
-  ["Como funciona", "/landing#como-funciona"],
+  ["O que inclui", "/landing#inclui"],
   ["E-books", "/landing#materiais"],
   ["Dúvidas", "/landing#duvidas"],
 ];
