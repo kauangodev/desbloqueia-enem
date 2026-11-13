@@ -99,7 +99,7 @@ export function Header() {
               {label}
             </Link>
           ))}
-          <Link className="nav-extra nav-cta" href="/landing#planos" onClick={(event) => goTo(event, "/landing#planos")}>Quero o Essencial · R$ 10,90</Link>
+          <Link className="nav-extra nav-cta" href="/landing#planos" onClick={(event) => goTo(event, "/landing#planos")}>Quero o Premium · R$ 19,90</Link>
           <Link className="nav-extra nav-login" href="/entrar" onClick={() => setOpen(false)}>Já tenho acesso · Entrar</Link>
         </nav>
         <div className="header-actions">

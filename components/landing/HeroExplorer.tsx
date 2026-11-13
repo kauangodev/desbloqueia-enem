@@ -12,12 +12,12 @@ import type { DemoModule, DemoQuestion, ExplorerData } from "./explorer-types";
  * (apenas oculta) ao trocar de aba, então a cena 3D se pausa sozinha fora da tela.
  */
 type TabId = "reta" | "materiais" | "questoes" | "simulado" | "plano";
-const tabs: { id: TabId; label: string }[] = [
-  { id: "reta", label: "Reta final" },
-  { id: "materiais", label: "Materiais" },
-  { id: "questoes", label: "Questões" },
-  { id: "simulado", label: "Simulado" },
-  { id: "plano", label: "Minha revisão" },
+const tabs: { id: TabId; label: string; icon: string }[] = [
+  { id: "reta", label: "Reta final", icon: "M5 21V4m0 0h11l-2 4 2 4H5" },
+  { id: "materiais", label: "Materiais", icon: "M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16ZM8 7h8M8 11h6" },
+  { id: "questoes", label: "Questões", icon: "M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" },
+  { id: "simulado", label: "Simulado", icon: "M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM9 1h6" },
+  { id: "plano", label: "Revisão", icon: "M9 11l2 2 4-4M5 4h14v16H5V4Z" },
 ];
 
 function Html({ html, className }: { html: string; className?: string }) {
@@ -52,12 +52,27 @@ export default function HeroExplorer({ data }: { data: ExplorerData }) {
     document.getElementById(`${uid}-tab-${tabs[next].id}`)?.focus();
   }
 
+  const activeIndex = Math.max(0, tabs.findIndex((item) => item.id === tab));
+  // Deslizar o dedo para os lados troca de aba (só no toque; vertical continua rolando a página).
+  const touch = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (event: React.TouchEvent) => { const t = event.touches[0]; touch.current = { x: t.clientX, y: t.clientY }; };
+  const onTouchEnd = (event: React.TouchEvent) => {
+    const start = touch.current; touch.current = null;
+    if (!start) return;
+    const t = event.changedTouches[0];
+    const dx = t.clientX - start.x; const dy = t.clientY - start.y;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
+    const next = Math.min(tabs.length - 1, Math.max(0, activeIndex + (dx < 0 ? 1 : -1)));
+    if (next !== activeIndex) setTab(tabs[next].id);
+  };
+
   const ctaHref = data.hasAccess ? data.studyArea : "#planos";
   const ctaLabel = data.hasAccess ? "Continuar minha revisão" : "Acessar a preparação completa";
 
   return (
     <section className="hx" id="experimentar" aria-label="Explore a plataforma">
-      <div className="hx-tabs" role="tablist" aria-label="Recursos da plataforma">
+      <div className="hx-tabs" role="tablist" aria-label="Recursos da plataforma" style={{ ["--idx" as string]: activeIndex } as React.CSSProperties}>
+        <i className="hx-ink" aria-hidden="true" />
         {tabs.map((item, index) => (
           <button
             key={item.id}
@@ -72,12 +87,13 @@ export default function HeroExplorer({ data }: { data: ExplorerData }) {
             onClick={() => setTab(item.id)}
             onKeyDown={(event) => onKey(event, index)}
           >
-            {item.label}
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={item.icon} /></svg>
+            <span>{item.label}</span>
           </button>
         ))}
       </div>
 
-      <div className="hx-panels">
+      <div className="hx-panels" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div role="tabpanel" id={`${uid}-panel-reta`} aria-labelledby={`${uid}-tab-reta`} hidden={tab !== "reta"} className="hx-panel hx-panel-reta">
           <BookLibraryHero />
           <ul className="hx-chips" aria-label="Disciplinas da reta final">
@@ -107,7 +123,7 @@ export default function HeroExplorer({ data }: { data: ExplorerData }) {
       </div>
 
       <div className="hx-foot">
-        <p>Demonstração com amostras. Nada aqui é salvo nem vira progresso.</p>
+        <p>Demonstração com amostras. Nada aqui é salvo. Deslize para o lado para ver o próximo recurso.</p>
         <Link className="ref-button ref-button-primary" href={ctaHref} data-analytics-event="explorer_cta">{ctaLabel}</Link>
       </div>
     </section>
