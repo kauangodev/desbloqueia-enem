@@ -159,3 +159,28 @@ body.godev-app .petroleum-hero .hx .hx-rich > :last-child, body.godev-app .petro
   body.godev-app.godev-app .consent:not(:has(.consent-options)) > div:has(> button) { display: grid; grid-template-columns: 1.1fr 1.4fr 1fr; gap: 6px; }
   body.godev-app.godev-app .consent:not(:has(.consent-options)) > div:has(> button) > .button { min-height: 44px; padding-inline: 6px; font-size: .8125rem; white-space: nowrap; grid-column: auto; order: 0; }
 }
+
+/* Destaque do domingo no topo da landing */
+.landing-shell .cp-lead { gap: 10px 12px; }
+.landing-shell .cp-badge { gap: 8px; padding: 0 14px; min-height: 34px; background: rgb(255 93 108 / 16%); color: #ffd5d9; border: 1.5px solid rgb(255 93 108 / 60%); font-weight: 800; letter-spacing: .02em; }
+.landing-shell .cp-badge::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #ff5d6c; animation: cp-pulse 1.4s ease-in-out infinite; }
+.landing-shell .cp-countdown { flex-basis: 100%; font-size: 1.0625rem; font-weight: 800; color: var(--text-primary, #f4fbf7); }
+@keyframes cp-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.75); } }
+@media (prefers-reduced-motion: reduce) { .landing-shell .cp-badge::before { animation: none; } }
+/* "Entrar" discreto no cabeçalho da landing: o botão de compra é o único destaque */
+@media (max-width: 768px) {
+  .landing-shell .login-link { background: transparent !important; color: var(--text-primary, #f4fbf7) !important; border: 1.5px solid rgb(255 255 255 / 28%) !important; box-shadow: none !important; font-weight: 700; }
+}
+@media (max-width: 768px) {
+  /* cartões genéricos (Foco no ENEM / Estudo completo / Acompanhamento) atrasam a chegada aos planos no celular */
+  .landing-shell .petroleum-benefits { display: none; }
+}
+/* título do topo alinhado à esquerda com o restante do texto (em telas largas ele ficava centralizado) */
+.landing-shell .reformulated-landing .landing-hero .petroleum-hero-copy h1 { margin-inline: 0; max-width: 20ch; }
+@media (min-width: 641px) {
+  .landing-shell .reformulated-landing .landing-hero .petroleum-hero-copy > :is(.cp-lead, p, .landing-actions) { margin-inline: 0; max-width: none; justify-content: flex-start; text-align: left; }
+}
+@media (min-width: 641px) {
+  .landing-shell .reformulated-landing .landing-hero .petroleum-hero-copy > :is(.cp-lead, h1, p, .landing-actions) { align-self: stretch; width: auto; }
+  .landing-shell .reformulated-landing .landing-hero .petroleum-hero-copy > h1 { max-width: none; text-align: left; }
+}
