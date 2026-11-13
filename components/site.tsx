@@ -13,10 +13,64 @@ export function Brand() {
     </Link>
   );
 }
+const NAV_LINKS: [string, string][] = [
+  ["Planos", "/landing#planos"],
+  ["Como funciona", "/landing#como-funciona"],
+  ["E-books", "/landing#materiais"],
+  ["Dúvidas", "/landing#duvidas"],
+];
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("");
   const firstLink = useRef<HTMLAnchorElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const bar = useRef<HTMLSpanElement>(null);
+  // Fecha o menu e rola suavemente até a seção quando já estamos na landing (mantém utm/fbclid na URL).
+  const goTo = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setOpen(false);
+    const id = href.split("#")[1];
+    const target = id ? document.getElementById(id) : null;
+    if (!target || window.location.pathname !== "/landing") return;
+    event.preventDefault();
+    document.body.style.overflow = "";
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${id}`);
+    });
+  };
+  // Barra de progresso de leitura e cabeçalho que recolhe ao descer e volta ao subir (celular).
+  useEffect(() => {
+    let last = window.scrollY;
+    let ticking = false;
+    const update = () => {
+      const y = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (bar.current) bar.current.style.transform = `scaleX(${max > 0 ? Math.min(1, Math.max(0, y / max)) : 0})`;
+      const el = headerRef.current;
+      if (el && Math.abs(y - last) > 6) {
+        if (y > last && y > 140) el.dataset.hidden = "true";
+        else if (y < last || y <= 80) el.dataset.hidden = "false";
+        last = y;
+      }
+      ticking = false;
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  // Destaca no menu a seção que está na tela.
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return;
+    const targets = NAV_LINKS.map(([, href]) => document.getElementById(href.split("#")[1])).filter((el): el is HTMLElement => Boolean(el));
+    if (!targets.length) return;
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id);
+    }, { rootMargin: "-40% 0px -55% 0px" });
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     if (!open) return;
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -31,7 +85,8 @@ export function Header() {
     };
   }, [open]);
   return (
-    <header className="site-header">
+    <header className="site-header" ref={headerRef} data-hidden="false">
+      <span className="scroll-progress" ref={bar} aria-hidden="true" />
       <div className="container header-inner">
         <Brand />
         {open && <button className="nav-backdrop" type="button" aria-label="Fechar menu" onClick={() => setOpen(false)} />}
@@ -39,16 +94,13 @@ export function Header() {
           aria-label="Navegação principal"
           className={open ? "nav open" : "nav"}
         >
-          {[
-            ["Como funciona", "/landing#como-funciona"],
-            ["Planos", "/landing#planos"],
-            ["E-books", "/landing#materiais"],
-            ["Dúvidas", "/landing#duvidas"],
-          ].map(([label, href], index) => (
-            <Link key={href} href={href} ref={index === 0 ? firstLink : undefined} onClick={() => setOpen(false)}>
+          {NAV_LINKS.map(([label, href], index) => (
+            <Link key={href} href={href} ref={index === 0 ? firstLink : undefined} onClick={(event) => goTo(event, href)} aria-current={active === href.split("#")[1] ? "true" : undefined}>
               {label}
             </Link>
           ))}
+          <Link className="nav-extra nav-cta" href="/landing#planos" onClick={(event) => goTo(event, "/landing#planos")}>Quero o Essencial · R$ 10,90</Link>
+          <Link className="nav-extra nav-login" href="/entrar" onClick={() => setOpen(false)}>Já tenho acesso · Entrar</Link>
         </nav>
         <div className="header-actions">
           <Link href="/entrar" className="login-link">
