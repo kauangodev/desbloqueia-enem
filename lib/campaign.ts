@@ -80,10 +80,10 @@ export function campaignView(today?: string): CampaignView {
     ...base,
     active: true,
     countdown,
-    headline: days <= 7 ? "Seu próximo domingo" : "Sua reta final",
-    emphasis: days <= 7 ? "começa agora." : "para o 2º dia começa agora.",
-    support: "Organize sua reta final de Matemática e Natureza com revisão objetiva, questões comentadas e simulados para praticar até a prova.",
-    primaryCta: "Quero minha revisão para domingo",
+    headline: days <= 7 ? "Revise Matemática e Natureza" : "Sua reta final",
+    emphasis: days <= 7 ? "antes de domingo." : "para o 2º dia começa agora.",
+    support: "600 questões comentadas, 5 simulados de 90 questões e 11 treinos para praticar até a prova. Plano Essencial por R$ 10,90, pagamento único.",
+    primaryCta: "Quero o Essencial · R$ 10,90",
     secondaryCta: "Experimentar uma questão",
   };
 }

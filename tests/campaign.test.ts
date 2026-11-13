@@ -9,8 +9,8 @@ test("antes da prova: selo, contagem e título dependem da data real", () => {
   assert.equal(v.daysLeft, 6);
   assert.equal(v.label, "Reta final ENEM · 15 de novembro");
   assert.equal(v.countdown, "Faltam 6 dias para o segundo dia do Enem.");
-  assert.equal(v.headline, "Seu próximo domingo");
-  assert.equal(v.emphasis, "começa agora.");
+  assert.equal(v.headline, "Revise Matemática e Natureza");
+  assert.equal(v.emphasis, "antes de domingo.");
   assert.equal(campaignView("2026-11-14").countdown, "Falta 1 dia para o segundo dia do Enem.");
 });
 

@@ -141,3 +141,21 @@ body.godev-app .petroleum-hero .hx .hx-rich > :last-child, body.godev-app .petro
   body.godev-app .consent:not(:has(.consent-options)) > div:has(> button) > .button { min-height: 40px; font-size: .8125rem; }
 }
 .ref-fee-note { margin: 14px auto 0; max-width: 62ch; text-align: center; font-size: .875rem; line-height: 1.5; color: var(--text-secondary, #c9e0e5); }
+
+/* Botão de compra fixo (celular) */
+.sticky-buy { display: none; }
+@media (max-width: 768px) {
+  .sticky-buy { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); text-align: center; background: rgb(6 22 26 / 96%); border-top: 1px solid rgb(110 231 183 / 35%); box-shadow: 0 -10px 30px rgb(0 0 0 / 35%); transition: transform .25s ease; }
+  .sticky-buy.is-hidden { transform: translateY(115%); pointer-events: none; }
+  .sticky-buy .ref-button { display: flex; width: 100%; min-height: 52px; justify-content: center; align-items: center; font-weight: 800; }
+  .sticky-buy small { display: block; margin-top: 6px; font-size: .75rem; color: var(--text-secondary, #c9e0e5); }
+  .landing-shell { padding-bottom: 96px; }
+}
+/* Aviso de cookies enxuto no celular: no topo, uma linha de texto e botões pequenos, sem cobrir o botão de compra */
+@media (max-width: 640px) {
+  body.godev-app.godev-app .consent:not(:has(.consent-options)) { top: 8px !important; bottom: auto !important; left: 8px; right: 8px; max-width: none; padding: 10px 12px; border-radius: 14px; }
+  body.godev-app.godev-app .consent:not(:has(.consent-options)) > b { display: none; }
+  body.godev-app.godev-app .consent:not(:has(.consent-options)) > p { margin: 0 0 8px; font-size: .78rem; line-height: 1.3; }
+  body.godev-app.godev-app .consent:not(:has(.consent-options)) > div:has(> button) { display: grid; grid-template-columns: 1.1fr 1.4fr 1fr; gap: 6px; }
+  body.godev-app.godev-app .consent:not(:has(.consent-options)) > div:has(> button) > .button { min-height: 44px; padding-inline: 6px; font-size: .8125rem; white-space: nowrap; grid-column: auto; order: 0; }
+}

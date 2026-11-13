@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Header, Footer, FAQ } from "../../components/site";
 import HeroExplorer from "./HeroExplorer";
 import CheckoutParams from "./CheckoutParams";
+import StickyBuy from "./StickyBuy";
 import { LandingMaterialCarousel } from "./LandingMaterialCarousel";
 import PremiumOfferModal from "../../components/premium-offer-modal";
 import { money } from "../../lib/config";
@@ -27,10 +28,11 @@ export default async function LandingPage() {
   const explorer = buildExplorerData({ counts: { questions: facts.questions, modules: facts.modules, simulados: facts.simulados, simuladoQuestions: facts.simuladoQuestions, treinos: facts.treinos }, studyArea: campaign.destinations.studyArea, hasAccess, countdown: view.countdown, active: view.active });
   return <div className="landing-shell landing-light">
     <CheckoutParams />
+    {view.active && checkoutReady && !hasAccess ? <StickyBuy href="/api/checkout/essencial" label={view.primaryCta} /> : null}
     <Header />
     <main id="conteudo" className="reformulated-landing landing-light">
       <section className="landing-hero container petroleum-hero" aria-labelledby="landing-title">
-        <div className="petroleum-hero-copy"><CampaignHeroLead view={view} /><h1 id="landing-title">{view.headline} <em>{view.emphasis}</em></h1><p>{view.support}</p><div className="landing-actions">{view.active && hasAccess ? <Link className="ref-button ref-button-primary" href={campaign.destinations.studyArea} data-analytics-event="campaign_hero_cta">Continuar minha revisão</Link> : <Link className="ref-button ref-button-primary" href="#planos" data-analytics-event={view.active ? "campaign_hero_cta" : undefined}>{view.primaryCta}</Link>}<Link className="ref-button ref-button-link" href="#experimentar">{view.secondaryCta}</Link></div><CampaignHeroFacts view={view} facts={facts} /></div>
+        <div className="petroleum-hero-copy"><CampaignHeroLead view={view} /><h1 id="landing-title">{view.headline} <em>{view.emphasis}</em></h1><p>{view.support}</p><div className="landing-actions">{view.active && hasAccess ? <Link className="ref-button ref-button-primary" href={campaign.destinations.studyArea} data-analytics-event="campaign_hero_cta">Continuar minha revisão</Link> : view.active && checkoutReady ? <a className="ref-button ref-button-primary" href="/api/checkout/essencial" data-analytics-event="campaign_hero_cta">{view.primaryCta}</a> : <Link className="ref-button ref-button-primary" href="#planos" data-analytics-event={view.active ? "campaign_hero_cta" : undefined}>{view.primaryCta}</Link>}<Link className="ref-button ref-button-link" href="#planos">Ver planos e o que está incluído</Link></div><CampaignHeroFacts view={view} facts={facts} /></div>
         <HeroExplorer data={explorer} />
       </section>
       <section className="petroleum-benefits container" aria-label="Recursos para estudar"><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 3v2" /></svg><strong>Foco no ENEM</strong><p>Conteúdo direcionado à sua preparação.</p></article><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 3 8l9 5 9-5-9-5ZM3 12l9 5 9-5M3 16l9 5 9-5" /></svg><strong>Estudo completo</strong><p>Teoria, exercícios, simulados e e-books.</p></article><article><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M5 20V11M12 20V5M19 20v-6" /></svg><strong>Acompanhamento</strong><p>Veja sua evolução e ajuste sua rotina.</p></article></section>

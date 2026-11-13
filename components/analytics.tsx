@@ -223,7 +223,7 @@ export default function Analytics() {
   return (
     <div className="consent" aria-labelledby="consent-title" role="dialog" aria-modal="false" tabIndex={-1} ref={panelRef} onKeyDown={(e) => { if (e.key === "Escape" && choice !== null) close(); }}>
       <b id="consent-title">Seu estudo, sua escolha.</b>
-      <p>Usamos cookies essenciais para o acesso funcionar. Métricas opcionais ajudam a melhorar a experiência e só são ativadas se você permitir.</p>
+      <p>Usamos cookies essenciais para o acesso funcionar. Métricas opcionais só são ativadas se você permitir.</p>
       {custom ? (
         <fieldset className="consent-options">
           <legend className="sr-only">Categorias de cookies</legend>
@@ -239,9 +239,9 @@ export default function Analytics() {
           </>
         ) : (
           <>
+            <button type="button" className="button primary" onClick={() => choose("accepted")}>Aceitar</button>
             <button type="button" className="button secondary" onClick={() => choose("rejected")}>Só essenciais</button>
-            <button type="button" className="button secondary" onClick={() => setCustom(true)}>Personalizar</button>
-            <button type="button" className="button primary" onClick={() => choose("accepted")}>Permitir métricas</button>
+            <button type="button" className="button secondary" onClick={() => setCustom(true)}>Opções</button>
           </>
         )}
       </div>
