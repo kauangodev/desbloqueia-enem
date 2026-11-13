@@ -295,3 +295,11 @@ body .landing-shell .ref-price-card.is-premium h3 { color: #fbbf24; }
 .mc-thumb:focus-visible { outline: 3px solid #fbbf24; outline-offset: 2px; }
 @media (min-width: 769px) { .mc-rail { justify-content: center; } }
 @media (prefers-reduced-motion: reduce) { .mc-thumb { transition: none; } }
+
+/* ===== Plano Premium: laranja forte no fundo e no contorno ===== */
+body .landing-shell .ref-price-card.is-premium { position: relative; border: 2px solid #f97316 !important; background: linear-gradient(165deg, rgb(249 115 22 / 34%) 0%, rgb(154 52 18 / 34%) 38%, rgb(28 17 10 / 94%) 100%) !important; box-shadow: 0 0 0 5px rgb(249 115 22 / 16%), 0 28px 70px -20px rgb(249 115 22 / 70%) !important; animation: premium-glow 3.2s ease-in-out infinite; }
+body .landing-shell .ref-price-card.is-premium .ref-price { color: #fbbf24; }
+body .landing-shell .ref-price-card.is-premium li { color: #fff3e3; }
+body .landing-shell .ref-price-card.is-premium li span { filter: hue-rotate(-60deg) saturate(1.6); }
+@keyframes premium-glow { 0%, 100% { box-shadow: 0 0 0 5px rgb(249 115 22 / 16%), 0 28px 70px -20px rgb(249 115 22 / 60%); } 50% { box-shadow: 0 0 0 8px rgb(249 115 22 / 24%), 0 28px 80px -16px rgb(249 115 22 / 85%); } }
+@media (prefers-reduced-motion: reduce) { body .landing-shell .ref-price-card.is-premium { animation: none; } }
