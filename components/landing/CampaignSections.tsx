@@ -59,7 +59,7 @@ export function CampaignJourney({ view, facts, hasAccess }: { view: CampaignView
             <li>A área fica em <strong>Operação 2º Domingo</strong>, no menu do aluno.</li>
           </ul>
           <div className="cp-access-actions">{hasAccess
-            ? <Link className="ref-button ref-button-primary" href={campaign.destinations.studyArea} data-analytics-event="campaign_access_continue">Continuar minha revisão</Link>
+            ? <Link className="ref-button ref-button-primary ref-button-hot" href={campaign.destinations.studyArea} data-analytics-event="campaign_access_continue">Continuar minha revisão</Link>
             : <><Link className="ref-button ref-button-primary" href={campaign.destinations.offer} data-analytics-event="campaign_journey_cta">Ver planos e acesso</Link><Link className="cp-login" href={campaign.destinations.login}>Já tenho acesso: entrar</Link></>}</div>
         </aside>
       </div>

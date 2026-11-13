@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { materials } from "../../lib/config";
 
 /** No desktop mostra três capas completas (central em destaque); no celular, uma por vez. Sem avanço automático. */
@@ -15,7 +15,13 @@ export function LandingMaterialCarousel() {
 
   const visible = offsets.map((offset) => ({ item: materials[(activeIndex + offset + length) % length], offset }));
   const active = materials[activeIndex];
-  const categories = [...new Set(materials.map((item) => item.category))];
+  const rail = useRef<HTMLDivElement>(null);
+  // mantém a miniatura ativa centralizada no trilho (sem rolar a página)
+  useEffect(() => {
+    const strip = rail.current;
+    const button = strip?.children[activeIndex] as HTMLElement | undefined;
+    if (strip && button) strip.scrollTo({ left: button.offsetLeft - (strip.clientWidth - button.clientWidth) / 2, behavior: "smooth" });
+  }, [activeIndex]);
   const move = (direction: number) => setActiveIndex((current) => (current + direction + length) % length);
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -54,11 +60,6 @@ export function LandingMaterialCarousel() {
       onPointerUp={handlePointerUp}
       onPointerCancel={() => { pointerStart.current = null; }}
     >
-      <div className="mc-cats" role="group" aria-label="Escolher por área">
-        {categories.map((category) => (
-          <button key={category} type="button" className="mc-cat" aria-pressed={active.category === category} onClick={() => setActiveIndex(Math.max(0, materials.findIndex((item) => item.category === category)))}>{category}</button>
-        ))}
-      </div>
       <div className="material-carousel-stage">
         <button className="material-carousel-arrow is-prev" type="button" aria-label="Material anterior" onClick={() => move(-1)}>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6" /></svg>
@@ -83,13 +84,20 @@ export function LandingMaterialCarousel() {
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg>
         </button>
       </div>
+      <div className="mc-rail" ref={rail} role="tablist" aria-label="Todos os materiais">
+        {materials.map((item, index) => (
+          <button key={item.id} type="button" role="tab" className="mc-thumb" aria-selected={index === activeIndex} aria-label={`${index + 1}. ${item.title}`} onClick={() => setActiveIndex(index)}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={item.cover} alt="" width={44} height={62} loading="lazy" decoding="async" draggable={false} />
+          </button>
+        ))}
+      </div>
       <div className="material-carousel-caption" aria-live="polite">
         <span className="landing-eyebrow">{active.category}</span>
         <h3>{active.title}</h3>
         <p>{active.description}</p>
         <span>{activeIndex + 1} de {length} materiais · {active.pages} páginas</span>
       </div>
-      <div className="mc-progress" aria-hidden="true"><i style={{ width: `${((activeIndex + 1) / length) * 100}%` }} /></div>
       <div className="material-carousel-dots" role="tablist" aria-label="Selecionar material">
         {materials.map((item, index) => (
           <button key={item.id} type="button" role="tab" aria-label={`Material ${index + 1}: ${item.title}`} aria-selected={index === activeIndex} onClick={() => setActiveIndex(index)} />

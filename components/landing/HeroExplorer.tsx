@@ -124,7 +124,7 @@ export default function HeroExplorer({ data }: { data: ExplorerData }) {
 
       <div className="hx-foot">
         <p>Demonstração com amostras. Nada aqui é salvo. Deslize para o lado para ver o próximo recurso.</p>
-        <Link className="ref-button ref-button-primary" href={ctaHref} data-analytics-event="explorer_cta">{ctaLabel}</Link>
+        <Link className="ref-button ref-button-primary ref-button-hot" href={ctaHref} data-analytics-event="explorer_cta">{ctaLabel}</Link>
       </div>
     </section>
   );
