@@ -2,7 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { materials } from "../../lib/config";
+import { materials as allMaterials } from "../../lib/config";
+
+/** A campanha é de Matemática e Natureza: começa por elas, depois segue a ordem do catálogo. */
+const FIRST = ["Matemática", "Física", "Química", "Biologia"];
+const materials = [...allMaterials].sort((a, b) => { const ia = FIRST.indexOf(a.title), ib = FIRST.indexOf(b.title); return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib); });
 
 /** No desktop mostra três capas completas (central em destaque); no celular, uma por vez. Sem avanço automático. */
 const offsets = [-1, 0, 1] as const;

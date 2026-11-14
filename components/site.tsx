@@ -99,7 +99,7 @@ export function Header() {
               {label}
             </Link>
           ))}
-          <Link className="nav-extra nav-cta" href="/landing#planos" onClick={(event) => goTo(event, "/landing#planos")}>Quero o Premium · R$ 19,90</Link>
+          <Link className="nav-extra nav-cta" href="/landing#planos" onClick={(event) => goTo(event, "/landing#planos")}>Quero o Premium · R$ 20,89</Link>
           <Link className="nav-extra nav-login" href="/entrar" onClick={() => setOpen(false)}>Já tenho acesso · Entrar</Link>
         </nav>
         <div className="header-actions">
@@ -289,11 +289,11 @@ export function MaterialPreview() {
 const faqs = [
   [
     "Como vou acessar meus materiais?",
-    "O acesso é pela área do aluno, com o mesmo e-mail usado na compra. A Cakto processa o pagamento e somente compras confirmadas liberam o plano adquirido.",
+    "O acesso é pela área do aluno, com o mesmo e-mail usado na compra. A Cakto processa o pagamento e somente compras confirmadas liberam o plano adquirido. No primeiro acesso, use “Primeiro acesso” para criar sua senha.",
   ],
   [
     "Qual é a diferença entre os planos?",
-    "O Essencial reúne revisão, cronograma e exercícios. O Premium acrescenta simulados, repertório e a biblioteca histórica. Compare os itens na seção de planos.",
+    "Os dois incluem a Operação 2º Domingo inteira (600 questões comentadas de Matemática e Natureza, 5 simulados de 90 questões, 11 treinos e as revisões), além de Minha revisão e caderno de erros. O Essencial traz 4 e-books (Língua Portuguesa, História, Biologia e Matemática). O Premium traz os 16 e-books, incluindo Física, Química e Redação, o banco geral com 30 simulados, a biblioteca histórica e as fichas e checklists. Veja a tabela de comparação.",
   ],
   [
     "Posso estudar pelo celular?",
@@ -312,12 +312,24 @@ const faqs = [
     "Após a compra aprovada, use o mesmo e-mail da Cakto para criar sua senha e entrar na área de alunos. Se precisar, você poderá redefinir a senha pela tela de acesso.",
   ],
   [
+    "Quanto vou pagar?",
+    "Essencial: R$ 10,90 + R$ 0,99 de taxa do checkout = R$ 11,89. Premium: R$ 19,90 + R$ 0,99 = R$ 20,89. É pagamento único, sem mensalidade, e o total é o mesmo que aparece na tela de pagamento da Cakto.",
+  ],
+  [
+    "Paguei e o acesso não apareceu. E agora?",
+    "O plano é liberado quando a Cakto confirma o pagamento. Pagou e não consegue entrar? Fale com o atendimento informando o e-mail da compra e o comprovante. Nunca envie senha ou dados do cartão.",
+  ],
+  [
+    "Digitei o e-mail errado na compra.",
+    "O plano fica vinculado ao e-mail informado no pagamento. Fale com o atendimento, com o comprovante, o e-mail digitado e o e-mail correto, para avaliarmos a correção.",
+  ],
+  [
     "Como funciona a garantia?",
-    "Você tem sete dias após a compra para solicitar reembolso. A política de reembolso explica os canais e o que acontece com o acesso ao material.",
+    "Você tem sete dias após a compra para solicitar reembolso, pelo atendimento ou pelo comprovante da Cakto. A política de reembolso explica o passo a passo e o que acontece com o acesso ao material.",
   ],
   [
     "Como falar com o atendimento?",
-    "A página Atendimento reúne nossos canais oficiais. Informe o e-mail usado na compra e descreva sua dúvida. Nunca envie sua senha ou dados do cartão.",
+    "Pela página Atendimento, sem precisar entrar na plataforma. Informe o e-mail usado na compra e descreva sua dúvida. Nunca envie sua senha ou dados do cartão.",
   ],
 ];
 export function FAQ() {

@@ -6,10 +6,15 @@ import { useEffect, useState } from "react";
 export default function StickyBuy({ href, label, alert }: { href: string; label: string; alert?: string }) {
   const [hidden, setHidden] = useState(false);
   useEffect(() => {
-    const target = document.getElementById("planos");
-    if (!target || !("IntersectionObserver" in window)) return;
-    const observer = new IntersectionObserver(([entry]) => setHidden(entry.isIntersecting), { rootMargin: "0px 0px -35% 0px", threshold: 0 });
-    observer.observe(target);
+    // O botão flutuante sai da frente da oferta, da comparação e da demonstração (onde há alternativas e botões de resposta).
+    const targets = ["planos", "comparar", "experimentar"].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => Boolean(el));
+    if (!targets.length || !("IntersectionObserver" in window)) return;
+    const visible = new Set<Element>();
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) { if (entry.isIntersecting) visible.add(entry.target); else visible.delete(entry.target); }
+      setHidden(visible.size > 0);
+    }, { rootMargin: "0px 0px -35% 0px", threshold: 0 });
+    targets.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
   return (

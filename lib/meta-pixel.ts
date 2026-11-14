@@ -1,3 +1,5 @@
+import { readConsent } from "./consent";
+
 export const META_PIXEL_ID =
   process.env.NEXT_PUBLIC_META_PIXEL_ID || "28476913325342920";
 
@@ -20,7 +22,7 @@ declare global {
 }
 
 export function hasMarketingConsent() {
-  return typeof window !== "undefined" && localStorage.getItem("godev-consent") === "accepted";
+  return typeof window !== "undefined" && readConsent()?.analytics === true;
 }
 
 export function trackMetaEvent(

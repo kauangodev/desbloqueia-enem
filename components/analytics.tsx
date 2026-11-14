@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { META_PIXEL_ID, trackMetaEvent } from "../lib/meta-pixel";
+import { META_PIXEL_ID, hasMarketingConsent, trackMetaEvent } from "../lib/meta-pixel";
 import { OPEN_CONSENT_EVENT, readConsent, saveConsent } from "../lib/consent";
+import { plans } from "../lib/config";
 
 declare global {
   interface Window {
@@ -86,7 +87,7 @@ function loadTikTokPixel(id: string) {
 
 function trackTikTok(event: string, parameters?: Record<string, string | number>) {
   const ttq = (window as unknown as { ttq?: TikTokQueue }).ttq;
-  if (localStorage.getItem("godev-consent") !== "accepted" || !ttq?.track) return;
+  if (!hasMarketingConsent() || !ttq?.track) return;
   ttq.track(event, parameters || {});
 }
 
@@ -175,22 +176,43 @@ export default function Analytics() {
     }
     if (Object.keys(utm).length) sessionStorage.setItem("godev-utm", JSON.stringify(utm));
 
+    // Definição dos eventos (cada um representa uma única coisa):
+    //  - ViewContent "oferta_planos": a seção de planos apareceu na tela (não é visita à página nem clique).
+    //  - InitiateCheckout: clique em um botão que leva ao checkout, com o plano e o valor-base do plano. NÃO é compra.
+    //  - Pix gerado, compra aprovada e liberação de acesso acontecem fora desta página (Cakto/servidor) e não são registrados aqui.
     const click = (event: MouseEvent) => {
       const anchor = (event.target as Element).closest("a");
+      const href = anchor?.getAttribute("href") || "";
       const tracked = (event.target as Element).closest<HTMLElement>("[data-analytics-event]")?.dataset.analyticsEvent;
-      if (tracked) {
-        const eventName = tracked.includes("checkout") || tracked === "hero_primary_cta" ? "InitiateCheckout" : "ViewContent";
-        trackMetaEvent(eventName, { content_name: tracked });
+      if (href.startsWith("/api/checkout/")) {
+        const planId = href.split("?")[0].split("/").pop() || "";
+        const plan = plans.find((item) => item.id === planId);
+        const params: Record<string, string | number> = { content_name: plan ? `Desbloqueia ENEM 2026 — ${plan.name}` : "Desbloqueia ENEM 2026", content_ids: planId, content_type: "product", currency: "BRL" };
+        if (plan) params.value = plan.cents / 100;
+        trackMetaEvent("InitiateCheckout", params);
+        trackTikTok("InitiateCheckout", params);
+        window.gtag?.("event", "begin_checkout", { currency: "BRL", value: plan ? plan.cents / 100 : undefined, items: [{ item_id: planId }] });
+      } else if (tracked) {
+        trackMetaEvent("ViewContent", { content_name: tracked });
         window.gtag?.("event", tracked);
-      }
-      if (anchor?.getAttribute("href")?.startsWith("/api/checkout/")) {
-        trackMetaEvent("InitiateCheckout", { content_name: "Desbloqueia ENEM 2026" });
-        trackTikTok("InitiateCheckout", { content_name: "Desbloqueia ENEM 2026" });
-        window.gtag?.("event", "begin_checkout");
       }
     };
     document.addEventListener("click", click);
-    return () => document.removeEventListener("click", click);
+
+    // Oferta visualizada: uma vez por carregamento de página, quando a seção de planos entra na tela.
+    let offerObserver: IntersectionObserver | null = null;
+    const offer = document.getElementById("planos");
+    if (offer && "IntersectionObserver" in window) {
+      offerObserver = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        trackMetaEvent("ViewContent", { content_name: "oferta_planos", content_type: "product_group", currency: "BRL" });
+        trackTikTok("ViewContent", { content_name: "oferta_planos" });
+        window.gtag?.("event", "view_item_list", { item_list_name: "planos" });
+        offerObserver?.disconnect();
+      }, { threshold: 0.25 });
+      offerObserver.observe(offer);
+    }
+    return () => { document.removeEventListener("click", click); offerObserver?.disconnect(); };
   }, [choice, ga, pageKey, pixel]);
 
   function close() { setOpen(false); setCustom(false); const el = returnFocus.current; returnFocus.current = null; if (el && document.contains(el)) el.focus(); }

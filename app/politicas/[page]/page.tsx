@@ -73,7 +73,7 @@ const policies: Record<
       ],
       [
         "Como solicitar",
-        "Informe o e-mail utilizado na compra e o identificador do pedido. Não envie senhas, códigos de acesso nem dados completos do cartão. Quando as vendas estiverem abertas, os canais oficiais estarão disponíveis nesta página e no comprovante.",
+        "Escreva para o atendimento (página Atendimento, sem precisar entrar na plataforma) informando o e-mail utilizado na compra e o identificador do pedido, que está no comprovante da Cakto. Não envie senhas, códigos de acesso nem dados completos do cartão. Se preferir, você também pode usar o canal indicado no comprovante de pagamento.",
       ],
       [
         "Após a solicitação",
@@ -116,7 +116,7 @@ export default async function Policy({
         <p>
           GoDev Education · Desbloqueia ENEM 2026
           <br />
-          Atualizado em 22 de outubro de 2026.
+          Atualizado em 14 de novembro de 2026.
         </p>
         {policy.sections.map(([title, text]) => (
           <section key={title}>

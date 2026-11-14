@@ -1,5 +1,6 @@
 import { distinctQuestionCount, questionBank } from "../data/question-bank";
 import { questions as operacaoQuestions } from "./operacao/catalog";
+import { ebookMaterials } from "./ebook-catalog";
 
 /**
  * Inventário real do acervo (calculado dos dados, nunca digitado à mão na oferta).
@@ -36,6 +37,16 @@ export function accurateFeatures(features: string[]) {
     // Essencial: "40 exercícios comentados" subestimava a entrega (as listas do banco geral e a Operação 2º Domingo também estão no plano).
     if (/^40 exerc[ií]cios comentados/i.test(feature)) {
       out.push(`Exercícios comentados e a Operação 2º Domingo (${inv.operacaoQuestions} questões de Matemática e Ciências da Natureza)`);
+      continue;
+    }
+    // Nomes exatos dos e-books de cada plano, vindos do catálogo (nunca digitados à mão na oferta).
+    if (/^E-books essenciais/i.test(feature)) {
+      const titles = ebookMaterials.filter((book) => book.plan === "essencial").map((book) => book.title);
+      out.push(`${titles.length} e-books: ${titles.slice(0, -1).join(", ")} e ${titles[titles.length - 1]}`);
+      continue;
+    }
+    if (/^Cole[cç][aã]o completa com 16 e-books/i.test(feature)) {
+      out.push(`Os ${ebookMaterials.length} e-books didáticos de 34 páginas, incluindo Física, Química e Redação`);
       continue;
     }
     if (inflated.some((pattern) => pattern.test(feature))) {

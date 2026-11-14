@@ -35,8 +35,10 @@ export default function HeroExplorer({ data }: { data: ExplorerData }) {
       if (window.location.hash === "#experimentar") setTab("questoes");
     };
     sync();
+    const openTab = (event: Event) => { const id = (event as CustomEvent<string>).detail as TabId; if (tabs.some((item) => item.id === id)) setTab(id); };
     window.addEventListener("hashchange", sync);
-    return () => window.removeEventListener("hashchange", sync);
+    window.addEventListener("godev:open-tab", openTab);
+    return () => { window.removeEventListener("hashchange", sync); window.removeEventListener("godev:open-tab", openTab); };
   }, []);
 
   function onKey(event: React.KeyboardEvent, index: number) {

@@ -356,3 +356,84 @@ body .landing-shell .ref-price-card.is-premium li span { filter: hue-rotate(-60d
 body .hot-strip, body .hot-strip span, body .hot-strip b, body .hot-strip em { color: #2a1500 !important; }
 .cv-proof b { -webkit-text-fill-color: transparent; }
 .cv-proof li { grid-template-rows: auto 2.7em; align-content: start; }
+
+/* ===== Topo com respostas diretas, caminho de hoje, comparação de planos e entrega ===== */
+.hero-answers { display: grid; gap: 8px; margin: 14px 0 18px; padding: 0; }
+.hero-answers div { display: grid; grid-template-columns: 5.2rem 1fr; gap: 10px; align-items: baseline; padding: 10px 14px; border-radius: 14px; background: rgb(255 255 255 / 6%); border: 1px solid rgb(255 255 255 / 11%); }
+.hero-answers dt { font-size: .75rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: #fbbf24; }
+.hero-answers dd { margin: 0; font-size: .9375rem; line-height: 1.4; color: var(--text-primary, #f4fbf7); }
+.hero-trust { margin: 12px 0 0; font-size: .8125rem; line-height: 1.45; color: var(--text-secondary, #c9e0e5); }
+.landing-shell .ref-button-ghost { background: transparent !important; color: var(--text-primary, #f4fbf7) !important; border: 1.5px solid rgb(255 255 255 / 35%) !important; font-weight: 700; }
+@media (max-width: 480px) { .hero-answers div { grid-template-columns: 1fr; gap: 2px; } }
+
+.cv-steps { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; counter-reset: st; }
+.cv-steps li { position: relative; display: grid; gap: 4px; padding: 16px 16px 16px 66px; border-radius: 18px; background: rgb(255 255 255 / 6%); border: 1px solid rgb(255 255 255 / 12%); }
+.cv-steps li > span { position: absolute; left: 16px; top: 16px; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; background: linear-gradient(135deg, #fbbf24, #f97316); color: #2a1500; }
+.cv-steps b { font-size: 1.125rem; }
+.cv-steps p { margin: 0; color: var(--text-secondary, #c9e0e5); line-height: 1.45; }
+@media (min-width: 900px) { .cv-steps { grid-template-columns: repeat(4, 1fr); } .cv-steps li { padding: 66px 16px 16px; } }
+
+.cmp-wrap { overflow-x: auto; border-radius: 20px; border: 1px solid rgb(255 255 255 / 12%); background: rgb(255 255 255 / 4%); }
+.cmp { width: 100%; min-width: 560px; border-collapse: collapse; font-size: .9375rem; }
+.cmp th, .cmp td { padding: 12px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid rgb(255 255 255 / 9%); }
+.cmp thead th { font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-secondary, #c9e0e5); }
+.cmp tbody th { font-weight: 700; color: var(--text-primary, #f4fbf7); width: 38%; }
+.cmp td { display: table-cell; }
+.cmp td b { display: block; font-size: 1.125rem; }
+.cmp td small { display: block; margin-top: 2px; font-size: .8125rem; line-height: 1.35; color: var(--text-secondary, #c9e0e5); }
+.cmp .is-premium { background: rgb(249 115 22 / 12%); }
+.cmp thead .is-premium { color: #fbbf24; }
+.cmp thead em { font-style: normal; font-size: .6875rem; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: linear-gradient(90deg, #fbbf24, #f97316); color: #2a1500; }
+.cmp-yes { font-weight: 800; color: #4ade80; }
+.cmp-no { color: #9fbdb6; }
+.cmp-part { font-weight: 800; color: #fbbf24; }
+.cmp tbody tr:last-child th, .cmp tbody tr:last-child td { border-bottom: 0; }
+
+.ref-total { margin: 4px 0 12px; font-size: .875rem; color: var(--text-secondary, #c9e0e5); }
+.ref-total b { color: #fbbf24; font-size: 1.0625rem; }
+.delivery { margin: 22px 0 0; padding: 16px 18px; border-radius: 18px; background: rgb(255 255 255 / 6%); border: 1px solid rgb(255 255 255 / 12%); }
+.delivery b { display: block; margin-bottom: 8px; }
+.delivery ul { display: grid; gap: 6px; margin: 0; padding-left: 20px; color: var(--text-secondary, #c9e0e5); font-size: .9375rem; line-height: 1.45; }
+.support-cases ul { display: grid; gap: 8px; padding-left: 20px; line-height: 1.5; }
+.support-note { margin-top: 10px; font-size: .875rem; opacity: .85; }
+.hero-sub { margin: 10px 0 16px; font-size: 1.0625rem; line-height: 1.45; color: var(--text-primary, #f4fbf7); max-width: 56ch; }
+.hero-answers { margin: 16px 0 0; }
+@media (min-width: 900px) { .hero-answers { grid-template-columns: 1fr; } .hero-answers div { padding: 8px 12px; } }
+/* a contagem já aparece na faixa do topo: no topo da hero ela só empurrava o botão para baixo */
+.landing-shell .landing-hero .cp-countdown { display: none; }
+.landing-shell .landing-hero .cp-lead { margin-bottom: 8px; }
+.landing-shell .landing-hero h1 { margin-block: 8px 8px; }
+@media (max-width: 520px) { .hot-strip-cta { display: none; } .hot-strip { padding-block: 8px; } }
+
+/* ordem do topo no celular: selo, título, descrição, botões, confiança, respostas e só então a demonstração */
+@media (max-width: 899px) {
+  body.godev-app .landing-hero .landing-actions > a:nth-child(2) { order: 5; width: 100%; }
+  body.godev-app .landing-hero .landing-actions > a:nth-child(3) { order: 6; width: 100%; }
+  body.godev-app .landing-hero .hero-trust { order: 7; }
+  body.godev-app .landing-hero .hero-answers { order: 8; }
+  body.godev-app .landing-hero .hx { order: 9; }
+}
+/* comparação em cartões no celular: cada item mostra Essencial e Premium um sob o outro, sem rolagem lateral */
+@media (max-width: 700px) {
+  .cmp-wrap { overflow: visible; border: 0; background: transparent; }
+  .cmp, .cmp tbody, .cmp tr, .cmp th, .cmp td { display: block; min-width: 0; width: 100%; }
+  .cmp { min-width: 0; }
+  .cmp thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .cmp tbody tr { margin-bottom: 12px; border-radius: 18px; border: 1px solid rgb(255 255 255 / 12%); background: rgb(255 255 255 / 5%); overflow: hidden; }
+  .cmp tbody th { width: 100%; padding: 12px 14px 8px; border-bottom: 0; }
+  .cmp td { padding: 8px 14px 12px; border-bottom: 0; }
+  .cmp td::before { content: attr(data-label); display: block; margin-bottom: 2px; font-size: .6875rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: #9fbdb6; }
+  .cmp td.is-premium::before { color: #fbbf24; }
+  .cmp td + td { border-top: 1px solid rgb(255 255 255 / 9%); }
+}
+.cmp, .cmp th, .cmp td { box-sizing: border-box; white-space: normal; overflow-wrap: anywhere; word-break: normal; }
+.cmp-wrap { max-width: 100%; }
+.cmp td[colspan] { text-align: center; }
+@media (max-width: 700px) { .cmp td[colspan] { text-align: left; } .cmp td[colspan]::before { color: #6ee7b7; } }
+.delivery { text-align: left; }
+.delivery ul { text-align: left; }
+@media (min-width: 900px) {
+  .landing-shell .reformulated-landing .landing-hero h1 { font-size: clamp(2.4rem, 3.5vw, 3.3rem); line-height: 1.02; }
+  .landing-shell .landing-hero .landing-actions { gap: 10px; }
+}
+body.godev-app .landing-hero .petroleum-hero-copy > p.hero-trust, .landing-shell .landing-hero .hero-trust { font-size: .8125rem; line-height: 1.45; color: var(--text-secondary, #c9e0e5); }

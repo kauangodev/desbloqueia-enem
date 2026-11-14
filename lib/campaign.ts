@@ -1,3 +1,4 @@
+import { brl, planTotalCents } from "./pricing";
 import { campaignStatus, formatLongDate, operacao, type Phase } from "./operacao/config";
 
 /**
@@ -83,7 +84,7 @@ export function campaignView(today?: string): CampaignView {
     headline: days <= 7 ? "Revise Matemática e Natureza" : "Sua reta final",
     emphasis: days <= 7 ? "antes de domingo." : "para o 2º dia começa agora.",
     support: "600 questões comentadas, 5 simulados de 90 questões, 11 treinos e 16 e-books de 34 páginas. Plano Premium por R$ 19,90, pagamento único.",
-    primaryCta: "Quero o Premium · R$ 19,90",
+    primaryCta: `Quero o Premium · ${brl(planTotalCents("premium"))}`,
     secondaryCta: "Experimentar uma questão",
   };
 }
