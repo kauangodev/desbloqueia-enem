@@ -201,7 +201,7 @@ export default function Analytics() {
 
     // Oferta visualizada: uma vez por carregamento de página, quando a seção de planos entra na tela.
     let offerObserver: IntersectionObserver | null = null;
-    const offer = document.getElementById("planos");
+    const offer = document.getElementById("ofertas") ?? document.getElementById("planos");
     if (offer && "IntersectionObserver" in window) {
       offerObserver = new IntersectionObserver((entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;

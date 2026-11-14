@@ -66,7 +66,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${bodyFont.variable} ${displayFont.variable}`}>
+    <html lang="pt-BR" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable}`}>
       <body className="godev-app">
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo

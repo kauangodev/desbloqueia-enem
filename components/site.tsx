@@ -14,9 +14,9 @@ export function Brand() {
   );
 }
 const NAV_LINKS: [string, string][] = [
-  ["Planos", "/landing#planos"],
-  ["O que inclui", "/landing#inclui"],
-  ["E-books", "/landing#materiais"],
+  ["Amostra", "/landing#amostra"],
+  ["Planos", "/landing#ofertas"],
+  ["Acesso", "/landing#acesso"],
   ["Dúvidas", "/landing#duvidas"],
 ];
 export function Header() {
@@ -99,7 +99,7 @@ export function Header() {
               {label}
             </Link>
           ))}
-          <Link className="nav-extra nav-cta" href="/landing#planos" onClick={(event) => goTo(event, "/landing#planos")}>Quero o Premium · R$ 20,89</Link>
+          <Link className="nav-extra nav-cta" href="/landing#ofertas" onClick={(event) => goTo(event, "/landing#ofertas")}>Quero escolher meu plano</Link>
           <Link className="nav-extra nav-login" href="/entrar" onClick={() => setOpen(false)}>Já tenho acesso · Entrar</Link>
         </nav>
         <div className="header-actions">
@@ -146,8 +146,8 @@ export function Footer() {
         </div>
         <div>
           <b>Desbloqueia ENEM</b>
-          <Link href="/landing#materiais">Conheça os materiais</Link>
-          <Link href="/landing#planos">Compare os planos</Link>
+          <Link href="/landing#amostra">Conheça os materiais</Link>
+          <Link href="/landing#ofertas">Compare os planos</Link>
           <Link href="/entrar">Área do aluno</Link>
         </div>
         <div>
