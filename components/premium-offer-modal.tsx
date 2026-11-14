@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { brl, SERVICE_FEE_CENTS } from "../lib/pricing";
 import { useEffect, useRef, useState } from "react";
 
 type PremiumOfferModalProps = {
@@ -166,10 +167,10 @@ export default function PremiumOfferModal({ enabled, delayMs, trigger = "load", 
       <section className="premium-offer-dialog" data-premium-offer-dialog role="dialog" aria-modal="true" aria-labelledby="premium-offer-title" aria-describedby="premium-offer-description">
         <button ref={closeRef} className="premium-offer-close" type="button" aria-label="Fechar oferta Premium" onClick={() => setOpen(false)}><span aria-hidden="true">×</span></button>
         <p className="premium-offer-kicker">GoDev Education • {plan.name}</p>
-        <h2 id="premium-offer-title">Dê mais direção à sua preparação para o ENEM.</h2>
+        <h2 id="premium-offer-title">Amplie sua revisão para o ENEM com o Premium.</h2>
         <p id="premium-offer-description" className="premium-offer-description">Conheça os recursos do Premium e escolha o próximo passo nos seus estudos.</p>
         <ul className="premium-offer-benefits">{benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}</ul>
-        <div className="premium-offer-price"><strong>{formatMoney(plan.cents)}</strong><span>pagamento único · acesso vitalício ao plano</span></div>
+        <div className="premium-offer-price"><strong>{brl(plan.cents + SERVICE_FEE_CENTS)}</strong><span>no total ({formatMoney(plan.cents)} + {brl(SERVICE_FEE_CENTS)} de taxa do checkout) · pagamento único, sem mensalidade</span></div>
         <div className="premium-offer-actions">
           <a className="button primary premium-offer-cta" href={checkoutHref}>{checkoutHref === "/suporte" ? "Ver detalhes do Premium" : "Quero o plano Premium"}</a>
           <button className="premium-offer-secondary" type="button" onClick={() => setOpen(false)}>Continuar navegando</button>

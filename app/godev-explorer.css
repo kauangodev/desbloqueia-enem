@@ -437,3 +437,7 @@ body .hot-strip, body .hot-strip span, body .hot-strip b, body .hot-strip em { c
   .landing-shell .landing-hero .landing-actions { gap: 10px; }
 }
 body.godev-app .landing-hero .petroleum-hero-copy > p.hero-trust, .landing-shell .landing-hero .hero-trust { font-size: .8125rem; line-height: 1.45; color: var(--text-secondary, #c9e0e5); }
+
+/* acabamentos: rótulos das abas da demonstração legíveis e alvos de toque do rodapé */
+.hx-tab { font-size: .75rem; }
+.site-footer .footer-grid a, .site-footer .footer-grid button { min-height: 40px; display: inline-flex; align-items: center; }

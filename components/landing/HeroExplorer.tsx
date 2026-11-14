@@ -69,7 +69,7 @@ export default function HeroExplorer({ data }: { data: ExplorerData }) {
   };
 
   const ctaHref = data.hasAccess ? data.studyArea : "#planos";
-  const ctaLabel = data.hasAccess ? "Continuar minha revisão" : "Acessar a preparação completa";
+  const ctaLabel = data.hasAccess ? "Continuar minha revisão" : "Ver planos e valores";
 
   return (
     <section className="hx" id="experimentar" aria-label="Explore a plataforma">
