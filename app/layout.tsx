@@ -1,3 +1,4 @@
+import { THEME_BOOT_SCRIPT } from "../lib/theme";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
@@ -67,6 +68,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning className={`${bodyFont.variable} ${displayFont.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+      </head>
       <body className="godev-app">
         <a className="skip-link" href="#conteudo">
           Pular para o conteúdo

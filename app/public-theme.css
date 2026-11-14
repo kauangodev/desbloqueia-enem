@@ -1,0 +1,73 @@
+/* Tema das páginas públicas (landing, atendimento, políticas, entrada, compra).
+   O escuro é a identidade padrão (app/godev-theme.css). Aqui só existe a tradução clara dos MESMOS tokens,
+   ligada por html[data-gd-theme="light"] e por um marcador (.theme-public) que só o Header público renderiza:
+   a área do aluno e o painel não carregam esse marcador e continuam escuros. */
+
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) {
+  color-scheme: light;
+  --bg-base: #ffffff; --bg-primary: #ffffff; --bg-secondary: #f2f8f4; --bg-sidebar: #eaf4ee;
+  --surface: #ffffff; --surface-elevated: #f2f8f4; --surface-raised: #ffffff; --surface-soft: #ffffff; --surface-muted: #e3f2ea;
+  --text-primary: #0c3b2e; --text-secondary: #3a5248; --text-muted: #4b645b; --text-2: #3a5248; --text-3: #4b645b;
+  --border-subtle: #cfe0d6; --border-control: #5f8271; --border-strong: #5f8271;
+  --accent: #12624a; --accent-hover: #0c3b2e; --accent-press: #0a2f24; --on-accent: #ffffff;
+  --highlight: #12624a; --focus-ring: #0f5c8a; --focus: #0f5c8a;
+  --success-bg: #e3f2ea; --success-text: #0c4a35; --warning-bg: #fff4e5; --warning-text: #7a3300;
+  --error-bg: #fde8ea; --error-text: #8a1020; --danger: #8a1020; --warning: #7a3300;
+  --green-900: #0c3b2e; --green-800: #0f4a39; --green-700: #12624a; --green-500: #17805f; --green-300: #9fd4bd; --green-100: #e3f2ea; --green-50: #f2f8f4;
+  --master-green-950: #0c3b2e; --master-green-900: #0f4a39; --master-green-700: #12624a; --master-green-100: #e3f2ea;
+  --shadow-card: 0 18px 42px rgb(12 59 46 / 12%); --shadow-sm: 0 1px 2px rgb(12 59 46 / 14%); --shadow-md: 0 12px 28px rgb(12 59 46 / 14%);
+  --shadow-soft: 0 18px 42px rgb(12 59 46 / 12%); --shadow-raised: 0 12px 32px rgb(12 59 46 / 14%);
+  background: var(--bg-base); color: var(--text-primary);
+}
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header { background: rgb(255 255 255 / 94%); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .login-link { background: var(--accent); color: var(--on-accent); box-shadow: none; }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .login-link:hover { background: var(--accent-hover); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav.open { background: #ffffff; }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-footer { background: var(--bg-sidebar); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .consent { background: #ffffff; color: var(--text-primary); border-color: var(--border-subtle); box-shadow: 0 10px 30px rgb(12 59 46 / 22%); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) button:disabled,
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .button[aria-disabled="true"] { background: #e3ece7 !important; color: #4b645b !important; border-color: #cfe0d6 !important; }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .ref-button-link:hover,
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .button.secondary:hover { background: rgb(18 98 74 / 8%); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) ::selection { background: #12624a; color: #fff; }
+
+/* Seletor de tema (mesmo componente em cabeçalho, menu e rodapé) */
+.theme-switch { display: inline-flex; align-items: center; gap: 2px; margin: 0; padding: 3px; border: 1px solid var(--border-control); border-radius: 999px; background: transparent; min-width: 0; }
+.theme-switch legend { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.theme-switch label { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 12px; border-radius: 999px; font-size: .8125rem; font-weight: 700; color: var(--text-secondary); cursor: pointer; }
+.theme-switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.theme-switch label:hover { color: var(--text-primary); background: rgb(127 176 186 / 16%); }
+.theme-switch label:has(input:checked) { background: var(--accent); color: var(--on-accent); }
+.theme-switch label:has(input:focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+body.godev-app .theme-switch label span { color: inherit; }
+.header-theme { display: none; }
+.nav-theme { display: none; }
+.nav.open .nav-theme { display: block; padding: 14px 0 4px; border-bottom: 1px solid var(--border-subtle); }
+.nav.open .nav-theme .theme-switch { display: flex; width: 100%; }
+.nav.open .nav-theme .theme-switch label { flex: 1; min-height: 44px; font-size: .9375rem; }
+.footer-theme { margin-top: 10px; }
+.footer-theme label { min-height: 44px; }
+@media (min-width: 900px) { .header-theme { display: inline-flex; margin-right: 12px; } }
+@media (prefers-reduced-motion: reduce) { .theme-switch label { transition: none; } }
+
+/* Cabeçalho, menu móvel e rodapé no claro: o CSS legado do cabeçalho (godev-explorer.css) fixa cores escuras e usa !important,
+   então a tradução clara usa os mesmos tokens com especificidade maior. Os significados se mantêm (laranja = atenção/ação, verde = marca). */
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav a,
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header a { color: var(--text-secondary); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav a:hover { color: var(--text-primary); background: var(--bg-secondary); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav a[aria-current="true"] { color: #b3360a; }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .login-link { color: var(--on-accent); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav.open { background: #ffffff !important; }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav.open a { color: var(--text-primary); border-bottom-color: var(--border-subtle); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav.open a::before { color: #b3360a; }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav.open a[aria-current="true"] { color: #b3360a; }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav.open a.nav-login { color: var(--text-secondary); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .nav.open a.nav-cta { color: #2a1500 !important; }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-footer a:not(.brand),
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-footer .cookie-link { color: var(--text-primary); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-footer p,
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .footer-bottom { color: var(--text-secondary); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .theme-switch label { color: var(--text-secondary); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public) .theme-switch label:has(input:checked) { color: var(--on-accent); }
+html[data-gd-theme="light"] body.godev-app:has(.theme-public):has(.nav.open) .site-header { background: #ffffff; }
+.support-private-contacts .text-link { display: block; width: fit-content; margin: 6px 0; }

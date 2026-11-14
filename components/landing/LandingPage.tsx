@@ -25,8 +25,6 @@ export default async function LandingPage() {
   const premiumTotal = brl(cents("premium") + SERVICE_FEE_CENTS);
   const question = demoQuestions().find((item) => item.disc === "matematica");
   return (
-    <>
-    <script dangerouslySetInnerHTML={{ __html: "(function(){try{var p=localStorage.getItem(\"godev-theme\");var d=document.documentElement;var dark=p===\"dark\"||(p!==\"light\"&&matchMedia(\"(prefers-color-scheme: dark)\").matches);d.setAttribute(\"data-gd-theme\",dark?\"dark\":\"light\");d.setAttribute(\"data-gd-pref\",p===\"light\"||p===\"dark\"?p:\"system\")}catch(e){}})();" }} />
     <div className="sales">
       <CheckoutParams />
       {hasAccess
@@ -45,6 +43,5 @@ export default async function LandingPage() {
       </main>
       <Footer />
     </div>
-    </>
   );
 }

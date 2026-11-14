@@ -6,7 +6,6 @@ import type { inventory } from "../../lib/inventory";
 import { ebookMaterials } from "../../lib/ebook-catalog";
 import { brl, SERVICE_FEE_CENTS } from "../../lib/pricing";
 import type { DemoQuestion } from "./explorer-types";
-import ThemeSwitch from "./ThemeSwitch";
 
 type Facts = ReturnType<typeof campaignFacts>;
 type Inv = ReturnType<typeof inventory>;
@@ -36,7 +35,7 @@ export function SalesHero({ hasAccess, studyArea, essencialTotal }: { hasAccess:
     <section className="s-hero" id="topo" aria-labelledby="s-title">
       <div className="s-wrap s-center">
         <span className="s-pill">Material de estudo · Matemática e Natureza</span>
-        <h1 id="s-title">Revise Matemática e Natureza com um caminho claro.</h1>
+        <h1 id="s-title">Revise Matemática e Natureza com <em>um caminho claro.</em></h1>
         <p className="s-lead">Revisões rápidas, questões com a resolução explicada e treinos curtos para o 2º dia do Enem. Estude pelo celular, no seu ritmo.</p>
         <div className="s-actions">
           {hasAccess
@@ -312,7 +311,6 @@ export function SalesFinal({ message }: { message: string }) {
         <h2 id="s-final-title">{message}</h2>
         <p>Escolha o plano e comece pela primeira questão.</p>
         <a className="s-btn s-btn-lg" href="#ofertas">QUERO ESCOLHER MEU PLANO</a>
-        <ThemeSwitch />
       </div>
     </section>
   );

@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { materials } from "../lib/config";
 import CookiePreferencesLink from "./cookie-preferences-link";
+import ThemeToggle from "./theme-toggle";
+import "../app/public-theme.css";
 export function Brand() {
   return (
     <Link href="/" className="brand">
@@ -86,6 +88,7 @@ export function Header() {
   }, [open]);
   return (
     <header className="site-header" ref={headerRef} data-hidden="false">
+      <span className="theme-public" hidden />
       <span className="scroll-progress" ref={bar} aria-hidden="true" />
       <div className="container header-inner">
         <Brand />
@@ -94,6 +97,7 @@ export function Header() {
           aria-label="Navegação principal"
           className={open ? "nav open" : "nav"}
         >
+          <div className="nav-extra nav-theme"><ThemeToggle /></div>
           {NAV_LINKS.map(([label, href], index) => (
             <Link key={href} href={href} ref={index === 0 ? firstLink : undefined} onClick={(event) => goTo(event, href)} aria-current={active === href.split("#")[1] ? "true" : undefined}>
               {label}
@@ -103,6 +107,7 @@ export function Header() {
           <Link className="nav-extra nav-login" href="/entrar" onClick={() => setOpen(false)}>Já tenho acesso · Entrar</Link>
         </nav>
         <div className="header-actions">
+          <ThemeToggle className="header-theme" />
           <Link href="/entrar" className="login-link">
             Entrar
           </Link>
@@ -162,6 +167,7 @@ export function Footer() {
       <div className="container footer-bottom">
         <span>© 2026 GoDev Education</span>
         <span>Material independente. Sem vínculo com INEP ou MEC.</span>
+        <ThemeToggle className="footer-theme" />
       </div>
     </footer>
   );
