@@ -42,7 +42,7 @@ export function toPublic(q: Question): PublicQuestion {
   };
 }
 
-export const toMeta = (q: Question): QuestionMeta => ({ id: q.id, discipline: q.discipline, topic: q.topic, moduleId: q.moduleId, origin: q.origin, difficulty: q.difficulty, minutes: q.minutes });
+export const toMeta = (q: Question): QuestionMeta => ({ id: q.id, discipline: q.discipline, topic: q.topic, moduleId: q.moduleId, origin: q.origin, difficulty: q.difficulty, minutes: q.minutes, year: q.official?.year });
 
 export function grade(q: Question, selected: string | null): Correction {
   const correct = selected === q.answer;

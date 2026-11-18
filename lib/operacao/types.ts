@@ -111,4 +111,4 @@ export type Correction = {
 };
 
 /** Metadados leves para listagens (sem enunciado, gabarito ou resolução). */
-export type QuestionMeta = { id: string; discipline: Discipline; topic: string; moduleId: string; origin: Origin; difficulty: Difficulty; minutes: number };
+export type QuestionMeta = { id: string; discipline: Discipline; topic: string; moduleId: string; origin: Origin; difficulty: Difficulty; minutes: number; year?: number };

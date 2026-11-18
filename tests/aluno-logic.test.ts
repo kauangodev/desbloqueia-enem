@@ -73,3 +73,23 @@ test("baralho respeita o limite diário", () => {
   const cards = Array.from({ length: 30 }, (_, i) => ({ id: `n${i}` }));
   assert.equal(deck(cards, {}, "2026-11-18", 20).queue.length, 20);
 });
+test("diagnóstico por período: só conta o que caiu na janela e sinaliza amostra pequena", () => {
+  const attempts = [
+    { id: "q1", history: [{ ok: false, at: at("2026-10-01") }, { ok: true, at: at("2026-11-17") }] },
+    { id: "q2", history: [{ ok: true, at: at("2026-11-17") }] },
+    { id: "q3", history: [{ ok: true, at: at("2026-08-01") }] },
+  ];
+  const all = diagnose(attempts, qs, "2026-11-18");
+  assert.equal(all.total, 3);
+  assert.equal(all.firstAttempts, 3);
+  assert.equal(all.sampleTooSmall, true);
+  const week = diagnose(attempts, qs, "2026-11-18", 14, 7);
+  assert.equal(week.total, 2, "q3 está fora da janela");
+  assert.equal(week.firstAttempts, 1, "a 1ª tentativa de q1 foi em outubro: não entra no 'de primeira' da semana");
+  assert.equal(week.firstTryPct, 100);
+  assert.equal(week.lastPct, 100);
+  assert.equal(week.windowDays, 7);
+  const none = diagnose(attempts, qs, "2026-11-18", 14, 1);
+  assert.equal(none.total, 0);
+  assert.equal(none.firstTryPct, null);
+});

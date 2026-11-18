@@ -2,6 +2,8 @@ import "server-only";
 import { modules, questions } from "./catalog";
 import { todayInSaoPaulo } from "./config";
 import { momentum } from "./momentum";
+import { diagnose } from "./diagnostic";
+import { isDue, type FlashState } from "./flash";
 import { sessionKinds, type SessionKind } from "./kinds";
 import type { Attempt, Session } from "./engine";
 import type { OperacaoUser } from "./store";
@@ -11,7 +13,7 @@ const disciplines: Discipline[] = ["matematica", "fisica", "quimica", "biologia"
 
 /** Progresso real do aluno, calculado a partir do que foi persistido (nada é inventado). */
 export async function loadProgress(user: OperacaoUser) {
-  const [readRows, attemptRows, activeRows, sessionRows] = await Promise.all([user.kv.list<{ concluded: boolean }>("read"), user.kv.list<Attempt>("attempt"), user.kv.list<{ id: string }>("active"), user.kv.list<Session>("session")]);
+  const [readRows, attemptRows, activeRows, sessionRows, flashRows] = await Promise.all([user.kv.list<{ concluded: boolean }>("read"), user.kv.list<Attempt>("attempt"), user.kv.list<{ id: string }>("active"), user.kv.list<Session>("session"), user.kv.list<FlashState>("flash")]);
   const reads = new Set(readRows.filter((r) => r.data.concluded).map((r) => r.ref));
   const attempts = new Map(attemptRows.map((r) => [r.ref, r.data]));
   const last = (id: string) => attempts.get(id)?.history.at(-1);
@@ -50,6 +52,9 @@ export async function loadProgress(user: OperacaoUser) {
   ];
   const gamification = { questionsToday: answeredToday.size, modulesReadToday, dailyGoal: 10, firstTry, recovered, practiced, nextMilestone, achievements };
   const attemptList = [...attempts.values()];
+  // Revisões vencidas (cartões com data de hoje ou anterior) e lacunas do diagnóstico, para a ação principal do início.
+  const flashDue = flashRows.filter((r) => isDue(r.data, today)).length;
+  const weak = diagnose([...attempts.entries()].map(([id, a]) => ({ id, history: a.history })), questions.map((q) => ({ id: q.id, discipline: q.discipline, topic: q.topic })), today).weak;
   const rhythm = momentum({
     answerTimes: attemptList.flatMap((a) => a.history.map((h) => h.at)),
     firstAttemptTimes: attemptList.filter((a) => a.history.length).map((a) => a.history[0].at),
@@ -60,5 +65,5 @@ export async function loadProgress(user: OperacaoUser) {
     today,
     dailyGoal: gamification.dailyGoal,
   });
-  return { gamification, momentum: rhythm, reads, perDiscipline, nextModule, activeSessions, toReview, totalAnswered: attempts.size, totalCorrect: [...attempts.keys()].filter((id) => last(id)?.ok).length, hasAnyActivity: reads.size > 0 || attempts.size > 0 };
+  return { gamification, momentum: rhythm, flashDue, weak, reads, perDiscipline, nextModule, activeSessions, toReview, totalAnswered: attempts.size, totalCorrect: [...attempts.keys()].filter((id) => last(id)?.ok).length, hasAnyActivity: reads.size > 0 || attempts.size > 0 };
 }

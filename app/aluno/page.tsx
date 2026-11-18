@@ -3,7 +3,11 @@ import MaterialsBrowser from "../../components/materials-browser";
 import MomentumCard from "../../components/operacao/momentum-card";
 import { Icon, type IconName } from "../../components/icons";
 import { studentSummary } from "../../lib/aluno/summary";
-import { operacao } from "../../lib/operacao/config";
+import TodayCard from "../../components/aluno/today-card";
+import { todayPlan } from "../../lib/aluno/today";
+import { questions } from "../../lib/operacao/catalog";
+import { campaignStatus, operacao } from "../../lib/operacao/config";
+import { sessionKinds, type SessionKind } from "../../lib/operacao/kinds";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Início | GoDev Education" };
@@ -37,6 +41,23 @@ export default async function Dashboard({ searchParams }: { searchParams?: Promi
   const g = progress?.gamification;
   const accuracy = g && g.practiced ? Math.round((g.firstTry / g.practiced) * 100) : null;
   const resume = progress?.activeSessions[0];
+  const minutesPerQuestion = questions.length ? questions.reduce((sum, q) => sum + q.minutes, 0) / questions.length : 2;
+  // Sem progresso carregado (plano ainda não ativo ou falha de leitura) não inventamos sugestões de estudo.
+  const today = progress
+    ? todayPlan({
+        sessions: progress.activeSessions.map((s) => ({ ...s, title: (sessionKinds[s.kind as SessionKind]?.title || s.kind).split(" — ")[0] })),
+        reading: last ? { materialId: last.material_id, title: lastTitle, page: last.page } : null,
+        flashDue: progress.flashDue,
+        toReview: progress.toReview,
+        weak: progress.weak.map((w) => ({ discipline: w.discipline, topic: w.topic, lastPct: w.lastPct, answered: w.answered })),
+        practiced: progress.gamification.practiced,
+        nextModule: progress.nextModule ? { id: progress.nextModule.id, title: progress.nextModule.title, minutes: progress.nextModule.minutes } : null,
+        minutesPerQuestion,
+        basePath: operacao.basePath,
+      })
+    : null;
+  const examPhase = campaignStatus().phase;
+  const examNote = examPhase === "depois" ? "A edição do Enem que este material acompanhava já passou. Ainda não há data oficial cadastrada para a próxima: seu estudo, seus erros e seu histórico continuam disponíveis." : examPhase === "dia" ? "Hoje é dia de prova: confira documentos e local e descanse. Seu material continua salvo." : undefined;
 
   return (
     <div className="as-page">
@@ -46,8 +67,9 @@ export default async function Dashboard({ searchParams }: { searchParams?: Promi
           <h1>{greeting()}, {firstName}!</h1>
           <p>{momentum && momentum.streak > 0 ? `Você está há ${momentum.streak} ${momentum.streak === 1 ? "dia" : "dias"} em sequência. Continue hoje.` : "Comece um treino hoje para iniciar a sua sequência."}</p>
         </div>
-        <Link className="as-btn as-btn-primary" href="/aluno/treino-rapido">Começar a treinar</Link>
       </header>
+
+      {today ? <TodayCard primary={today.primary} others={today.others} examNote={examNote} /> : null}
 
       {plan === "none" ? (
         <section className="as-card" aria-labelledby="as-ativar">

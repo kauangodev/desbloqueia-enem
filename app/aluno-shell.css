@@ -66,6 +66,20 @@
 .as-empty { display: grid; gap: 8px; justify-items: start; padding: 22px; border-radius: 16px; border: 1px dashed var(--border-subtle); }
 .as-tag { display: inline-block; padding: 2px 9px; border-radius: 999px; background: rgb(255 255 255 / 8%); font-size: .75rem; font-weight: 700; }
 
+.as-periods { display: flex; flex-wrap: wrap; gap: 8px; }
+.as-periods .as-btn[aria-current="page"] { border-color: var(--op-amber, #fbbf24); background: rgb(251 191 36 / 14%); }
+.as-links { display: flex; flex-wrap: wrap; gap: 4px 14px; justify-content: flex-end; }
+
+/* "Hoje": ação principal do início */
+.as-today { padding: 22px; border-radius: 20px; border: 1px solid rgb(249 115 22 / 40%); background: linear-gradient(135deg, rgb(251 191 36 / 12%), rgb(249 115 22 / 8%)), var(--surface); display: grid; gap: 10px; }
+.as-today-eyebrow { margin: 0; font-size: .75rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--op-amber, #fbbf24); }
+.as-today h2 { margin: 0; font-size: clamp(1.3rem, 3.4vw, 1.9rem); line-height: 1.15; }
+.as-today-reason { margin: 0; color: var(--text-muted); max-width: 64ch; }
+.as-today-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 4px; }
+.as-today-others p { margin: 6px 0 4px; font-size: .875rem; }
+.as-today-others ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.as-today-note { margin: 4px 0 0; padding-top: 10px; border-top: 1px dashed var(--border-subtle); font-size: .875rem; color: var(--text-muted); }
+
 /* ofensiva: calendário do mês */
 .as-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; max-width: 460px; }
 .as-cal b { text-align: center; font-size: .75rem; color: var(--text-muted); }
