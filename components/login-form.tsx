@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { features } from "../lib/features";
 export default function LoginForm({ configured, redirect }: { configured: boolean; redirect?: string }) {
@@ -10,6 +10,23 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
   const show = (text: string, error = false) => { setMessage(text); setIsError(error && Boolean(text)); };
   const [mode, setMode] = useState<"login" | "register">("login");
   const router = useRouter();
+  const googleErrors: Record<string, string> = {
+    "google-sessao": "A sessão do Google expirou. Tente de novo.", "google-cancelado": "Entrada com Google cancelada.", "google-invalido": "Não foi possível validar a conta Google.",
+    "google-indisponivel": "O login com Google está indisponível agora. Use o e-mail ou tente mais tarde.", "google-termos": "Para criar a conta com Google, aceite os termos na aba de cadastro.",
+    "google-existente": "Já existe uma conta GoDev com este e-mail. Entre com e-mail e senha (ou recupere a senha) para continuar.", "google-conta": "Esta conta não pode entrar agora. Fale com o atendimento.",
+  };
+  const fromGoogle = useSearchParams().get("erro");
+  const googleMessage = fromGoogle ? googleErrors[fromGoogle] : "";
+  const startGoogle = () => {
+    const form = document.querySelector("form") as HTMLFormElement;
+    const data = new FormData(form);
+    if (mode === "register" && data.get("acceptTerms") !== "on") { show("Para continuar com o Google, aceite os termos e a política de privacidade.", true); return; }
+    const params = new URLSearchParams({ redirect: redirect || "/aluno" });
+    if (mode === "register") { params.set("terms", "1"); if (data.get("marketing") === "on") params.set("marketing", "1"); }
+    // Navegação completa (não SPA): a rota redireciona para o domínio do Google.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.href = `/api/auth/google/start?${params.toString()}`;
+  };
   return (
     <form
       onSubmit={async (e) => {
@@ -94,6 +111,10 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
           </label>
         </>
       )}
+      {features.gratis && features.google ? (
+        <button type="button" className="button secondary" disabled={!configured || busy} onClick={startGoogle}>Continuar com Google</button>
+      ) : null}
+      <p role="alert" className="status-message error" hidden={!googleMessage}>{googleMessage}</p>
       <button className="button primary" disabled={!configured || busy}>
         {busy ? "Aguarde…" : mode === "register" ? "Criar meu cadastro" : "Entrar na área de alunos"}
       </button>
