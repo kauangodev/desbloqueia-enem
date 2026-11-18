@@ -1,6 +1,7 @@
 import "server-only";
 import { modules, questions } from "./catalog";
 import { todayInSaoPaulo } from "./config";
+import { momentum } from "./momentum";
 import { sessionKinds, type SessionKind } from "./kinds";
 import type { Attempt, Session } from "./engine";
 import type { OperacaoUser } from "./store";
@@ -48,5 +49,16 @@ export async function loadProgress(user: OperacaoUser) {
     { id: "simulado", label: "Concluiu um simulado", done: finishedBy("simulado") >= 1 },
   ];
   const gamification = { questionsToday: answeredToday.size, modulesReadToday, dailyGoal: 10, firstTry, recovered, practiced, nextMilestone, achievements };
-  return { gamification, reads, perDiscipline, nextModule, activeSessions, toReview, totalAnswered: attempts.size, totalCorrect: [...attempts.keys()].filter((id) => last(id)?.ok).length, hasAnyActivity: reads.size > 0 || attempts.size > 0 };
+  const attemptList = [...attempts.values()];
+  const rhythm = momentum({
+    answerTimes: attemptList.flatMap((a) => a.history.map((h) => h.at)),
+    firstAttemptTimes: attemptList.filter((a) => a.history.length).map((a) => a.history[0].at),
+    moduleTimes: readRows.filter((r) => r.data.concluded && r.updatedAt).map((r) => r.updatedAt),
+    sessionTimes: finishedSessions.map((r) => r.data.finishedAt as string),
+    questionsToday: answeredToday.size,
+    firstTryDays: attemptList.filter((a) => a.firstTryCorrect === true && a.history.length).map((a) => dayOf(a.history[0].at)),
+    today,
+    dailyGoal: gamification.dailyGoal,
+  });
+  return { gamification, momentum: rhythm, reads, perDiscipline, nextModule, activeSessions, toReview, totalAnswered: attempts.size, totalCorrect: [...attempts.keys()].filter((id) => last(id)?.ok).length, hasAnyActivity: reads.size > 0 || attempts.size > 0 };
 }

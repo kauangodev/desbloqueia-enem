@@ -6,6 +6,8 @@ import type { inventory } from "../../lib/inventory";
 import { ebookMaterials } from "../../lib/ebook-catalog";
 import { brl, SERVICE_FEE_CENTS } from "../../lib/pricing";
 import type { DemoQuestion } from "./explorer-types";
+import TryQuestion from "./TryQuestion";
+import GuardianShare from "./GuardianShare";
 
 type Facts = ReturnType<typeof campaignFacts>;
 type Inv = ReturnType<typeof inventory>;
@@ -30,20 +32,30 @@ export function SalesStrip({ view }: { view: CampaignView }) {
   return <p className="s-strip"><b>Enem 2026, 2º dia: domingo, 15/11</b><span> · {left}</span></p>;
 }
 
-export function SalesHero({ hasAccess, studyArea, essencialTotal }: { hasAccess: boolean; studyArea: string; essencialTotal: string }) {
+export function SalesHero({ hasAccess, studyArea, essencialTotal, question }: { hasAccess: boolean; studyArea: string; essencialTotal: string; question?: DemoQuestion }) {
   return (
     <section className="s-hero" id="topo" aria-labelledby="s-title">
-      <div className="s-wrap s-center">
-        <span className="s-pill">Material de estudo · Matemática e Natureza</span>
-        <h1 id="s-title">Revise Matemática e Natureza com <em>um caminho claro.</em></h1>
-        <p className="s-lead">Revisões rápidas, questões com a resolução explicada e treinos curtos para o 2º dia do Enem. Estude pelo celular, no seu ritmo.</p>
-        <div className="s-actions">
-          {hasAccess
-            ? <Link className="s-btn s-btn-lg" href={studyArea}>CONTINUAR MINHA REVISÃO</Link>
-            : <a className="s-btn s-btn-lg" href="#ofertas">QUERO ESCOLHER MEU PLANO</a>}
-          <a className="s-link" href="#amostra">Ver o material por dentro</a>
+      <div className={`s-wrap ${question ? "s-hero-grid" : "s-center"}`}>
+        <div className="s-hero-copy">
+          <span className="s-pill">Material de estudo · Matemática e Natureza</span>
+          <h1 id="s-title">Pare de errar a mesma questão. <em>Revise com um caminho claro.</em></h1>
+          <p className="s-lead">Resolva questões, veja <b>na hora</b> onde errou e refaça o que não entendeu. Revisões rápidas, resolução passo a passo e treinos curtos de Matemática e Natureza para o Enem, direto no celular.</p>
+          <div className="s-actions">
+            {hasAccess
+              ? <Link className="s-btn s-btn-lg" href={studyArea}>CONTINUAR MINHA REVISÃO</Link>
+              : <a className="s-btn s-btn-lg" href="#ofertas">QUERO ESCOLHER MEU PLANO</a>}
+            <a className="s-link" href="#amostra">Ver o material por dentro</a>
+          </div>
+          <ul className="s-ticks" aria-label="Condições">
+            <li>Pagamento único, sem mensalidade</li>
+            <li>Pix ou cartão</li>
+            <li>7 dias de garantia</li>
+          </ul>
+          <p className="s-trust">Planos a partir de <b>{essencialTotal}</b> no total, pela Cakto.</p>
         </div>
-        <p className="s-trust">Pagamento único na Cakto, com Pix ou cartão · 7 dias de garantia · planos a partir de <b>{essencialTotal}</b> no total</p>
+        {question ? <TryQuestion question={question} /> : null}
+      </div>
+      <div className="s-wrap s-center">
         <figure className="s-stage">
           <div className="s-fan">
             <Cover slug="fisica" className="f1" premium />
@@ -136,29 +148,67 @@ const benefitIcons: Record<string, ReactNode> = {
   t: <path d="M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM9 1h6" />,
   e: <path d="M3 7l9-4 9 4v10l-9 4-9-4V7Zm9 4v10M3 7l9 4 9-4" />,
   c: <path d="M8 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm4 15h.01" />,
+  p: <path d="M4 6h16M4 12h16M4 18h10M18 16l2 2 3-4" />,
+  b: <path d="M4 19V5m0 14h16M8 16v-5m4 5V8m4 8v-3" />,
+  h: <path d="M12 3v3m6.4 1.6-2.1 2.1M21 12h-3M5.6 7.6l2.1 2.1M3 12h3m3 9h6M10 17h4a4 4 0 1 0-4 0Z" />,
 };
 
-export function SalesBenefits({ facts }: { facts: Facts }) {
-  const items = [
-    ["rev", `${facts.modules} revisões rápidas`, "Revise um conceito antes de praticar.", `De 25 a 30 minutos cada, com exemplo resolvido e ${facts.formulas} fichas de fórmulas.`],
-    ["q", `${facts.questions} questões comentadas`, "Entenda o raciocínio da resolução.", "Cada questão traz o passo a passo e o motivo do erro mais comum."],
-    ["t", `${facts.treinos} treinos de ${facts.treinoQuestions} questões`, "Treine em sessões menores.", `E ${facts.simulados} simulados de ${facts.simuladoQuestions} questões, quando quiser o ritmo da prova.`],
-    ["e", "Caderno de erros", "Volte às questões que você errou.", "O que errou fica guardado para refazer, com a explicação ao lado."],
-    ["c", "Leitura online", "Estude pelo celular.", "Celular, tablet ou computador, sem instalar nada."],
-  ] as const;
+/** Faixa de números: tudo calculado do acervo publicado, nunca digitado à mão. */
+export function SalesNumbers({ facts, inv, ebooks }: { facts: Facts; inv: Inv; ebooks: number }) {
+  const items: [string, string][] = [
+    [String(facts.questions), "questões comentadas na Operação 2º Domingo"],
+    [String(facts.modules), "revisões rápidas de 25 a 30 minutos"],
+    [`${facts.simulados + facts.treinos}`, `treinos e simulados de ${facts.treinoQuestions} a ${facts.simuladoQuestions} questões`],
+    [String(ebooks), "e-books para ler online (4 no Essencial)"],
+    [String(inv.generalDistinct), "questões distintas no banco geral do Premium"],
+  ];
+  return (
+    <section className="s-numbers" aria-label="A GoDev em números">
+      <ul className="s-wrap">
+        {items.map(([value, label]) => (<li key={label}><b>{value}</b><span>{label}</span></li>))}
+      </ul>
+    </section>
+  );
+}
+
+type Tool = { key: keyof typeof benefitIcons; title: string; text: string; plan: "all" | "premium" };
+
+/** Ciclo de estudo e mapa do que existe dentro da plataforma, com a marca de qual plano libera cada recurso. */
+export function SalesTools({ facts, inv }: { facts: Facts; inv: Inv }) {
+  const loop = [
+    ["Revise", "Uma revisão rápida do conceito, com exemplo resolvido."],
+    ["Pratique", "Questões e treinos curtos, com cronômetro se você quiser."],
+    ["Entenda", "Resolução passo a passo e o motivo do erro mais comum."],
+    ["Refaça", "O que você errou vai para o caderno de erros até virar acerto."],
+  ];
+  const tools: Tool[] = [
+    { key: "rev", title: `${facts.modules} revisões rápidas`, text: `Conceito, exemplo resolvido e ${facts.formulas} fichas de fórmulas para consultar.`, plan: "all" },
+    { key: "q", title: `${facts.questions} questões comentadas`, text: "Filtre por disciplina e tópico, favorite e marque para revisar depois.", plan: "all" },
+    { key: "t", title: `${facts.treinos} treinos e ${facts.simulados} simulados`, text: `Treinos de ${facts.treinoQuestions} questões e simulados de ${facts.simuladoQuestions}, com mapa de questões, cronômetro e correção comentada.`, plan: "all" },
+    { key: "e", title: "Caderno de erros", text: "Monta-se sozinho com o que você errou ou marcou. Releia a resolução e tente de novo.", plan: "all" },
+    { key: "p", title: "Minha revisão", text: "Plano dos dias que faltam, com meta diária e sequência de estudo.", plan: "all" },
+    { key: "c", title: "Leitor de e-books", text: "Leia no celular, tablet ou computador e retome de onde parou.", plan: "all" },
+    { key: "b", title: `Banco geral: ${inv.generalDistinct} questões`, text: `${inv.lists} listas e ${inv.simulados} simulados para ir além da Operação.`, plan: "premium" },
+    { key: "h", title: "Biblioteca histórica", text: "1.800 referências de questões com links para as fontes oficiais.", plan: "premium" },
+  ];
   return (
     <section className="s-section" id="beneficios" aria-labelledby="s-ben-title">
-      <div className="s-wrap s-split">
-        <header className="s-head s-head-left">
-          <span className="s-eyebrow">Como ajuda</span>
-          <h2 id="s-ben-title">Cada recurso tem um uso claro</h2>
-          <p>Você não precisa passar por todo o material. Comece por “Minha revisão”, escolha uma revisão, resolva um treino e refaça seus erros. O resto fica como apoio.</p>
+      <div className="s-wrap">
+        <header className="s-head">
+          <span className="s-eyebrow">O que tem lá dentro</span>
+          <h2 id="s-ben-title">Um ciclo simples: revise, pratique, entenda, refaça</h2>
+          <p>Você não precisa passar por todo o material. Comece por “Minha revisão”, escolha uma revisão, resolva um treino e refaça seus erros.</p>
         </header>
-        <ul className="s-benefits">
-          {items.map(([key, title, use, detail]) => (
-            <li key={key}>
-              <span className="s-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" focusable="false">{benefitIcons[key]}</svg></span>
-              <div><b>{use}</b><p><strong>{title}.</strong> {detail}</p></div>
+        <ol className="s-loop">
+          {loop.map(([title, text], index) => (<li key={title}><span aria-hidden="true">{index + 1}</span><b>{title}</b><p>{text}</p></li>))}
+        </ol>
+        <ul className="s-tools">
+          {tools.map((tool) => (
+            <li key={tool.title} className={tool.plan === "premium" ? "is-premium" : undefined}>
+              <span className="s-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" focusable="false">{benefitIcons[tool.key]}</svg></span>
+              <span className={`s-tag ${tool.plan === "premium" ? "s-tag-premium" : "s-tag-ok"}`}>{tool.plan === "premium" ? "Só no Premium" : "Essencial e Premium"}</span>
+              <h3>{tool.title}</h3>
+              <p>{tool.text}</p>
             </li>
           ))}
         </ul>
@@ -197,6 +247,7 @@ export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
             </ul>
             <div className="s-price"><b>{brl(total("essencial"))}</b><span>no total · pagamento único</span><small>{brl(base("essencial"))} + {brl(SERVICE_FEE_CENTS)} de taxa do checkout</small></div>
             {buy("essencial", "Essencial")}
+            <GuardianShare plan="essencial" name="Essencial" total={brl(total("essencial"))} />
             <p className="s-plan-foot">Acesso pela plataforma · 7 dias de garantia</p>
           </article>
 
@@ -214,6 +265,7 @@ export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
             </ul>
             <div className="s-price"><b>{brl(total("premium"))}</b><span>no total · pagamento único</span><small>{brl(base("premium"))} + {brl(SERVICE_FEE_CENTS)} de taxa do checkout</small></div>
             {buy("premium", "Premium")}
+            <GuardianShare plan="premium" name="Premium" total={brl(total("premium"))} />
             <p className="s-plan-foot">Acesso pela plataforma · 7 dias de garantia</p>
           </article>
         </div>
@@ -285,6 +337,9 @@ export function SalesFaq({ inv, essencialTotal, premiumTotal, essencialBase, pre
   const faq: [string, ReactNode][] = [
     ["Qual a diferença entre o Essencial e o Premium?", <>Os dois incluem a Operação 2º Domingo inteira. O Essencial traz 4 e-books; o Premium traz os 16, incluindo Física, Química e Redação, além do banco geral ({inv.generalDistinct} questões distintas em {inv.lists} listas e {inv.simulados} simulados, que se repetem entre coleções), da biblioteca histórica (1.800 referências com links, um índice) e das fichas e checklists.</>],
     ["Quanto vou pagar no total?", <>Essencial: {essencialBase} + R$ 0,99 de taxa do checkout = <b>{essencialTotal}</b>. Premium: {premiumBase} + R$ 0,99 = <b>{premiumTotal}</b>. Pagamento único, sem mensalidade. É o valor que aparece na tela de pagamento.</>],
+    ["Meu responsável pode pagar por mim?", "Pode. Em cada plano, toque em “Enviar para meu responsável pagar”: o link da oferta vai pelo WhatsApp ou pelo compartilhamento do celular. Quem paga usa Pix ou cartão no checkout da Cakto, e você entra com o e-mail informado na compra."],
+    ["Preciso assinar ou renovar?", "Não. O pagamento é único, sem mensalidade e sem renovação automática. O acesso não tem data de expiração."],
+    ["Como o caderno de erros funciona?", "Cada questão que você erra entra sozinha no caderno, junto com as que você marcar para revisar depois. Você relê a resolução, volta ao módulo e tenta de novo."],
     ["Posso estudar pelo celular?", "Sim. A plataforma funciona no celular, no tablet e no computador, e o leitor retoma de onde você parou."],
     ["Posso baixar os e-books?", "Não. A leitura é online, no leitor protegido da plataforma, e é preciso estar conectado à internet."],
     ["Quando o acesso é liberado?", "Quando a Cakto confirma o pagamento. Entre com o e-mail usado na compra. Se já pagou e o acesso não apareceu, fale com o atendimento com o e-mail da compra e o comprovante."],

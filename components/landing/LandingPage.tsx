@@ -2,7 +2,9 @@ import "../../app/landing-sales.css";
 import { Header, Footer } from "../../components/site";
 import CheckoutParams from "./CheckoutParams";
 import SalesSticky from "./SalesSticky";
-import { SalesAccess, SalesBenefits, SalesFaq, SalesFinal, SalesHero, SalesOffers, SalesSamples, SalesStrip } from "./SalesSections";
+import { SalesAccess, SalesFaq, SalesFinal, SalesHero, SalesNumbers, SalesOffers, SalesSamples, SalesStrip, SalesTools } from "./SalesSections";
+import { ebookMaterials } from "../../lib/ebook-catalog";
+import "../../app/landing-plus.css";
 import { brl, SERVICE_FEE_CENTS } from "../../lib/pricing";
 import { publicPlans } from "../../lib/catalog";
 import { checkoutConfigured } from "../../lib/readiness";
@@ -23,7 +25,10 @@ export default async function LandingPage() {
   const cents = (id: string) => plans.find((plan) => plan.id === id)?.cents ?? 0;
   const essencialTotal = brl(cents("essencial") + SERVICE_FEE_CENTS);
   const premiumTotal = brl(cents("premium") + SERVICE_FEE_CENTS);
-  const question = demoQuestions().find((item) => item.disc === "matematica");
+  const demos = demoQuestions();
+  const heroQuestion = demos.find((item) => item.disc === "matematica");
+  // A amostra comentada usa outra disciplina, para a página não repetir a mesma questão.
+  const question = demos.find((item) => item.disc === "fisica") ?? demos.find((item) => item.id !== heroQuestion?.id) ?? heroQuestion;
   return (
     <div className="sales">
       <CheckoutParams />
@@ -33,9 +38,10 @@ export default async function LandingPage() {
       <SalesStrip view={view} />
       <Header />
       <main id="conteudo">
-        <SalesHero hasAccess={hasAccess} studyArea={campaign.destinations.studyArea} essencialTotal={essencialTotal} />
+        <SalesHero hasAccess={hasAccess} studyArea={campaign.destinations.studyArea} essencialTotal={essencialTotal} question={heroQuestion} />
+        <SalesNumbers facts={facts} inv={inv} ebooks={ebookMaterials.length} />
         <SalesSamples question={question} />
-        <SalesBenefits facts={facts} />
+        <SalesTools facts={facts} inv={inv} />
         <SalesOffers plans={plans} facts={facts} inv={inv} checkoutReady={checkoutReady} />
         <SalesAccess />
         <SalesFaq inv={inv} essencialTotal={essencialTotal} premiumTotal={premiumTotal} essencialBase={brl(cents("essencial"))} premiumBase={brl(cents("premium"))} />

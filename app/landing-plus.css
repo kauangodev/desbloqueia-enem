@@ -1,0 +1,88 @@
+/* Landing: topo com questão jogável, faixa de números, mapa de recursos e atalho para o responsável pagar.
+   Só usa os tokens do tema (.sales) — funciona nos temas escuro e claro. */
+
+/* hero em duas colunas (copy + questão) */
+.s-hero-grid { display: grid; gap: 28px; align-items: start; }
+.s-hero-copy { text-align: left; }
+.s-hero-copy .s-actions { align-items: flex-start; }
+.s-hero-copy h1 { margin-inline: 0; max-width: 20ch; font-size: clamp(2rem, 5.2vw, 3.05rem); }
+.s-try-pick span p { margin: 0; }
+.s-hero-copy .s-lead { margin-inline: 0; }
+.s-ticks { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.s-ticks li { position: relative; padding-left: 22px; font-size: .9rem; font-weight: 700; }
+.s-ticks li::before { content: ""; position: absolute; left: 0; top: .38em; width: 14px; height: 8px; border-left: 2.5px solid var(--g600); border-bottom: 2.5px solid var(--g600); transform: rotate(-45deg) scale(.9); }
+.s-hero-copy .s-trust { margin-inline: 0; }
+@media (min-width: 960px) {
+  .s-hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 44px; align-items: center; }
+}
+
+/* questão jogável */
+.s-try { text-align: left; padding: 18px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 18px 44px rgb(var(--sh) / 16%), 0 0 40px var(--glow-g); }
+.s-try-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; font-size: .8125rem; font-weight: 700; color: var(--muted); }
+.s-try-chip { padding: 3px 10px; border-radius: 999px; background: var(--g100); color: var(--g800); font-size: .75rem; }
+.s-try-stmt { font-size: 1rem; color: var(--g900); }
+.s-try-stmt p { margin: 0 0 8px; }
+.s-try-opts { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+.s-try-opts li { display: flex; align-items: stretch; gap: 6px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--bg); transition: border-color .15s ease, background .15s ease; }
+.s-try-opts li:hover { border-color: var(--g700); }
+.s-try-pick { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 10px 12px; min-height: 48px; background: transparent; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 12px; }
+.s-try-pick:disabled { cursor: default; }
+.s-try-pick b { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--g100); color: var(--g800); font-size: .8125rem; }
+.s-try-pick span { overflow-wrap: anywhere; }
+.s-try-cut { flex: none; width: 44px; background: transparent; border: 0; border-left: 1px solid var(--line); color: var(--muted); cursor: pointer; display: grid; place-items: center; border-radius: 0 12px 12px 0; }
+.s-try-cut:hover { color: var(--g900); }
+.s-try-opts li.is-struck { opacity: .5; }
+.s-try-opts li.is-struck .s-try-pick span { text-decoration: line-through; }
+.s-try-opts li.is-right { border-color: #34d399; background: rgb(52 211 153 / 14%); }
+.s-try-opts li.is-wrong { border-color: #f87171; background: rgb(248 113 113 / 13%); }
+.s-try-hint { margin: 10px 0 0; font-size: .8125rem; color: var(--muted); }
+.s-try-feedback { outline: none; }
+.s-try-feedback:empty { display: none; }
+.s-try-feedback strong.is-ok { color: #34d399; }
+.s-try-feedback strong.is-bad { color: #fb923c; }
+html[data-gd-theme="light"] .s-try-feedback strong.is-ok { color: #0f7a52; }
+html[data-gd-theme="light"] .s-try-feedback strong.is-bad { color: #b45309; }
+.s-try-feedback { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); font-size: .95rem; }
+.s-try-why, .s-try-mis { margin: 8px 0 0; font-size: .9rem; }
+.s-try-sol { margin-top: 8px; font-size: .92rem; }
+.s-try-sol p { margin: 0 0 6px; }
+.s-try-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 14px; }
+.s-try-again { min-height: 44px; padding: 0 6px; background: transparent; border: 0; color: var(--g700); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+body.godev-app .sales .s-try-stmt, body.godev-app .sales .s-try-stmt p, body.godev-app .sales .s-try-pick { color: var(--g900); }
+body.godev-app .sales .s-try-head, body.godev-app .sales .s-try-hint, body.godev-app .sales .s-try-why, body.godev-app .sales .s-try-mis, body.godev-app .sales .s-try-sol { color: var(--ink); }
+body.godev-app .sales .s-try-chip { color: var(--g800); }
+body.godev-app .sales .s-try-pick b { color: var(--g800); }
+
+/* faixa de números */
+.s-numbers { border-block: 1px solid var(--line); background: var(--g50); }
+.s-numbers ul { list-style: none; margin: 0 auto; padding: 22px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; }
+.s-numbers li { text-align: center; }
+.s-numbers b { display: block; font-size: clamp(1.6rem, 5vw, 2.3rem); line-height: 1; letter-spacing: -.02em; color: var(--g900); }
+.s-numbers span { display: block; margin-top: 6px; font-size: .8125rem; color: var(--muted); }
+body.godev-app .sales .s-numbers b { color: var(--em); }
+body.godev-app .sales .s-numbers span { color: var(--muted); }
+@media (min-width: 760px) { .s-numbers ul { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* ciclo + mapa de recursos */
+.s-loop { list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 12px; counter-reset: loop; }
+.s-loop li { position: relative; padding: 16px 16px 16px 58px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+.s-loop li > span { position: absolute; left: 14px; top: 14px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--step-bg); color: var(--step-fg); font-weight: 800; font-size: .9rem; }
+.s-loop b { display: block; font-size: 1.05rem; color: var(--g900); }
+.s-loop p { margin: 2px 0 0; font-size: .92rem; color: var(--muted); }
+@media (min-width: 860px) { .s-loop { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.s-tools { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.s-tools li { display: flex; flex-direction: column; gap: 8px; padding: 18px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); transition: transform .2s ease, border-color .2s ease; }
+.s-tools li:hover { transform: translateY(-2px); border-color: var(--g700); }
+.s-tools li.is-premium { border-color: var(--tp-bd); background: linear-gradient(180deg, var(--plan-tint), transparent 60%), var(--card); }
+.s-tools .s-ico { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--g100); color: var(--g800); }
+.s-tools .s-tag { align-self: flex-start; padding: 3px 10px; border-radius: 999px; font-size: .6875rem; font-weight: 800; letter-spacing: .02em; }
+.s-tools h3 { font-size: 1.1rem; }
+.s-tools p { margin: 0; font-size: .92rem; color: var(--muted); }
+body.godev-app .sales .s-tools p { color: var(--muted); }
+
+/* responsável paga */
+.s-guardian { display: block; width: 100%; margin-top: 8px; min-height: 46px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--line); background: transparent; color: var(--g700); font: inherit; font-weight: 700; font-size: .9rem; cursor: pointer; transition: border-color .15s ease, background .15s ease; }
+.s-guardian:hover { border-color: var(--g700); background: var(--g100); }
+body.godev-app .sales .s-guardian { color: var(--g700); }
+
+@media (prefers-reduced-motion: reduce) { .s-tools li, .s-try-opts li, .s-guardian { transition: none; } .s-tools li:hover { transform: none; } }

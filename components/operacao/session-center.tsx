@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ApiError, post, useOperacaoState } from "./client";
 import QuestionMap, { type MapItem } from "../question-map";
+import { Icon } from "../icons";
 import { sessionKinds } from "../../lib/operacao/kinds";
 import { disciplineLabel, type Correction, type Discipline, type PublicQuestion } from "../../lib/operacao/types";
 
@@ -144,6 +145,7 @@ function Player({ data, basePath, onFinished, onExit }: { data: Loaded; basePath
   const [answers, setAnswers] = useState<Record<string, string>>(session.answers || {});
   const [flags, setFlags] = useState<Record<string, boolean>>(session.flags || {});
   const [index, setIndex] = useState(0);
+  const [struck, setStruck] = useState<Record<string, Record<string, boolean>>>({});
   const [saveState, setSaveState] = useState<SaveState>("ok");
   const [confirmFinish, setConfirmFinish] = useState(false);
   const [finishing, setFinishing] = useState(false);
@@ -201,8 +203,34 @@ function Player({ data, basePath, onFinished, onExit }: { data: Loaded; basePath
   const blank = questions.length - answeredCount;
   const mathCount = useMemo(() => questions.filter((x) => x.discipline === "matematica").length, [questions]);
   const choose = (id: string) => { setAnswers((a) => ({ ...a, [q.id]: id })); schedule(); };
+  const toggleStrike = (optionId: string) => {
+    setStruck((current) => ({ ...current, [q.id]: { ...current[q.id], [optionId]: !current[q.id]?.[optionId] } }));
+    if (answers[q.id] === optionId) clear();
+  };
   const clear = () => { setAnswers((a) => { const next = { ...a }; delete next[q.id]; return next; }); schedule(); };
   const flag = () => { setFlags((f) => ({ ...f, [q.id]: !f[q.id] })); schedule(); };
+
+  // Atalhos de teclado do player (ignorados dentro de campos de texto e com modal aberto).
+  const keys = useRef({ choose, flag, go: setIndex, index, total: questions.length, ids: [] as string[], busy: false });
+  // Atualiza a cópia mais recente a cada render: o ouvinte de teclado é registrado uma única vez.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { keys.current = { choose, flag, go: setIndex, index, total: questions.length, ids: (q?.options ?? []).map((o) => o.id.toLowerCase()), busy: confirmFinish || finishing }; });
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target && (target.isContentEditable || ["TEXTAREA", "SELECT"].includes(target.tagName) || (target.tagName === "INPUT" && (target as HTMLInputElement).type !== "radio"))) return;
+      const k = keys.current;
+      if (k.busy) return;
+      const key = event.key.toLowerCase();
+      if (k.ids.includes(key)) { k.choose(key.toUpperCase()); event.preventDefault(); }
+      else if (key === "d") { k.flag(); event.preventDefault(); }
+      else if (event.key === "ArrowRight" && k.index < k.total - 1) { k.go(k.index + 1); event.preventDefault(); }
+      else if (event.key === "ArrowLeft" && k.index > 0) { k.go(k.index - 1); event.preventDefault(); }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
 
   if (!q) return <div className="op-card">Esta atividade não tem questões publicadas. <button className="op-btn" onClick={onExit}>Voltar</button></div>;
 
@@ -239,14 +267,23 @@ function Player({ data, basePath, onFinished, onExit }: { data: Loaded; basePath
             <div className="op-rich" dangerouslySetInnerHTML={{ __html: q.statementHtml }} />
             {q.figure ? <figure className="op-figure"><img src={q.figure.src} alt={q.figure.alt} /></figure> : null}
             <div role="radiogroup" aria-label="Alternativas" className="op-options">
-              {q.options.map((o) => (
-                <label key={o.id} className={`op-option ${answers[q.id] === o.id ? "is-selected" : ""}`}>
-                  <input type="radio" name={`q-${q.id}`} value={o.id} checked={answers[q.id] === o.id} onChange={() => choose(o.id)} />
-                  <span className="op-letter" aria-hidden="true">{o.id}</span>
-                  <span className="op-option-text"><span className="op-sr">Alternativa {o.id}: </span><span dangerouslySetInnerHTML={{ __html: o.html }} /></span>
-                </label>
-              ))}
+              {q.options.map((o) => {
+                const isStruck = Boolean(struck[q.id]?.[o.id]);
+                return (
+                  <div key={o.id} className="op-option-row">
+                    <label className={`op-option ${answers[q.id] === o.id ? "is-selected" : isStruck ? "is-struck" : ""}`}>
+                      <input type="radio" name={`q-${q.id}`} value={o.id} checked={answers[q.id] === o.id} onChange={() => choose(o.id)} />
+                      <span className="op-letter" aria-hidden="true">{o.id}</span>
+                      <span className="op-option-text"><span className="op-sr">Alternativa {o.id}: </span><span dangerouslySetInnerHTML={{ __html: o.html }} /></span>
+                    </label>
+                    <button type="button" className="op-cut" aria-pressed={isStruck} aria-label={isStruck ? `Voltar a alternativa ${o.id}` : `Eliminar a alternativa ${o.id}`} title="Eliminar alternativa" onClick={() => toggleStrike(o.id)}>
+                      <Icon name="x" size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
+            <p className="op-keys">Atalhos: <kbd>A</kbd>–<kbd>E</kbd> respondem, <kbd>←</kbd> e <kbd>→</kbd> trocam de questão, <kbd>D</kbd> marca dúvida.</p>
             <div className="op-q-foot">
               <button type="button" className="op-btn op-btn-ghost" onClick={clear} disabled={!answers[q.id]}>Limpar resposta</button>
               <button type="button" className="op-btn op-btn-ghost" aria-pressed={Boolean(flags[q.id])} onClick={flag}>{flags[q.id] ? "Dúvida marcada ✓" : "Marcar dúvida"}</button>

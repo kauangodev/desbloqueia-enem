@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Icon, type IconName } from "../../../components/icons";
+import MomentumCard from "../../../components/operacao/momentum-card";
 import { modules, questions } from "../../../lib/operacao/catalog";
 import { campaignStatus, operacao } from "../../../lib/operacao/config";
 import { loadProgress } from "../../../lib/operacao/progress";
@@ -56,6 +57,8 @@ export default async function OperacaoHome() {
       </section>
 
       {failed ? <p className="op-error" role="alert">Não foi possível carregar seu progresso agora. O conteúdo continua disponível; tente recarregar a página.</p> : null}
+
+      {progress ? <MomentumCard data={progress.momentum} /> : null}
 
       <section className="op-card" aria-labelledby="op-resume">
         <h3 id="op-resume">Continuar de onde parei</h3>

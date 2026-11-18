@@ -32,8 +32,31 @@ export default function QuestionCard({ q, index, total, moduleTitle, basePath, f
   const group = useId();
   const sending = useRef(false);
 
-  useEffect(() => { setSelected(""); setResult(null); setError(""); setBusy(false); sending.current = false; }, [q.id]);
+  const [struck, setStruck] = useState<Record<string, boolean>>({});
+  const [elapsed, setElapsed] = useState(0);
+  const [note, setNote] = useState("");
+  const answeredRef = useRef(false);
+  const selectedRef = useRef("");
+  useEffect(() => { selectedRef.current = selected; }, [selected]);
+
+  useEffect(() => { setSelected(""); setResult(null); setError(""); setBusy(false); sending.current = false; setStruck({}); setElapsed(0); }, [q.id]);
   useEffect(() => { if (result) feedbackRef.current?.focus(); }, [result]);
+  useEffect(() => { answeredRef.current = Boolean(result); }, [result]);
+
+  // Ritmo: tempo na questão até confirmar. Só de apoio, nada é enviado nem guardado no servidor.
+  useEffect(() => {
+    const id = setInterval(() => { if (!answeredRef.current && document.visibilityState === "visible") setElapsed((value) => value + 1); }, 1000);
+    return () => clearInterval(id);
+  }, [q.id]);
+
+  // Rascunho por questão, só neste aparelho e nesta aba (sessionStorage); falhas de armazenamento são ignoradas.
+  useEffect(() => {
+    try { setNote(window.sessionStorage.getItem(`godev-pad:${q.id}`) || ""); } catch { setNote(""); }
+  }, [q.id]);
+  const saveNote = (value: string) => {
+    setNote(value);
+    try { if (value) window.sessionStorage.setItem(`godev-pad:${q.id}`, value); else window.sessionStorage.removeItem(`godev-pad:${q.id}`); } catch { /* sem armazenamento: o texto fica só na tela */ }
+  };
 
   async function confirm() {
     if (!selected || sending.current) return; // evita clique duplo
@@ -49,6 +72,25 @@ export default function QuestionCard({ q, index, total, moduleTitle, basePath, f
 
   const answered = Boolean(result);
   const right = result?.correction.answer;
+
+  // Atalhos: A–E escolhem a alternativa; Enter confirma. Ignorados enquanto o foco está num campo de texto.
+  const confirmRef = useRef(confirm);
+  useEffect(() => { confirmRef.current = confirm; });
+  useEffect(() => {
+    if (answered) return;
+    const ids = q.options.map((option) => option.id.toLowerCase());
+    const onKey = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) && (target as HTMLInputElement).type !== "radio")) return;
+      const key = event.key.toLowerCase();
+      if (ids.includes(key)) { setSelected(key.toUpperCase()); event.preventDefault(); }
+      else if (event.key === "Enter" && selectedRef.current) { void confirmRef.current(); event.preventDefault(); }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [answered, q.options]);
+  const clock = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`;
 
   return (
     <article className="op-card op-question" aria-labelledby={`${group}-t`}>
@@ -76,16 +118,36 @@ export default function QuestionCard({ q, index, total, moduleTitle, basePath, f
       ) : null}
       <div role="radiogroup" aria-label="Alternativas" className="op-options">
         {q.options.map((option) => {
-          const state = answered ? (option.id === right ? "is-correct" : option.id === selected ? "is-wrong" : "") : option.id === selected ? "is-selected" : "";
+          const state = answered ? (option.id === right ? "is-correct" : option.id === selected ? "is-wrong" : "") : option.id === selected ? "is-selected" : struck[option.id] ? "is-struck" : "";
           return (
-            <label key={option.id} className={`op-option ${state}`}>
-              <input type="radio" name={group} value={option.id} checked={selected === option.id} disabled={answered || busy} onChange={() => setSelected(option.id)} />
-              <span className="op-letter" aria-hidden="true">{option.id}</span>
-              <span className="op-option-text"><span className="op-sr">Alternativa {option.id}: </span><span dangerouslySetInnerHTML={{ __html: option.html }} />{answered && option.id === right ? <b className="op-sr"> (correta)</b> : null}</span>
-            </label>
+            <div key={option.id} className="op-option-row">
+              <label className={`op-option ${state}`}>
+                <input type="radio" name={group} value={option.id} checked={selected === option.id} disabled={answered || busy} onChange={() => setSelected(option.id)} />
+                <span className="op-letter" aria-hidden="true">{option.id}</span>
+                <span className="op-option-text"><span className="op-sr">Alternativa {option.id}: </span><span dangerouslySetInnerHTML={{ __html: option.html }} />{answered && option.id === right ? <b className="op-sr"> (correta)</b> : null}</span>
+              </label>
+              {!answered ? (
+                <button type="button" className="op-cut" aria-pressed={Boolean(struck[option.id])} aria-label={struck[option.id] ? `Voltar a alternativa ${option.id}` : `Eliminar a alternativa ${option.id}`} title="Eliminar alternativa" disabled={busy} onClick={() => { setStruck((current) => ({ ...current, [option.id]: !current[option.id] })); if (selected === option.id) setSelected(""); }}>
+                  <Icon name="x" size={16} aria-hidden="true" />
+                </button>
+              ) : null}
+            </div>
           );
         })}
       </div>
+      {!answered ? (
+        <>
+          <div className="op-q-tools">
+            <span className="op-pace" role="timer" aria-label={`Tempo nesta questão: ${clock}`}><Icon name="timer" size={14} /> {clock}</span>
+            <details className="op-pad">
+              <summary>Rascunho</summary>
+              <label className="op-sr" htmlFor={`${group}-pad`}>Rascunho desta questão</label>
+              <textarea id={`${group}-pad`} value={note} maxLength={2000} placeholder="Faça contas e anotações aqui. Ficam só neste aparelho." onChange={(event) => saveNote(event.target.value)} />
+            </details>
+          </div>
+          <p className="op-keys">Atalhos: <kbd>A</kbd>–<kbd>E</kbd> escolhem a alternativa e <kbd>Enter</kbd> confirma. O “×” ao lado elimina uma alternativa.</p>
+        </>
+      ) : null}
       {!answered ? (
         <div className="op-q-foot">
           <button type="button" className="op-btn op-btn-primary" disabled={!selected || busy} onClick={confirm} data-analytics-event="operacao_confirm_answer">{busy ? "Verificando…" : "Confirmar resposta"}</button>
