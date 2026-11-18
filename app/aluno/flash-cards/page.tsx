@@ -1,7 +1,8 @@
 import Link from "next/link";
 import "katex/dist/katex.min.css";
 import FlashDeck from "../../../components/aluno/flash-deck";
-import { formulas, modules } from "../../../lib/operacao/catalog";
+import { modules } from "../../../lib/operacao/catalog";
+import { formulasFor } from "../../../lib/planos/scope";
 import { operacao, todayInSaoPaulo } from "../../../lib/operacao/config";
 import { renderRich } from "../../../lib/operacao/rich";
 import { operacaoUser } from "../../../lib/operacao/store";
@@ -21,7 +22,7 @@ export default async function FlashCardsPage() {
     );
   }
   const titles = Object.fromEntries(modules.map((m) => [m.id, m.title]));
-  const cards = formulas.map((f) => ({
+  const cards = formulasFor(user).map((f) => ({
     id: f.id, disciplineLabel: disciplineLabel[f.discipline], topic: f.topic, title: f.title,
     texHtml: f.tex ? renderRich(`$$${f.tex}$$`) : undefined, meaning: f.meaning, conditions: f.conditions, example: f.example, commonError: f.commonError,
     moduleId: f.moduleId, moduleTitle: titles[f.moduleId] || "",

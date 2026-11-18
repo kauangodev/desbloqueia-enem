@@ -5,9 +5,9 @@ import { sessionClient, serviceClient } from "../../../../lib/supabase";
 import { createHash } from "node:crypto";
 import { features } from "../../../../lib/features";
 import { mysqlPool } from "../../../../lib/mysql";
+import { TERMS_VERSION } from "../../../../lib/auth/terms";
 
 /** Versão dos termos/privacidade apresentada no cadastro público (registrada junto da aceitação). */
-const TERMS_VERSION = "2026-11";
 const PUBLIC_MESSAGE = "Se este e-mail puder ser cadastrado, enviamos um link para confirmar e criar sua senha. Confira também a caixa de spam.";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,9 +43,9 @@ export async function POST(req: Request) {
     if (entitlementError || inviteError) return jsonError("Não foi possível validar o acesso agora.", 503);
     if (!entitlement && !invite && !publicSignup) return jsonError("Não foi possível concluir o cadastro com os dados informados.", 403);
 
-    const { data: listed } = await adminDb.auth.admin.listUsers({ page: 1, perPage: 1000 });
-    const existing = listed?.users.find((candidate) => candidate.email?.toLowerCase() === email);
-    if (existing) {
+    // Consulta direta por e-mail: listar só os 1000 primeiros usuários deixaria de enxergar contas antigas quando o cadastro é público.
+    const [found] = await mysqlPool().query<import("mysql2/promise").RowDataPacket[]>("SELECT id FROM users WHERE email = ? LIMIT 1", [email]);
+    if (found.length) {
       // Cadastro público não revela se o e-mail já existe (evita enumeração de contas).
       if (publicSignup && !entitlement && !invite) return NextResponse.json({ message: PUBLIC_MESSAGE });
       return jsonError("Este e-mail já possui cadastro. Use a entrada ou a recuperação de senha.", 409);
@@ -59,6 +59,8 @@ export async function POST(req: Request) {
         emailRedirectTo: `${appUrl}/entrar`,
       },
     });
+    // Corrida entre duas requisições do mesmo e-mail: no cadastro público o resultado continua o mesmo (sem revelar a conta).
+    if (publicSignup && !entitlement && !invite && (signUpError as { status?: number } | null)?.status === 409) return NextResponse.json({ message: PUBLIC_MESSAGE });
     if (signUpError || !signedUp.user) return jsonError("Não foi possível criar o cadastro.", 503);
 
     if (publicSignup) {

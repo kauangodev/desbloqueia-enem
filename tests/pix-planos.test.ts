@@ -99,3 +99,36 @@ test("cota diária: consome por ação válida, sem duplicar, com janela em Amer
   assert.equal(consumeDaily(uses, "q3", day, 2).allowed, false);
   assert.equal(consumeDaily(uses, "q3", "2026-11-18", 2).allowed, true); // novo dia
 });
+
+import { evidenceProblems } from "../lib/pix/orders";
+import { freeModuleDecision } from "../lib/planos/gate";
+import { withUserLock } from "../lib/planos/lock";
+
+test("conferência: recebedor, data futura e crédito anterior ao pedido são recusados", () => {
+  const base = { bankRef: "E1234567890ABCDEF", amountCents: 1090, receivedAt: "2026-11-30T10:00:00Z", receiver: "godev teste" };
+  const expected = { receiver: "GODEV TESTE", createdAt: "2026-11-29T10:00:00Z" };
+  const now = new Date("2026-12-01T00:00:00Z");
+  assert.deepEqual(evidenceProblems(base, expected, now), []);
+  assert.match(evidenceProblems({ ...base, receiver: "OUTRA PESSOA" }, expected, now).join(), /recebedor/);
+  assert.match(evidenceProblems({ ...base, receivedAt: "2027-01-01T00:00:00Z" }, expected, now).join(), /futuro/);
+  assert.match(evidenceProblems({ ...base, receivedAt: "2026-11-01T00:00:00Z" }, expected, now).join(), /anterior/);
+  assert.match(evidenceProblems({ ...base, receivedAt: "ontem" }, expected, now).join(), /inválidas/);
+});
+
+test("grátis: módulo fora da unidade introdutória é recusado", () => {
+  const scope = { unitId: "u-a", moduleId: "a", questionsPerDay: 10, sessionKinds: ["diagnostico"] };
+  assert.equal(freeModuleDecision(scope, "a").allowed, true);
+  assert.equal(freeModuleDecision(scope, "b").allowed, false);
+});
+
+test("trava por aluno: operações do mesmo aluno rodam em fila; alunos diferentes não se bloqueiam", async () => {
+  const order: string[] = [];
+  const slow = withUserLock("u1", async () => { order.push("a-inicio"); await new Promise((r) => setTimeout(r, 30)); order.push("a-fim"); });
+  const fast = withUserLock("u1", async () => { order.push("b"); });
+  const other = withUserLock("u2", async () => { order.push("c"); });
+  await Promise.all([slow, fast, other]);
+  assert.deepEqual(order.filter((x) => x !== "c"), ["a-inicio", "a-fim", "b"]);
+  assert.ok(order.indexOf("c") < order.indexOf("a-fim"));
+  await assert.rejects(withUserLock("u3", async () => { throw new Error("x"); }));
+  assert.equal(await withUserLock("u3", async () => "ok"), "ok");
+});

@@ -61,9 +61,20 @@ create table if not exists auth_identities (
   constraint auth_identities_user_fk foreign key (user_id) references users(id)
 ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
 
--- Colunas novas em users: use o bloco abaixo apenas se ainda não existirem (MySQL 8.0.29+ aceita IF NOT EXISTS; senão rode uma a uma).
-alter table users add column if not exists signup_source varchar(16) null;
-alter table users add column if not exists terms_version varchar(24) null;
-alter table users add column if not exists terms_accepted_at datetime(3) null;
-alter table users add column if not exists marketing_optin boolean not null default false;
-alter table users add column if not exists last_login_at datetime(3) null;
+-- Colunas novas em users, de forma PORTÁVEL (MySQL e MariaDB): ADD COLUMN IF NOT EXISTS só existe no MariaDB, então cada coluna
+-- é verificada em information_schema e só então adicionada. Repetível: rodar de novo não altera nada.
+set @exists := (select count(*) from information_schema.columns where table_schema = database() and table_name = 'users' and column_name = 'signup_source');
+set @ddl := if(@exists = 0, 'alter table users add column signup_source varchar(16) null', 'select 1');
+prepare stmt from @ddl; execute stmt; deallocate prepare stmt;
+set @exists := (select count(*) from information_schema.columns where table_schema = database() and table_name = 'users' and column_name = 'terms_version');
+set @ddl := if(@exists = 0, 'alter table users add column terms_version varchar(24) null', 'select 1');
+prepare stmt from @ddl; execute stmt; deallocate prepare stmt;
+set @exists := (select count(*) from information_schema.columns where table_schema = database() and table_name = 'users' and column_name = 'terms_accepted_at');
+set @ddl := if(@exists = 0, 'alter table users add column terms_accepted_at datetime(3) null', 'select 1');
+prepare stmt from @ddl; execute stmt; deallocate prepare stmt;
+set @exists := (select count(*) from information_schema.columns where table_schema = database() and table_name = 'users' and column_name = 'marketing_optin');
+set @ddl := if(@exists = 0, 'alter table users add column marketing_optin boolean not null default false', 'select 1');
+prepare stmt from @ddl; execute stmt; deallocate prepare stmt;
+set @exists := (select count(*) from information_schema.columns where table_schema = database() and table_name = 'users' and column_name = 'last_login_at');
+set @ddl := if(@exists = 0, 'alter table users add column last_login_at datetime(3) null', 'select 1');
+prepare stmt from @ddl; execute stmt; deallocate prepare stmt;

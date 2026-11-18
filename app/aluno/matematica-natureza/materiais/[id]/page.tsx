@@ -5,6 +5,9 @@ import { moduleById, modules, questions } from "../../../../../lib/operacao/cata
 import { operacao } from "../../../../../lib/operacao/config";
 import { renderInline, renderRich } from "../../../../../lib/operacao/rich";
 import { operacaoUser } from "../../../../../lib/operacao/store";
+import FreeLocked from "../../../../../components/aluno/free-locked";
+import { freeModuleVisible } from "../../../../../lib/planos/gate";
+import { scopeOf } from "../../../../../lib/planos/scope";
 import { disciplineLabel } from "../../../../../lib/operacao/types";
 
 export default async function ModulePage({ params }: { params: Promise<{ id: string }> }) {
@@ -12,6 +15,8 @@ export default async function ModulePage({ params }: { params: Promise<{ id: str
   const m = moduleById(id);
   if (!m) notFound();
   const user = await operacaoUser();
+  const scope = user ? scopeOf(user) : null;
+  if (scope && !freeModuleVisible(scope, m.id)) return <FreeLocked what="Este módulo" />;
   let concluded = false;
   try { concluded = Boolean((await user!.kv.get<{ concluded: boolean }>("read", m.id))?.concluded); } catch { /* o botão informa falha ao salvar */ }
   const base = operacao.basePath;

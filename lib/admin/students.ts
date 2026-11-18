@@ -101,21 +101,26 @@ export async function overview(): Promise<Overview> {
   /** Falha de leitura propaga (a tela mostra erro); `optional` só para tabelas da migração 06, que podem não existir ainda. */
   const one = async (sql: string, optional = false) => { try { return Number((await q(sql))[0]?.n ?? 0); } catch (error) { if (optional) return 0; throw error; } };
   const s = "u.role = 'student'";
+  const last = (days: number) => `u.created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL ${days} DAY)`;
   const migrated = await one("SELECT COUNT(*) AS n FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'users' AND column_name = 'signup_source'") > 0;
-  const bySource: Record<string, number> = {};
-  try { for (const r of await q(`SELECT COALESCE(${migrated ? "u.signup_source" : "NULL"}, 'legado') AS src, COUNT(*) AS n FROM users u WHERE ${s} AND u.created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY) GROUP BY src`)) bySource[r.src] = Number(r.n); } catch { /* sem dados */ }
   const act = (days: number) => one(`SELECT COUNT(DISTINCT st.user_id) AS n FROM operacao_state st JOIN users u ON u.id = st.user_id WHERE ${s} AND st.kind IN ${KINDS} AND st.updated_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL ${days} DAY)`);
-  const paidUsers = await one(`SELECT COUNT(DISTINCT o.user_id) AS n FROM pix_orders o JOIN users u ON u.id = o.user_id WHERE o.status = 'pago' AND u.created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)`, true);
-  const verified30 = await one(`SELECT COUNT(*) AS n FROM users u WHERE ${s} AND u.email_verified_at IS NOT NULL AND u.created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)`);
-  const signups30 = await one(`SELECT COUNT(*) AS n FROM users u WHERE ${s} AND u.created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)`);
+  // Consultas independentes: rodam juntas (uma ida ao banco por vez deixaria a aba lenta).
+  const [signups7, signups30, verified30, firstActivity30, active7, active30, paidUsers, upgrades30, revenue30Cents, toReview, sources] = await Promise.all([
+    one(`SELECT COUNT(*) AS n FROM users u WHERE ${s} AND ${last(7)}`),
+    one(`SELECT COUNT(*) AS n FROM users u WHERE ${s} AND ${last(30)}`),
+    one(`SELECT COUNT(*) AS n FROM users u WHERE ${s} AND u.email_verified_at IS NOT NULL AND ${last(30)}`),
+    one(`SELECT COUNT(DISTINCT st.user_id) AS n FROM operacao_state st JOIN users u ON u.id = st.user_id WHERE ${s} AND st.kind IN ${KINDS} AND ${last(30)}`),
+    act(7), act(30),
+    one(`SELECT COUNT(DISTINCT o.user_id) AS n FROM pix_orders o JOIN users u ON u.id = o.user_id WHERE o.status = 'pago' AND ${last(30)}`, true),
+    one("SELECT COUNT(*) AS n FROM pix_orders WHERE status = 'pago' AND confirmed_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)", true),
+    one("SELECT COALESCE(SUM(expected_cents),0) AS n FROM pix_orders WHERE status = 'pago' AND confirmed_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)", true),
+    one("SELECT COUNT(*) AS n FROM pix_orders WHERE status = 'em_conferencia'", true),
+    q(`SELECT COALESCE(${migrated ? "u.signup_source" : "NULL"}, 'legado') AS src, COUNT(*) AS n FROM users u WHERE ${s} AND ${last(30)} GROUP BY src`),
+  ]);
+  const bySource: Record<string, number> = {};
+  for (const r of sources) bySource[r.src] = Number(r.n);
   return {
-    signups7: await one(`SELECT COUNT(*) AS n FROM users u WHERE ${s} AND u.created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 7 DAY)`),
-    signups30, verified30, pending30: signups30 - verified30, bySource30: bySource,
-    firstActivity30: await one(`SELECT COUNT(DISTINCT st.user_id) AS n FROM operacao_state st JOIN users u ON u.id = st.user_id WHERE ${s} AND st.kind IN ${KINDS} AND u.created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)`),
-    active7: await act(7), active30: await act(30),
-    upgrades30: await one("SELECT COUNT(*) AS n FROM pix_orders WHERE status = 'pago' AND confirmed_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)", true),
-    revenue30Cents: await one("SELECT COALESCE(SUM(expected_cents),0) AS n FROM pix_orders WHERE status = 'pago' AND confirmed_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)", true),
-    toReview: await one("SELECT COUNT(*) AS n FROM pix_orders WHERE status = 'em_conferencia'", true),
+    signups7, signups30, verified30, pending30: signups30 - verified30, bySource30: bySource, firstActivity30, active7, active30, upgrades30, revenue30Cents, toReview,
     conversion30: { total: verified30, paid: paidUsers, rate: verified30 ? Math.round((paidUsers / verified30) * 1000) / 10 : null }, migrated,
   };
 }

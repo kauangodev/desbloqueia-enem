@@ -1,21 +1,20 @@
-import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { randomUUID, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { appUrl } from "../../../../../lib/config";
 import { claimProblems, GOOGLE_JWKS_URL, GOOGLE_TOKEN_URL, verifyRs256 } from "../../../../../lib/auth/google";
 import { features } from "../../../../../lib/features";
 import { mysqlPool } from "../../../../../lib/mysql";
-import { requiredSessionSecret } from "../../../../../lib/security";
 import { startSessionForUser } from "../../../../../lib/supabase";
+import { TERMS_VERSION } from "../../../../../lib/auth/terms";
+import { signPayload } from "../../../../../lib/auth/oauth-cookie";
 
 export const dynamic = "force-dynamic";
-const TERMS_VERSION = "2026-11";
 
-const sign = (payload: string) => createHmac("sha256", requiredSessionSecret()).update(payload).digest("base64url");
 function readCookie(raw: string | undefined) {
   if (!raw) return null;
   const [payload, signature] = raw.split(".");
   if (!payload || !signature) return null;
-  const expected = sign(payload);
+  const expected = signPayload(payload);
   if (signature.length !== expected.length || !timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null;
   try { const data = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { state: string; nonce: string; verifier: string; redirect: string; terms: boolean; marketing: boolean; exp: number }; return data.exp > Date.now() ? data : null; } catch { return null; }
 }

@@ -18,6 +18,11 @@ export function freeSessionDecision(scope: FreeScope, kind: string): Decision {
   return scope.sessionKinds.includes(kind) ? { allowed: true } : deny(`${UPGRADE} No Grátis você pode fazer o diagnóstico.`);
 }
 
+export const freeModuleVisible = (scope: FreeScope, moduleId: string) => moduleId === scope.moduleId;
+export function freeModuleDecision(scope: FreeScope, moduleId: string): Decision {
+  return freeModuleVisible(scope, moduleId) ? { allowed: true } : deny(`${UPGRADE} No Grátis você tem o módulo da unidade introdutória.`);
+}
+
 export const freeQuestionVisible = (scope: FreeScope, question: { moduleId: string }) => question.moduleId === scope.moduleId;
 
 /** Resposta avulsa: só questões do módulo grátis, dentro da cota diária. `uses` vem do armazenamento do aluno. */

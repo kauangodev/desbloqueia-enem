@@ -1,4 +1,4 @@
-﻿# Jornada Grátis + Pix — Etapa 1: inventário e fundação (branch `feature/jornada-pix-gratis`)
+# Jornada Grátis + Pix — Etapa 1: inventário e fundação (branch `feature/jornada-pix-gratis`)
 
 Para revisão. **Nada publicado em `main`; nenhuma rota, tela ou comportamento de produção mudou nesta etapa.**
 
@@ -27,7 +27,7 @@ Para revisão. **Nada publicado em `main`; nenhuma rota, tela ou comportamento d
 |---|---|
 | Catálogo de planos/ofertas e direitos (domínio) | implementado e testado localmente; **não ligado às rotas** |
 | Validação de QR/Copia e Cola e pedido Pix (domínio) | implementado e testado localmente |
-| Migração 06 | escrita; **não aplicada** em nenhum banco; `if not exists` nas colunas exige MySQL 8.0.29+ (conferir no hPanel) |
+| Migração 06 | escrita; **não aplicada** em nenhum banco; as colunas novas são verificadas em `information_schema` (funciona em MySQL e MariaDB) |
 | Cadastro público (e-mail/Google), verificação, onboarding | **pendente** |
 | Grátis no portal (abrir `operacaoUser`, cotas, unidade introdutória) | **pendente** (precisa definir a unidade grátis da Trilha e os limites) |
 | Checkout Pix (telas, QR, Meus pagamentos, link do responsável) e fila de conciliação | **pendente** |

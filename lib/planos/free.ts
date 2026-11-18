@@ -21,3 +21,5 @@ export async function loadQuota(kv: Kv, day: string): Promise<QuotaUse[]> {
 export async function saveQuota(kv: Kv, day: string, uses: QuotaUse[]) {
   await kv.set("quota", day, { keys: uses.filter((u) => u.day === day).map((u) => u.key) });
 }
+
+export { withUserLock } from "./lock";

@@ -1,13 +1,11 @@
-import { createHmac } from "node:crypto";
 import { NextResponse } from "next/server";
 import { appUrl } from "../../../../../lib/config";
 import { authUrl, pkce, randomToken, safeRedirect } from "../../../../../lib/auth/google";
 import { features } from "../../../../../lib/features";
-import { requiredSessionSecret } from "../../../../../lib/security";
+import { signPayload } from "../../../../../lib/auth/oauth-cookie";
 
 export const dynamic = "force-dynamic";
 
-const sign = (payload: string) => createHmac("sha256", requiredSessionSecret()).update(payload).digest("base64url");
 
 /**
  * Início do login com Google. Guarda state, nonce e o verificador PKCE num cookie HttpOnly assinado de 10 minutos.
@@ -22,7 +20,7 @@ export async function GET(req: Request) {
   const { verifier, challenge } = pkce();
   const payload = Buffer.from(JSON.stringify({ state, nonce, verifier, redirect: safeRedirect(params.get("redirect")), terms: params.get("terms") === "1", marketing: params.get("marketing") === "1", exp: Date.now() + 10 * 60 * 1000 })).toString("base64url");
   const response = NextResponse.redirect(authUrl({ clientId, redirectUri: `${appUrl}/api/auth/google/callback`, state, nonce, challenge }), 303);
-  response.cookies.set("gd_oauth", `${payload}.${sign(payload)}`, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/api/auth/google", maxAge: 600 });
+  response.cookies.set("gd_oauth", `${payload}.${signPayload(payload)}`, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/api/auth/google", maxAge: 600 });
   response.headers.set("Cache-Control", "no-store");
   return response;
 }

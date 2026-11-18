@@ -1,4 +1,4 @@
-﻿# Jornada Grátis + Pix — Etapa 3: checkout Pix e conciliação manual (branch `feature/jornada-pix-gratis`)
+# Jornada Grátis + Pix — Etapa 3: checkout Pix e conciliação manual (branch `feature/jornada-pix-gratis`)
 
 Para revisão. **Nada em `main`.** As telas existem, mas nenhum link do site aponta para elas ainda (a landing e `/aluno/planos` continuam levando à Cakto até o corte comercial).
 

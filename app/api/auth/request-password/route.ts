@@ -3,6 +3,14 @@ import { appUrl } from "../../../../lib/config";
 import { sameOrigin, jsonError } from "../../../../lib/http";
 import { publicClient, serviceClient } from "../../../../lib/supabase";
 import { createHash, randomBytes } from "node:crypto";
+import { features } from "../../../../lib/features";
+import { mysqlPool } from "../../../../lib/mysql";
+
+/** Consulta direta por e-mail (a listagem de 1000 usuários deixa de enxergar contas quando o cadastro é público). */
+async function userExists(email: string) {
+  const [rows] = await mysqlPool().query<import("mysql2/promise").RowDataPacket[]>("SELECT id FROM users WHERE email = ? LIMIT 1", [email]);
+  return rows.length > 0;
+}
 
 export async function POST(req: Request) {
   if (!sameOrigin(req)) return jsonError("Origem inválida", 403);
@@ -54,11 +62,12 @@ export async function POST(req: Request) {
       return jsonError("Não foi possível preparar este acesso.", 503);
     }
   }
-  if (!entitlement && !invite && !admin)
+  // Com o cadastro público, conta Grátis (sem compra nem convite) também recupera a senha e reenvia o link de confirmação.
+  const publicAccount = features.gratis && !entitlement && !invite && !admin ? await userExists(email).catch(() => false) : false;
+  if (!entitlement && !invite && !admin && !publicAccount)
     return NextResponse.json({ message: "Se este e-mail tem uma compra aprovada ou convite, enviaremos as instruções de senha." });
   if (!bootstrapped && (invite || admin) && !entitlement) {
-    const { data: existing } = await adminDb.auth.admin.listUsers({ page: 1, perPage: 1000 });
-    if (!existing.users.some((user) => user.email?.toLowerCase() === email)) {
+    if (!(await userExists(email))) {
       const created = await adminDb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { name: invite?.name || admin?.name || "Administrador" } });
       if (created.error && created.error.code !== "email_exists") return jsonError("Não foi possível preparar este acesso.", 503);
     }

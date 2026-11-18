@@ -16,10 +16,13 @@ export default async function AdminPixSection({ role, status, q, page }: { role:
   let offers: Awaited<ReturnType<typeof listOffers>> = [];
   let orders: Awaited<ReturnType<typeof adminOrders>> = { rows: [], total: 0, page: 1, pageSize: 20 };
   try { await expireDue(); [offers, orders] = await Promise.all([listOffers(), adminOrders({ status, q, page })]); } catch { failed = true; }
-  const view = (tier: "essencial" | "premium"): PixOfferView | null => {
-    const o = offers.find((x) => x.tier === tier && x.status === "ativa") ?? offers.find((x) => x.tier === tier);
-    return o ? { code: o.code, tier, version: o.version, cents: o.cents, status: o.status, receiverName: o.receiverName, hasCode: Boolean(o.copyPaste), reviewMinutes: o.reviewMinutes, problems: offerProblems(o) } : null;
+  const toView = (o: (typeof offers)[number] | undefined): PixOfferView | null => {
+    return o ? { code: o.code, tier: o.tier, version: o.version, cents: o.cents, status: o.status, receiverName: o.receiverName, hasCode: Boolean(o.copyPaste), reviewMinutes: o.reviewMinutes, problems: offerProblems(o) } : null;
   };
+  // `listOffers` vem da versão mais nova para a mais antiga: a primeira é a que o operador está editando (pode ser rascunho);
+  // a ativa é a que está à venda agora. As duas aparecem, então um rascunho novo sempre pode ser conferido e ativado.
+  const newest = (tier: "essencial" | "premium") => toView(offers.find((x) => x.tier === tier));
+  const live = (tier: "essencial" | "premium") => toView(offers.find((x) => x.tier === tier && x.status === "ativa"));
   const receiver = offers.find((o) => o.status === "ativa")?.receiverName ?? "";
   const href = (s: string, p = 1) => `/admin?tab=pix${s ? `&status=${s}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${p > 1 ? `&page=${p}` : ""}`;
   const pages = Math.max(1, Math.ceil(orders.total / orders.pageSize));
@@ -28,8 +31,8 @@ export default async function AdminPixSection({ role, status, q, page }: { role:
       <p className="status-message" role="note">Modo atual: QR do banco com <strong>conciliação manual</strong>. O acesso só é liberado quando um operador confirma o crédito no extrato da conta recebedora. Não há confirmação bancária automática.</p>
       {failed ? <p role="alert" className="status-message error">Não foi possível carregar os dados. Verifique se a migração 06 foi aplicada no banco.</p> : null}
       <h2>Ofertas</h2>
-      <OfferEditor tier="essencial" current={view("essencial")} canManage={canManage} />
-      <OfferEditor tier="premium" current={view("premium")} canManage={canManage} />
+      <OfferEditor tier="essencial" current={newest("essencial")} live={live("essencial")} canManage={canManage} />
+      <OfferEditor tier="premium" current={newest("premium")} live={live("premium")} canManage={canManage} />
       <h2>Fila de pedidos ({orders.total})</h2>
       <nav aria-label="Filtro por status" className="as-periods">
         {filters.map((f) => <Link key={f || "todos"} className="as-btn" href={href(f)} aria-current={(status || "") === f ? "page" : undefined}>{f ? statusLabel[f] : "Todos"}</Link>)}

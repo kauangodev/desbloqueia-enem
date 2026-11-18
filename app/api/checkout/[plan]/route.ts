@@ -3,6 +3,7 @@ import { jsonError } from "../../../../lib/http";
 import { NextResponse } from "next/server";
 import { checkoutConfigured } from "../../../../lib/readiness";
 import { caktoFallbackOffers } from "../../../../lib/config";
+import { appUrl } from "../../../../lib/config";
 import { features } from "../../../../lib/features";
 import { legacyCheckoutTarget } from "../../../../lib/commerce";
 export async function GET(
@@ -14,7 +15,7 @@ export async function GET(
   // para o checkout da GoDev (307, não permanente, para o rollback não ficar preso em cache), só com parâmetros de campanha conhecidos.
   if (features.pix) {
     if (!["essencial", "premium"].includes(plan)) return jsonError("Plano inválido", 404);
-    const response = NextResponse.redirect(new URL(legacyCheckoutTarget(plan, new URL(req.url).searchParams), req.url), 307);
+    const response = NextResponse.redirect(new URL(legacyCheckoutTarget(plan, new URL(req.url).searchParams), appUrl), 307);
     response.headers.set("Cache-Control", "private, no-store");
     return response;
   }

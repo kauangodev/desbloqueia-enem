@@ -8,8 +8,8 @@ import { limitFor, remainingMs, selectQuestions, summarize, type Attempt, type S
 import { kindIds, type SessionKind as KindId } from "../../../lib/operacao/kinds";
 import { operacaoUser, type OperacaoUser } from "../../../lib/operacao/store";
 import { recordAttempt as recordAttemptShared } from "../../../lib/operacao/attempts";
-import { freeAnswerDecision, freeSessionDecision } from "../../../lib/planos/gate";
-import { freeScope, loadQuota, saveQuota } from "../../../lib/planos/free";
+import { freeAnswerDecision, freeModuleDecision, freeQuestionVisible, freeSessionDecision } from "../../../lib/planos/gate";
+import { freeScope, loadQuota, saveQuota, withUserLock } from "../../../lib/planos/free";
 
 export const dynamic = "force-dynamic";
 
@@ -98,20 +98,36 @@ export async function POST(req: Request) {
   const parsed = body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return jsonError("Solicitação inválida");
   const input = parsed.data;
+  // Grátis: toda ação que referencia conteúdo só vale para o módulo da unidade introdutória (mesmo escopo das páginas).
+  if (user.tier === "gratis") {
+    const scope = freeScope();
+    const visibleQuestion = (id: string) => { const q = questionById(id); return Boolean(q && freeQuestionVisible(scope, q)); };
+    const visibleFormula = (id: string) => formulas.some((f) => f.id === id && f.moduleId === scope.moduleId);
+    let message: string | null = null;
+    if (input.action === "read") { const d = freeModuleDecision(scope, input.moduleId); if (!d.allowed) message = d.message; }
+    else if (input.action === "flash" && !visibleFormula(input.formulaId)) message = "Este cartão faz parte do plano Essencial.";
+    else if (input.action === "toggle" && !(input.kind === "formula" ? visibleFormula(input.ref) : visibleQuestion(input.ref))) message = "Este conteúdo faz parte do plano Essencial.";
+    else if (input.action === "review" && !visibleQuestion(input.questionId)) message = "Este conteúdo faz parte do plano Essencial.";
+    if (message) return jsonError(message, 403);
+  }
   try {
     switch (input.action) {
       case "answer": {
         const q = questionById(input.questionId);
         if (!q) return jsonError("Questão não encontrada", 404);
-        if (user.tier === "gratis") {
-          const day = todayInSaoPaulo();
-          const free = freeAnswerDecision(freeScope(), q, await loadQuota(user.kv, day), day);
-          if (!free.decision.allowed) return jsonError(free.decision.message, 403);
-          await saveQuota(user.kv, day, free.uses);
-        }
-        const correction = grade(q, input.selected);
-        const attempt = await recordAttempt(user, q.id, input.selected, correction.correct, input.context);
-        return NextResponse.json({ correction, firstTry: attempt.history.length === 1, afterResolution: attempt.history.length > 1 });
+        const run = async () => {
+          if (user.tier === "gratis") {
+            const day = todayInSaoPaulo();
+            const free = freeAnswerDecision(freeScope(), q, await loadQuota(user.kv, day), day);
+            if (!free.decision.allowed) return jsonError(free.decision.message, 403);
+            await saveQuota(user.kv, day, free.uses);
+          }
+          const correction = grade(q, input.selected);
+          const attempt = await recordAttempt(user, q.id, input.selected, correction.correct, input.context);
+          return NextResponse.json({ correction, firstTry: attempt.history.length === 1, afterResolution: attempt.history.length > 1 });
+        };
+        // Grátis: leitura e gravação da cota ficam numa fila por aluno (respostas simultâneas não passam do limite).
+        return user.tier === "gratis" ? await withUserLock(user.id, run) : await run();
       }
       case "toggle": {
         const existing = await user.kv.get("" + input.kind, input.ref);

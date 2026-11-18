@@ -2,7 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import type { PoolConnection, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { mysqlPool } from "../mysql";
-import { bankRefInUse, confirm, expire, notifyPaid, refund, type Evidence, type PixOrder, type PixStatus } from "./orders";
+import { bankRefInUse, confirm, evidenceProblems, expire, notifyPaid, refund, type Evidence, type PixOrder, type PixStatus } from "./orders";
 import { validatePixOffer } from "./payload";
 
 /**
@@ -86,6 +86,9 @@ export async function createOrder(userId: string, tier: "essencial" | "premium")
   const offer = await activeOffer(tier);
   if (!offer) return { ok: false, error: "O pagamento por Pix deste plano ainda não está disponível." };
   return tx(async (c) => {
+    // Trava a linha do aluno: duas requisições simultâneas do mesmo aluno passam uma de cada vez (SELECT ... FOR UPDATE em zero
+    // linhas não impediria o INSERT duplicado).
+    await c.query("SELECT id FROM users WHERE id = ? FOR UPDATE", [userId]);
     // Pedido aberto do mesmo plano é reaproveitado (clique repetido não cria pedidos duplicados).
     const [open] = await c.query<RowDataPacket[]>("SELECT id FROM pix_orders WHERE user_id = ? AND offer_code = ? AND status IN ('aguardando_pix','em_conferencia') AND expires_at > CURRENT_TIMESTAMP(3) ORDER BY created_at DESC LIMIT 1 FOR UPDATE", [userId, offer.code]);
     if (open[0]) return { ok: true as const, id: open[0].id as string };
@@ -148,6 +151,9 @@ export async function confirmOrder(actor: string, id: string, evidence: Evidence
       const order = orderOf(rows[0]);
       const [others] = await c.query<RowDataPacket[]>("SELECT id, bank_ref AS bankRef FROM pix_orders WHERE bank_ref = ? AND id <> ?", [evidence.bankRef, id]);
       if (bankRefInUse(others.map((o) => ({ ...order, id: o.id, bankRef: o.bankRef })), evidence.bankRef, id)) return { ok: false as const, error: "esta referência bancária já confirmou outro pedido" };
+      const [offerRow] = await c.query<RowDataPacket[]>("SELECT receiver_name FROM pix_offers WHERE code = ? LIMIT 1", [order.offerCode]);
+      const problems = order.status === "pago" ? [] : evidenceProblems(evidence, { receiver: offerRow[0]?.receiver_name ?? "", createdAt: order.createdAt }, new Date());
+      if (problems.length) return { ok: false as const, error: problems.join("; ") };
       const result = confirm(order, evidence);
       if (!result.ok) return { ok: false as const, error: result.error };
       if (result.changed) {

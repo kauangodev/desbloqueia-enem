@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { modules, questions } from "../../../../lib/operacao/catalog";
+import { questions } from "../../../../lib/operacao/catalog";
+import { modulesFor } from "../../../../lib/planos/scope";
 import { operacao } from "../../../../lib/operacao/config";
 import { operacaoUser } from "../../../../lib/operacao/store";
 import { disciplineLabel, type Discipline } from "../../../../lib/operacao/types";
@@ -16,7 +17,8 @@ export default async function Materials({ searchParams }: { searchParams: Promis
     reads = new Set((await user!.kv.list<{ concluded: boolean }>("read")).filter((r) => r.data.concluded).map((r) => r.ref));
   } catch { failed = true; }
   const base = operacao.basePath;
-  const list = modules.filter((m) => !filter || m.discipline === filter);
+  const visible = user ? modulesFor(user) : [];
+  const list = visible.filter((m) => !filter || m.discipline === filter);
   return (
     <div className="op-stack">
       <nav className="op-chips" aria-label="Filtrar por disciplina">
@@ -35,7 +37,7 @@ export default async function Materials({ searchParams }: { searchParams: Promis
         ))}
       </div>
       {!list.length ? <p className="op-card op-empty">Nenhum módulo publicado nesta disciplina ainda.</p> : null}
-      <p className="op-muted op-fine">{modules.length} módulos publicados. Módulos em produção só aparecem aqui depois de revisados.</p>
+      <p className="op-muted op-fine">{visible.length} módulos {user?.tier === "gratis" ? "no plano Grátis" : "publicados"}. Módulos em produção só aparecem aqui depois de revisados.</p>
     </div>
   );
 }

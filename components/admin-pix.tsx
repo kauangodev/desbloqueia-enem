@@ -12,7 +12,7 @@ async function act(body: unknown): Promise<{ ok: boolean; error?: string }> {
 }
 const brl = (cents: number) => `R$ ${(cents / 100).toFixed(2).replace(".", ",")}`;
 
-export function OfferEditor({ tier, current, canManage }: { tier: "essencial" | "premium"; current: PixOfferView | null; canManage: boolean }) {
+export function OfferEditor({ tier, current, live, canManage }: { tier: "essencial" | "premium"; current: PixOfferView | null; live: PixOfferView | null; canManage: boolean }) {
   const router = useRouter();
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
@@ -20,7 +20,8 @@ export function OfferEditor({ tier, current, canManage }: { tier: "essencial" | 
   return (
     <section className="admin-card" aria-labelledby={`of-${tier}`} style={{ padding: 16, marginBottom: 16 }}>
       <h3 id={`of-${tier}`}>{label}</h3>
-      {current ? <p>Versão atual: <strong>{current.code}</strong> · {brl(current.cents)} · {current.status === "ativa" ? "ATIVA (à venda)" : current.status === "rascunho" ? "rascunho (não está à venda)" : "encerrada"} · recebedor {current.receiverName || "—"} · {current.hasCode ? "código informado" : "sem código"}{current.problems.length ? <> · <span role="alert">pendências: {current.problems.join("; ")}</span></> : null}</p> : <p>Nenhuma oferta criada. Enquanto não houver oferta ativa, o plano aparece como indisponível para pagamento.</p>}
+      {live && current && live.code !== current.code ? <p>À venda agora: <strong>{live.code}</strong> · {brl(live.cents)}. A versão abaixo é um rascunho: só passa a valer quando você ativar.</p> : null}
+      {current ? <p>{live && current.code === live.code ? "Versão à venda:" : "Versão em edição:"} <strong>{current.code}</strong> · {brl(current.cents)} · {current.status === "ativa" ? "ATIVA (à venda)" : current.status === "rascunho" ? "rascunho (não está à venda)" : "encerrada"} · recebedor {current.receiverName || "—"} · {current.hasCode ? "código informado" : "sem código"}{current.problems.length ? <> · <span role="alert">pendências: {current.problems.join("; ")}</span></> : null}</p> : <p>Nenhuma oferta criada. Enquanto não houver oferta ativa, o plano aparece como indisponível para pagamento.</p>}
       {canManage ? (
         <form onSubmit={async (e) => {
           e.preventDefault(); setBusy(true); setMsg("");

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import "katex/dist/katex.min.css";
 import RushPlayer from "../../../components/aluno/rush-player";
-import { modules, questions, toPublic } from "../../../lib/operacao/catalog";
+import { modules, toPublic } from "../../../lib/operacao/catalog";
+import { questionsFor } from "../../../lib/planos/scope";
 import { operacao } from "../../../lib/operacao/config";
 import { operacaoUser } from "../../../lib/operacao/store";
 import { disciplineLabel, type Discipline } from "../../../lib/operacao/types";
@@ -36,7 +37,7 @@ export default async function RushPage({ searchParams }: { searchParams?: Promis
   let seen = new Set<string>();
   let failed = false;
   try { seen = new Set((await user.kv.list("attempt")).map((row) => row.ref)); } catch { failed = true; }
-  const pool = questions.filter((q) => !filter || q.discipline === filter);
+  const pool = questionsFor(user).filter((q) => !filter || q.discipline === filter);
   const unseen = pool.filter((q) => !seen.has(q.id));
   // Prioriza questões ainda não respondidas; se acabarem, completa com as já vistas.
   const picked = [...shuffle(unseen), ...shuffle(pool.filter((q) => seen.has(q.id)))].slice(0, BATCH);

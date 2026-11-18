@@ -41,6 +41,24 @@ export function confirm(order: PixOrder, evidence: Evidence): Result<PixOrder> {
   return { ok: true, value: { ...order, status: "pago", bankRef: evidence.bankRef }, changed: true };
 }
 
+const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim().toUpperCase();
+
+/**
+ * Confere os dados que o operador leu no extrato contra o pedido: recebedor igual ao da oferta, data/hora válida, não futura
+ * e não anterior à criação do pedido (com 1 dia de folga para relógios e fusos).
+ */
+export function evidenceProblems(evidence: Evidence, expected: { receiver: string; createdAt: string }, now: Date): string[] {
+  const problems: string[] = [];
+  if (norm(evidence.receiver) !== norm(expected.receiver)) problems.push("o recebedor informado difere do recebedor da oferta");
+  const at = new Date(evidence.receivedAt).getTime();
+  if (!Number.isFinite(at)) problems.push("data e hora do crédito inválidas");
+  else {
+    if (at > now.getTime() + 5 * 60 * 1000) problems.push("a data do crédito está no futuro");
+    if (at < new Date(expected.createdAt).getTime() - 24 * 60 * 60 * 1000) problems.push("o crédito é anterior à criação do pedido");
+  }
+  return problems;
+}
+
 /** A referência bancária identifica UM crédito: não pode confirmar outro pedido. */
 export const bankRefInUse = (orders: PixOrder[], bankRef: string, exceptId: string) => orders.some((o) => o.id !== exceptId && o.bankRef === bankRef);
 

@@ -1,4 +1,4 @@
-﻿# Jornada Grátis + Pix — Etapa 2: cadastro público e Grátis no portal (branch `feature/jornada-pix-gratis`)
+# Jornada Grátis + Pix — Etapa 2: cadastro público e Grátis no portal (branch `feature/jornada-pix-gratis`)
 
 Para revisão. **Tudo atrás da chave `NEXT_PUBLIC_FEATURE_GRATIS=1` (padrão: desligada).** Com a chave desligada o comportamento de produção é o mesmo de antes (cadastro só para quem comprou/convidado; sem Grátis).
 
@@ -23,6 +23,6 @@ Para revisão. **Tudo atrás da chave `NEXT_PUBLIC_FEATURE_GRATIS=1` (padrão: d
 - Texto da política de privacidade/termos não foi atualizado para os novos métodos nem revisado para menores.
 
 ## Para ativar em homologação
-1. Aplicar `scripts/hostinger-mysql-schema-06-pix.sql` (backup antes; MySQL 8.0.29+ para `add column if not exists`).
+1. Aplicar `scripts/hostinger-mysql-schema-06-pix.sql` (backup antes; funciona em MySQL e MariaDB).
 2. Definir `NEXT_PUBLIC_FEATURE_GRATIS=1` (e, se quiser, `GRATIS_UNIT_ID`, `GRATIS_QUESTOES_DIA`) e refazer o build (chave `NEXT_PUBLIC_` entra no build).
 3. Reversão: remover a chave e refazer o build; contas criadas permanecem, mas sem acesso ao estudo (sem tier).
