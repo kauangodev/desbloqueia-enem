@@ -286,6 +286,4 @@ body.godev-app.godev-app .op-option input[type="radio"] { position: absolute; le
 .op-pad textarea { width: 100%; min-height: 96px; margin-top: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--surface-soft, transparent); color: inherit; font: inherit; resize: vertical; }
 .op-keys { margin: 8px 0 0; font-size: .8125rem; color: var(--text-muted); }
 .op-keys kbd { padding: 1px 6px; border-radius: 6px; border: 1px solid var(--border-subtle); font: inherit; font-weight: 700; }
-html[data-gd-theme="light"] .op-mom-flame { background: #eef3f0; }
-html[data-gd-theme="light"] .op-pace { background: #eef3f0; }
 @media (prefers-reduced-motion: reduce) { .op-cut { transition: none; } }

@@ -24,7 +24,6 @@
 .as-chip-label { color: var(--text-muted); font-size: .75rem; }
 .as-chip-bar { display: block; width: 64px; height: 6px; border-radius: 99px; background: rgb(255 255 255 / 12%); overflow: hidden; }
 .as-chip-bar i { display: block; height: 100%; background: linear-gradient(90deg, #fbbf24, #f97316); }
-html[data-gd-theme="light"] .as-chip-bar { background: #e3ebe6; }
 @media (max-width: 760px) { .as-chip-label, .as-chip-bar { display: none; } .as-chips { gap: 6px; margin-right: 4px; } }
 
 /* páginas */
@@ -66,7 +65,6 @@ html[data-gd-theme="light"] .as-chip-bar { background: #e3ebe6; }
 .as-list li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border-subtle); }
 .as-empty { display: grid; gap: 8px; justify-items: start; padding: 22px; border-radius: 16px; border: 1px dashed var(--border-subtle); }
 .as-tag { display: inline-block; padding: 2px 9px; border-radius: 999px; background: rgb(255 255 255 / 8%); font-size: .75rem; font-weight: 700; }
-html[data-gd-theme="light"] .as-tag { background: #eef3f0; }
 
 /* ofensiva: calendário do mês */
 .as-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; max-width: 460px; }
