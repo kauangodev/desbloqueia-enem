@@ -23,10 +23,10 @@ export async function loadProgress(user: OperacaoUser) {
     const answered = qs.filter((q) => attempts.has(q.id));
     return { discipline: d, modulesTotal: ms.length, modulesRead: ms.filter((m) => reads.has(m.id)).length, questionsTotal: qs.length, answered: answered.length, correct: answered.filter((q) => last(q.id)?.ok).length };
   });
-  const activeSessions: { kind: string; id: string; answered: number; total: number }[] = [];
+  const activeSessions: { kind: string; id: string; answered: number; total: number; startedAt: string }[] = [];
   for (const row of activeRows) {
     const s = await user.kv.get<Session>("session", row.data.id);
-    if (s && !s.finishedAt) activeSessions.push({ kind: row.ref, id: s.id, answered: Object.keys(s.answers).length, total: s.questionIds.length });
+    if (s && !s.finishedAt) activeSessions.push({ kind: row.ref, id: s.id, answered: Object.keys(s.answers).length, total: s.questionIds.length, startedAt: s.startedAt });
   }
   const nextModule = modules.find((m) => !reads.has(m.id)) || null;
   const toReview = [...attempts.entries()].filter(([, a]) => a.history.at(-1)?.ok === false).length;

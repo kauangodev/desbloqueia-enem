@@ -7,6 +7,8 @@ import TopbarChips from "../../components/aluno/topbar-chips";
 import UpsellCard from "../../components/aluno/upsell-card";
 import { studentSummary } from "../../lib/aluno/summary";
 import "../aluno-shell.css";
+import "../aluno-redesign.css";
+import "../trilha.css";
 export const dynamic = "force-dynamic";
 export const metadata = { robots: { index: false, follow: false } };
 export default async function StudentLayout({
@@ -25,10 +27,6 @@ export default async function StudentLayout({
         <Brand />
         <PortalNav isAdmin={isAdmin} />
         <UpsellCard plan={plan} />
-        <div className="as-user" aria-label="Sua conta">
-          <span className="portal-user-avatar" aria-hidden="true">{name.slice(0, 1).toUpperCase()}</span>
-          <div><strong>{name.split(" ")[0]}</strong><small>{planLabel}</small></div>
-        </div>
         <form method="post" action="/api/auth/logout">
           <button>Sair</button>
         </form>
@@ -37,7 +35,7 @@ export default async function StudentLayout({
       <main className="workspace" id="conteudo">
         <header className="portal-topbar">
           <ResponsiveDrawerToggle target="student" label="do aluno" />
-          <form className="portal-search" role="search" action="/aluno/materiais" method="get"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="5.8" /><path d="m15.2 15.2 4.3 4.3" /></svg><input name="q" type="search" aria-label="Buscar nos materiais" placeholder="Buscar" enterKeyHint="search" /></form>
+          <form className="portal-search" role="search" action="/aluno/materiais" method="get"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="5.8" /><path d="m15.2 15.2 4.3 4.3" /></svg><input name="q" type="search" aria-label="Buscar nos materiais" placeholder="Buscar nos materiais" enterKeyHint="search" /></form>
           {momentum ? <TopbarChips data={momentum} dailyGoal={summary.progress?.gamification.dailyGoal ?? 10} /> : null}
           <span className="portal-user-avatar" aria-hidden="true">{name.slice(0, 1).toUpperCase()}</span>
           <span className="portal-user-name">{name.split(" ")[0]}</span>

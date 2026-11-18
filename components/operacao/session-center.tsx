@@ -31,6 +31,7 @@ export default function SessionCenter({ offers, basePath }: Props) {
   const [confirmRestart, setConfirmRestart] = useState<string | null>(null);
   const [startError, setStartError] = useState("");
   const [modeByKind, setModeByKind] = useState<Record<string, string>>({});
+  const deepLinked = useRef(false);
 
   async function start(kind: string, restart = false) {
     if (starting) return;
@@ -42,6 +43,15 @@ export default function SessionCenter({ offers, basePath }: Props) {
     } catch (e) { setStartError(e instanceof ApiError ? e.message : "Não foi possível iniciar."); }
     finally { setStarting(""); }
   }
+
+  // Link direto do Início ("?abrir=<tipo>"): retoma a atividade em andamento daquele tipo, uma única vez.
+  useEffect(() => {
+    if (deepLinked.current || !state || loaded) return;
+    const kind = new URLSearchParams(window.location.search).get("abrir");
+    deepLinked.current = true;
+    if (kind && state.active?.[kind] && offers.some((offer) => offer.kind === kind)) void start(kind);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   if (loaded && !finished) return <Player data={loaded} basePath={basePath} onFinished={(f) => { setFinished(f); void reload(); }} onExit={() => { setLoaded(null); void reload(); }} />;
   if (loaded && finished) return <Results finished={finished} loaded={loaded} basePath={basePath} onBack={() => { setLoaded(null); setFinished(null); void reload(); }} />;

@@ -27,6 +27,7 @@ export const navGroups: Group[] = [
     ...(features.redacao ? [{ href: "/aluno/redacao", label: "Redação", icon: "pen-line" } as Item] : []),
   ] },
   { id: "estudar", title: "Estudar", items: [
+    { href: "/aluno/trilha", label: "Trilha ENEM", icon: "target" },
     { href: "/aluno/materiais", label: "Meus materiais", icon: "book-open" },
     { href: OP, label: "Operação 2º Domingo", icon: "zap", badge: "Reta final" },
     { href: `${OP}/plano`, label: "Minha revisão", icon: "calendar-days" },
@@ -35,7 +36,7 @@ export const navGroups: Group[] = [
     { href: "/aluno/biblioteca", label: "Biblioteca ENEM", icon: "library" },
   ] },
   { id: "acompanhar", title: "Acompanhar", items: [
-    { href: "/aluno/missoes", label: "Missões", icon: "target" },
+    { href: "/aluno/missoes", label: "Missões", icon: "trending-up" },
     { href: "/aluno/ofensiva", label: "Ofensiva", icon: "flame" },
     { href: "/aluno/correcoes", label: "Minhas correções", icon: "circle-check-big" },
     { href: "/aluno/cronograma", label: "Meu cronograma", icon: "calendar-days" },
@@ -59,7 +60,7 @@ const mobileMain: Item[] = [
   { href: "/aluno", label: "Início", icon: "layout-dashboard" },
   { href: "/aluno/treino-rapido", label: "Treinar", icon: "zap" },
   { href: "/aluno/materiais", label: "Estudar", icon: "book-open" },
-  { href: "/aluno/missoes", label: "Missões", icon: "target" },
+  { href: "/aluno/missoes", label: "Missões", icon: "trending-up" },
 ];
 
 export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {

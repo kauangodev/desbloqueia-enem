@@ -94,20 +94,19 @@ export default function QuestionCard({ q, index, total, moduleTitle, basePath, f
 
   return (
     <article className="op-card op-question" aria-labelledby={`${group}-t`}>
-      <header className="op-q-head">
-        <div className="op-q-tags">
-          <span className="op-tag">{disciplineLabel[q.discipline]}</span>
-          <span className="op-tag op-tag-soft">{q.topic}</span>
-          <span className={`op-tag op-tag-origin op-origin-${q.origin}`}>{q.originLabel}</span>
-          <span className="op-tag op-tag-soft">{difficultyLabel[q.difficulty]}</span>
-          <span className="op-tag op-tag-soft">≈ {q.minutes} min</span>
+      <header className="bq-qhead">
+        <p className="bq-meta">
+          <strong>{disciplineLabel[q.discipline]}</strong>
+          <span>{q.topic}</span>
+          <span className={`bq-origin bq-origin-${q.origin}`}>{q.originLabel}</span>
+          <span>{difficultyLabel[q.difficulty]}</span>
+          <span>≈ {q.minutes} min</span>
+        </p>
+        <div className="bq-actions">
+          <button type="button" className={`bq-act ${favorite ? "is-on" : ""}`} aria-pressed={favorite} title="Favoritar" onClick={() => onToggle("fav", q.id)}><Icon name="star" size={18} aria-hidden="true" /><span>{favorite ? "Favorita" : "Favoritar"}</span></button>
+          <button type="button" className={`bq-act ${later ? "is-on" : ""}`} aria-pressed={later} title="Revisar depois" onClick={() => onToggle("later", q.id)}><Icon name="bookmark" size={18} aria-hidden="true" /><span>{later ? "Marcada para revisar" : "Revisar depois"}</span></button>
         </div>
-        <div className="op-q-actions">
-          <button type="button" className={`op-icon-btn ${favorite ? "is-on" : ""}`} aria-pressed={favorite} aria-label={favorite ? "Remover dos favoritos" : "Salvar nos favoritos"} title="Favoritar" onClick={() => onToggle("fav", q.id)}><Icon name="star" size={18} /></button>
-          <button type="button" className={`op-icon-btn ${later ? "is-on" : ""}`} aria-pressed={later} aria-label={later ? "Remover de revisar depois" : "Marcar para revisar depois"} title="Revisar depois" onClick={() => onToggle("later", q.id)}><Icon name="bookmark" size={18} /></button>
-        </div>
-      </header>
-      <h3 id={`${group}-t`} className="op-q-title">{index !== undefined && total ? `Questão ${index + 1} de ${total}` : "Questão"}{q.officialRef ? <small> · {q.officialRef}</small> : null}</h3>
+      </header>      <h3 id={`${group}-t`} className="op-q-title">{index !== undefined && total ? `Questão ${index + 1} de ${total}` : "Questão"}{q.officialRef ? <small> · {q.officialRef}</small> : null}</h3>
       <div className="op-rich" dangerouslySetInnerHTML={{ __html: q.statementHtml }} />
       {q.figure ? (
         <figure className="op-figure">

@@ -214,16 +214,18 @@ body.godev-app.godev-app .op-root a.op-card { color: var(--text-primary); }
 body.godev-app.godev-app .op-root .op-subnav a { color: var(--text-secondary); }
 body.godev-app.godev-app .op-root .op-subnav a[aria-current="page"], body.godev-app.godev-app .op-root .op-chips a[aria-current="true"] { color: var(--op-ink); }
 body.godev-app.godev-app .op-root .op-note a, body.godev-app.godev-app .op-root .op-muted a { color: var(--op-amber); }
-body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op { color: var(--op-amber) !important; background: linear-gradient(90deg, rgb(251 191 36 / 14%), rgb(249 115 22 / 8%)) !important; border: 1px solid rgb(251 191 36 / 38%); }
-body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op[aria-current="page"] { color: var(--op-ink) !important; background: linear-gradient(90deg, var(--op-amber), var(--op-orange)) !important; border-color: transparent; }
-body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op > span:not(.portal-nav-icon):not(.portal-nav-badge) { flex: 1 1 auto; min-width: 0; line-height: 1.15; }
-body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op .portal-nav-badge { flex: none; margin-left: 4px; color: var(--op-ink) !important; background: var(--op-amber); }
-body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op[aria-current="page"] .portal-nav-badge { color: var(--op-amber) !important; background: var(--op-ink); }
-body.godev-app.godev-app .portal-mobile-more a.portal-nav-op { color: var(--op-amber) !important; }
-body.godev-app.godev-app .portal-mobile-more a.portal-nav-op[aria-current="page"] { color: var(--op-ink) !important; }
-body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op { flex-wrap: wrap; row-gap: 2px; padding-block: 8px; height: auto; }
-body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op > span:not(.portal-nav-icon):not(.portal-nav-badge) { flex: 1 1 calc(100% - 36px); white-space: normal; }
-body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op .portal-nav-badge { margin-left: 34px; }
+/* Item da campanha no menu: neutro até ficar ativo (um único destaque por vez). Sem !important de cor/fundo: a origem da regra é esta. */
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op { color: inherit; background: transparent; border: 1px solid transparent; box-shadow: none; font-weight: 600; }
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op:hover { background: rgb(255 255 255 / 6%); }
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op[aria-current="page"] { color: var(--op-ink); background: linear-gradient(90deg, var(--op-amber), var(--op-orange)); border-color: transparent; }
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op { flex-wrap: wrap; row-gap: 2px; }
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op > span:not(.portal-nav-icon):not(.portal-nav-badge) { flex: 1 1 calc(100% - 36px); min-width: 0; line-height: 1.2; white-space: normal; }
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op .portal-nav-icon { color: var(--op-amber); }
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op[aria-current="page"] .portal-nav-icon { color: inherit; }
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op .portal-nav-badge { flex: none; margin-left: 36px; color: var(--op-amber); background: transparent; border: 1px solid rgb(251 191 36 / 45%); padding: 1px 7px; font-size: .6875rem; }
+body.godev-app.godev-app .portal .sidebar nav a.portal-nav-op[aria-current="page"] .portal-nav-badge { color: var(--op-amber); background: var(--op-ink); border-color: transparent; }
+body.godev-app.godev-app .portal-mobile-more a.portal-nav-op { color: var(--op-amber); }
+body.godev-app.godev-app .portal-mobile-more a.portal-nav-op[aria-current="page"] { color: var(--op-ink); }
 body.godev-app.godev-app .op-root button.op-btn, body.godev-app.godev-app .op-root button.op-seg, body.godev-app.godev-app .op-root button.op-dot { color: var(--text-primary); }
 body.godev-app.godev-app .op-root button.op-btn.op-btn-primary, body.godev-app.godev-app .op-root button.op-seg.is-on, body.godev-app.godev-app .op-root button.op-dot.is-current { color: var(--op-ink); }
 body.godev-app.godev-app .op-root button.op-icon-btn { color: var(--text-secondary); }

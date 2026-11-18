@@ -1,5 +1,6 @@
 import "katex/dist/katex.min.css";
 import Link from "next/link";
+import OperacaoHead from "../../../components/operacao/head";
 import OperacaoSubnav from "../../../components/operacao/subnav";
 import { campaignStatus, operacao } from "../../../lib/operacao/config";
 import { operacaoUser } from "../../../lib/operacao/store";
@@ -15,13 +16,11 @@ export default async function OperacaoLayout({ children }: { children: React.Rea
     );
   }
   const status = campaignStatus();
+  // O aviso de data só aparece na visão geral (dentro do cabeçalho); nas ferramentas ele não disputa espaço com o conteúdo.
+  const note = status.phase === "depois" ? "O 2º dia do Enem já passou. Seu material, seu histórico e seus erros continuam disponíveis." : status.headline;
   return (
     <div className="op-root">
-      <header className="op-head">
-        <p className="op-eyebrow"><span className="op-badge">{operacao.badge}</span> {operacao.subtitle}</p>
-        <h1>{operacao.name}</h1>
-        <p className="op-status" role="status">{status.headline}</p>
-      </header>
+      <OperacaoHead base={operacao.basePath} name={operacao.name} subtitle={operacao.subtitle} note={note} />
       <OperacaoSubnav base={operacao.basePath} />
       {children}
     </div>

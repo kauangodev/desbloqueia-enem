@@ -5,7 +5,7 @@ import type { TodayAction } from "../../lib/aluno/today";
 export default function TodayCard({ primary, others, examNote }: { primary: TodayAction; others: TodayAction[]; examNote?: string }) {
   return (
     <section className="as-today" aria-labelledby="as-today-t">
-      <p className="as-today-eyebrow">Hoje</p>
+      <p className="as-today-eyebrow">Seu próximo passo</p>
       <h2 id="as-today-t">{primary.title}</h2>
       <p className="as-today-reason">{primary.reason}</p>
       <div className="as-today-actions">
