@@ -7,6 +7,7 @@ import { nextFlash, type FlashState } from "../../../lib/operacao/flash";
 import { limitFor, remainingMs, selectQuestions, summarize, type Attempt, type Session, type SessionKind } from "../../../lib/operacao/engine";
 import { kindIds, type SessionKind as KindId } from "../../../lib/operacao/kinds";
 import { operacaoUser, type OperacaoUser } from "../../../lib/operacao/store";
+import { recordAttempt as recordAttemptShared } from "../../../lib/operacao/attempts";
 
 export const dynamic = "force-dynamic";
 
@@ -32,13 +33,7 @@ async function attemptsMap(user: OperacaoUser) {
 }
 
 async function recordAttempt(user: OperacaoUser, questionId: string, selected: string, ok: boolean, mode: string) {
-  const current = (await user.kv.get<Attempt>("attempt", questionId)) || { history: [], firstTryCorrect: null };
-  const afterResolution = current.history.length > 0; // a resolução já foi exibida na tentativa anterior
-  current.history.push({ sel: selected, ok, at: new Date().toISOString(), mode, afterResolution });
-  if (current.history.length === 1) current.firstTryCorrect = ok;
-  if (current.history.length > 40) current.history = current.history.slice(-40);
-  await user.kv.set("attempt", questionId, current);
-  return current;
+  return recordAttemptShared(user.kv, questionId, selected, ok, mode);
 }
 
 function sessionPayload(session: Session) {

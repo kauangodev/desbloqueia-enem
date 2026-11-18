@@ -1,13 +1,9 @@
 import "server-only";
 import { canAccess } from "../supabase";
+import { memoryKv } from "./memory-kv";
+import type { Kv } from "./kv";
 
-/** Armazenamento chave-valor por usuário (kind + ref). Aditivo: usa apenas a tabela `operacao_state`. */
-export interface Kv {
-  get<T>(kind: string, ref: string): Promise<T | null>;
-  list<T>(kind: string): Promise<{ ref: string; data: T; updatedAt: string }[]>;
-  set(kind: string, ref: string, data: unknown): Promise<void>;
-  remove(kind: string, ref: string): Promise<void>;
-}
+export type { Kv } from "./kv";
 
 type Row = { ref: string; data: unknown; updated_at?: string };
 /** A camada MySQL já converte colunas `data` em objeto; aceitamos objeto ou texto JSON. */
@@ -38,17 +34,7 @@ function mysqlKv(db: any, userId: string): Kv {
   };
 }
 
-const memory = new Map<string, Map<string, { data: string; updatedAt: string }>>();
-function memoryKv(userId: string): Kv {
-  const bag = () => { if (!memory.has(userId)) memory.set(userId, new Map()); return memory.get(userId)!; };
-  return {
-    async get<T>(kind: string, ref: string) { const row = bag().get(`${kind}\u0000${ref}`); return row ? (parse<T>(row.data)) : null; },
-    async list<T>(kind: string) { return [...bag().entries()].filter(([key]) => key.startsWith(`${kind}\u0000`)).map(([key, row]) => ({ ref: key.split("\u0000")[1], data: parse<T>(row.data), updatedAt: row.updatedAt })); },
-    async set(kind: string, ref: string, value: unknown) { bag().set(`${kind}\u0000${ref}`, { data: JSON.stringify(value), updatedAt: new Date().toISOString() }); },
-    async remove(kind: string, ref: string) { bag().delete(`${kind}\u0000${ref}`); },
-  };
-}
-
+export { memoryKv } from "./memory-kv";
 export type OperacaoUser = { id: string; name: string; kv: Kv };
 
 /**
