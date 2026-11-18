@@ -14,6 +14,9 @@ import { campaign, campaignView } from "../../lib/campaign";
 import { campaignFacts } from "../../lib/operacao/campaign-facts";
 import { demoQuestions } from "../../lib/explorer-data";
 import { canAccess } from "../../lib/supabase";
+import { features } from "../../lib/features";
+import { pixReadiness } from "../../lib/pix/readiness";
+import { freeScope } from "../../lib/planos/free";
 
 export default async function LandingPage() {
   const plans = await publicPlans();
@@ -23,6 +26,10 @@ export default async function LandingPage() {
   const inv = inventory();
   // Quem já tem acesso vê "Continuar minha revisão"; falha na consulta nunca quebra a landing.
   const hasAccess = view.active ? Boolean(await canAccess("essencial").catch(() => null)) : false;
+  const pixReady = await pixReadiness();
+  const scope = features.gratis ? freeScope() : null;
+  const freeUnit = scope ? UNITS.find((u) => u.id === scope.unitId) : null;
+  const free = scope && freeUnit ? { unitTitle: freeUnit.title, questionsPerDay: scope.questionsPerDay } : undefined;
   const cents = (id: string) => plans.find((plan) => plan.id === id)?.cents ?? 0;
   const essencialTotal = brl(cents("essencial") + SERVICE_FEE_CENTS);
   const premiumTotal = brl(cents("premium") + SERVICE_FEE_CENTS);
@@ -44,7 +51,7 @@ export default async function LandingPage() {
         <SalesTrilha units={UNITS.map((u) => ({ id: u.id, title: u.title, minutes: u.minutes }))} />
         <SalesSamples question={question} />
         <SalesTools facts={facts} inv={inv} />
-        <SalesOffers plans={plans} facts={facts} inv={inv} checkoutReady={checkoutReady} />
+        <SalesOffers plans={plans} facts={facts} inv={inv} checkoutReady={checkoutReady} free={free} pixReady={{ essencial: pixReady.essencial, premium: pixReady.premium }} />
         <SalesAccess />
         <SalesFaq inv={inv} essencialTotal={essencialTotal} premiumTotal={premiumTotal} essencialBase={brl(cents("essencial"))} premiumBase={brl(cents("premium"))} />
         <SalesFinal message={view.active && view.countdown ? view.countdown : "Pronto para começar a sua preparação?"} />

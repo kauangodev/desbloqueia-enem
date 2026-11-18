@@ -3,13 +3,23 @@ import { jsonError } from "../../../../lib/http";
 import { NextResponse } from "next/server";
 import { checkoutConfigured } from "../../../../lib/readiness";
 import { caktoFallbackOffers } from "../../../../lib/config";
+import { features } from "../../../../lib/features";
+import { legacyCheckoutTarget } from "../../../../lib/commerce";
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ plan: string }> },
 ) {
+  const { plan } = await params;
+  // CORTE COMERCIAL: com a chave Pix ligada, a aplicação não abre mais checkout Cakto para compras novas. Links antigos seguem
+  // para o checkout da GoDev (307, não permanente, para o rollback não ficar preso em cache), só com parâmetros de campanha conhecidos.
+  if (features.pix) {
+    if (!["essencial", "premium"].includes(plan)) return jsonError("Plano inválido", 404);
+    const response = NextResponse.redirect(new URL(legacyCheckoutTarget(plan, new URL(req.url).searchParams), req.url), 307);
+    response.headers.set("Cache-Control", "private, no-store");
+    return response;
+  }
   if (!checkoutConfigured())
     return jsonError("Vendas ainda não disponíveis.", 503);
-  const { plan } = await params;
   if (!["essencial", "premium"].includes(plan))
     return jsonError("Plano inválido", 404);
   try {

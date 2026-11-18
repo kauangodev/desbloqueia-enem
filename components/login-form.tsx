@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { features } from "../lib/features";
-export default function LoginForm({ configured, redirect }: { configured: boolean; redirect?: string }) {
+export default function LoginForm({ configured, redirect, initialMode = "login" }: { configured: boolean; redirect?: string; initialMode?: "login" | "register" }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [isError, setIsError] = useState(false);
   const show = (text: string, error = false) => { setMessage(text); setIsError(error && Boolean(text)); };
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"login" | "register">(initialMode === "register" && features.gratis ? "register" : "login");
   const router = useRouter();
   const googleErrors: Record<string, string> = {
     "google-sessao": "A sessão do Google expirou. Tente de novo.", "google-cancelado": "Entrada com Google cancelada.", "google-invalido": "Não foi possível validar a conta Google.",

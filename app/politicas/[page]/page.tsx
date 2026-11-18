@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Support from "../../../components/support";
+import { features } from "../../../lib/features";
 const policies: Record<
   string,
   { title: string; description: string; sections: [string, string][] }
@@ -17,7 +18,7 @@ const policies: Record<
       ],
       [
         "Pagamento e serviços contratados",
-        "O pagamento é processado pela Cakto. A plataforma não coleta nem armazena dados completos de cartão. Autenticação e dados operacionais usam a infraestrutura contratada para o produto; o envio transacional usa o provedor de e-mail configurado quando aplicável. Esses serviços podem processar dados em outros países, conforme seus contratos e políticas.",
+        (features.pix ? "Compras anteriores foram processadas pela Cakto; compras novas são pagas por Pix diretamente à GoDev Education, que registra o pedido, o valor, o identificador bancário da transação e, se você enviar, o comprovante. No login com Google usamos o identificador e o e-mail verificado da conta Google, sem guardar tokens do Google. Para o seu progresso e o acompanhamento do estudo registramos as questões respondidas e as atividades concluídas, vistos apenas pela equipe autorizada. " : "O pagamento é processado pela Cakto. ") + "A plataforma não coleta nem armazena dados completos de cartão. Autenticação e dados operacionais usam a infraestrutura contratada para o produto; o envio transacional usa o provedor de e-mail configurado quando aplicável. Esses serviços podem processar dados em outros países, conforme seus contratos e políticas.",
       ],
       [
         "Cookies e métricas",
@@ -59,7 +60,7 @@ const policies: Record<
       ],
       [
         "Compras e atendimento",
-        "As compras são processadas pela Cakto. A liberação do acesso ocorre após a confirmação verificável do pagamento e é vinculada ao e-mail informado na compra. As condições de reembolso estão na política específica.",
+        (features.pix ? "Compras novas são pagas por Pix à GoDev Education e o acesso é liberado após a conferência do recebimento. Compras anteriores foram processadas pela Cakto. " : "As compras são processadas pela Cakto. ") + "A liberação do acesso ocorre após a confirmação verificável do pagamento e é vinculada ao e-mail informado na compra. As condições de reembolso estão na política específica.",
       ],
     ],
   },
@@ -84,8 +85,8 @@ const policies: Record<
         "Após a confirmação do reembolso ou chargeback, o acesso vinculado àquele pedido será revogado. Outras compras válidas permanecem ativas. A leitura acontece exclusivamente na plataforma; os PDFs não são disponibilizados para download ou redistribuição.",
       ],
       [
-        "Pagamento pela Cakto",
-        "O checkout é processado pela Cakto. A liberação do acesso ocorre somente após a confirmação do pagamento e fica vinculada ao e-mail informado na compra.",
+        features.pix ? "Pagamento por Pix" : "Pagamento pela Cakto",
+        (features.pix ? "Compras novas são pagas por Pix à GoDev Education. " : "O checkout é processado pela Cakto. ") + "A liberação do acesso ocorre somente após a confirmação do pagamento e fica vinculada ao e-mail informado na compra.",
       ],
     ],
   },

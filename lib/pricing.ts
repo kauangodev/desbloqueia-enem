@@ -1,7 +1,9 @@
 import { plans } from "./config";
+import { features } from "./features";
 
-/** Taxa de serviço somada pelo checkout da Cakto a cada compra (confirmada nas duas páginas de pagamento: R$ 0,99). */
-export const SERVICE_FEE_CENTS = 99;
+/** Taxa de serviço somada pelo checkout da Cakto (R$ 0,99). O checkout Pix da GoDev não cobra taxa adicional. */
+export const caktoFeeCents = (pix: boolean) => (pix ? 0 : 99);
+export const SERVICE_FEE_CENTS = caktoFeeCents(features.pix);
 
 export type PlanId = "essencial" | "premium";
 

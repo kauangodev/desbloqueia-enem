@@ -1,3 +1,4 @@
+import { features } from "../lib/features";
 import { sessionClient } from "../lib/supabase";
 import SupportTicketForm from "./support-ticket-form";
 
@@ -33,7 +34,7 @@ export default async function Support({
         <div className="support-cases">
           <h3>Casos comuns</h3>
           <ul>
-            <li><b>Paguei e o acesso não apareceu:</b> o plano é liberado quando a Cakto confirma o pagamento. Se já confirmou, escreva com o e-mail da compra e o comprovante.</li>
+            <li><b>Paguei e o acesso não apareceu:</b> {features.pix ? "o plano é liberado depois que conferimos o recebimento do Pix. Veja o estado em Meus pagamentos e, se passou do prazo, escreva com o número do pedido." : "o plano é liberado quando a Cakto confirma o pagamento. Se já confirmou, escreva com o e-mail da compra e o comprovante."}</li>
             <li><b>Digitei o e-mail errado:</b> envie o comprovante, o e-mail digitado e o correto para avaliarmos a correção.</li>
             <li><b>Senha:</b> no primeiro acesso, use “Primeiro acesso” na tela de entrada; se esqueceu, use a recuperação de senha.</li>
             <li><b>Reembolso:</b> você tem 7 dias após a compra. Escreva com o e-mail da compra e o identificador do pedido (veja a <a className="text-link" href="/politicas/reembolso">política de reembolso</a>).</li>

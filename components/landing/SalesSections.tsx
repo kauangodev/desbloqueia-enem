@@ -5,6 +5,8 @@ import type { campaignFacts } from "../../lib/operacao/campaign-facts";
 import type { inventory } from "../../lib/inventory";
 import { ebookMaterials } from "../../lib/ebook-catalog";
 import { brl, SERVICE_FEE_CENTS } from "../../lib/pricing";
+import { checkoutHref } from "../../lib/commerce";
+import { features } from "../../lib/features";
 import type { DemoQuestion } from "./explorer-types";
 import TryQuestion from "./TryQuestion";
 import GuardianShare from "./GuardianShare";
@@ -51,7 +53,7 @@ export function SalesHero({ hasAccess, studyArea, essencialTotal, question, view
             <li>Pix ou cartão</li>
             <li>7 dias de garantia</li>
           </ul>
-          <p className="s-trust">Planos a partir de <b>{essencialTotal}</b> no total, pela Cakto.</p>
+          <p className="s-trust">{features.pix ? <>Planos pagos a partir de <b>{essencialTotal}</b> no total, por Pix.{features.gratis ? " Ou comece grátis, sem cartão." : ""}</> : <>Planos a partir de <b>{essencialTotal}</b> no total, pela Cakto.</>}</p>
           <p className="s-cal" role="status"><b>{view.label}.</b> {view.calendarConfirmed ? view.detail : "Enquanto não há data oficial, o plano de estudos segue por semanas."}</p>
         </div>
         {question ? <TryQuestion  question={question} /> : null}
@@ -218,24 +220,47 @@ export function SalesTools({ facts, inv }: { facts: Facts; inv: Inv }) {
   );
 }
 
-type OfferProps = { plans: PlanLite[]; facts: Facts; inv: Inv; checkoutReady: boolean };
+export type FreeInfo = { unitTitle: string; questionsPerDay: number };
+export type PixReady = { essencial: boolean; premium: boolean };
+type OfferProps = { plans: PlanLite[]; facts: Facts; inv: Inv; checkoutReady: boolean; free?: FreeInfo; pixReady?: PixReady };
 
-export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
+export function SalesOffers({ plans, facts, inv, checkoutReady, free, pixReady }: OfferProps) {
   const base = (id: string) => plans.find((plan) => plan.id === id)?.cents ?? 0;
   const total = (id: string) => base(id) + SERVICE_FEE_CENTS;
   const essentialBooks = ebookMaterials.filter((book) => book.plan === "essencial").map((book) => book.title);
-  const buy = (id: "essencial" | "premium", name: string) => checkoutReady
-    ? <a className="s-btn s-btn-block" href={`/api/checkout/${id}`} data-analytics-event={`offer_${id}`}>{`Quero o ${name}`}</a>
-    : <Link className="s-btn s-btn-block" href="/suporte">Falar com o atendimento</Link>;
+  const pixOn = features.pix;
+  const buy = (id: "essencial" | "premium", name: string) => pixOn
+    ? (pixReady?.[id]
+      ? <Link className="s-btn s-btn-block" href={`/comprar/${id}`} data-analytics-event={`offer_${id}`}>{`Pagar o ${name} com Pix`}</Link>
+      : <p className="s-plan-foot" role="status">Pagamento por Pix em breve{free ? ". Comece grátis agora." : "."}</p>)
+    : checkoutReady
+      ? <a className="s-btn s-btn-block" href={checkoutHref(id)} data-analytics-event={`offer_${id}`}>{`Quero o ${name}`}</a>
+      : <Link className="s-btn s-btn-block" href="/suporte">Falar com o atendimento</Link>;
+  const feeNote = (id: string) => (SERVICE_FEE_CENTS ? <small>{brl(base(id))} + {brl(SERVICE_FEE_CENTS)} de taxa do checkout</small> : <small>Pagamento único por Pix, sem taxa adicional</small>);
   return (
     <section className="s-section s-offers" id="ofertas" aria-labelledby="s-ofertas-title"><span id="planos" aria-hidden="true" />
       <div className="s-wrap">
         <header className="s-head">
           <span className="s-eyebrow">Planos</span>
           <h2 id="s-ofertas-title">Escolha o plano ideal para sua revisão</h2>
-          <p>Os dois incluem toda a área de Matemática e Natureza. O Premium amplia o repertório. Os preços abaixo já são o total cobrado no checkout.</p>
+          <p>{free ? "Comece grátis, sem cartão. " : ""}Os planos pagos incluem toda a área de Matemática e Natureza. O Premium amplia o repertório. Os preços abaixo já são o total cobrado.</p>
         </header>
         <div className="s-plans">
+          {free ? (
+            <article className="s-plan" aria-labelledby="plan-gratis">
+              <h3 id="plan-gratis">Grátis</h3>
+              <p className="s-plan-for">Para descobrir como a GoDev ensina, sem pagar nada.</p>
+              <ul className="s-checks">
+                <li><b>Unidade introdutória da Trilha:</b> {free.unitTitle}</li>
+                <li>Até <b>{free.questionsPerDay} questões comentadas por dia</b>, com correção</li>
+                <li>Diagnóstico inicial e visão básica do seu progresso</li>
+                <li>Sem cartão, sem vencimento e sem renovação</li>
+              </ul>
+              <div className="s-price"><b>R$ 0</b><span>sem cartão</span></div>
+              <Link className="s-btn s-btn-block" href="/entrar?modo=cadastro" data-analytics-event="offer_gratis">Criar conta grátis</Link>
+              <p className="s-plan-foot">Quando quiser mais, o Essencial e o Premium continuam aqui.</p>
+            </article>
+          ) : null}
           <article className="s-plan" aria-labelledby="plan-essencial">
             <div className="s-plan-media"><div className="s-stack"><Cover slug="matematica" /><Cover slug="biologia" /><Cover slug="historia" /><Cover slug="lingua-portuguesa" /></div></div>
             <h3 id="plan-essencial">Essencial</h3>
@@ -246,9 +271,9 @@ export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
               <li>Minha revisão e caderno de erros</li>
               <li><b>4 e-books:</b> {essentialBooks.join(", ")}</li>
             </ul>
-            <div className="s-price"><b>{brl(total("essencial"))}</b><span>no total · pagamento único</span><small>{brl(base("essencial"))} + {brl(SERVICE_FEE_CENTS)} de taxa do checkout</small></div>
+            <div className="s-price"><b>{brl(total("essencial"))}</b><span>no total · pagamento único</span>{feeNote("essencial")}</div>
             {buy("essencial", "Essencial")}
-            <GuardianShare plan="essencial" name="Essencial" total={brl(total("essencial"))} />
+            {pixOn ? null : <GuardianShare plan="essencial" name="Essencial" total={brl(total("essencial"))} />}
             <p className="s-plan-foot">Acesso pela plataforma · 7 dias de garantia</p>
           </article>
 
@@ -264,9 +289,9 @@ export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
               <li><b>Biblioteca histórica:</b> 1.800 referências de questões, com links para fontes oficiais (é um índice, não são resoluções autorais)</li>
               <li>Fichas e checklists de revisão</li>
             </ul>
-            <div className="s-price"><b>{brl(total("premium"))}</b><span>no total · pagamento único</span><small>{brl(base("premium"))} + {brl(SERVICE_FEE_CENTS)} de taxa do checkout</small></div>
+            <div className="s-price"><b>{brl(total("premium"))}</b><span>no total · pagamento único</span>{feeNote("premium")}</div>
             {buy("premium", "Premium")}
-            <GuardianShare plan="premium" name="Premium" total={brl(total("premium"))} />
+            {pixOn ? null : <GuardianShare plan="premium" name="Premium" total={brl(total("premium"))} />}
             <p className="s-plan-foot">Acesso pela plataforma · 7 dias de garantia</p>
           </article>
         </div>
@@ -285,7 +310,7 @@ export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
                 <tr><th scope="row">Fichas e checklists de revisão</th><td data-l="Essencial">Não incluídos</td><td data-l="Premium">Incluídos</td></tr>
                 <tr><th scope="row">Leitura</th><td data-l="Essencial">Online, sem download</td><td data-l="Premium">Online, sem download</td></tr>
                 <tr><th scope="row">Acesso</th><td data-l="Essencial">Pagamento único, sem data de expiração</td><td data-l="Premium">Pagamento único, sem data de expiração</td></tr>
-                <tr><th scope="row">Valor total</th><td data-l="Essencial"><b>{brl(total("essencial"))}</b> ({brl(base("essencial"))} + {brl(SERVICE_FEE_CENTS)})</td><td data-l="Premium"><b>{brl(total("premium"))}</b> ({brl(base("premium"))} + {brl(SERVICE_FEE_CENTS)})</td></tr>
+                <tr><th scope="row">Valor total</th><td data-l="Essencial"><b>{brl(total("essencial"))}</b>{SERVICE_FEE_CENTS ? ` (${brl(base("essencial"))} + ${brl(SERVICE_FEE_CENTS)})` : ""}</td><td data-l="Premium"><b>{brl(total("premium"))}</b>{SERVICE_FEE_CENTS ? ` (${brl(base("premium"))} + ${brl(SERVICE_FEE_CENTS)})` : ""}</td></tr>
               </tbody>
             </table>
             <p className="s-note"><b>Questões distintas</b> são as que têm enunciado, alternativas e gabarito diferentes. Em coleções diferentes, a mesma questão pode reaparecer, por isso as quantidades não se somam. As <b>referências</b> da biblioteca apontam para fontes externas. Os <b>simulados da Operação</b> ({facts.simulados} de {facts.simuladoQuestions} questões) são os mesmos nos dois planos; os {inv.simulados} simulados do banco geral são do Premium.</p>
@@ -302,6 +327,11 @@ export function SalesAccess() {
     ["Pague na Cakto", "Pix ou cartão, no checkout seguro. O total é o mesmo da tela de pagamento."],
     ["Entre com o e-mail da compra", "No primeiro acesso, crie sua senha em “Primeiro acesso”."],
   ];
+  const steps2 = features.pix ? [
+    ["Crie sua conta grátis", "Com Google ou e-mail, sem cartão. Você já começa a estudar."],
+    ["Pague por Pix, se quiser mais", "Escaneie o QR Code ou copie o código. O valor mostrado é o total."],
+    ["Acesso liberado após a conferência", "Conferimos o recebimento e o plano aparece na sua conta."],
+  ] : steps;
   return (
     <section className="s-section s-band" id="acesso" aria-labelledby="s-acesso-title">
       <div className="s-wrap">
@@ -310,13 +340,13 @@ export function SalesAccess() {
           <h2 id="s-acesso-title">Como você recebe</h2>
         </header>
         <ol className="s-steps">
-          {steps.map(([title, text], index) => (<li key={title}><span aria-hidden="true">{index + 1}</span><b>{title}</b><p>{text}</p></li>))}
+          {steps2.map(([title, text], index) => (<li key={title}><span aria-hidden="true">{index + 1}</span><b>{title}</b><p>{text}</p></li>))}
         </ol>
         <div className="s-info">
           <div>
             <h3>Condições de acesso</h3>
             <ul className="s-checks">
-              <li>O plano é liberado quando a Cakto confirma o pagamento.</li>
+              <li>{features.pix ? "O plano é liberado quando conferimos o recebimento do Pix na conta do recebedor." : "O plano é liberado quando a Cakto confirma o pagamento."}</li>
               <li>Acesso sem data de expiração, em pagamento único.</li>
               <li>Leitura online dentro da plataforma, sem download. É preciso estar conectado à internet.</li>
               <li>Pagou e o acesso não apareceu? Fale com o <Link href="/suporte">atendimento</Link>, sem precisar entrar.</li>
@@ -324,7 +354,7 @@ export function SalesAccess() {
           </div>
           <div>
             <h3>Garantia de 7 dias</h3>
-            <p>Você tem sete dias após a compra para pedir reembolso, pelo atendimento ou pelo comprovante da Cakto. <Link href="/politicas/reembolso">Ler a política de reembolso</Link>.</p>
+            <p>Você tem sete dias após a compra para pedir reembolso, {features.pix ? "pelo atendimento" : "pelo atendimento ou pelo comprovante da Cakto"}. <Link href="/politicas/reembolso">Ler a política de reembolso</Link>.</p>
             <h3>Como o material é feito</h3>
             <p>Textos e exemplos elaborados pela GoDev Education para esta coleção, com a matriz de referência do Inep como orientação curricular. As fontes ficam listadas no fim de cada e-book. É material independente: não é publicação oficial do Inep nem prevê os assuntos da prova.</p>
           </div>
@@ -337,15 +367,25 @@ export function SalesAccess() {
 export function SalesFaq({ inv, essencialTotal, premiumTotal, essencialBase, premiumBase }: { inv: Inv; essencialTotal: string; premiumTotal: string; essencialBase: string; premiumBase: string }) {
   const faq: [string, ReactNode][] = [
     ["Qual a diferença entre o Essencial e o Premium?", <>Os dois incluem toda a área de Matemática e Natureza. O Essencial traz 4 e-books; o Premium traz os 16, incluindo Física, Química e Redação, além do banco geral ({inv.generalDistinct} questões distintas em {inv.lists} listas e {inv.simulados} simulados, que se repetem entre coleções), da biblioteca histórica (1.800 referências com links, um índice) e das fichas e checklists.</>],
-    ["Quanto vou pagar no total?", <>Essencial: {essencialBase} + R$ 0,99 de taxa do checkout = <b>{essencialTotal}</b>. Premium: {premiumBase} + R$ 0,99 = <b>{premiumTotal}</b>. Pagamento único, sem mensalidade. É o valor que aparece na tela de pagamento.</>],
-    ["Meu responsável pode pagar por mim?", "Pode. Em cada plano, toque em “Enviar para meu responsável pagar”: o link da oferta vai pelo WhatsApp ou pelo compartilhamento do celular. Quem paga usa Pix ou cartão no checkout da Cakto, e você entra com o e-mail informado na compra."],
+    features.pix
+      ? ["Quanto vou pagar no total?", <>Essencial: <b>{essencialTotal}</b>. Premium: <b>{premiumTotal}</b>. Pagamento único por Pix, sem mensalidade e sem taxa adicional. É o valor que aparece na tela de pagamento.</>]
+      : ["Quanto vou pagar no total?", <>Essencial: {essencialBase} + R$ 0,99 de taxa do checkout = <b>{essencialTotal}</b>. Premium: {premiumBase} + R$ 0,99 = <b>{premiumTotal}</b>. Pagamento único, sem mensalidade. É o valor que aparece na tela de pagamento.</>],
+    features.pix
+      ? ["Meu responsável pode pagar por mim?", "O Pix pode ser pago por qualquer pessoa, no aplicativo do banco dela, e o acesso fica na conta do aluno que fez o pedido. O link para o responsável abrir o pedido sem entrar ainda não está disponível: por enquanto, o aluno mostra o QR Code ou envia o código de Pix Copia e Cola."]
+      : ["Meu responsável pode pagar por mim?", "Pode. Em cada plano, toque em “Enviar para meu responsável pagar”: o link da oferta vai pelo WhatsApp ou pelo compartilhamento do celular. Quem paga usa Pix ou cartão no checkout da Cakto, e você entra com o e-mail informado na compra."],
     ["Preciso assinar ou renovar?", "Não. O pagamento é único, sem mensalidade e sem renovação automática. O acesso não tem data de expiração."],
     ["Como o caderno de erros funciona?", "Cada questão que você erra entra sozinha no caderno, junto com as que você marcar para revisar depois. Você relê a resolução, volta ao módulo e tenta de novo."],
     ["Posso estudar pelo celular?", "Sim. A plataforma funciona no celular, no tablet e no computador, e o leitor retoma de onde você parou."],
     ["Posso baixar os e-books?", "Não. A leitura é online, no leitor protegido da plataforma, e é preciso estar conectado à internet."],
-    ["Quando o acesso é liberado?", "Quando a Cakto confirma o pagamento. Entre com o e-mail usado na compra. Se já pagou e o acesso não apareceu, fale com o atendimento com o e-mail da compra e o comprovante."],
-    ["Como crio minha senha?", "Na tela de entrada, use “Primeiro acesso” com o e-mail da compra. Se esquecer, use a recuperação de senha."],
-    ["Como funciona a garantia?", "São sete dias após a compra para pedir reembolso, pelo atendimento ou pelo comprovante da Cakto. Veja a política de reembolso para o passo a passo."],
+    features.pix
+      ? ["Quando o acesso é liberado?", "Depois que conferimos o recebimento do Pix na conta do recebedor, em até o prazo informado no pedido. Você acompanha o estado em Meus pagamentos. Se já pagou e passou do prazo, fale com o atendimento com o número do pedido."]
+      : ["Quando o acesso é liberado?", "Quando a Cakto confirma o pagamento. Entre com o e-mail usado na compra. Se já pagou e o acesso não apareceu, fale com o atendimento com o e-mail da compra e o comprovante."],
+    features.pix
+      ? ["Como crio minha conta e minha senha?", "Na tela de entrada, escolha “Ainda não tenho cadastro” e crie a conta grátis com e-mail ou Google. Quem já comprou antes pela Cakto usa “Primeiro acesso” com o e-mail da compra."]
+      : ["Como crio minha senha?", "Na tela de entrada, use “Primeiro acesso” com o e-mail da compra. Se esquecer, use a recuperação de senha."],
+    features.pix
+      ? ["Como funciona a garantia?", "São sete dias após a compra para pedir reembolso, pelo atendimento. O reembolso é feito pelo Pix de volta ao pagador e encerra só o acesso daquele pedido. Veja a política de reembolso para o passo a passo."]
+      : ["Como funciona a garantia?", "São sete dias após a compra para pedir reembolso, pelo atendimento ou pelo comprovante da Cakto. Veja a política de reembolso para o passo a passo."],
     ["Como falo com o atendimento sem entrar na plataforma?", <>Pela página <Link href="/suporte">Atendimento</Link>, que mostra os contatos oficiais. Informe o e-mail da compra e nunca envie senha ou dados do cartão.</>],
   ];
   return (
