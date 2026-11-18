@@ -1,5 +1,7 @@
 import "server-only";
-import { canAccess } from "../supabase";
+import { canAccess, identity } from "../supabase";
+import { features } from "../features";
+import type { Tier } from "../planos/model";
 import { memoryKv } from "./memory-kv";
 import type { Kv } from "./kv";
 
@@ -35,15 +37,20 @@ function mysqlKv(db: any, userId: string): Kv {
 }
 
 export { memoryKv } from "./memory-kv";
-export type OperacaoUser = { id: string; name: string; kv: Kv };
+/** `tier` "gratis" só existe com a chave NEXT_PUBLIC_FEATURE_GRATIS=1; as rotas de estudo aplicam o escopo do Grátis no servidor. */
+export type OperacaoUser = { id: string; name: string; kv: Kv; tier: Tier };
 
 /**
  * Usuário da operação. Segue a mesma regra de acesso dos exercícios (plano Essencial ou administrador).
  * Somente fora de produção e com GODEV_DEV_USER=1 existe um usuário local em memória, para testes de interface.
  */
 export async function operacaoUser(): Promise<OperacaoUser | null> {
-  if (process.env.NODE_ENV !== "production" && process.env.GODEV_DEV_USER === "1") return { id: "dev-user", name: "Estudante", kv: memoryKv("dev-user") };
+  if (process.env.NODE_ENV !== "production" && process.env.GODEV_DEV_USER === "1") return { id: "dev-user", name: "Estudante", kv: memoryKv("dev-user"), tier: process.env.GODEV_DEV_TIER === "gratis" ? "gratis" : "essencial" };
   const who = await canAccess("essencial");
-  if (!who) return null;
-  return { id: who.user.id, name: who.profile?.name || "Estudante", kv: mysqlKv(who.db, who.user.id) };
+  if (who) return { id: who.user.id, name: who.profile?.name || "Estudante", kv: mysqlKv(who.db, who.user.id), tier: who.profile?.role === "admin" ? "premium" : "essencial" };
+  // Conta verificada sem compra: Grátis (somente com a chave ligada). `identity()` já exige e-mail verificado e conta não suspensa.
+  if (!features.gratis) return null;
+  const free = await identity();
+  if (!free) return null;
+  return { id: free.user.id, name: free.profile?.name || "Estudante", kv: mysqlKv(free.db, free.user.id), tier: "gratis" };
 }

@@ -3,6 +3,8 @@ import { z } from "zod";
 import { jsonError, sameOrigin } from "../../../lib/http";
 import { todayInSaoPaulo } from "../../../lib/operacao/config";
 import { operacaoUser } from "../../../lib/operacao/store";
+import { freeUnitDecision } from "../../../lib/planos/gate";
+import { freeScope } from "../../../lib/planos/free";
 import { answerItem, finishStage, markFundamento, setCursor, setPrefs, startStage, TrilhaError } from "../../../lib/trilha/service";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +34,10 @@ export async function POST(req: Request) {
   if (!parsed.success) return jsonError("Solicitação inválida");
   const input = parsed.data;
   const today = todayInSaoPaulo();
+  if (user.tier === "gratis" && input.action !== "prefs") {
+    const decision = freeUnitDecision(freeScope(), input.unitId);
+    if (!decision.allowed) return jsonError(decision.message, 403);
+  }
   try {
     switch (input.action) {
       case "prefs": return NextResponse.json({ prefs: await setPrefs(user.kv, input) }, { headers: { "Cache-Control": "no-store" } });

@@ -8,6 +8,8 @@ import { limitFor, remainingMs, selectQuestions, summarize, type Attempt, type S
 import { kindIds, type SessionKind as KindId } from "../../../lib/operacao/kinds";
 import { operacaoUser, type OperacaoUser } from "../../../lib/operacao/store";
 import { recordAttempt as recordAttemptShared } from "../../../lib/operacao/attempts";
+import { freeAnswerDecision, freeSessionDecision } from "../../../lib/planos/gate";
+import { freeScope, loadQuota, saveQuota } from "../../../lib/planos/free";
 
 export const dynamic = "force-dynamic";
 
@@ -101,6 +103,12 @@ export async function POST(req: Request) {
       case "answer": {
         const q = questionById(input.questionId);
         if (!q) return jsonError("Questão não encontrada", 404);
+        if (user.tier === "gratis") {
+          const day = todayInSaoPaulo();
+          const free = freeAnswerDecision(freeScope(), q, await loadQuota(user.kv, day), day);
+          if (!free.decision.allowed) return jsonError(free.decision.message, 403);
+          await saveQuota(user.kv, day, free.uses);
+        }
         const correction = grade(q, input.selected);
         const attempt = await recordAttempt(user, q.id, input.selected, correction.correct, input.context);
         return NextResponse.json({ correction, firstTry: attempt.history.length === 1, afterResolution: attempt.history.length > 1 });
@@ -127,6 +135,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: true });
       }
       case "sessionStart": {
+        if (user.tier === "gratis") { const decision = freeSessionDecision(freeScope(), input.kind); if (!decision.allowed) return jsonError(decision.message, 403); }
         const activeRef = await user.kv.get<{ id: string }>("active", input.kind);
         if (activeRef && !input.restart) {
           const existing = await user.kv.get<Session>("session", activeRef.id);

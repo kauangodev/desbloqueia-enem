@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { features } from "../lib/features";
 export default function LoginForm({ configured, redirect }: { configured: boolean; redirect?: string }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -26,6 +28,8 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
             password,
             name: data.get("name"),
             redirect,
+            acceptTerms: data.get("acceptTerms") === "on",
+            marketing: data.get("marketing") === "on",
           };
           const res = await fetch(mode === "register" ? "/api/auth/register" : "/api/auth/login", {
             method: "POST",
@@ -49,7 +53,7 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
         </label>
       )}
       <label className="field">
-        {mode === "register" ? "Seu e-mail" : "Seu e-mail de compra"}
+        {mode === "register" ? "Seu e-mail" : features.gratis ? "Seu e-mail" : "Seu e-mail de compra"}
         <input
           name="email"
           type="email"
@@ -77,6 +81,18 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
           Confirme sua senha
           <input name="passwordConfirmation" type="password" autoComplete="new-password" required minLength={8} placeholder="Repita sua senha" />
         </label>
+      )}
+      {mode === "register" && features.gratis && (
+        <>
+          <label className="field" style={{ flexDirection: "row", gap: 10, alignItems: "flex-start" }}>
+            <input name="acceptTerms" type="checkbox" required style={{ width: 24, height: 24, flex: "none" }} />
+            <span>Li e aceito os <Link href="/politicas/termos">termos de uso</Link> e a <Link href="/politicas/privacidade">política de privacidade</Link>.</span>
+          </label>
+          <label className="field" style={{ flexDirection: "row", gap: 10, alignItems: "flex-start" }}>
+            <input name="marketing" type="checkbox" style={{ width: 24, height: 24, flex: "none" }} />
+            <span>Quero receber novidades e dicas de estudo por e-mail (opcional).</span>
+          </label>
+        </>
       )}
       <button className="button primary" disabled={!configured || busy}>
         {busy ? "Aguarde…" : mode === "register" ? "Criar meu cadastro" : "Entrar na área de alunos"}
@@ -125,8 +141,8 @@ export default function LoginForm({ configured, redirect }: { configured: boolea
       </button>
       <p className="subtle">
         {mode === "register"
-          ? "Use o mesmo e-mail aprovado na Cakto. O cadastro é liberado automaticamente após a confirmação da compra ou de um convite administrativo."
-          : "Use o mesmo e-mail aprovado na Cakto e a senha criada no cadastro."
+          ? (features.gratis ? "Crie sua conta grátis, sem cartão. Enviamos um link para confirmar seu e-mail e criar sua senha." : "Use o mesmo e-mail aprovado na Cakto. O cadastro é liberado automaticamente após a confirmação da compra ou de um convite administrativo.")
+          : (features.gratis ? "Entre com o e-mail e a senha da sua conta." : "Use o mesmo e-mail aprovado na Cakto e a senha criada no cadastro.")
         }
       </p>
     </form>
