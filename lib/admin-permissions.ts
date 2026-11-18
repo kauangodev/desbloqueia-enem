@@ -10,7 +10,10 @@ export type AdminPermission =
   | "content.manage"
   | "assessments.manage"
   | "support.manage"
-  | "settings.manage";
+  | "settings.manage"
+  | "payments.read"
+  | "payments.reconcile"
+  | "billing.manage";
 
 export const adminRoleLabels: Record<AdminRole, string> = {
   owner: "Proprietário",
@@ -21,11 +24,11 @@ export const adminRoleLabels: Record<AdminRole, string> = {
 };
 
 const matrix: Record<AdminRole, readonly AdminPermission[]> = {
-  owner: ["overview.read", "students.read", "students.manage", "team.read", "team.manage", "content.read", "content.manage", "assessments.manage", "support.manage", "settings.manage"],
-  administrator: ["overview.read", "students.read", "students.manage", "team.read", "team.manage", "content.read", "content.manage", "assessments.manage", "support.manage"],
+  owner: ["overview.read", "students.read", "students.manage", "team.read", "team.manage", "content.read", "content.manage", "assessments.manage", "support.manage", "settings.manage", "payments.read", "payments.reconcile", "billing.manage"],
+  administrator: ["overview.read", "students.read", "students.manage", "team.read", "team.manage", "content.read", "content.manage", "assessments.manage", "support.manage", "payments.read", "payments.reconcile", "billing.manage"],
   content_editor: ["overview.read", "content.read", "content.manage"],
   pedagogical: ["overview.read", "students.read", "content.read", "assessments.manage"],
-  support: ["overview.read", "students.read", "support.manage"],
+  support: ["overview.read", "students.read", "support.manage", "payments.read"],
 };
 
 /**

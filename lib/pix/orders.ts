@@ -21,10 +21,10 @@ export type Result<T> = { ok: true; value: T; changed: boolean } | { ok: false; 
 
 const bankRefOk = (ref: string) => /^[A-Za-z0-9_-]{8,64}$/.test(ref);
 
-/** "Já fiz o Pix": idempotente. Só vale para pedido aguardando ou já em conferência. */
+/** "Já fiz o Pix": idempotente. Vale para pedido aguardando, expirado (pagou depois do prazo do site) ou já em conferência. */
 export function notifyPaid(order: PixOrder): Result<PixOrder> {
   if (order.status === "em_conferencia") return { ok: true, value: order, changed: false };
-  if (order.status !== "aguardando_pix") return { ok: false, error: "pedido não aceita aviso neste estado" };
+  if (order.status !== "aguardando_pix" && order.status !== "expirado") return { ok: false, error: "pedido não aceita aviso neste estado" };
   return { ok: true, value: { ...order, status: "em_conferencia" }, changed: true };
 }
 

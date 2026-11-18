@@ -1,4 +1,5 @@
 import AdminEdicoes from "../../components/admin-edicoes";
+import AdminPixSection from "../../components/admin-pix-section";
 import { identity, serviceClient } from "../../lib/supabase";
 import { redirect } from "next/navigation";
 import AdminEditor from "../../components/admin-editor";
@@ -87,13 +88,13 @@ function AdminIcon({ name }: { name: string }) {
 export default async function Admin({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; q?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string; status?: string; page?: string }>;
 }) {
   const who = await identity();
   if (!who) redirect("/entrar");
   if (who.user.must_change_password) redirect("/definir-senha?first=1");
   if (who.profile?.role !== "admin") redirect("/aluno");
-  const { tab = "visao", q = "" } = await searchParams;
+  const { tab = "visao", q = "", status: pixStatus, page: pixPage } = await searchParams;
   const db = serviceClient();
   let content: React.ReactNode;
   if (tab === "produtos") {
@@ -510,6 +511,8 @@ export default async function Admin({
         </ul>
       </>
     );
+  } else if (tab === "pix") {
+    content = <AdminPixSection role={(who.user as { admin_role?: string | null }).admin_role} status={pixStatus} q={q} page={Number(pixPage) || 1} />;
   } else if (tab === "edicoes") {
     content = <AdminEdicoes />;
   } else if (tab === "equipe") {
@@ -563,6 +566,7 @@ export default async function Admin({
             ["produtos", "Produtos e planos", "products"],
             ["materiais", "Materiais", "materials"],
             ["questoes", "Questões", "questions"],
+            ["pix", "Pagamentos Pix", "deliveries"],
             ["edicoes", "Edições e calendário", "overview"],
             ["entregas", "Entregas e acessos", "deliveries"],
             ["equipe", "Equipe e permissões", "team"],
@@ -619,7 +623,7 @@ export default async function Admin({
           ) : (
             <header className="admin-page-header">
               <span className="eyebrow">Central de gestão</span>
-              <h1 className="page-title">{tab === "alunos" ? "CRM de alunos" : tab === "produtos" ? "Produtos e planos" : tab === "materiais" ? "Materiais didáticos" : tab === "questoes" ? "Banco de questões" : tab === "edicoes" ? "Edições e calendário" : tab === "equipe" ? "Equipe e permissões" : tab === "tickets" ? "Atendimento" : "Operação"}</h1>
+              <h1 className="page-title">{tab === "alunos" ? "CRM de alunos" : tab === "produtos" ? "Produtos e planos" : tab === "materiais" ? "Materiais didáticos" : tab === "questoes" ? "Banco de questões" : tab === "pix" ? "Pagamentos Pix" : tab === "edicoes" ? "Edições e calendário" : tab === "equipe" ? "Equipe e permissões" : tab === "tickets" ? "Atendimento" : "Operação"}</h1>
               <p>Gerencie esta frente com clareza e acompanhe o próximo passo.</p>
             </header>
           )}

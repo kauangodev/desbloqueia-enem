@@ -40,6 +40,9 @@ test("pedido: 'já fiz o Pix' é idempotente e não concede direito", () => {
   const b = notifyPaid(a.ok ? a.value : order());
   assert.ok(b.ok && !b.changed);
   assert.equal(notifyPaid(order({ status: "pago" })).ok, false);
+  assert.equal(notifyPaid(order({ status: "cancelado" })).ok, false);
+  const late = notifyPaid(order({ status: "expirado" }));
+  assert.ok(late.ok && late.value.status === "em_conferencia");
 });
 
 test("pedido: confirmação exige referência bancária e valor igual; repetir é idempotente; outra referência não paga de novo", () => {
