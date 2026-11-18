@@ -3,6 +3,8 @@ import { Header, Footer } from "../../components/site";
 import CheckoutParams from "./CheckoutParams";
 import SalesSticky from "./SalesSticky";
 import { SalesAccess, SalesFaq, SalesFinal, SalesHero, SalesNumbers, SalesOffers, SalesSamples, SalesStrip, SalesTools, SalesTrilha } from "./SalesSections";
+import LandingEvents from "./LandingEvents";
+import { modules, questions, toPublic } from "../../lib/operacao/catalog";
 import { UNITS } from "../../lib/trilha/service";
 import { ebookMaterials } from "../../lib/ebook-catalog";
 import "../../app/landing-plus.css";
@@ -27,6 +29,13 @@ export default async function LandingPage() {
   // Quem já tem acesso vê "Continuar minha revisão"; falha na consulta nunca quebra a landing.
   const hasAccess = view.active ? Boolean(await canAccess("essencial").catch(() => null)) : false;
   const pixReady = await pixReadiness();
+  const freeUnitId = features.gratis ? freeScope().unitId : null;
+  // Prévia da Trilha: 3 unidades reais (a primeira é a do Grátis, quando ativo) e, em cada uma, o enunciado de uma questão real do acervo.
+  const previewUnits = UNITS.slice(0, 3).map((u) => {
+    const sample = questions.find((q) => q.moduleId === u.moduleId);
+    const unitModule = modules.find((m) => m.id === u.moduleId);
+    return { id: u.id, title: u.title, objective: unitModule?.objective ?? u.objective, minutes: u.minutes, exampleHtml: sample ? toPublic(sample).statementHtml : null, tier: (freeUnitId && u.id === freeUnitId ? "gratis" : "essencial") as "gratis" | "essencial" };
+  });
   const scope = features.gratis ? freeScope() : null;
   const freeUnit = scope ? UNITS.find((u) => u.id === scope.unitId) : null;
   const free = scope && freeUnit ? { unitTitle: freeUnit.title, questionsPerDay: scope.questionsPerDay } : undefined;
@@ -40,15 +49,18 @@ export default async function LandingPage() {
   return (
     <div className="sales">
       <CheckoutParams />
+      <LandingEvents />
       {hasAccess
-        ? <SalesSticky href={campaign.destinations.studyArea} label="CONTINUAR ESTUDANDO" />
-        : <SalesSticky href="#ofertas" label="CONHECER OS PLANOS" note={`Planos a partir de ${essencialTotal} no total`} />}
+        ? <SalesSticky href={campaign.destinations.studyArea} label="Continuar estudando" />
+        : features.gratis
+          ? <SalesSticky href="/entrar?modo=cadastro" label="Começar grátis" note="Sem cartão" signup />
+          : <SalesSticky href="#ofertas" label="Ver planos" note={`Planos a partir de ${essencialTotal} no total`} />}
       <SalesStrip view={view} />
       <Header />
       <main id="conteudo">
-        <SalesHero hasAccess={hasAccess} studyArea={campaign.destinations.studyArea} essencialTotal={essencialTotal} question={heroQuestion} view={view} />
+        <SalesHero hasAccess={hasAccess} studyArea={campaign.destinations.studyArea} question={heroQuestion} view={view} gratis={features.gratis} />
         <SalesNumbers facts={facts} inv={inv} ebooks={ebookMaterials.length} />
-        <SalesTrilha units={UNITS.map((u) => ({ id: u.id, title: u.title, minutes: u.minutes }))} />
+        <SalesTrilha signupHref={features.gratis ? "/entrar?modo=cadastro&redirect=%2Faluno%2Ftrilha" : null} units={previewUnits} />
         <SalesSamples question={question} />
         <SalesTools facts={facts} inv={inv} />
         <SalesOffers plans={plans} facts={facts} inv={inv} checkoutReady={checkoutReady} free={free} pixReady={{ essencial: pixReady.essencial, premium: pixReady.premium }} />

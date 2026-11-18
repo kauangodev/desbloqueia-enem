@@ -98,3 +98,65 @@ body.godev-app .sales .s-cal { color: var(--muted); }
 .s-trail b { display: block; color: var(--g900); }
 .s-trail small { display: block; color: var(--muted); font-size: .875rem; }
 .s-trail .is-lock { opacity: .8; border-style: dashed; }
+
+/* ===== Landing 2027: demonstração primeiro, ação única, planos comparáveis ===== */
+.sales .s-wrap { max-width: 1140px; }
+.sales .s-btn { background: #f97316; color: #1f1100; border: 1px solid #c2570c !important; box-shadow: none; transform: none; text-transform: none; letter-spacing: 0; font-weight: 800; }
+.sales .s-btn:hover { background: #ea6a0a; box-shadow: none; transform: none; }
+.sales .s-btn:focus-visible, .sales .s-link:focus-visible, .s-tp button:focus-visible, .s-sticky a:focus-visible { outline: 3px solid var(--focus-ring, #fbbf24); outline-offset: 3px; }
+.s-hero::after { display: none; }
+.s-hero::before { opacity: .6; }
+.s-hero-grid { align-items: start; }
+@media (min-width: 960px) { .s-hero-grid { grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); gap: 56px; } }
+.s-hero-copy h1 { max-width: 13ch; font-size: clamp(2.25rem, 5.4vw, 3.6rem); line-height: 1.04; }
+.s-hero-copy .s-lead { max-width: 44ch; }
+.s-hero-copy .s-actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 22px; margin-top: 22px; }
+.s-cond { margin: 10px 0 0; font-size: .9375rem; color: var(--muted); }
+.s-cond a { color: var(--g700); font-weight: 700; }
+.s-hero-copy .s-cal { margin-top: 18px; font-size: .8125rem; }
+.s-try { box-shadow: none; border: 1.5px solid var(--line); }
+.s-try-feedback { min-height: 0; }
+.s-stage-inline { margin: 0 auto 36px; }
+.s-stage::before { display: none; }
+
+/* Planos: preço e ação no alto de cada cartão, benefícios depois */
+@media (min-width: 900px) { .s-plans { grid-template-columns: repeat(2, minmax(0, 1fr)); } .s-plans-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; } }
+.s-plan { padding: 24px 20px 20px; box-shadow: none; }
+.s-plan h3 { font-size: 1.5rem; text-align: left; }
+.s-plan-for { text-align: left; margin: 4px 0 14px; }
+.s-plan .s-price { text-align: left; background: transparent; border: 0; padding: 0; margin: 0 0 12px; }
+.s-plan .s-price b { font-size: 2.2rem; }
+.s-plan .s-btn-block { margin-bottom: 4px; }
+.s-plan .s-checks { margin: 18px 0 14px; padding-top: 16px; border-top: 1px solid var(--line); }
+.s-plan-foot { text-align: left; }
+
+/* Prévia navegável da Trilha */
+.s-tp { max-width: 860px; margin: 0 auto 14px; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+.s-tp-label { margin: 0 0 12px; font-size: .875rem; color: var(--muted); }
+.s-tp-label b { color: var(--g900); }
+.s-tp-units { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.s-tp-unit { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 12px; background: transparent; color: var(--g900); font: inherit; font-weight: 700; text-align: left; cursor: pointer; }
+.s-tp-unit small { font-weight: 700; color: var(--muted); }
+.s-tp-unit[aria-pressed="true"] { border-color: var(--g700); background: var(--g100); }
+.s-tp-stages { list-style: none; margin: 14px 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.s-tp-stages button { width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 8px; border: 1.5px solid var(--line); border-radius: 999px; background: transparent; color: var(--g900); font: inherit; font-weight: 700; cursor: pointer; }
+.s-tp-stages button span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--g100); font-size: .75rem; }
+.s-tp-stages button[aria-current="step"] { border-color: var(--g700); background: var(--g100); }
+@media (max-width: 560px) { .s-tp-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.s-tp-panel { padding: 14px; border-radius: 12px; background: var(--g50); border: 1px solid var(--line); min-height: 140px; }
+.s-tp-panel h3 { font-size: 1.05rem; margin: 0 0 6px; }
+.s-tp-panel p { margin: 0 0 10px; color: var(--ink, inherit); }
+.s-tp-example { margin: 10px 0 12px; padding: 12px; border-radius: 10px; background: var(--card); border: 1px dashed var(--line); font-size: .95rem; }
+.s-tp-example small { display: block; margin-bottom: 4px; font-weight: 800; color: var(--muted); }
+.s-tp-example p { margin: 0 0 6px; }
+.s-tp-note { color: var(--muted); font-size: .875rem; }
+body.godev-app .sales .s-tp-unit, body.godev-app .sales .s-tp-stages button { color: var(--g900); }
+body.godev-app .sales .s-tp-panel p, body.godev-app .sales .s-tp-example { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .s-tp * { transition: none !important; } }
+.s-hero-copy .s-actions { justify-content: flex-start; }
+.s-plan .s-checks { flex: none; }
+.s-plan .s-plan-foot { margin-top: auto; padding-top: 6px; }
+.s-tools .s-tag { font-size: .75rem; }
+
+/* Links dentro de frases: área de toque de 44px sem mudar o fluxo do texto */
+.sales li a:not(.s-btn), .sales .s-info a, .sales .s-note a { display: inline-block; padding-block: 12px; margin-block: -12px; }

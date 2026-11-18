@@ -10,6 +10,7 @@ import { features } from "../../lib/features";
 import type { DemoQuestion } from "./explorer-types";
 import TryQuestion from "./TryQuestion";
 import GuardianShare from "./GuardianShare";
+import TrilhaPreview, { type PreviewUnit } from "./TrilhaPreview";
 
 type Facts = ReturnType<typeof campaignFacts>;
 type Inv = ReturnType<typeof inventory>;
@@ -34,45 +35,29 @@ export function SalesStrip({ view }: { view: CampaignView }) {
   return <p className="s-strip"><b>{view.label}</b>{view.countdown ? <span> · {view.countdown}</span> : null}</p>;
 }
 
-export function SalesHero({ hasAccess, studyArea, essencialTotal, question, view }: { hasAccess: boolean; studyArea: string; essencialTotal: string; question?: DemoQuestion; view: CampaignView }) {
+export function SalesHero({ hasAccess, studyArea, question, view, gratis }: { hasAccess: boolean; studyArea: string; essencialTotal?: string; question?: DemoQuestion; view: CampaignView; gratis: boolean }) {
   return (
     <section className="s-hero" id="topo" aria-labelledby="s-title">
       <div className={`s-wrap ${question ? "s-hero-grid" : "s-center"}`}>
         <div className="s-hero-copy">
-          <span className="s-pill">Desbloqueia ENEM 2027</span>
-          <h1 id="s-title">Sua preparação para o ENEM 2027, <em>passo a passo.</em></h1>
-          <p className="s-lead">Siga uma trilha, pratique questões e volte aos assuntos que mais precisam de atenção. Resolução passo a passo, caderno de erros e revisão, direto no celular.</p>
+          <h1 id="s-title">Saiba o que estudar para o <em>ENEM 2027.</em></h1>
+          <p className="s-lead">Siga uma trilha, resolva questões comentadas e volte aos temas em que mais precisa praticar.</p>
           <div className="s-actions">
             {hasAccess
-              ? <Link className="s-btn s-btn-lg" href={studyArea}>CONTINUAR ESTUDANDO</Link>
-              : <a className="s-btn s-btn-lg" href="#ofertas">CONHECER OS PLANOS</a>}
-            <a className="s-link" href="#experimentar">Experimentar uma questão</a>
+              ? <Link className="s-btn s-btn-lg" href={studyArea}>Continuar estudando</Link>
+              : gratis
+                ? <Link className="s-btn s-btn-lg" href="/entrar?modo=cadastro" data-signup="hero">Começar grátis</Link>
+                : <a className="s-btn s-btn-lg" href="#experimentar">Testar uma questão</a>}
+            {!hasAccess ? <a className="s-link" href="#ofertas">Ver planos</a> : null}
           </div>
-          <ul className="s-ticks" aria-label="Condições">
-            <li>Pagamento único, sem mensalidade</li>
-            <li>Pix ou cartão</li>
-            <li>7 dias de garantia</li>
-          </ul>
-          <p className="s-trust">{features.pix ? <>Planos pagos a partir de <b>{essencialTotal}</b> no total, por Pix.{features.gratis ? " Ou comece grátis, sem cartão." : ""}</> : <>Planos a partir de <b>{essencialTotal}</b> no total, pela Cakto.</>}</p>
+          {!hasAccess && gratis ? <p className="s-cond">Sem cartão. Ou <a href="#experimentar">teste uma questão</a> agora.</p> : null}
           <p className="s-cal" role="status"><b>{view.label}.</b> {view.calendarConfirmed ? view.detail : "Enquanto não há data oficial, o plano de estudos segue por semanas."}</p>
         </div>
-        {question ? <TryQuestion  question={question} /> : null}
-      </div>
-      <div className="s-wrap s-center">
-        <figure className="s-stage">
-          <div className="s-fan">
-            <Cover slug="fisica" className="f1" premium />
-            <Cover slug="biologia" className="f2" />
-            <Cover slug="matematica" className="f3" priority />
-            <Cover slug="quimica" className="f4" premium />
-          </div>
-          <figcaption>E-books da GoDev. Matemática e Biologia estão no Essencial; Física e Química, no Premium.</figcaption>
-        </figure>
+        {question ? <TryQuestion question={question} /> : null}
       </div>
     </section>
   );
 }
-
 /** Amostras reais: páginas dos e-books e uma questão com resolução comentada. */
 export function SalesSamples({ question }: { question: DemoQuestion | undefined }) {
   return (
@@ -83,6 +68,15 @@ export function SalesSamples({ question }: { question: DemoQuestion | undefined 
           <h2 id="s-amostra-title">Veja o que você vai estudar</h2>
           <p>Páginas reais dos e-books e uma questão com a resolução comentada, exatamente como aparecem na plataforma.</p>
         </header>
+        <figure className="s-stage s-stage-inline">
+          <div className="s-fan">
+            <Cover slug="fisica" className="f1" premium />
+            <Cover slug="biologia" className="f2" />
+            <Cover slug="matematica" className="f3" />
+            <Cover slug="quimica" className="f4" premium />
+          </div>
+          <figcaption>E-books da GoDev. Matemática e Biologia estão no Essencial; Física e Química, no Premium.</figcaption>
+        </figure>
 
         <article className="s-feature">
           <div className="s-feature-media s-book" aria-label="Duas páginas do e-book de Matemática">
@@ -191,7 +185,7 @@ export function SalesTools({ facts, inv }: { facts: Facts; inv: Inv }) {
     { key: "e", title: "Caderno de erros", text: "Monta-se sozinho com o que você errou ou marcou. Releia a resolução e tente de novo.", plan: "all" },
     { key: "p", title: "Minha revisão", text: "Plano dos dias que faltam, com meta diária e sequência de estudo.", plan: "all" },
     { key: "c", title: "Leitor de e-books", text: "Leia no celular, tablet ou computador e retome de onde parou.", plan: "all" },
-    { key: "b", title: `Banco geral: ${inv.generalDistinct} questões`, text: `${inv.lists} listas e ${inv.simulados} simulados para ir além da Operação.`, plan: "premium" },
+    { key: "b", title: `Banco geral: ${inv.generalDistinct} questões`, text: `${inv.lists} listas e ${inv.simulados} simulados para ir além da Matemática e Natureza.`, plan: "premium" },
     { key: "h", title: "Biblioteca histórica", text: "1.800 referências de questões com links para as fontes oficiais.", plan: "premium" },
   ];
   return (
@@ -245,57 +239,53 @@ export function SalesOffers({ plans, facts, inv, checkoutReady, free, pixReady }
           <h2 id="s-ofertas-title">Escolha o plano ideal para sua revisão</h2>
           <p>{free ? "Comece grátis, sem cartão. " : ""}Os planos pagos incluem toda a área de Matemática e Natureza. O Premium amplia o repertório. Os preços abaixo já são o total cobrado.</p>
         </header>
-        <div className="s-plans">
+        <div className={`s-plans${free ? " s-plans-3" : ""}`}>
           {free ? (
             <article className="s-plan" aria-labelledby="plan-gratis">
               <h3 id="plan-gratis">Grátis</h3>
               <p className="s-plan-for">Para descobrir como a GoDev ensina, sem pagar nada.</p>
+              <div className="s-price"><b>R$ 0</b><span>sem cartão · sem vencimento</span></div>
+              <Link className="s-btn s-btn-block" href="/entrar?modo=cadastro" data-analytics-event="offer_gratis" data-signup="plano">Criar conta grátis</Link>
               <ul className="s-checks">
                 <li><b>Unidade introdutória da Trilha:</b> {free.unitTitle}</li>
                 <li>Até <b>{free.questionsPerDay} questões comentadas por dia</b>, com correção</li>
                 <li>Diagnóstico inicial e visão básica do seu progresso</li>
-                <li>Sem cartão, sem vencimento e sem renovação</li>
               </ul>
-              <div className="s-price"><b>R$ 0</b><span>sem cartão</span></div>
-              <Link className="s-btn s-btn-block" href="/entrar?modo=cadastro" data-analytics-event="offer_gratis">Criar conta grátis</Link>
               <p className="s-plan-foot">Quando quiser mais, o Essencial e o Premium continuam aqui.</p>
             </article>
           ) : null}
           <article className="s-plan" aria-labelledby="plan-essencial">
-            <div className="s-plan-media"><div className="s-stack"><Cover slug="matematica" /><Cover slug="biologia" /><Cover slug="historia" /><Cover slug="lingua-portuguesa" /></div></div>
             <h3 id="plan-essencial">Essencial</h3>
-            <p className="s-plan-for">Para revisar Matemática e Natureza com a Matemática e Natureza.</p>
+            <p className="s-plan-for">Para estudar Matemática e Natureza com método.</p>
+            <div className="s-price"><b>{brl(total("essencial"))}</b><span>no total · pagamento único</span>{feeNote("essencial")}</div>
+            {buy("essencial", "Essencial")}
+            {pixOn ? null : <GuardianShare plan="essencial" name="Essencial" total={brl(total("essencial"))} />}
             <ul className="s-checks">
               <li><b>Matemática e Natureza:</b> {facts.questions} questões comentadas, {facts.simulados} simulados de {facts.simuladoQuestions} questões e {facts.treinos} treinos</li>
               <li>{facts.modules} revisões rápidas e {facts.formulas} fichas de fórmulas</li>
               <li>Minha revisão e caderno de erros</li>
               <li><b>4 e-books:</b> {essentialBooks.join(", ")}</li>
             </ul>
-            <div className="s-price"><b>{brl(total("essencial"))}</b><span>no total · pagamento único</span>{feeNote("essencial")}</div>
-            {buy("essencial", "Essencial")}
-            {pixOn ? null : <GuardianShare plan="essencial" name="Essencial" total={brl(total("essencial"))} />}
             <p className="s-plan-foot">Acesso pela plataforma · 7 dias de garantia</p>
           </article>
 
           <article className="s-plan s-plan-premium" aria-labelledby="plan-premium">
             <span className="s-badge">Mais completo</span>
-            <div className="s-plan-media"><div className="s-stack"><Cover slug="fisica" /><Cover slug="quimica" /><Cover slug="redacao" /><Cover slug="matematica" /><i className="s-more">+12 e-books</i></div></div>
             <h3 id="plan-premium">Premium</h3>
-            <p className="s-plan-for">Para ir além da Operação, com Física, Química e o banco geral.</p>
+            <p className="s-plan-for">Tudo do Essencial, com Física, Química e o banco geral.</p>
+            <div className="s-price"><b>{brl(total("premium"))}</b><span>no total · pagamento único</span>{feeNote("premium")}</div>
+            {buy("premium", "Premium")}
+            {pixOn ? null : <GuardianShare plan="premium" name="Premium" total={brl(total("premium"))} />}
             <ul className="s-checks">
-              <li><b>Tudo do Essencial</b>, incluindo a Matemática e Natureza</li>
+              <li><b>Tudo do Essencial</b>, incluindo Matemática e Natureza</li>
               <li><b>16 e-books</b>, incluindo Física, Química e Redação</li>
               <li><b>Banco geral:</b> {inv.generalDistinct} questões distintas em {inv.lists} listas e {inv.simulados} simulados (as questões se repetem entre coleções)</li>
               <li><b>Biblioteca histórica:</b> 1.800 referências de questões, com links para fontes oficiais (é um índice, não são resoluções autorais)</li>
               <li>Fichas e checklists de revisão</li>
             </ul>
-            <div className="s-price"><b>{brl(total("premium"))}</b><span>no total · pagamento único</span>{feeNote("premium")}</div>
-            {buy("premium", "Premium")}
-            {pixOn ? null : <GuardianShare plan="premium" name="Premium" total={brl(total("premium"))} />}
             <p className="s-plan-foot">Acesso pela plataforma · 7 dias de garantia</p>
           </article>
         </div>
-
         <details className="s-compare">
           <summary>Ver a comparação completa entre os planos</summary>
           <div className="s-compare-body">
@@ -313,7 +303,7 @@ export function SalesOffers({ plans, facts, inv, checkoutReady, free, pixReady }
                 <tr><th scope="row">Valor total</th><td data-l="Essencial"><b>{brl(total("essencial"))}</b>{SERVICE_FEE_CENTS ? ` (${brl(base("essencial"))} + ${brl(SERVICE_FEE_CENTS)})` : ""}</td><td data-l="Premium"><b>{brl(total("premium"))}</b>{SERVICE_FEE_CENTS ? ` (${brl(base("premium"))} + ${brl(SERVICE_FEE_CENTS)})` : ""}</td></tr>
               </tbody>
             </table>
-            <p className="s-note"><b>Questões distintas</b> são as que têm enunciado, alternativas e gabarito diferentes. Em coleções diferentes, a mesma questão pode reaparecer, por isso as quantidades não se somam. As <b>referências</b> da biblioteca apontam para fontes externas. Os <b>simulados da Operação</b> ({facts.simulados} de {facts.simuladoQuestions} questões) são os mesmos nos dois planos; os {inv.simulados} simulados do banco geral são do Premium.</p>
+            <p className="s-note"><b>Questões distintas</b> são as que têm enunciado, alternativas e gabarito diferentes. Em coleções diferentes, a mesma questão pode reaparecer, por isso as quantidades não se somam. As <b>referências</b> da biblioteca apontam para fontes externas. Os <b>simulados de Matemática e Natureza</b> ({facts.simulados} de {facts.simuladoQuestions} questões) são os mesmos nos dois planos; os {inv.simulados} simulados do banco geral são do Premium.</p>
           </div>
         </details>
       </div>
@@ -413,13 +403,7 @@ export function SalesFinal({ message }: { message: string }) {
 }
 
 /** Prévia da Trilha com unidades reais do catálogo. Os estados são um EXEMPLO ilustrativo (nenhum dado de aluno). */
-export function SalesTrilha({ units }: { units: { id: string; title: string; minutes: number }[] }) {
-  const demo = [
-    { state: "Concluída", cls: "is-done", note: "fundamento, prática e desafio feitos" },
-    { state: "Em andamento", cls: "is-now", note: "próxima etapa: desafio ENEM" },
-    { state: "Bloqueada", cls: "is-lock", note: "abre quando você concluir as anteriores (ou validar no teste de avanço)" },
-  ];
-  const shown = units.slice(0, 3);
+export function SalesTrilha({ units, signupHref }: { units: PreviewUnit[]; signupHref: string | null }) {
   return (
     <section className="s-section s-band" id="trilha" aria-labelledby="s-trilha-title">
       <div className="s-wrap">
@@ -428,15 +412,8 @@ export function SalesTrilha({ units }: { units: { id: string; title: string; min
           <h2 id="s-trilha-title">Você sempre sabe onde está e o que abre a próxima etapa</h2>
           <p>Cada unidade tem fundamento, prática guiada, desafio no formato do Enem e revisão agendada. Já conhece o tema? O teste de avanço valida a unidade.</p>
         </header>
-        <ol className="s-trail" aria-label="Exemplo ilustrativo da trilha">
-          {shown.map((u, i) => (
-            <li key={u.id} className={demo[i].cls}>
-              <span className="s-trail-dot" aria-hidden="true">{i + 1}</span>
-              <div><b>{u.title}</b><small>{demo[i].state} · {demo[i].note}</small></div>
-            </li>
-          ))}
-        </ol>
-        <p className="s-note s-center">Exemplo ilustrativo com unidades reais do catálogo. Hoje a trilha cobre Matemática e Natureza; Humanas, Linguagens e Redação entram quando houver atividades aprovadas.</p>
+        <TrilhaPreview units={units} signupHref={signupHref} />
+        <p className="s-note s-center">Hoje a trilha cobre Matemática e Natureza; Humanas, Linguagens e Redação entram quando houver atividades aprovadas.</p>
       </div>
     </section>
   );

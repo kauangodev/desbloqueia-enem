@@ -5,6 +5,7 @@ import { todayInSaoPaulo } from "../../../lib/operacao/config";
 import { operacaoUser } from "../../../lib/operacao/store";
 import { freeUnitDecision } from "../../../lib/planos/gate";
 import { freeScope } from "../../../lib/planos/free";
+import { noteStudy } from "../../../lib/funnel/first-study";
 import { answerItem, finishStage, markFundamento, setCursor, setPrefs, startStage, TrilhaError } from "../../../lib/trilha/service";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
       case "prefs": return NextResponse.json({ prefs: await setPrefs(user.kv, input) }, { headers: { "Cache-Control": "no-store" } });
       case "fundamento": return NextResponse.json({ state: await markFundamento(user.kv, input.unitId, today) }, { headers: { "Cache-Control": "no-store" } });
       case "start": return NextResponse.json(await startStage(user.kv, input.unitId, input.stage, today), { headers: { "Cache-Control": "no-store" } });
-      case "answer": return NextResponse.json(await answerItem(user.kv, input), { headers: { "Cache-Control": "no-store" } });
+      case "answer": { const result = await answerItem(user.kv, input); noteStudy(user.id); return NextResponse.json(result, { headers: { "Cache-Control": "no-store" } }); }
       case "cursor": return NextResponse.json(await setCursor(user.kv, input), { headers: { "Cache-Control": "no-store" } });
       case "finish": return NextResponse.json(await finishStage(user.kv, input, today), { headers: { "Cache-Control": "no-store" } });
     }

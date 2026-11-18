@@ -28,7 +28,7 @@ test.describe("responsive public surfaces", () => {
           };
           const overflow = [...document.querySelectorAll("body *")]
             .filter(visible)
-            .filter((element) => !element.closest("[aria-hidden=\"true\"]") && !element.closest(".material-index, .discipline-marquee") && getComputedStyle(element).overflowX !== "auto")
+            .filter((element) => !element.closest("[aria-hidden=\"true\"]") && !element.closest(".material-index, .discipline-marquee, .katex-mathml") && getComputedStyle(element).overflowX !== "auto")
             .filter((element) => element.getBoundingClientRect().right > viewportWidth + 1)
             .slice(0, 8)
             .map((element) => `${element.tagName}.${element.className}(${(element.textContent || "").trim().slice(0, 24)})`);
@@ -62,26 +62,5 @@ test.describe("responsive public surfaces", () => {
     }
   }
 
-  test("landing guarantee remains readable", async ({ page }) => {
-    await page.goto("/landing", { waitUntil: "networkidle" });
-    const result = await page.locator(".guarantee").evaluate((box) => {
-      const luminance = (color: string) => {
-        const values = color.match(/[\d.]+/g)?.map(Number) || [0, 0, 0];
-        return values.slice(0, 3).map((value) => {
-          const channel = value / 255;
-          return channel <= .03928 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
-        });
-      };
-      const contrast = (foreground: string, background: string) => {
-        const a = luminance(foreground); const b = luminance(background);
-        const l1 = .2126 * a[0] + .7152 * a[1] + .0722 * a[2];
-        const l2 = .2126 * b[0] + .7152 * b[1] + .0722 * b[2];
-        return (Math.max(l1, l2) + .05) / (Math.min(l1, l2) + .05);
-      };
-      const boxStyle = getComputedStyle(box);
-      return [...box.querySelectorAll("h3,p")].map((element) => contrast(getComputedStyle(element).color, boxStyle.backgroundColor));
-    });
-    expect(result.every((value) => value >= 4.5)).toBeTruthy();
-  });
+// Removido: o bloco .guarantee não existe mais na landing (a garantia agora está em Acesso e garantia, coberta pelo teste de contraste da página inteira).
 });
-

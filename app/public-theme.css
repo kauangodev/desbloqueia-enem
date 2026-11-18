@@ -71,3 +71,18 @@ html[data-gd-theme="light"] body.godev-app:has(.theme-public) .theme-switch labe
 html[data-gd-theme="light"] body.godev-app:has(.theme-public) .theme-switch label:has(input:checked) { color: var(--on-accent); }
 html[data-gd-theme="light"] body.godev-app:has(.theme-public):has(.nav.open) .site-header { background: #ffffff; }
 .support-private-contacts .text-link { display: block; width: fit-content; margin: 6px 0; }
+
+/* Seletor de tema compacto do cabeçalho */
+.theme-select { align-items: center; }
+.theme-select select { min-height: 40px; padding: 0 30px 0 12px; border: 1px solid var(--border-control); border-radius: 10px; background: transparent; color: var(--text-secondary); font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer; appearance: auto; }
+.theme-select select:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.theme-select select { min-height: 44px; }
+.theme-select select { font-size: 1rem; }
+.theme-switch input { font-size: 16px; }
+
+/* Rodapé: alvos de toque de pelo menos 44px (links, preferências de cookies e seletor de tema) */
+.site-footer a, .site-footer .cookie-link { display: inline-flex; align-items: center; min-height: 44px; }
+.site-footer .theme-switch label { min-height: 44px; }
+.site-footer .theme-switch input { min-height: 44px; }
+body .site-footer a, body .site-footer .cookie-link, body .site-footer .brand { min-height: 44px !important; display: inline-flex; align-items: center; }
+.field input, .field select, .field textarea { font-size: 1rem; }

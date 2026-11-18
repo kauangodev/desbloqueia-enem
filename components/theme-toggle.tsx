@@ -14,6 +14,17 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   const name = useId();
   // Garante os atributos também após navegação do lado do cliente.
   useEffect(() => { applyTheme(readPref()); }, []);
+  // No cabeçalho o controle é compacto: um seletor nativo (Claro, Escuro, Sistema), acessível por teclado e leitor de tela.
+  if (className.includes("header-theme")) {
+    return (
+      <label className={`theme-select ${className}`.trim()}>
+        <span className="sr-only">Tema</span>
+        <select value={pref} onChange={(event) => savePref(event.target.value as ThemePref)}>
+          {OPTIONS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+        </select>
+      </label>
+    );
+  }
   return (
     <fieldset className={`theme-switch ${className}`.trim()}>
       <legend>Tema</legend>

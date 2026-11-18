@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { hasAdminPermission } from "../lib/admin-permissions";
 import { listStudents, overview, studentDetail, type StudentFilter } from "../lib/admin/students";
+import { funnelSummary } from "../lib/admin/funnel";
 
 const tierLabel = { gratis: "Grátis", essencial: "Essencial", premium: "Premium" } as const;
 const sourceLabel: Record<string, string> = { email: "E-mail", google: "Google", legado: "Legado (compra)" };
 const orderStatus: Record<string, string> = { aguardando_pix: "Aguardando Pix", em_conferencia: "Em conferência", pago: "Pago", expirado: "Expirado", cancelado: "Cancelado", reembolsado: "Reembolsado" };
 const brl = (c: number) => `R$ ${(c / 100).toFixed(2).replace(".", ",")}`;
 const dateBr = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("pt-BR") : "—");
+const pct = (r: { numerator: number; denominator: number; pct: number | null }) => (r.pct === null ? "sem dados" : `${r.pct}% (${r.numerator}/${r.denominator})`);
 const dayBr = (day: string | null) => (day ? day.split("-").reverse().join("/") : "—");
 
 /** "Alunos e cadastros": indicadores com definição, lista paginada (inclui quem nunca comprou) e detalhe do aluno. */
@@ -38,6 +40,7 @@ export default async function AdminStudentsSection({ role, filter, detailId }: {
     );
   }
   let failed = false;
+  const funnel = await funnelSummary();
   let ov: Awaited<ReturnType<typeof overview>> | null = null;
   let list: Awaited<ReturnType<typeof listStudents>> | null = null;
   try { [ov, list] = await Promise.all([overview(), listStudents(filter)]); } catch { failed = true; }
@@ -69,6 +72,21 @@ export default async function AdminStudentsSection({ role, filter, detailId }: {
           <p><small>Origem dos cadastros (30 d): {Object.entries(ov.bySource30).map(([k, n]) => `${sourceLabel[k] ?? k} ${n}`).join(" · ") || "sem cadastros"}.{!ov.migrated ? " A migração 06 ainda não foi aplicada: origem, último login e pedidos Pix aparecem como legado/zero." : ""}</small></p>
         </section>
       ) : null}
+      <section aria-labelledby="fn-h">
+        <h2 id="fn-h">Funil da landing (30 dias)</h2>
+        {funnel ? (
+          <>
+            <ul>
+              <li>Visita → demonstração: <strong>{pct(funnel.rates.visitaParaDemo)}</strong> <small>(visitantes que consentiram)</small></li>
+              <li>Visita → cadastro verificado: <strong>{pct(funnel.rates.visitaParaCadastroVerificado)}</strong> <small>(contas verificadas ÷ visitantes que consentiram)</small></li>
+              <li>Cadastro verificado → primeiro estudo: <strong>{pct(funnel.rates.cadastroParaPrimeiroEstudo)}</strong> <small>(contas)</small></li>
+              <li>Checkout iniciado → pagamento confirmado: <strong>{pct(funnel.rates.checkoutParaPagamento)}</strong> <small>(pedidos; considera o atraso da conferência manual)</small></li>
+              <li>Visita → pagamento confirmado: <strong>{pct(funnel.rates.visitaParaPagamento)}</strong></li>
+            </ul>
+            <p><small>Visitantes: {funnel.counts.visitors} · planos vistos: {funnel.counts.planViewers} · cadastros verificados: {funnel.counts.signupsVerified} · primeiro estudo: {funnel.counts.firstStudy} · checkouts: {funnel.counts.checkouts} · compras confirmadas: {funnel.counts.purchases}. A venda é só o pagamento confirmado; abrir o QR e “Já fiz o Pix” não contam. Sem visitantes registrados, a taxa aparece como “sem dados”.</small></p>
+          </>
+        ) : <p>Sem dados: a migração 07 (funil) ainda não foi aplicada.</p>}
+      </section>
       <form action="/admin" method="get" role="search" aria-label="Filtrar alunos">
         <input type="hidden" name="tab" value="cadastros" />
         <label className="field">Buscar por nome ou e-mail<input name="q" defaultValue={filter.q} maxLength={80} /></label>

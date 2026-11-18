@@ -27,7 +27,6 @@ export function Header() {
   const firstLink = useRef<HTMLAnchorElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
   const headerRef = useRef<HTMLElement>(null);
-  const bar = useRef<HTMLSpanElement>(null);
   // Fecha o menu e rola suavemente até a seção quando já estamos na landing (mantém utm/fbclid na URL).
   const goTo = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     setOpen(false);
@@ -41,14 +40,12 @@ export function Header() {
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${id}`);
     });
   };
-  // Barra de progresso de leitura e cabeçalho que recolhe ao descer e volta ao subir (celular).
+  // Cabeçalho que recolhe ao descer e volta ao subir (celular). A barra de progresso decorativa foi retirada.
   useEffect(() => {
     let last = window.scrollY;
     let ticking = false;
     const update = () => {
       const y = window.scrollY;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      if (bar.current) bar.current.style.transform = `scaleX(${max > 0 ? Math.min(1, Math.max(0, y / max)) : 0})`;
       const el = headerRef.current;
       if (el && Math.abs(y - last) > 6) {
         if (y > last && y > 140) el.dataset.hidden = "true";
@@ -89,7 +86,6 @@ export function Header() {
   return (
     <header className="site-header" ref={headerRef} data-hidden="false">
       <span className="theme-public" hidden />
-      <span className="scroll-progress" ref={bar} aria-hidden="true" />
       <div className="container header-inner">
         <Brand />
         {open && <button className="nav-backdrop" type="button" aria-label="Fechar menu" onClick={() => setOpen(false)} />}

@@ -6,6 +6,7 @@ import { mysqlPool } from "../../../../lib/mysql";
 import { jsonError, sameOrigin } from "../../../../lib/http";
 import { requiredSessionSecret } from "../../../../lib/security";
 import { sessionClient } from "../../../../lib/supabase";
+import { recordEvent } from "../../../../lib/funnel/record";
 
 const scrypt = promisify(nodeScrypt);
 type ResetRow = RowDataPacket & { id: string };
@@ -49,6 +50,13 @@ export async function POST(req: Request) {
     "UPDATE entitlements SET user_id = ? WHERE LOWER(email) = LOWER(?) AND active = TRUE AND (user_id IS NULL OR user_id = ?)",
     [userId, userId, userId],
   );
+  // Funil: só cadastro PÚBLICO verificado (signup_source preenchido); redefinição de senha de conta antiga não conta como cadastro.
+  if (token) {
+    try {
+      const [src] = await mysqlPool().query<RowDataPacket[]>("SELECT signup_source FROM users WHERE id = ? LIMIT 1", [userId]);
+      if (src[0]?.signup_source) void recordEvent("signup_verified", { userId, dedupeKey: userId, params: { plan: "gratis" } });
+    } catch { /* migração 06 pendente */ }
+  }
   const [users] = await mysqlPool().query<RowDataPacket[]>("SELECT role FROM users WHERE id = ? LIMIT 1", [userId]);
   const role = String(users[0]?.role || "").trim().toLowerCase();
   const safeRedirect = /^\/(?:admin|aluno)(?:[/?#]|$)/.test(requestedRedirect) ? requestedRedirect : "";

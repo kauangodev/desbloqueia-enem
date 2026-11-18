@@ -441,3 +441,7 @@ body.godev-app .landing-hero .petroleum-hero-copy > p.hero-trust, .landing-shell
 /* acabamentos: rótulos das abas da demonstração legíveis e alvos de toque do rodapé */
 .hx-tab { font-size: .75rem; }
 .site-footer .footer-grid a, .site-footer .footer-grid button { min-height: 40px; display: inline-flex; align-items: center; }
+
+/* A barra de progresso decorativa do cabeçalho foi retirada. */
+.site-header .scroll-progress { display: none; }
+

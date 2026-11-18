@@ -6,6 +6,7 @@ import { features } from "../../../../../lib/features";
 import { mysqlPool } from "../../../../../lib/mysql";
 import { startSessionForUser } from "../../../../../lib/supabase";
 import { TERMS_VERSION } from "../../../../../lib/auth/terms";
+import { recordEvent } from "../../../../../lib/funnel/record";
 import { signPayload } from "../../../../../lib/auth/oauth-cookie";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,7 @@ export async function GET(req: Request) {
         await conn.query("INSERT INTO auth_identities (provider,subject,user_id) VALUES ('google',?,?)", [sub, id]);
         await conn.commit();
         userId = id;
+        void recordEvent("signup_verified", { userId: id, dedupeKey: id, params: { plan: "gratis" } });
       } catch (error) {
         await conn.rollback();
         // Duas requisições simultâneas: a identidade (provider, sub) é única; a perdedora reaproveita a conta já criada.

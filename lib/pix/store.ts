@@ -4,6 +4,7 @@ import type { PoolConnection, ResultSetHeader, RowDataPacket } from "mysql2/prom
 import { mysqlPool } from "../mysql";
 import { bankRefInUse, confirm, evidenceProblems, expire, notifyPaid, refund, type Evidence, type PixOrder, type PixStatus } from "./orders";
 import { validatePixOffer } from "./payload";
+import { recordEvent } from "../funnel/record";
 
 /**
  * Persistência dos pedidos Pix (MySQL). As regras de estado vêm de `orders.ts` (puras); aqui ficam transação, trava por pedido,
@@ -85,18 +86,21 @@ export async function offerByCode(code: string): Promise<OfferRow | null> {
 export async function createOrder(userId: string, tier: "essencial" | "premium"): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
   const offer = await activeOffer(tier);
   if (!offer) return { ok: false, error: "O pagamento por Pix deste plano ainda não está disponível." };
-  return tx(async (c) => {
+  const result = await tx(async (c) => {
     // Trava a linha do aluno: duas requisições simultâneas do mesmo aluno passam uma de cada vez (SELECT ... FOR UPDATE em zero
     // linhas não impediria o INSERT duplicado).
     await c.query("SELECT id FROM users WHERE id = ? FOR UPDATE", [userId]);
     // Pedido aberto do mesmo plano é reaproveitado (clique repetido não cria pedidos duplicados).
     const [open] = await c.query<RowDataPacket[]>("SELECT id FROM pix_orders WHERE user_id = ? AND offer_code = ? AND status IN ('aguardando_pix','em_conferencia') AND expires_at > CURRENT_TIMESTAMP(3) ORDER BY created_at DESC LIMIT 1 FOR UPDATE", [userId, offer.code]);
-    if (open[0]) return { ok: true as const, id: open[0].id as string };
+    if (open[0]) return { ok: true as const, id: open[0].id as string, created: false as const };
     const id = randomUUID();
     await c.query("INSERT INTO pix_orders (id,user_id,offer_code,offer_version,expected_cents,status,expires_at) VALUES (?,?,?,?,?, 'aguardando_pix', DATE_ADD(CURRENT_TIMESTAMP(3), INTERVAL ? HOUR))", [id, userId, offer.code, offer.version, offer.cents, ORDER_TTL_HOURS]);
     await event(c, id, userId, "criado", { cents: offer.cents, offer: offer.code });
-    return { ok: true as const, id };
+    return { ok: true as const, id, created: true as const };
   });
+  // Funil: pedido criado = checkout iniciado (um por pedido; reaproveitar pedido aberto não repete o evento).
+  if (result.ok && result.created) void recordEvent("checkout_started", { userId, orderId: result.id, dedupeKey: result.id, params: { plan: tier } });
+  return result.ok ? { ok: true as const, id: result.id } : result;
 }
 
 export async function orderForUser(userId: string, id: string): Promise<OrderView | null> {
@@ -143,9 +147,9 @@ export async function expireDue(): Promise<number> {
 }
 export { expire };
 
-export async function confirmOrder(actor: string, id: string, evidence: Evidence): Promise<{ ok: true; status: PixStatus; changed: boolean } | { ok: false; error: string }> {
+export async function confirmOrder(actor: string, id: string, evidence: Evidence): Promise<{ ok: true; status: PixStatus; changed: boolean; plan?: string } | { ok: false; error: string }> {
   try {
-    return await tx(async (c) => {
+    const out = await tx(async (c) => {
       const [rows] = await c.query<RowDataPacket[]>("SELECT * FROM pix_orders WHERE id = ? FOR UPDATE", [id]);
       if (!rows[0]) return { ok: false as const, error: "pedido não encontrado" };
       const order = orderOf(rows[0]);
@@ -164,8 +168,11 @@ export async function confirmOrder(actor: string, id: string, evidence: Evidence
         await event(c, id, actor, "confirmado", { bankRef: evidence.bankRef, amountCents: evidence.amountCents, receivedAt: evidence.receivedAt, receiver: evidence.receiver });
         await audit(c, actor, "pix.order.confirm", id);
       }
-      return { ok: true as const, status: result.value.status, changed: result.changed };
+      return { ok: true as const, status: result.value.status, changed: result.changed, plan: order.tier };
     });
+    // Funil: venda = pagamento CONFIRMADO. Só quando esta chamada mudou o estado (confirmação repetida não conta duas vezes; a chave única também protege).
+    if (out.ok && out.changed) void recordEvent("purchase_confirmed", { userId: undefined, orderId: id, dedupeKey: id, params: { plan: out.plan } });
+    return out;
   } catch (error) {
     if ((error as { code?: string }).code === "ER_DUP_ENTRY") return { ok: false, error: "esta referência bancária já confirmou outro pedido" };
     return { ok: false, error: "não foi possível confirmar agora" };

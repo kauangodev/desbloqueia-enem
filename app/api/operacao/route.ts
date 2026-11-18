@@ -8,6 +8,7 @@ import { limitFor, remainingMs, selectQuestions, summarize, type Attempt, type S
 import { kindIds, type SessionKind as KindId } from "../../../lib/operacao/kinds";
 import { operacaoUser, type OperacaoUser } from "../../../lib/operacao/store";
 import { recordAttempt as recordAttemptShared } from "../../../lib/operacao/attempts";
+import { noteStudy } from "../../../lib/funnel/first-study";
 import { freeAnswerDecision, freeModuleDecision, freeQuestionVisible, freeSessionDecision } from "../../../lib/planos/gate";
 import { freeScope, loadQuota, saveQuota, withUserLock } from "../../../lib/planos/free";
 
@@ -35,7 +36,9 @@ async function attemptsMap(user: OperacaoUser) {
 }
 
 async function recordAttempt(user: OperacaoUser, questionId: string, selected: string, ok: boolean, mode: string) {
-  return recordAttemptShared(user.kv, questionId, selected, ok, mode);
+  const attempt = await recordAttemptShared(user.kv, questionId, selected, ok, mode);
+  noteStudy(user.id); // funil: primeira atividade pedagógica válida da conta (um registro por aluno)
+  return attempt;
 }
 
 function sessionPayload(session: Session) {
