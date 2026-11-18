@@ -55,6 +55,13 @@ test("missões do dia refletem só o que foi feito hoje", () => {
   assert.equal(m.missionsDone, 1);
 });
 
+test("melhor sequência e dias ativos ordenados", () => {
+  const m = momentum({ ...base, answerTimes: [at("2026-11-10"), at("2026-11-11"), at("2026-11-12"), at("2026-11-15"), at("2026-11-16")] });
+  assert.equal(m.bestStreak, 3);
+  assert.deepEqual(m.activeDays, ["2026-11-10", "2026-11-11", "2026-11-12", "2026-11-15", "2026-11-16"]);
+  assert.equal(m.streak, 0, "sem estudo hoje nem ontem a sequência atual zera");
+});
+
 test("datas inválidas são ignoradas sem quebrar", () => {
   const m = momentum({ ...base, answerTimes: ["", "não é data", at("2026-11-18")] });
   assert.equal(m.streak, 1);

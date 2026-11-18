@@ -6,6 +6,7 @@ export type FinishedSession = { id: string; kind: string; mode: string; finished
 export type OperacaoState = {
   attempts: Record<string, AttemptSummary>;
   fav: string[]; later: string[]; formulas: string[];
+  flash?: Record<string, { box: number; due: string; reviews: number; lapses: number }>;
   reads: Record<string, boolean>; planMinutes: number | null; planDone: string[];
   reviewed: Record<string, boolean>; active: Record<string, string>; finished: FinishedSession[]; lastByKind?: Record<string, { percent: number; correct: number; total: number; finishedAt: string }>;
 };

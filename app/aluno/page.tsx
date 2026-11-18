@@ -1,172 +1,119 @@
-import { identity } from "../../lib/supabase";
-import MaterialsBrowser from "../../components/materials-browser";
 import Link from "next/link";
-import GamificationPanel from "../../components/gamification-panel";
+import MaterialsBrowser from "../../components/materials-browser";
+import MomentumCard from "../../components/operacao/momentum-card";
+import { Icon, type IconName } from "../../components/icons";
+import { studentSummary } from "../../lib/aluno/summary";
+import { operacao } from "../../lib/operacao/config";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Início | GoDev Education" };
+
+const greeting = () => {
+  const hour = Number(new Intl.DateTimeFormat("pt-BR", { hour: "numeric", hourCycle: "h23", timeZone: "America/Sao_Paulo" }).format(new Date()));
+  return hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
+};
+
+const quick: [string, string, string, IconName][] = [
+  ["/aluno/treino-rapido", "Treino rápido", "5 questões por vez, com tempo por questão.", "zap"],
+  [`${operacao.basePath}/treinos`, "Simulados e treinos", "Provas cronometradas com correção comentada.", "timer"],
+  ["/aluno/flash-cards", "Flash cards", "Fichas de fórmulas com revisão espaçada.", "rotate-ccw"],
+  ["/aluno/dashboard", "Dashboard", "Onde você acerta e onde precisa revisar.", "trending-up"],
+];
 
 export default async function Dashboard({ searchParams }: { searchParams?: Promise<{ aviso?: string }> }) {
   const notice = (await searchParams)?.aviso;
-  const who = await identity();
-  if (!who) return null;
-  const [
-    { data: materials },
-    { data: progress },
-    { data: access },
-    { data: tasks },
-    { count: activityCount },
-  ] = await Promise.all([
+  const summary = await studentSummary();
+  if (!summary) return null;
+  const { who, isAdmin, plan, firstName, progress, momentum } = summary;
+  const [{ data: materials }, { data: reading }, { data: tasks }] = await Promise.all([
     who.db.from("materials").select("*").eq("published", true),
-    who.db
-      .from("reading_progress")
-      .select("*")
-      .eq("user_id", who.user.id)
-      .order("updated_at", { ascending: false }),
-    who.db
-      .from("entitlements")
-      .select("plan")
-      .eq("active", true)
-      .eq("user_id", who.user.id),
-    who.db
-      .from("study_progress")
-      .select("*")
-      .eq("user_id", who.user.id)
-      .eq("done", false)
-      .order("date")
-      .limit(3),
-    who.db
-      .from("assessment_attempts")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", who.user.id),
+    who.db.from("reading_progress").select("*").eq("user_id", who.user.id).order("updated_at", { ascending: false }),
+    who.db.from("study_progress").select("*").eq("user_id", who.user.id).eq("done", false).order("date").limit(3),
   ]);
-
-  const isAdmin = who.profile?.role === "admin";
-  const visibleMaterials = (materials || []).filter(
-    (material) =>
-      isAdmin ||
-      access?.some(
-        (entitlement) =>
-          entitlement.plan === "premium" || entitlement.plan === material.plan,
-      ),
-  );
-  const plan = isAdmin
-    ? "Administrador"
-    : access?.some((e) => e.plan === "premium")
-      ? "Premium"
-      : access?.length
-        ? "Essencial"
-        : "Aguardando acesso";
-  const firstName = who.profile?.name?.split(" ")[0] || "estudante";
-  const firstLetter = firstName.slice(0, 1).toUpperCase();
+  const entitled = (plan: string, material: { plan: string }) => isAdmin || plan === "premium" || plan === material.plan;
+  const visibleMaterials = ((materials || []) as { id: string; plan: string; title: string }[]).filter((material) => entitled(plan, material));
+  const last = reading?.[0];
+  const lastTitle = visibleMaterials.find((material) => material.id === last?.material_id)?.title || "Material em andamento";
+  const g = progress?.gamification;
+  const accuracy = g && g.practiced ? Math.round((g.firstTry / g.practiced) * 100) : null;
+  const resume = progress?.activeSessions[0];
 
   return (
-    <div className="student-dashboard">
+    <div className="as-page">
       {notice === "redacao" ? <p className="portal-notice" role="status">A área de Redação está temporariamente indisponível. Seus textos e correções anteriores continuam guardados.</p> : null}
-      <section className="student-welcome" aria-labelledby="student-welcome-title">
-        <div className="student-welcome-copy">
-          <span className="student-eyebrow">Seu espaço de estudo</span>
-          <h1 id="student-welcome-title">Seu próximo passo</h1>
-          <p>{firstName}, mantenha a consistência e acompanhe seus estudos.</p>
+      <header className="as-head">
+        <div>
+          <h1>{greeting()}, {firstName}!</h1>
+          <p>{momentum && momentum.streak > 0 ? `Você está há ${momentum.streak} ${momentum.streak === 1 ? "dia" : "dias"} em sequência. Continue hoje.` : "Comece um treino hoje para iniciar a sua sequência."}</p>
         </div>
-        <div className="student-welcome-meta">
-          <Link className="period-control" href="/aluno/cronograma">Meu cronograma <span aria-hidden="true">→</span></Link>
+        <Link className="as-btn as-btn-primary" href="/aluno/treino-rapido">Começar a treinar</Link>
+      </header>
+
+      {plan === "none" ? (
+        <section className="as-card" aria-labelledby="as-ativar">
+          <h2 id="as-ativar">Seu acesso ainda não está ativo</h2>
+          <p className="as-muted">Os materiais são liberados quando o pagamento é confirmado. Se você já pagou, fale com o atendimento com o e-mail da compra.</p>
+          <div className="op-q-foot"><Link className="as-btn as-btn-primary" href="/aluno/planos">Ver planos</Link><Link className="as-btn" href="/aluno/suporte">Falar com o atendimento</Link></div>
+        </section>
+      ) : null}
+
+      <nav className="as-quick" aria-label="Atalhos">
+        {quick.map(([href, title, text, icon]) => (
+          <Link key={href} href={href}><strong><Icon name={icon} size={18} aria-hidden="true" /> {title}</strong><span>{text}</span></Link>
+        ))}
+      </nav>
+
+      {g ? (
+        <div className="as-grid" aria-label="Seus números">
+          <article className="as-card as-stat"><span>Questões praticadas</span><strong>{g.practiced}</strong><small>{g.questionsToday} hoje</small></article>
+          <article className="as-card as-stat"><span>Acertos de primeira</span><strong>{accuracy === null ? "—" : `${accuracy}%`}</strong><small>{g.firstTry} de {g.practiced} questões</small></article>
+          <article className="as-card as-stat"><span>Dias seguidos</span><strong>{momentum?.streak ?? 0}</strong><small>melhor: {momentum?.bestStreak ?? 0}</small></article>
+          <article className="as-card as-stat"><span>Dias de estudo</span><strong>{momentum?.studyDays ?? 0}</strong><small>no total</small></article>
         </div>
-      </section>
+      ) : null}
 
-      <div className="student-stat-grid" aria-label="Resumo do seu espaço">
-        <article className="student-stat-card accent">
-          <span>XP acumulado</span>
-          <strong>{activityCount ? activityCount * 10 : 0}</strong>
-          <small>progresso registrado</small>
-        </article>
-        <article className="student-stat-card">
-          <span>Questões respondidas</span>
-          <strong>{activityCount || 0}</strong>
-          <small>exercícios e simulados</small>
-        </article>
-        <article className="student-stat-card">
-          <span>Tempo de estudo</span>
-          <strong>—</strong>
-          <small>aguardando dados de uso</small>
-        </article>
-        <article className="student-stat-card">
-          <span>Simulados concluídos</span>
-          <strong>—</strong>
-          <small>aguardando dados de uso</small>
-        </article>
-      </div>
+      <div className="as-grid-2">
+        <div className="as-page">
+          {momentum ? <MomentumCard data={momentum} /> : null}
 
-      <div className="student-dashboard-grid">
-        <div className="student-main-column">
-          <section className="student-section-block" aria-labelledby="continue-title">
-            <div className="student-section-heading">
-              <div>
-                <span className="student-eyebrow">Retome sua jornada</span>
-                <h2 id="continue-title">Continue de onde parou</h2>
-              </div>
-              <Link href="/aluno/materiais">Ver todos</Link>
-            </div>
-            {progress?.[0] ? (
-              <article className="student-continue-card">
-                <div className="student-continue-cover">
-                  <span>LEITURA</span>
-                  <strong>{visibleMaterials.find((m) => m.id === progress[0].material_id)?.title || "Material em andamento"}</strong>
-                </div>
-                <div className="student-continue-copy">
-                  <span className="student-status-pill">Em andamento</span>
-                  <h3>{visibleMaterials.find((m) => m.id === progress[0].material_id)?.title || "Material em andamento"}</h3>
-                  <p>Você parou na página {progress[0].page}. Continue no leitor protegido da plataforma.</p>
-                  <Link className="student-inline-action" href={`/aluno/ler/${progress[0].material_id}`}>Continuar leitura <span aria-hidden="true">→</span></Link>
-                </div>
-              </article>
+          <section className="as-card" aria-labelledby="as-continue">
+            <h2 id="as-continue">Continue de onde parou</h2>
+            {resume ? (
+              <p>Você tem uma atividade em andamento: {resume.answered} de {resume.total} questões respondidas. <Link className="op-link" href={`${operacao.basePath}/treinos`}>Retomar</Link></p>
+            ) : last ? (
+              <p>{lastTitle}: você parou na página {last.page}. <Link className="op-link" href={`/aluno/ler/${last.material_id}`}>Continuar leitura</Link></p>
+            ) : progress?.nextModule ? (
+              <p>Próxima revisão: <b>{progress.nextModule.title}</b> ({progress.nextModule.minutes} min). <Link className="op-link" href={`${operacao.basePath}/materiais/${progress.nextModule.id}`}>Começar</Link></p>
             ) : (
-              <div className="student-empty-card">
-                <strong>Seu próximo material pode começar hoje.</strong>
-                <p>Escolha um conteúdo e registre sua primeira leitura para acompanhar seu ritmo.</p>
-                <Link className="student-inline-action" href="/aluno/materiais">Abrir materiais <span aria-hidden="true">→</span></Link>
-              </div>
+              <p className="as-muted">Escolha um material ou um treino para começar. <Link className="op-link" href="/aluno/materiais">Abrir materiais</Link></p>
             )}
+            {progress && progress.toReview > 0 ? <p className="op-note">Você tem {progress.toReview} {progress.toReview === 1 ? "questão" : "questões"} para rever no <Link href={`${operacao.basePath}/erros`}>caderno de erros</Link>.</p> : null}
           </section>
 
-          <section className="student-section-block" aria-labelledby="materials-title">
-            <div className="student-section-heading">
-              <div>
-                <span className="student-eyebrow">Conteúdo liberado</span>
-                <h2 id="materials-title">Sua mesa de estudos</h2>
-              </div>
-              <span className="student-count">{visibleMaterials.length} itens</span>
-            </div>
-            <MaterialsBrowser items={visibleMaterials} defaultView="list" />
+          <section className="as-card" aria-labelledby="as-mesa">
+            <h2 id="as-mesa">Sua mesa de estudos <span className="as-tag">{visibleMaterials.length} itens</span></h2>
+            <MaterialsBrowser items={visibleMaterials as never} defaultView="list" />
           </section>
         </div>
 
-        <aside className="student-context-panel" aria-label="Resumo da sua jornada">
-          <div className="student-profile-card">
-            <span className="student-avatar" aria-hidden="true">{firstLetter}</span>
-            <div><strong>{firstName}</strong><small>{plan}</small></div>
-            <Link href="/aluno/conta" aria-label="Abrir minha conta">···</Link>
-          </div>
-          <div className="student-context-section">
-            <div className="student-context-heading"><span>Próximos passos</span><Link href="/aluno/cronograma">Abrir</Link></div>
+        <aside className="as-page" aria-label="Resumo">
+          <section className="as-card">
+            <h2>Próximos passos</h2>
             {tasks?.length ? (
-              <ul className="student-next-list">
-                {tasks.map((task) => (
-                  <li key={task.id}><span className="student-task-dot" /> <div><strong>{task.title}</strong><small>{task.date.split("-").reverse().join("/")}</small></div></li>
-                ))}
+              <ul className="as-list">
+                {(tasks as { id: string; title: string; date: string }[]).map((task) => <li key={task.id}><span>{task.title}</span><small className="as-muted">{task.date.split("-").reverse().join("/")}</small></li>)}
               </ul>
-            ) : (
-              <p className="student-context-empty">Nenhuma atividade pendente. Organize seu próximo bloco de estudo.</p>
-            )}
-          </div>
-          <div className="student-context-section student-context-note">
-            <span className="student-eyebrow">Acesso protegido</span>
-            <strong>Estude no seu ritmo.</strong>
-            <p>Seu progresso e seus materiais ficam vinculados à sua conta.</p>
-          </div>
+            ) : <p className="as-muted">Nenhuma atividade pendente. Monte o seu <Link className="op-link" href="/aluno/cronograma">cronograma</Link> ou siga o plano de <Link className="op-link" href={`${operacao.basePath}/plano`}>Minha revisão</Link>.</p>}
+          </section>
+          {plan === "essencial" ? (
+            <section className="as-card">
+              <h2>Vá além com o Premium</h2>
+              <p className="as-muted">16 e-books, banco geral, biblioteca histórica e fichas da reta final, com o mesmo pagamento único.</p>
+              <Link className="as-btn as-btn-primary" href="/aluno/planos">Conhecer o Premium</Link>
+            </section>
+          ) : null}
         </aside>
       </div>
-      <GamificationPanel />
     </div>
   );
 }
-

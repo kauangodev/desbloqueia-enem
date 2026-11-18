@@ -5,83 +5,113 @@ import { useState } from "react";
 import { Icon, type IconName } from "./icons";
 import { features } from "../lib/features";
 
-const allLinks = [
-  ["", "Visão geral", "home"], ["operacao-segundo-domingo", "Operação 2º Domingo", "zap"], ["materiais", "Meus materiais", "book"], ["exercicios", "Exercícios", "check"],
-  ["simulados", "Simulados", "target"], ...(features.redacao ? [["redacao", "Redação", "pen"]] : []), ["cronograma", "Meu cronograma", "calendar"],
-  ["checklists", "Fichas e checklists", "list"], ["correcoes", "Minhas correções", "trend"], ["biblioteca", "Biblioteca ENEM", "library"],
-  ["conta", "Minha conta", "user"], ["suporte", "Atendimento", "help"],
-];
-export const links = allLinks;
+type Item = { href: string; label: string; icon: IconName; badge?: string };
+type Group = { id: string; title?: string; items: Item[] };
 
-const portalIcons: Record<string, IconName> = { home: "layout-dashboard", book: "book-open", check: "clipboard-check", target: "timer", pen: "pen-line", calendar: "calendar-days", list: "list-checks", trend: "circle-check-big", library: "library", user: "user-round", help: "life-buoy", admin: "shield-check", more: "ellipsis", zap: "zap" };
-const OPERACAO = "operacao-segundo-domingo";
-function PortalIcon({ name }: { name: string }) {
-  return <Icon name={portalIcons[name] || "layout-dashboard"} size={20} />;
+const OP = "/aluno/operacao-segundo-domingo";
+
+/**
+ * Estrutura do menu do aluno: Início e Dashboard no topo, depois Praticar, Estudar, Acompanhar e Conta.
+ * Tudo aponta para rotas que existem; o item ativo é sempre o de caminho mais específico.
+ */
+export const navGroups: Group[] = [
+  { id: "inicio", items: [
+    { href: "/aluno", label: "Início", icon: "layout-dashboard" },
+    { href: "/aluno/dashboard", label: "Dashboard", icon: "trending-up" },
+  ] },
+  { id: "praticar", title: "Praticar", items: [
+    { href: "/aluno/treino-rapido", label: "Treino rápido", icon: "zap" },
+    { href: `${OP}/questoes`, label: "Banco de questões", icon: "clipboard-check" },
+    { href: "/aluno/simulados", label: "Simulados", icon: "timer" },
+    { href: `${OP}/erros`, label: "Meus erros", icon: "notebook-pen" },
+    ...(features.redacao ? [{ href: "/aluno/redacao", label: "Redação", icon: "pen-line" } as Item] : []),
+  ] },
+  { id: "estudar", title: "Estudar", items: [
+    { href: "/aluno/materiais", label: "Meus materiais", icon: "book-open" },
+    { href: OP, label: "Operação 2º Domingo", icon: "zap", badge: "Reta final" },
+    { href: `${OP}/plano`, label: "Minha revisão", icon: "calendar-days" },
+    { href: "/aluno/flash-cards", label: "Flash cards", icon: "rotate-ccw" },
+    { href: "/aluno/checklists", label: "Fichas e checklists", icon: "list-checks" },
+    { href: "/aluno/biblioteca", label: "Biblioteca ENEM", icon: "library" },
+  ] },
+  { id: "acompanhar", title: "Acompanhar", items: [
+    { href: "/aluno/missoes", label: "Missões", icon: "target" },
+    { href: "/aluno/ofensiva", label: "Ofensiva", icon: "flame" },
+    { href: "/aluno/correcoes", label: "Minhas correções", icon: "circle-check-big" },
+    { href: "/aluno/cronograma", label: "Meu cronograma", icon: "calendar-days" },
+  ] },
+  { id: "conta", title: "Conta", items: [
+    { href: "/aluno/planos", label: "Planos", icon: "star" },
+    { href: "/aluno/conta", label: "Minha conta", icon: "user-round" },
+    { href: "/aluno/suporte", label: "Atendimento", icon: "life-buoy" },
+  ] },
+];
+
+export const links = navGroups.flatMap((group) => group.items);
+
+/** Item mais específico que casa com o caminho atual (evita marcar "Início" e "Operação" ao mesmo tempo). */
+export function activeHref(path: string) {
+  const match = links.filter((item) => (item.href === "/aluno" ? path === "/aluno" : path === item.href || path.startsWith(`${item.href}/`)));
+  return match.sort((a, b) => b.href.length - a.href.length)[0]?.href;
 }
+
+const mobileMain: Item[] = [
+  { href: "/aluno", label: "Início", icon: "layout-dashboard" },
+  { href: "/aluno/treino-rapido", label: "Treinar", icon: "zap" },
+  { href: "/aluno/materiais", label: "Estudar", icon: "book-open" },
+  { href: "/aluno/missoes", label: "Missões", icon: "target" },
+];
 
 export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const path = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
-  const isCurrent = (slug: string) => (slug === OPERACAO ? path === `/aluno/${slug}` || path.startsWith(`/aluno/${slug}/`) : path === `/aluno${slug ? "/" + slug : ""}`);
-  const active = (slug: string) => (isCurrent(slug) ? "page" : undefined);
-  const mobileLinks = [
-    ["", "Início", "home"],
-    ["materiais", "Estudar", "book"],
-    ["exercicios", "Praticar", "check"],
-    ["simulados", "Simulados", "target"],
-  ] as const;
-  const moreLinks = [
-    ["operacao-segundo-domingo", "Operação 2º Domingo", "zap"],
-    ["simulados", "Simulados", "target"],
-    ...(features.redacao ? [["redacao", "Redação", "pen"] as const] : []),
-    ["cronograma", "Cronograma", "calendar"],
-    ["checklists", "Checklists", "list"],
-    ["correcoes", "Correções", "trend"],
-    ["biblioteca", "Biblioteca", "library"],
-    ["conta", "Minha conta", "user"],
-    ["suporte", "Atendimento", "help"],
-  ] as const;
-  const renderLink = ([slug, label, icon]: readonly [string, string, string]) => (
-    <Link key={slug} href={`/aluno${slug ? "/" + slug : ""}`} className={slug === OPERACAO ? "portal-nav-op" : undefined} aria-current={active(slug)}>
-    <span className="portal-nav-icon"><PortalIcon name={icon} /></span>
-      <span>{label}</span>
-      {slug === OPERACAO ? <span className="portal-nav-badge">Reta final</span> : null}
+  const current = activeHref(path);
+  const aria = (href: string) => (current === href ? "page" : undefined);
+  const moreLinks = links.filter((item) => !mobileMain.some((main) => main.href === item.href));
+  const renderLink = (item: Item) => (
+    <Link key={item.href} href={item.href} className={item.href === OP ? "portal-nav-op" : undefined} aria-current={aria(item.href)} onClick={() => setMoreOpen(false)}>
+      <span className="portal-nav-icon"><Icon name={item.icon} size={20} /></span>
+      <span>{item.label}</span>
+      {item.badge ? <span className="portal-nav-badge">{item.badge}</span> : null}
     </Link>
   );
   return (
     <>
-    <nav aria-label="Área do aluno">
-      {links.map(([slug, label, icon]) => (
-        <Link
-          key={slug}
-          href={`/aluno${slug ? "/" + slug : ""}`}
-          className={slug === OPERACAO ? "portal-nav-op" : undefined}
-          aria-label={slug === OPERACAO ? `${label} — reta final` : label}
-          title={slug === OPERACAO ? `${label} — reta final` : label}
-          aria-current={active(slug)}
-        >
-          <span className="portal-nav-icon"><PortalIcon name={icon} /></span>
-          <span>{label}</span>
-          {slug === OPERACAO ? <span className="portal-nav-badge" aria-hidden="true">Reta final</span> : null}
-        </Link>
-      ))}
-      {isAdmin ? (
-        <Link href="/admin" className="portal-admin-link" aria-label="Administração" title="Administração" aria-current={path === "/admin" ? "page" : undefined}>
-          <span className="portal-nav-icon"><PortalIcon name="admin" /></span>
-          <span>Administração</span>
-        </Link>
-      ) : null}
-    </nav>
-    <nav className="portal-mobile-nav" aria-label="Navegação rápida">
-      {mobileLinks.map(renderLink)}
-      <button type="button" className={moreOpen ? "is-active" : ""} aria-expanded={moreOpen} onClick={() => setMoreOpen((open) => !open)}>
-        <span className="portal-nav-icon"><PortalIcon name="more" /></span>
-        <span>Mais</span>
-      </button>
-      {moreOpen && <div className="portal-mobile-more">{moreLinks.map(renderLink)}{isAdmin && <Link href="/admin"><span className="portal-nav-icon"><PortalIcon name="admin" /></span><span>Administração</span></Link>}</div>}
-    </nav>
+      <nav aria-label="Área do aluno">
+        {navGroups.map((group) => (
+          <div key={group.id} className="portal-nav-section" role="group" aria-label={group.title}>
+            {group.title ? <p className="portal-nav-group" aria-hidden="true">{group.title}</p> : null}
+            {group.items.map((item) => (
+              <Link key={item.href} href={item.href} className={item.href === OP ? "portal-nav-op" : undefined} aria-current={aria(item.href)} title={item.label}>
+                <span className="portal-nav-icon"><Icon name={item.icon} size={20} /></span>
+                <span>{item.label}</span>
+                {item.badge ? <span className="portal-nav-badge" aria-hidden="true">{item.badge}</span> : null}
+              </Link>
+            ))}
+          </div>
+        ))}
+        {isAdmin ? (
+          <div className="portal-nav-section">
+            <Link href="/admin" className="portal-admin-link" title="Administração" aria-current={path === "/admin" ? "page" : undefined}>
+              <span className="portal-nav-icon"><Icon name="shield-check" size={20} /></span>
+              <span>Administração</span>
+            </Link>
+          </div>
+        ) : null}
+      </nav>
+      <nav className="portal-mobile-nav" aria-label="Navegação rápida">
+        {mobileMain.map(renderLink)}
+        <button type="button" className={moreOpen ? "is-active" : ""} aria-expanded={moreOpen} onClick={() => setMoreOpen((open) => !open)}>
+          <span className="portal-nav-icon"><Icon name="ellipsis" size={20} /></span>
+          <span>Mais</span>
+        </button>
+        {moreOpen ? (
+          <div className="portal-mobile-more">
+            {moreLinks.map(renderLink)}
+            {isAdmin ? <Link href="/admin" onClick={() => setMoreOpen(false)}><span className="portal-nav-icon"><Icon name="shield-check" size={20} /></span><span>Administração</span></Link> : null}
+          </div>
+        ) : null}
+      </nav>
     </>
   );
 }
-
-

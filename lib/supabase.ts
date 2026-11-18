@@ -204,7 +204,33 @@ export const authConfigured = () => mysqlConfigured();
 export async function sessionClient() { return mysqlConfigured() ? { auth: createAuth(), from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any : null; }
 export function serviceClient() { if (!mysqlConfigured()) throw new Error("Banco MySQL não configurado"); return { auth: { admin: createAuth().admin }, from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any; }
 export function publicClient() { return mysqlConfigured() ? { auth: createAuth() } as any : null; }
+/**
+ * Usuário de teste somente para desenvolvimento local (NODE_ENV diferente de "production" E GODEV_DEV_USER=1), na mesma regra de
+ * operacaoUser(). Em produção nunca ativa. O "banco" devolve listas vazias, exceto o plano Essencial ativo.
+ */
+function devIdentity() {
+  const rows = (table: string) => (table === "entitlements" ? [{ plan: "essencial", active: true, order_id: "dev-order" }] : []);
+  const builder = (table: string) => {
+    const proxy: unknown = new Proxy({}, {
+      get(_target, prop) {
+        if (prop === "then") return (resolve: (value: unknown) => void) => resolve({ data: rows(table), error: null, count: 0 });
+        if (prop === "maybeSingle" || prop === "single") return async () => ({ data: null, error: null });
+        return () => proxy;
+      },
+    });
+    return proxy;
+  };
+  const db = { from: builder, auth: {}, rpc: async () => ({ data: null, error: null }), storage: storageHandler } as never;
+  return { db, user: { id: "dev-user", email: "estudante@exemplo.dev", must_change_password: false, admin_role: null, account_status: "active" }, profile: { id: "dev-user", name: "Estudante Teste", role: normalizedRole("student"), admin_role: null, account_status: "active" } } as never as Awaited<ReturnType<typeof realIdentity>>;
+}
+const devUserEnabled = () => process.env.NODE_ENV !== "production" && process.env.GODEV_DEV_USER === "1";
+
 export async function identity() {
+  if (devUserEnabled()) return devIdentity();
+  return realIdentity();
+}
+
+async function realIdentity() {
   const db = await sessionClient();
   if (!db) return null;
   const { data, error } = await db.auth.getUser();

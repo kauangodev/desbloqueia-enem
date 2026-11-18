@@ -68,8 +68,20 @@ export function momentum(input: MomentumInput) {
     { id: "primeira", title: "Acertar 3 de primeira", detail: "Acerto na 1ª tentativa, sem ver a resolução antes.", done: firstTryToday >= 3, progress: Math.min(firstTryToday, 3), target: 3 },
   ];
 
+  const activeDays = [...active].sort();
+  let bestStreak = 0;
+  let run = 0;
+  let previous = "";
+  for (const day of activeDays) {
+    run = previous && addUtcDays(previous, 1) === day ? run + 1 : 1;
+    bestStreak = Math.max(bestStreak, run);
+    previous = day;
+  }
+
   return {
     streak,
+    bestStreak,
+    activeDays,
     studyDays,
     studiedToday: active.has(input.today),
     xp,

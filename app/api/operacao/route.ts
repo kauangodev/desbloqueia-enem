@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { jsonError, sameOrigin } from "../../../lib/http";
-import { grade, questionById, toPublic } from "../../../lib/operacao/catalog";
+import { formulas, grade, questionById, toPublic } from "../../../lib/operacao/catalog";
+import { todayInSaoPaulo } from "../../../lib/operacao/config";
+import { nextFlash, type FlashState } from "../../../lib/operacao/flash";
 import { limitFor, remainingMs, selectQuestions, summarize, type Attempt, type Session, type SessionKind } from "../../../lib/operacao/engine";
 import { kindIds, type SessionKind as KindId } from "../../../lib/operacao/kinds";
 import { operacaoUser, type OperacaoUser } from "../../../lib/operacao/store";
@@ -21,6 +23,7 @@ const body = z.discriminatedUnion("action", [
   z.object({ action: z.literal("sessionStart"), kind: z.enum(kindIds as [KindId, ...KindId[]]), mode: z.enum(modes), restart: z.boolean().optional() }),
   z.object({ action: z.literal("sessionSave"), sessionId: z.string().min(3).max(96), answers: z.record(z.string(), choice), flags: z.record(z.string(), z.boolean()) }),
   z.object({ action: z.literal("sessionFinish"), sessionId: z.string().min(3).max(96) }),
+  z.object({ action: z.literal("flash"), formulaId: z.string().min(2).max(64), grade: z.enum(["again", "good", "easy"]) }),
 ]);
 
 async function attemptsMap(user: OperacaoUser) {
@@ -69,15 +72,17 @@ export async function GET() {
   const user = await operacaoUser();
   if (!user) return jsonError("Acesso não autorizado", 403);
   try {
-    const [attempts, favs, later, reads, plan, planDone, saved, reviews, finished, active] = await Promise.all([
+    const [attempts, favs, later, reads, plan, planDone, saved, reviews, finished, active, flashRows] = await Promise.all([
       attemptsMap(user), user.kv.list("fav"), user.kv.list("later"), user.kv.list<{ concluded: boolean }>("read"), user.kv.get<{ minutes: number }>("plan", "config"),
       user.kv.list("plandone"), user.kv.list("formula"), user.kv.list<{ reviewed: boolean }>("review"), user.kv.list<Session>("session"), user.kv.list<{ id: string }>("active"),
+      user.kv.list<FlashState>("flash"),
     ]);
     const done = finished.filter((r) => r.data.finishedAt).sort((a, b) => Date.parse(b.data.finishedAt!) - Date.parse(a.data.finishedAt!));
     const lastByKind: Record<string, { percent: number; correct: number; total: number; finishedAt: string }> = {};
     for (const r of done) if (r.data.result && !lastByKind[r.data.kind]) lastByKind[r.data.kind] = { percent: r.data.result.percent, correct: r.data.result.correct, total: r.data.result.total, finishedAt: r.data.finishedAt! };
     return NextResponse.json({
       lastByKind,
+      flash: Object.fromEntries(flashRows.map((r) => [r.ref, r.data])),
       attempts, fav: favs.map((r) => r.ref), later: later.map((r) => r.ref), formulas: saved.map((r) => r.ref),
       reads: Object.fromEntries(reads.map((r) => [r.ref, Boolean(r.data.concluded)])), planMinutes: plan?.minutes ?? null, planDone: planDone.map((r) => r.ref),
       reviewed: Object.fromEntries(reviews.map((r) => [r.ref, Boolean(r.data.reviewed)])),
@@ -157,6 +162,14 @@ export async function POST(req: Request) {
         const session = await user.kv.get<Session>("session", input.sessionId);
         if (!session) return jsonError("Sessão não encontrada", 404);
         return NextResponse.json(await finishSession(user, session));
+      }
+      case "flash": {
+        // Só cartões que existem no catálogo; a data de hoje e o agendamento são calculados no servidor.
+        if (!formulas.some((f) => f.id === input.formulaId)) return jsonError("Cartão não encontrado", 404);
+        const current = await user.kv.get<FlashState>("flash", input.formulaId);
+        const next = nextFlash(current, input.grade, todayInSaoPaulo());
+        await user.kv.set("flash", input.formulaId, next);
+        return NextResponse.json({ state: next });
       }
     }
   } catch {
