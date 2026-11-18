@@ -32,6 +32,7 @@ export const navGroups: Group[] = [
     { href: OP, label: "Matemática e Natureza", icon: "zap" },
     { href: `${OP}/plano`, label: "Minha revisão", icon: "calendar-days" },
     { href: "/aluno/flash-cards", label: "Flash cards", icon: "rotate-ccw" },
+    { href: "/aluno/recorrentes", label: "Tópicos recorrentes", icon: "library" },
     { href: "/aluno/checklists", label: "Fichas e checklists", icon: "list-checks" },
     { href: "/aluno/biblioteca", label: "Biblioteca ENEM", icon: "library" },
   ] },
