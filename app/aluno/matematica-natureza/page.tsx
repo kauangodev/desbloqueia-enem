@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Icon, type IconName } from "../../../components/icons";
 import MomentumCard from "../../../components/operacao/momentum-card";
 import { modules, questions } from "../../../lib/operacao/catalog";
-import { campaignStatus, operacao } from "../../../lib/operacao/config";
+import { editionCalendar, operacao } from "../../../lib/operacao/config";
 import { loadProgress } from "../../../lib/operacao/progress";
 import { operacaoUser } from "../../../lib/operacao/store";
 import { disciplineLabel } from "../../../lib/operacao/types";
@@ -21,7 +21,7 @@ export default async function OperacaoHome() {
   const user = await operacaoUser();
   if (!user) return null;
   const base = operacao.basePath;
-  const status = campaignStatus();
+  const calendar = editionCalendar();
   let progress: Awaited<ReturnType<typeof loadProgress>> | null = null;
   let failed = false;
   try { progress = await loadProgress(user); } catch { failed = true; }
@@ -31,31 +31,19 @@ export default async function OperacaoHome() {
     : progress?.nextModule
       ? { label: `Continuar: ${progress.nextModule.title}`, detail: `${progress.nextModule.minutes} min · ${disciplineLabel[progress.nextModule.discipline]}`, href: `${base}/materiais/${progress.nextModule.id}` }
       : null;
-  const checked = new Date(`${operacao.sourceCheckedAt}T12:00:00`).toLocaleDateString("pt-BR");
 
   return (
     <div className="op-stack">
       <section className="op-card op-hero" aria-labelledby="op-h">
-        {status.phase === "antes" ? (
-          <>
-            <h2 id="op-h">Seu próximo domingo começa aqui.</h2>
-            <p className="op-lead">Revise Matemática, Física, Química e Biologia com materiais objetivos, questões comentadas e um plano para os dias que faltam.</p>
-            <p className="op-muted">{status.detail}</p>
-          </>
-        ) : (
-          <>
-            <h2 id="op-h">{status.headline}</h2>
-            <p className="op-lead">{status.detail}</p>
-          </>
-        )}
-        <p className="op-muted op-fine">Datas conforme o Inep (consultado em {checked}). Confirme horários e local no seu cartão de confirmação.</p>
+        <h2 id="op-h">Matemática e Natureza, no seu ritmo.</h2>
+        <p className="op-lead">Revise Matemática, Física, Química e Biologia com materiais objetivos, questões comentadas, treinos e simulados. Tudo conversa com a sua Trilha e com o seu caderno de erros.</p>
+        {calendar ? <p className="op-muted op-fine" role="status"><strong>{calendar.note.headline}.</strong> {calendar.note.detail}</p> : null}
         <div className="op-q-foot">
-          <Link className="op-btn op-btn-primary" href={`${base}/materiais`} data-analytics-event="operacao_cta_start_review">Começar minha revisão</Link>
-          <Link className="op-btn" href={`${base}/questoes`} data-analytics-event="operacao_cta_practice">Praticar questões</Link>
-          <Link className="op-btn op-btn-ghost" href={`${base}/plano`} data-analytics-event="operacao_cta_plan">Ver plano da semana</Link>
+          <Link className="op-btn op-btn-primary" href={`${base}/materiais`} data-analytics-event="mn_cta_start_review">Começar minha revisão</Link>
+          <Link className="op-btn" href={`${base}/questoes`} data-analytics-event="mn_cta_practice">Praticar questões</Link>
+          <Link className="op-btn op-btn-ghost" href={`${base}/plano`} data-analytics-event="mn_cta_plan">Ver meu plano</Link>
         </div>
       </section>
-
       {failed ? <p className="op-error" role="alert">Não foi possível carregar seu progresso agora. O conteúdo continua disponível; tente recarregar a página.</p> : null}
 
       {progress ? <MomentumCard data={progress.momentum} /> : null}

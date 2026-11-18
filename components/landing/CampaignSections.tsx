@@ -30,7 +30,7 @@ export function CampaignJourney({ view, hasAccess }: { view: CampaignView; facts
   return (
     <section className="cp-section container" id="reta-final" aria-labelledby="cp-title">
       <div className="cp-head">
-        <span className="landing-eyebrow">{view.active ? view.label : "Operação 2º Domingo"}</span>
+        <span className="landing-eyebrow">{view.active ? view.label : "Matemática e Natureza"}</span>
         <h2 id="cp-title">Como ter acesso</h2>
       </div>
       <div className="cp-split">
@@ -39,7 +39,7 @@ export function CampaignJourney({ view, hasAccess }: { view: CampaignView; facts
           <ul>
             <li>Incluída nos planos <strong>Essencial</strong> e <strong>Premium</strong>, sem custo extra.</li>
             <li>Depois do pagamento confirmado, entre com o e-mail usado na compra.</li>
-            <li>A área fica em <strong>Operação 2º Domingo</strong>, no menu do aluno.</li>
+            <li>A área fica em <strong>Matemática e Natureza</strong>, no menu do aluno.</li>
           </ul>
           <div className="cp-access-actions">{hasAccess
             ? <Link className="ref-button ref-button-primary ref-button-hot" href={campaign.destinations.studyArea} data-analytics-event="campaign_access_continue">Continuar minha revisão</Link>
@@ -55,7 +55,7 @@ export function CampaignOfferNote({ view, facts }: { view: CampaignView; facts: 
   if (!view.active) return null;
   return (
     <p className="cp-offer-note">
-      <strong>{view.label}:</strong> a Operação 2º Domingo ({facts.questions} questões comentadas, {facts.simulados} simulados e {facts.treinos} treinos) está incluída nos dois planos. Preços e condições abaixo não mudam.
+      <strong>{view.label}:</strong> a Matemática e Natureza ({facts.questions} questões comentadas, {facts.simulados} simulados e {facts.treinos} treinos) está incluída nos dois planos. Preços e condições abaixo não mudam.
     </p>
   );
 }

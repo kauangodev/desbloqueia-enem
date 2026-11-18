@@ -28,23 +28,23 @@ const Cover = ({ slug, priority = false, premium = false, className = "" }: { sl
 /** Faixa de data: só aparece enquanto a campanha estiver ativa e sempre calculada pela data (horário de Brasília). */
 export function SalesStrip({ view }: { view: CampaignView }) {
   if (!view.active) return null;
-  const left = view.daysLeft > 1 ? `Faltam ${view.daysLeft} dias` : view.daysLeft === 1 ? "Falta 1 dia" : "É hoje";
-  return <p className="s-strip"><b>Enem 2026, 2º dia: domingo, 15/11</b><span> · {left}</span></p>;
+  // Só com prova confirmada e futura: o texto vem do modelo de edição (data oficial e fonte), nunca de uma edição anterior.
+  return <p className="s-strip"><b>{view.label}</b>{view.countdown ? <span> · {view.countdown}</span> : null}</p>;
 }
 
-export function SalesHero({ hasAccess, studyArea, essencialTotal, question }: { hasAccess: boolean; studyArea: string; essencialTotal: string; question?: DemoQuestion }) {
+export function SalesHero({ hasAccess, studyArea, essencialTotal, question, view }: { hasAccess: boolean; studyArea: string; essencialTotal: string; question?: DemoQuestion; view: CampaignView }) {
   return (
     <section className="s-hero" id="topo" aria-labelledby="s-title">
       <div className={`s-wrap ${question ? "s-hero-grid" : "s-center"}`}>
         <div className="s-hero-copy">
-          <span className="s-pill">Material de estudo · Matemática e Natureza</span>
-          <h1 id="s-title">Pare de errar a mesma questão. <em>Revise com um caminho claro.</em></h1>
-          <p className="s-lead">Resolva questões, veja <b>na hora</b> onde errou e refaça o que não entendeu. Revisões rápidas, resolução passo a passo e treinos curtos de Matemática e Natureza para o Enem, direto no celular.</p>
+          <span className="s-pill">Desbloqueia ENEM 2027</span>
+          <h1 id="s-title">Sua preparação para o ENEM 2027, <em>passo a passo.</em></h1>
+          <p className="s-lead">Siga uma trilha, pratique questões e volte aos assuntos que mais precisam de atenção. Resolução passo a passo, caderno de erros e revisão, direto no celular.</p>
           <div className="s-actions">
             {hasAccess
-              ? <Link className="s-btn s-btn-lg" href={studyArea}>CONTINUAR MINHA REVISÃO</Link>
-              : <a className="s-btn s-btn-lg" href="#ofertas">QUERO ESCOLHER MEU PLANO</a>}
-            <a className="s-link" href="#amostra">Ver o material por dentro</a>
+              ? <Link className="s-btn s-btn-lg" href={studyArea}>CONTINUAR ESTUDANDO</Link>
+              : <a className="s-btn s-btn-lg" href="#ofertas">CONHECER OS PLANOS</a>}
+            <a className="s-link" href="#experimentar">Experimentar uma questão</a>
           </div>
           <ul className="s-ticks" aria-label="Condições">
             <li>Pagamento único, sem mensalidade</li>
@@ -52,8 +52,9 @@ export function SalesHero({ hasAccess, studyArea, essencialTotal, question }: { 
             <li>7 dias de garantia</li>
           </ul>
           <p className="s-trust">Planos a partir de <b>{essencialTotal}</b> no total, pela Cakto.</p>
+          <p className="s-cal" role="status"><b>{view.label}.</b> {view.calendarConfirmed ? view.detail : "Enquanto não há data oficial, o plano de estudos segue por semanas."}</p>
         </div>
-        {question ? <TryQuestion question={question} /> : null}
+        {question ? <TryQuestion  question={question} /> : null}
       </div>
       <div className="s-wrap s-center">
         <figure className="s-stage">
@@ -120,7 +121,7 @@ export function SalesSamples({ question }: { question: DemoQuestion | undefined 
             <div className="s-feature-copy">
               <span className="s-tag s-tag-ok">Essencial e Premium</span>
               <h3>Entenda o raciocínio, não só o gabarito</h3>
-              <p>As questões da Operação 2º Domingo trazem a resolução passo a passo e o motivo do erro mais comum. As que você erra vão para o seu caderno de erros.</p>
+              <p>As questões da Matemática e Natureza trazem a resolução passo a passo e o motivo do erro mais comum. As que você erra vão para o seu caderno de erros.</p>
             </div>
           </article>
         ) : null}
@@ -156,7 +157,7 @@ const benefitIcons: Record<string, ReactNode> = {
 /** Faixa de números: tudo calculado do acervo publicado, nunca digitado à mão. */
 export function SalesNumbers({ facts, inv, ebooks }: { facts: Facts; inv: Inv; ebooks: number }) {
   const items: [string, string][] = [
-    [String(facts.questions), "questões comentadas na Operação 2º Domingo"],
+    [String(facts.questions), "questões comentadas na Matemática e Natureza"],
     [String(facts.modules), "revisões rápidas de 25 a 30 minutos"],
     [`${facts.simulados + facts.treinos}`, `treinos e simulados de ${facts.treinoQuestions} a ${facts.simuladoQuestions} questões`],
     [String(ebooks), "e-books para ler online (4 no Essencial)"],
@@ -227,20 +228,20 @@ export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
     ? <a className="s-btn s-btn-block" href={`/api/checkout/${id}`} data-analytics-event={`offer_${id}`}>{`Quero o ${name}`}</a>
     : <Link className="s-btn s-btn-block" href="/suporte">Falar com o atendimento</Link>;
   return (
-    <section className="s-section s-offers" id="ofertas" aria-labelledby="s-ofertas-title">
+    <section className="s-section s-offers" id="ofertas" aria-labelledby="s-ofertas-title"><span id="planos" aria-hidden="true" />
       <div className="s-wrap">
         <header className="s-head">
           <span className="s-eyebrow">Planos</span>
           <h2 id="s-ofertas-title">Escolha o plano ideal para sua revisão</h2>
-          <p>Os dois incluem a Operação 2º Domingo inteira. O Premium amplia o repertório. Os preços abaixo já são o total cobrado no checkout.</p>
+          <p>Os dois incluem toda a área de Matemática e Natureza. O Premium amplia o repertório. Os preços abaixo já são o total cobrado no checkout.</p>
         </header>
         <div className="s-plans">
           <article className="s-plan" aria-labelledby="plan-essencial">
             <div className="s-plan-media"><div className="s-stack"><Cover slug="matematica" /><Cover slug="biologia" /><Cover slug="historia" /><Cover slug="lingua-portuguesa" /></div></div>
             <h3 id="plan-essencial">Essencial</h3>
-            <p className="s-plan-for">Para revisar Matemática e Natureza com a Operação 2º Domingo.</p>
+            <p className="s-plan-for">Para revisar Matemática e Natureza com a Matemática e Natureza.</p>
             <ul className="s-checks">
-              <li><b>Operação 2º Domingo:</b> {facts.questions} questões comentadas, {facts.simulados} simulados de {facts.simuladoQuestions} questões e {facts.treinos} treinos</li>
+              <li><b>Matemática e Natureza:</b> {facts.questions} questões comentadas, {facts.simulados} simulados de {facts.simuladoQuestions} questões e {facts.treinos} treinos</li>
               <li>{facts.modules} revisões rápidas e {facts.formulas} fichas de fórmulas</li>
               <li>Minha revisão e caderno de erros</li>
               <li><b>4 e-books:</b> {essentialBooks.join(", ")}</li>
@@ -257,11 +258,11 @@ export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
             <h3 id="plan-premium">Premium</h3>
             <p className="s-plan-for">Para ir além da Operação, com Física, Química e o banco geral.</p>
             <ul className="s-checks">
-              <li><b>Tudo do Essencial</b>, incluindo a Operação 2º Domingo</li>
+              <li><b>Tudo do Essencial</b>, incluindo a Matemática e Natureza</li>
               <li><b>16 e-books</b>, incluindo Física, Química e Redação</li>
               <li><b>Banco geral:</b> {inv.generalDistinct} questões distintas em {inv.lists} listas e {inv.simulados} simulados (as questões se repetem entre coleções)</li>
               <li><b>Biblioteca histórica:</b> 1.800 referências de questões, com links para fontes oficiais (é um índice, não são resoluções autorais)</li>
-              <li>Fichas e checklists da reta final</li>
+              <li>Fichas e checklists de revisão</li>
             </ul>
             <div className="s-price"><b>{brl(total("premium"))}</b><span>no total · pagamento único</span><small>{brl(base("premium"))} + {brl(SERVICE_FEE_CENTS)} de taxa do checkout</small></div>
             {buy("premium", "Premium")}
@@ -276,12 +277,12 @@ export function SalesOffers({ plans, facts, inv, checkoutReady }: OfferProps) {
             <table>
               <thead><tr><th scope="col"><span className="sr-only">Item</span></th><th scope="col">Essencial</th><th scope="col">Premium</th></tr></thead>
               <tbody>
-                <tr><th scope="row">Operação 2º Domingo</th><td data-l="Essencial">Incluída</td><td data-l="Premium">Incluída (igual)</td></tr>
+                <tr><th scope="row">Matemática e Natureza</th><td data-l="Essencial">Incluída</td><td data-l="Premium">Incluída (igual)</td></tr>
                 <tr><th scope="row">Minha revisão e caderno de erros</th><td data-l="Essencial">Incluídos</td><td data-l="Premium">Incluídos</td></tr>
                 <tr><th scope="row">E-books</th><td data-l="Essencial">4: {essentialBooks.join(", ")}</td><td data-l="Premium">16, incluindo Física, Química e Redação</td></tr>
                 <tr><th scope="row">Banco geral ({inv.generalDistinct} questões distintas, {inv.lists} listas, {inv.simulados} simulados)</th><td data-l="Essencial">Exercícios do plano, sem os {inv.simulados} simulados</td><td data-l="Premium">Completo</td></tr>
                 <tr><th scope="row">Biblioteca histórica (1.800 referências com links)</th><td data-l="Essencial">Não incluída</td><td data-l="Premium">Incluída</td></tr>
-                <tr><th scope="row">Fichas e checklists da reta final</th><td data-l="Essencial">Não incluídos</td><td data-l="Premium">Incluídos</td></tr>
+                <tr><th scope="row">Fichas e checklists de revisão</th><td data-l="Essencial">Não incluídos</td><td data-l="Premium">Incluídos</td></tr>
                 <tr><th scope="row">Leitura</th><td data-l="Essencial">Online, sem download</td><td data-l="Premium">Online, sem download</td></tr>
                 <tr><th scope="row">Acesso</th><td data-l="Essencial">Pagamento único, sem data de expiração</td><td data-l="Premium">Pagamento único, sem data de expiração</td></tr>
                 <tr><th scope="row">Valor total</th><td data-l="Essencial"><b>{brl(total("essencial"))}</b> ({brl(base("essencial"))} + {brl(SERVICE_FEE_CENTS)})</td><td data-l="Premium"><b>{brl(total("premium"))}</b> ({brl(base("premium"))} + {brl(SERVICE_FEE_CENTS)})</td></tr>
@@ -335,7 +336,7 @@ export function SalesAccess() {
 
 export function SalesFaq({ inv, essencialTotal, premiumTotal, essencialBase, premiumBase }: { inv: Inv; essencialTotal: string; premiumTotal: string; essencialBase: string; premiumBase: string }) {
   const faq: [string, ReactNode][] = [
-    ["Qual a diferença entre o Essencial e o Premium?", <>Os dois incluem a Operação 2º Domingo inteira. O Essencial traz 4 e-books; o Premium traz os 16, incluindo Física, Química e Redação, além do banco geral ({inv.generalDistinct} questões distintas em {inv.lists} listas e {inv.simulados} simulados, que se repetem entre coleções), da biblioteca histórica (1.800 referências com links, um índice) e das fichas e checklists.</>],
+    ["Qual a diferença entre o Essencial e o Premium?", <>Os dois incluem toda a área de Matemática e Natureza. O Essencial traz 4 e-books; o Premium traz os 16, incluindo Física, Química e Redação, além do banco geral ({inv.generalDistinct} questões distintas em {inv.lists} listas e {inv.simulados} simulados, que se repetem entre coleções), da biblioteca histórica (1.800 referências com links, um índice) e das fichas e checklists.</>],
     ["Quanto vou pagar no total?", <>Essencial: {essencialBase} + R$ 0,99 de taxa do checkout = <b>{essencialTotal}</b>. Premium: {premiumBase} + R$ 0,99 = <b>{premiumTotal}</b>. Pagamento único, sem mensalidade. É o valor que aparece na tela de pagamento.</>],
     ["Meu responsável pode pagar por mim?", "Pode. Em cada plano, toque em “Enviar para meu responsável pagar”: o link da oferta vai pelo WhatsApp ou pelo compartilhamento do celular. Quem paga usa Pix ou cartão no checkout da Cakto, e você entra com o e-mail informado na compra."],
     ["Preciso assinar ou renovar?", "Não. O pagamento é único, sem mensalidade e sem renovação automática. O acesso não tem data de expiração."],
@@ -366,6 +367,36 @@ export function SalesFinal({ message }: { message: string }) {
         <h2 id="s-final-title">{message}</h2>
         <p>Escolha o plano e comece pela primeira questão.</p>
         <a className="s-btn s-btn-lg" href="#ofertas">QUERO ESCOLHER MEU PLANO</a>
+      </div>
+    </section>
+  );
+}
+
+/** Prévia da Trilha com unidades reais do catálogo. Os estados são um EXEMPLO ilustrativo (nenhum dado de aluno). */
+export function SalesTrilha({ units }: { units: { id: string; title: string; minutes: number }[] }) {
+  const demo = [
+    { state: "Concluída", cls: "is-done", note: "fundamento, prática e desafio feitos" },
+    { state: "Em andamento", cls: "is-now", note: "próxima etapa: desafio ENEM" },
+    { state: "Bloqueada", cls: "is-lock", note: "abre quando você concluir as anteriores (ou validar no teste de avanço)" },
+  ];
+  const shown = units.slice(0, 3);
+  return (
+    <section className="s-section s-band" id="trilha" aria-labelledby="s-trilha-title">
+      <div className="s-wrap">
+        <header className="s-head">
+          <span className="s-eyebrow">Trilha ENEM</span>
+          <h2 id="s-trilha-title">Você sempre sabe onde está e o que abre a próxima etapa</h2>
+          <p>Cada unidade tem fundamento, prática guiada, desafio no formato do Enem e revisão agendada. Já conhece o tema? O teste de avanço valida a unidade.</p>
+        </header>
+        <ol className="s-trail" aria-label="Exemplo ilustrativo da trilha">
+          {shown.map((u, i) => (
+            <li key={u.id} className={demo[i].cls}>
+              <span className="s-trail-dot" aria-hidden="true">{i + 1}</span>
+              <div><b>{u.title}</b><small>{demo[i].state} · {demo[i].note}</small></div>
+            </li>
+          ))}
+        </ol>
+        <p className="s-note s-center">Exemplo ilustrativo com unidades reais do catálogo. Hoje a trilha cobre Matemática e Natureza; Humanas, Linguagens e Redação entram quando houver atividades aprovadas.</p>
       </div>
     </section>
   );

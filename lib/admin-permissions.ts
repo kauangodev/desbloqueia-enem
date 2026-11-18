@@ -28,18 +28,31 @@ const matrix: Record<AdminRole, readonly AdminPermission[]> = {
   support: ["overview.read", "students.read", "support.manage"],
 };
 
+/**
+ * Interpretação ESTRITA do papel. Só são aceitos os cinco papéis e o mapeamento explícito de contas antigas: valor vazio (conta criada
+ * antes de `admin_role`) e "admin" valem Administrador. Qualquer outro texto é desconhecido e **falha fechado** (null).
+ */
+export function parseAdminRole(value: unknown): AdminRole | null {
+  const role = String(value ?? "").trim().toLowerCase();
+  if ((adminRoles as readonly string[]).includes(role)) return role as AdminRole;
+  if (role === "" || role === "admin") return "administrator";
+  return null;
+}
+
+/** Para exibição e valores de entrada: papel desconhecido vira o de MENOR privilégio (nunca Administrador). Permissões usam `parseAdminRole`. */
 export function normalizeAdminRole(value: unknown): AdminRole {
-  const role = String(value || "").trim().toLowerCase() as AdminRole;
-  return adminRoles.includes(role) ? role : "administrator";
+  return parseAdminRole(value) ?? "support";
 }
 
 export function hasAdminPermission(role: unknown, permission: AdminPermission) {
-  return matrix[normalizeAdminRole(role)].includes(permission);
+  const parsed = parseAdminRole(role);
+  return parsed ? matrix[parsed].includes(permission) : false;
 }
 
 export function canGrantRole(actor: unknown, target: unknown) {
-  const current = normalizeAdminRole(actor);
-  const requested = normalizeAdminRole(target);
+  const current = parseAdminRole(actor);
+  const requested = parseAdminRole(target);
+  if (!current || !requested) return false;
   if (current === "owner") return true;
   return current === "administrator" && requested !== "owner";
 }

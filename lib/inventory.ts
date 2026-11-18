@@ -28,15 +28,15 @@ const inflated = [/2\.100 quest/i, /30 simulados com 600/i, /60 listas de exerc[
 export function accurateFeatures(features: string[]) {
   const inv = inventory();
   const accurate = [
-    `Operação 2º Domingo: ${inv.operacaoQuestions} questões comentadas de Matemática e Ciências da Natureza`,
+    `Matemática e Natureza: ${inv.operacaoQuestions} questões comentadas de Matemática e Ciências da Natureza`,
     `Banco geral com ${inv.generalDistinct} questões distintas das quatro áreas, em ${inv.lists} listas e ${inv.simulados} simulados (as questões se repetem entre coleções)`,
   ];
   const out: string[] = [];
   let inserted = false;
   for (const feature of features) {
-    // Essencial: "40 exercícios comentados" subestimava a entrega (as listas do banco geral e a Operação 2º Domingo também estão no plano).
+    // Essencial: "40 exercícios comentados" subestimava a entrega (as listas do banco geral e a Matemática e Natureza também estão no plano).
     if (/^40 exerc[ií]cios comentados/i.test(feature)) {
-      out.push(`Exercícios comentados e a Operação 2º Domingo (${inv.operacaoQuestions} questões de Matemática e Ciências da Natureza)`);
+      out.push(`Exercícios comentados e a Matemática e Natureza (${inv.operacaoQuestions} questões de Matemática e Ciências da Natureza)`);
       continue;
     }
     // Nomes exatos dos e-books de cada plano, vindos do catálogo (nunca digitados à mão na oferta).

@@ -4,7 +4,7 @@ import { operacao } from "../../../../lib/operacao/config";
 import { renderRich } from "../../../../lib/operacao/rich";
 import { disciplineLabel } from "../../../../lib/operacao/types";
 
-export const metadata = { title: "Fórmulas e conceitos — Operação 2º Domingo" };
+export const metadata = { title: "Fórmulas e conceitos — Matemática e Natureza" };
 
 export default function FormulasPage() {
   const cards = formulas.map((f) => ({

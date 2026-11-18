@@ -41,9 +41,9 @@ const displayFont = Bricolage_Grotesque({
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
-  title: "Desbloqueia ENEM 2026 | GoDev Education",
+  title: "Desbloqueia ENEM 2027 | GoDev Education",
   description:
-    "Sua reta final do ENEM, organizada em um só lugar. Materiais, revisão e prática por GoDev Education.",
+    "Sua preparação para o ENEM 2027, passo a passo: trilha, questões e revisão em um só lugar. GoDev Education.",
   icons: {
     icon: [
       { url: "/favicon.ico", type: "image/x-icon", sizes: "16x16 32x32 48x48" },
@@ -53,14 +53,14 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
   },
   openGraph: {
-    title: "Desbloqueia ENEM 2026 | GoDev Education",
-    description: "Sua reta final, organizada em um só lugar.",
+    title: "Desbloqueia ENEM 2027 | GoDev Education",
+    description: "Sua preparação para o ENEM 2027, passo a passo.",
     type: "website",
     locale: "pt_BR",
     siteName: "GoDev Education",
-    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "GoDev Education — preparação para o ENEM 2026" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "GoDev Education — preparação para o ENEM 2027" }],
   },
-  twitter: { card: "summary_large_image", title: "GoDev Education | ENEM 2026", description: "Sua preparação para o ENEM, organizada com método e clareza.", images: ["/og.jpg"] },
+  twitter: { card: "summary_large_image", title: "GoDev Education | ENEM 2027", description: "Sua preparação para o ENEM 2027, organizada com método e clareza.", images: ["/og.jpg"] },
 };
 
 export default function RootLayout({

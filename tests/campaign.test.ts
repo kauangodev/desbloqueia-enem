@@ -1,45 +1,24 @@
-import assert from "node:assert/strict";
+﻿import assert from "node:assert/strict";
 import test from "node:test";
 import { campaign, campaignView } from "../lib/campaign";
 
-test("antes da prova: selo, contagem e título dependem da data real", () => {
-  const v = campaignView("2026-11-09");
-  assert.equal(v.active, true);
-  assert.equal(v.phase, "antes");
-  assert.equal(v.daysLeft, 6);
-  assert.equal(v.label, "Reta final ENEM · 15 de novembro");
-  assert.equal(v.countdown, "Faltam 6 dias para o segundo dia do Enem.");
-  assert.equal(v.headline, "Revise Matemática e Natureza");
-  assert.equal(v.emphasis, "antes de domingo.");
-  assert.equal(campaignView("2026-11-14").countdown, "Falta 1 dia para o segundo dia do Enem.");
-});
-
-test("com mais de 7 dias não afirma 'próximo domingo'", () => {
-  const v = campaignView("2026-11-01");
-  assert.equal(v.daysLeft, 14);
-  assert.ok(!v.headline.includes("domingo"));
-});
-
-test("no dia da prova: mensagem de hoje, sem oferta de urgência", () => {
-  const v = campaignView("2026-11-15");
-  assert.equal(v.phase, "dia");
-  assert.equal(v.countdown, "O segundo dia do Enem é hoje.");
-  assert.ok(!/domingo/i.test(v.headline + v.emphasis));
-});
-
-test("depois da prova: campanha encerrada, sem contagem negativa nem 'próximo domingo'", () => {
-  for (const day of ["2026-11-16", "2026-12-20"]) {
+test("ENEM 2027 sem data oficial: narrativa 2027, sem faixa de contagem e sem datas de 2026", () => {
+  for (const day of ["2026-11-18", "2026-12-20", "2027-03-10"]) {
     const v = campaignView(day);
-    assert.equal(v.active, false);
+    assert.equal(v.active, false, "sem prova confirmada não há contagem");
     assert.equal(v.countdown, null);
-    assert.equal(v.daysLeft, 0);
-    const text = [v.headline, v.emphasis, v.support, v.primaryCta].join(" ");
-    assert.ok(!/domingo|faltam|falta /i.test(text));
+    assert.equal(v.calendarConfirmed, false);
+    assert.equal(v.label, "Calendário oficial do ENEM 2027 a confirmar");
+    assert.equal(v.headline + " " + v.emphasis, "Sua preparação para o ENEM 2027, passo a passo.");
+    assert.equal(v.primaryCta, "Conhecer os planos");
+    const text = [v.headline, v.emphasis, v.support, v.label, v.detail, v.primaryCta].join(" ");
+    assert.ok(!/2026|reta final|domingo|operação/i.test(text), `sem referências antigas: ${text}`);
   }
 });
 
-test("destinos da campanha usam rotas existentes e preservam o destino no login", () => {
-  assert.equal(campaign.destinations.offer, "/landing#planos");
-  assert.equal(campaign.destinations.studyArea, "/aluno/operacao-segundo-domingo");
-  assert.equal(campaign.destinations.login, "/entrar?redirect=%2Faluno%2Foperacao-segundo-domingo");
+test("destinos da campanha usam rotas permanentes e preservam o destino no login", () => {
+  assert.equal(campaign.destinations.offer, "/landing#ofertas");
+  assert.equal(campaign.destinations.studyArea, "/aluno");
+  assert.equal(campaign.destinations.login, "/entrar?redirect=%2Faluno");
+  assert.equal(campaign.destinations.mathNature, "/aluno/matematica-natureza");
 });

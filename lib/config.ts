@@ -2,7 +2,7 @@ import { ebookMaterials } from "./ebook-catalog";
 
 export const brand = {
   name: "GoDev Education",
-  product: "Desbloqueia ENEM 2026",
+  product: "Desbloqueia ENEM 2027",
 };
 export const appUrl =
   process.env.NEXT_PUBLIC_APP_URL || "https://godeveducation.com.br";
@@ -15,7 +15,7 @@ export const plans = [
     features: [
       "E-books essenciais de Linguagens, Humanas, Natureza e Matemática",
       "Cronograma e mapa da revisão",
-      "Exercícios comentados e a Operação 2º Domingo (600 questões de Matemática e Ciências da Natureza)",
+      "Exercícios comentados e a Matemática e Natureza (600 questões de Matemática e Ciências da Natureza)",
       "Leitura online no celular, tablet ou computador",
     ],
   },
@@ -27,11 +27,11 @@ export const plans = [
     features: [
       "Tudo do Essencial",
       "Coleção completa com 16 e-books didáticos de 34 páginas",
-      "Operação 2º Domingo: 600 questões comentadas de Matemática e Ciências da Natureza",
+      "Matemática e Natureza: 600 questões comentadas de Matemática e Ciências da Natureza",
       "Banco geral com 332 questões distintas das quatro áreas, em 60 listas e 30 simulados (as questões se repetem entre coleções)",
       "E-book de Redação",
       "Biblioteca histórica com 1.800 questões de referência",
-      "Fichas e checklists para a reta final",
+      "Fichas e checklists de revisão",
     ],
   },
 ] as const;

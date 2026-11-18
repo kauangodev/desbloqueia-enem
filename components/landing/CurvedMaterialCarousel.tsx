@@ -220,7 +220,7 @@ export function CurvedMaterialCarousel() {
     <div
       ref={viewportRef}
       className={styles.carousel}
-      aria-label="Capas dos materiais do Desbloqueia ENEM 2026"
+      aria-label="Capas dos materiais do Desbloqueia ENEM 2027"
       role="region"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}

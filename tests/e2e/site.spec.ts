@@ -1,38 +1,16 @@
 import { test, expect } from "@playwright/test";
-test("landing, planos, capas e FAQ", async ({ page }) => {
+test("landing, planos e FAQ (ENEM 2027)", async ({ page }) => {
   await page.goto("/landing");
   await page.evaluate(() => document.fonts.ready);
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Prepare-se para o ENEM 2026 com método e clareza.",
-  );
-  await expect(page.getByText("Desbloqueia ENEM 2026", { exact: true })).toBeVisible();
-  await page.getByRole("link", { name: /Ver todos os e-books/ }).click();
-  await expect(page.locator("#catalogo")).toBeVisible();
-  await expect(page.locator(".material-index [role=tab]")).toHaveCount(8);
-  await expect(
-    page.getByRole("heading", { name: "Essencial", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Premium", exact: true }),
-  ).toBeVisible();
-  const materialTabs = page.locator(".material-index [role=tab]");
-  await materialTabs.filter({ hasText: "Matemática" }).click();
-  await expect(page.getByRole("tabpanel")).toContainText("Matemática");
-  await materialTabs.filter({ hasText: "Matemática" }).press("Home");
-  await expect(materialTabs.first()).toHaveAttribute("aria-selected", "true");
-  await page.getByText("A biblioteca tem 1.800 questões?").click();
-  await expect(page.locator("details[open]").filter({ hasText: "A biblioteca tem 1.800 questões?" })).toContainText("Sim.");
-  await expect(page.getByRole("link", { name: "Ler a política", exact: true })).toHaveAttribute("href", "/politicas/reembolso");
-});
-
-test("faixa de indicadores de materiais permanece legível", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/landing");
-  await expect(page.locator(".landing-stat-strip")).toContainText("16 e-books");
-  await expect(page.locator(".landing-stat-strip")).toContainText("30 simulados");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Sua preparação para o ENEM 2027, passo a passo.");
+  await expect(page.getByText("Desbloqueia ENEM 2027", { exact: true })).toBeVisible();
+  await expect(page.getByText("Calendário oficial do ENEM 2027 a confirmar")).toBeVisible();
+  for (const id of ["amostra", "beneficios", "ofertas", "acesso", "duvidas", "trilha", "experimentar", "planos"]) await expect(page.locator(`#${id}`)).toHaveCount(1);
+  await expect(page.getByRole("heading", { name: "Essencial", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Premium", exact: true })).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/Operação 2º Domingo|Reta final|Enem 2026, 2º dia/);
+  await expect(page.getByRole("link", { name: "Ler a política de reembolso", exact: true })).toHaveAttribute("href", "/politicas/reembolso");
 });
 const viewports = [
   { width: 320, height: 568 },

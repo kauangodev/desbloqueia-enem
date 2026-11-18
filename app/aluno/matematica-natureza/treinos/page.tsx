@@ -3,7 +3,7 @@ import { operacao } from "../../../../lib/operacao/config";
 import { selectQuestions } from "../../../../lib/operacao/engine";
 import { kindIds, referenceMinutes, sessionKinds } from "../../../../lib/operacao/kinds";
 
-export const metadata = { title: "Treinos e simulados — Operação 2º Domingo" };
+export const metadata = { title: "Treinos e simulados — Matemática e Natureza" };
 
 const free = [{ id: "livre", label: "Livre (sem tempo)" }, { id: "cronometrado", label: "Cronometrado" }];
 const exam = [{ id: "prova", label: "Modo prova (cronômetro)" }, { id: "pratica", label: "Prática (sem tempo)" }];

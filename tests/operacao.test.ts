@@ -4,7 +4,7 @@ import { formulaCards } from "../data/operacao/formulas";
 import { allModules as operacaoModules } from "../lib/operacao/catalog";
 import { operacaoQuestions } from "../data/operacao/questions";
 import { grade, modules, questionById, questions, toPublic } from "../lib/operacao/catalog";
-import { campaignStatus, daysBetween, todayInSaoPaulo } from "../lib/operacao/config";
+import { daysBetween, editionCalendar, todayInSaoPaulo } from "../lib/operacao/config";
 import { limitFor, remainingMs, selectQuestions, summarize, type Session } from "../lib/operacao/engine";
 import { buildPlan } from "../lib/operacao/plan";
 import { validateCatalog } from "../lib/operacao/validate";
@@ -99,28 +99,28 @@ test("resumo trata questões em branco e calcula por disciplina", () => {
   assert.equal(Object.values(result.byDiscipline).reduce((s, d) => s + d.total, 0), ids.length);
 });
 
-test("datas: fuso de São Paulo e fases da campanha", () => {
+test("datas: fuso de São Paulo e calendário da edição ativa (2027 sem data oficial)", () => {
   assert.equal(todayInSaoPaulo(new Date("2026-11-09T02:30:00Z")), "2026-11-08");
   assert.equal(daysBetween("2026-11-08", "2026-11-15"), 7);
-  assert.equal(campaignStatus("2026-11-08").phase, "antes");
-  assert.equal(campaignStatus("2026-11-15").phase, "dia");
-  assert.equal(campaignStatus("2026-11-16").phase, "depois");
-  assert.match(campaignStatus("2026-11-14").headline, /amanhã/);
+  const cal = editionCalendar("2026-11-18")!;
+  assert.equal(cal.edition.key, "enem-2027");
+  assert.equal(cal.note.confirmed, false);
+  assert.equal(cal.note.headline, "Calendário oficial do ENEM 2027 a confirmar");
 });
 
 test("plano só cobre os dias restantes e cabe no tempo escolhido", () => {
-  const plan = buildPlan(60, "2026-11-10", catalog);
+  const plan = buildPlan(60, "2026-11-10", catalog, "2026-11-15");
   assert.equal(plan[0].date, "2026-11-10");
   assert.equal(plan.at(-1)!.date, "2026-11-15");
   assert.ok(plan.at(-1)!.isExamDay);
   for (const day of plan.filter((d) => !d.isExamDay)) assert.ok(day.totalMinutes <= 60, `${day.date} ${day.totalMinutes}`);
   assert.equal(new Set(plan.flatMap((d) => d.tasks.map((t) => t.id))).size, plan.flatMap((d) => d.tasks).length, "ids de tarefa únicos");
-  assert.deepEqual(buildPlan(30, "2026-11-16", catalog), []);
+  assert.deepEqual(buildPlan(30, "2026-11-16", catalog, "2026-11-15"), [], "prova confirmada já passou: sem dias a planejar");
   assert.equal(plan.find((d) => d.date === "2026-11-15")!.tasks.length, 1);
 });
 
 test("plano de 30 min nunca passa de 30 por dia", () => {
-  for (const day of buildPlan(30, "2026-11-09", catalog).filter((d) => !d.isExamDay)) assert.ok(day.totalMinutes <= 30, `${day.date} ${day.totalMinutes}`);
+  for (const day of buildPlan(30, "2026-11-09", catalog, "2026-11-15").filter((d) => !d.isExamDay)) assert.ok(day.totalMinutes <= 30, `${day.date} ${day.totalMinutes}`);
 });
 
 test("embaralhamento do gabarito preserva a alternativa correta e as explicações dos distratores", async () => {
@@ -190,4 +190,15 @@ test("treinos novos preferem itens inéditos", () => {
   const first = selectQuestions("treino-11", new Set());
   const next = selectQuestions("treino-11", new Set(first.ids));
   assert.equal(next.ids.filter((id) => first.ids.includes(id)).length, 0, "com 600 itens há inéditos suficientes");
+});
+
+test("sem prova confirmada o plano é rolante de 14 dias, sem dia de prova e sem datas de outra edição", () => {
+  const plan = buildPlan(60, "2026-11-18", catalog);
+  assert.equal(plan.length, 14);
+  assert.equal(plan[0].date, "2026-11-18");
+  assert.equal(plan.at(-1)!.date, "2026-12-01");
+  assert.ok(plan.every((d) => !d.isExamDay), "nenhum dia de prova inventado");
+  for (const day of plan) assert.ok(day.totalMinutes <= 60, `${day.date} ${day.totalMinutes}`);
+  assert.equal(buildPlan(60, "2026-11-19", catalog)[0].date, "2026-11-19", "renova a cada dia");
+  assert.equal(new Set(plan.flatMap((d) => d.tasks.map((t) => t.id))).size, plan.flatMap((d) => d.tasks).length, "ids de tarefa únicos (estáveis por data)");
 });

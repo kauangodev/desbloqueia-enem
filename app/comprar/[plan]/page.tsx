@@ -21,7 +21,7 @@ export default async function Buy({
             <br />
             {p.name}.
           </h1>
-          <p>Desbloqueia ENEM 2026</p>
+          <p>Desbloqueia ENEM 2027</p>
           <p className="price">{(p.cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</p>
           <ul>{p.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
           <p>

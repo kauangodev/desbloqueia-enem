@@ -5,7 +5,7 @@ import { studentSummary } from "../../lib/aluno/summary";
 import { todayPlan } from "../../lib/aluno/today";
 import { trilhaForToday } from "../../lib/trilha/service";
 import { questions } from "../../lib/operacao/catalog";
-import { campaignStatus, operacao, todayInSaoPaulo } from "../../lib/operacao/config";
+import { editionCalendar, operacao, todayInSaoPaulo } from "../../lib/operacao/config";
 import { sessionKinds, type SessionKind } from "../../lib/operacao/kinds";
 import { operacaoUser } from "../../lib/operacao/store";
 
@@ -61,8 +61,9 @@ export default async function Dashboard({ searchParams }: { searchParams?: Promi
         today,
       })
     : null;
-  const examPhase = campaignStatus().phase;
-  const examNote = examPhase === "depois" ? "A edição do Enem que este material acompanhava já passou. Ainda não há data oficial cadastrada para a próxima: seu estudo, seus erros e seu histórico continuam disponíveis." : examPhase === "dia" ? "Hoje é dia de prova: confira documentos e local e descanse. Seu material continua salvo." : undefined;
+  // Calendário honesto: sem data oficial confirmada, a mensagem diz "a confirmar" e não usa datas de outra edição.
+  const calendar = editionCalendar(today);
+  const examNote = calendar ? `${calendar.note.headline}. ${calendar.note.detail}${calendar.note.countdown ? ` ${calendar.note.countdown}` : ""}` : undefined;
   const accuracy = g && g.practiced ? Math.round((g.firstTry / g.practiced) * 100) : null;
 
   return (
@@ -123,7 +124,7 @@ export default async function Dashboard({ searchParams }: { searchParams?: Promi
           {plan === "essencial" ? (
             <section className="as-card">
               <h2>Vá além com o Premium</h2>
-              <p className="as-muted">16 e-books, banco geral, biblioteca histórica e fichas da reta final, com o mesmo pagamento único.</p>
+              <p className="as-muted">16 e-books, banco geral, biblioteca histórica e fichas de revisão, com o mesmo pagamento único.</p>
               <Link className="as-btn as-btn-primary" href="/aluno/planos">Conhecer o Premium</Link>
             </section>
           ) : null}

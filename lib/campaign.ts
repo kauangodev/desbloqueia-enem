@@ -1,34 +1,37 @@
 import { brl, planTotalCents } from "./pricing";
-import { campaignStatus, formatLongDate, operacao, type Phase } from "./operacao/config";
+import { editionCalendar, operacao } from "./operacao/config";
 
 /**
- * Configuração central da campanha "Reta final ENEM" (landing + quiz).
- * A data e o fuso vêm de `lib/operacao/config.ts` (fonte: Inep). Nenhum componente deve repetir datas ou
- * "próximo domingo": tudo é derivado daqui, e a campanha muda de estado sozinha (antes, no dia, depois).
+ * Narrativa comercial da landing para a edição ativa (ENEM 2027). A faixa de data só aparece com prova CONFIRMADA e futura;
+ * sem calendário oficial a página diz "a confirmar" e nunca usa a data de outra edição. Datas e fases vêm de `data/edicoes.ts`.
  */
 export const campaign = {
-  id: "reta-final-enem-2026",
-  edition: "2º dia · Matemática e Ciências da Natureza",
+  id: "desbloqueia-enem-2027",
+  edition: "ENEM 2027",
   enabled: true,
   destinations: {
     /** Oferta/planos da própria landing (fluxo comercial existente; nada de checkout paralelo). */
-    offer: "/landing#planos",
-    /** Quem já tem acesso vai direto para a área de reta final. */
-    studyArea: operacao.basePath,
+    offer: "/landing#ofertas",
+    /** Quem já tem acesso vai direto para a área de estudo. */
+    studyArea: "/aluno",
     /** Quem tem conta mas ainda não entrou: o login preserva o destino. */
-    login: `/entrar?redirect=${encodeURIComponent(operacao.basePath)}`,
-    journey: "#reta-final",
+    login: `/entrar?redirect=${encodeURIComponent("/aluno")}`,
+    /** Ferramenta de Matemática e Natureza (rota permanente). */
+    mathNature: operacao.basePath,
   },
 } as const;
 
 export type CampaignView = {
+  /** Faixa de contagem regressiva ativa (prova confirmada e futura). */
   active: boolean;
-  phase: Phase;
+  editionLabel: string;
+  calendarConfirmed: boolean;
   daysLeft: number;
-  /** "Reta final ENEM · 15 de novembro" */
+  /** "Calendário oficial do ENEM 2027 a confirmar" ou "ENEM 2027: prova em 7 de novembro de 2027". */
   label: string;
-  /** "Faltam 6 dias para o segundo dia do Enem." (nulo depois da prova) */
+  /** "Faltam 6 dias." (nulo sem prova confirmada e futura) */
   countdown: string | null;
+  detail: string;
   headline: string;
   emphasis: string;
   support: string;
@@ -37,54 +40,26 @@ export type CampaignView = {
   journeyTitle: string;
 };
 
-const shortDate = (iso: string) => formatLongDate(iso).replace(/^[^,]+,\s*/, "");
-
 /** Estado textual da campanha para uma data (America/Sao_Paulo). Puro e testável. */
 export function campaignView(today?: string): CampaignView {
-  const status = campaignStatus(today);
-  const date = shortDate(operacao.examDate); // "15 de novembro"
-  const label = `Reta final ENEM · ${date}`;
-  const base = {
-    phase: status.phase,
-    daysLeft: status.daysLeft,
+  const cal = editionCalendar(today);
+  const label = cal?.note.headline ?? "ENEM 2027";
+  const common = {
+    editionLabel: cal?.edition.label ?? "ENEM 2027",
+    calendarConfirmed: cal?.note.confirmed ?? false,
     label,
-    journeyTitle: "Uma reta final com direção.",
-  };
-  if (!campaign.enabled || status.phase === "depois") {
-    return {
-      ...base,
-      active: false,
-      countdown: null,
-      headline: "Sua próxima conquista",
-      emphasis: "começa aqui.",
-      support: "Estude com materiais completos, exercícios, simulados e um plano de estudos focado no ENEM.",
-      primaryCta: "Ver planos",
-      secondaryCta: "Experimentar uma questão",
-        journeyTitle: "Revise, pratique e entenda seus erros.",
-    };
-  }
-  if (status.phase === "dia") {
-    return {
-      ...base,
-      active: true,
-      countdown: "O segundo dia do Enem é hoje.",
-      headline: "Boa prova no",
-      emphasis: "segundo dia do Enem.",
-      support: "Matemática e Ciências da Natureza. Depois da prova, seus materiais e seu histórico continuam disponíveis para a próxima etapa dos estudos.",
-      primaryCta: "Conhecer a plataforma",
-      secondaryCta: "Experimentar uma questão",
-    };
-  }
-  const days = status.daysLeft;
-  const countdown = days === 1 ? "Falta 1 dia para o segundo dia do Enem." : `Faltam ${days} dias para o segundo dia do Enem.`;
-  return {
-    ...base,
-    active: true,
-    countdown,
-    headline: days <= 7 ? "Revise Matemática e Natureza" : "Sua reta final",
-    emphasis: days <= 7 ? "antes de domingo." : "para o 2º dia começa agora.",
-    support: "600 questões comentadas, 5 simulados de 90 questões, 11 treinos e 16 e-books de 34 páginas. Plano Premium por R$ 19,90, pagamento único.",
-    primaryCta: `Quero o Premium · ${brl(planTotalCents("premium"))}`,
+    detail: cal?.note.detail ?? "",
+    headline: "Sua preparação para o ENEM 2027,",
+    emphasis: "passo a passo.",
+    support: "Siga uma trilha, pratique questões e volte aos assuntos que mais precisam de atenção.",
+    primaryCta: "Conhecer os planos",
     secondaryCta: "Experimentar uma questão",
+    journeyTitle: "Revise, pratique e entenda seus erros.",
   };
+  const days = cal?.state.daysToNextExam ?? null;
+  const upcoming = Boolean(cal?.note.confirmed && cal.state.phase === "preparacao" && days !== null && days > 0);
+  return { ...common, active: upcoming, daysLeft: upcoming ? days! : 0, countdown: upcoming ? cal!.note.countdown : null };
 }
+
+/** Preço de entrada para textos de apoio (já com a taxa do checkout). */
+export const entryPrice = () => brl(planTotalCents("essencial"));

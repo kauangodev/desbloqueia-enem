@@ -32,7 +32,7 @@ export default async function PlansPage() {
           <p className="as-price">{ready ? total("essencial") : "—"}</p>
           <p className="as-muted">no total · pagamento único ({brl(cents("essencial"))} + {brl(SERVICE_FEE_CENTS)} de taxa do checkout)</p>
           <ul>
-            <li>Operação 2º Domingo: {facts.questions} questões comentadas, {facts.simulados} simulados e {facts.treinos} treinos</li>
+            <li>Matemática e Natureza: {facts.questions} questões comentadas, {facts.simulados} simulados e {facts.treinos} treinos</li>
             <li>{facts.modules} revisões rápidas e {facts.formulas} fichas de fórmulas</li>
             <li>Minha revisão, caderno de erros, missões e flash cards</li>
             <li>4 e-books: Língua Portuguesa, História, Biologia e Matemática</li>
@@ -48,7 +48,7 @@ export default async function PlansPage() {
             <li><b>16 e-books</b>, incluindo Física, Química e Redação</li>
             <li>Banco geral: {inv.generalDistinct} questões distintas em {inv.lists} listas e {inv.simulados} simulados</li>
             <li>Biblioteca histórica: 1.800 referências com links para fontes oficiais (é um índice, não são resoluções autorais)</li>
-            <li>Fichas e checklists da reta final</li>
+            <li>Fichas e checklists de revisão</li>
           </ul>
           {plan === "none" || plan === "essencial" ? buy("premium", plan === "essencial" ? "Fazer upgrade para o Premium" : "Quero o Premium", true) : null}
         </article>

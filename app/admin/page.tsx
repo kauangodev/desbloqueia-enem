@@ -1,3 +1,4 @@
+import AdminEdicoes from "../../components/admin-edicoes";
 import { identity, serviceClient } from "../../lib/supabase";
 import { redirect } from "next/navigation";
 import AdminEditor from "../../components/admin-editor";
@@ -509,6 +510,8 @@ export default async function Admin({
         </ul>
       </>
     );
+  } else if (tab === "edicoes") {
+    content = <AdminEdicoes />;
   } else if (tab === "equipe") {
     content = <TeamManager />;
   } else if (tab === "tickets") {
@@ -560,6 +563,7 @@ export default async function Admin({
             ["produtos", "Produtos e planos", "products"],
             ["materiais", "Materiais", "materials"],
             ["questoes", "Questões", "questions"],
+            ["edicoes", "Edições e calendário", "overview"],
             ["entregas", "Entregas e acessos", "deliveries"],
             ["equipe", "Equipe e permissões", "team"],
           ].map(([id, label, icon]) => (
@@ -615,7 +619,7 @@ export default async function Admin({
           ) : (
             <header className="admin-page-header">
               <span className="eyebrow">Central de gestão</span>
-              <h1 className="page-title">{tab === "alunos" ? "CRM de alunos" : tab === "produtos" ? "Produtos e planos" : tab === "materiais" ? "Materiais didáticos" : tab === "questoes" ? "Banco de questões" : tab === "equipe" ? "Equipe e permissões" : tab === "tickets" ? "Atendimento" : "Operação"}</h1>
+              <h1 className="page-title">{tab === "alunos" ? "CRM de alunos" : tab === "produtos" ? "Produtos e planos" : tab === "materiais" ? "Materiais didáticos" : tab === "questoes" ? "Banco de questões" : tab === "edicoes" ? "Edições e calendário" : tab === "equipe" ? "Equipe e permissões" : tab === "tickets" ? "Atendimento" : "Operação"}</h1>
               <p>Gerencie esta frente com clareza e acompanhe o próximo passo.</p>
             </header>
           )}

@@ -137,12 +137,12 @@ export function PlanCompare({ facts, essencialTotal, premiumTotal, essencialBase
   const yes = <span className="cmp-yes" aria-label="Incluído">✓ Incluído</span>;
   const no = <span className="cmp-no" aria-label="Não incluído">—</span>;
   const rows: CompareRow[] = [
-    { label: "Operação 2º Domingo (Matemática e Natureza)", essencial: <>{yes}<small>{facts.questions} questões comentadas, {facts.simulados} simulados de {facts.simuladoQuestions}, {facts.treinos} treinos, {facts.modules} revisões</small></>, premium: <>{yes}<small>Igual ao Essencial</small></> },
+    { label: "Matemática e Natureza", essencial: <>{yes}<small>{facts.questions} questões comentadas, {facts.simulados} simulados de {facts.simuladoQuestions}, {facts.treinos} treinos, {facts.modules} revisões</small></>, premium: <>{yes}<small>Igual ao Essencial</small></> },
     { label: "Minha revisão e caderno de erros", both: yes },
     { label: "E-books", essencial: <><b>{essencialBooks.length}</b><small>{essencialBooks.join(", ")}</small></>, premium: <><b>{premiumBooks}</b><small>Inclui Física, Química e Redação</small></> },
     { label: "Banco geral (332 questões distintas, 60 listas, 30 simulados)", essencial: <><span className="cmp-part">Parcial</span><small>Exercícios do plano, sem os 30 simulados</small></>, premium: yes },
     { label: "Biblioteca histórica (1.800 questões de referência, com links para fontes oficiais)", essencial: no, premium: yes },
-    { label: "Fichas e checklists da reta final", essencial: no, premium: yes },
+    { label: "Fichas e checklists de revisão", essencial: no, premium: yes },
     { label: "Leitura", both: <small>Online, no leitor da plataforma. Sem download.</small> },
     { label: "Acesso", both: <small>Pagamento único, sem mensalidade e sem data de expiração.</small> },
     { label: "Valor", essencial: <><b>{essencialTotal}</b><small>{essencialBase} + {fee} de taxa</small></>, premium: <><b>{premiumTotal}</b><small>{premiumBase} + {fee} de taxa</small></> },
@@ -152,7 +152,7 @@ export function PlanCompare({ facts, essencialTotal, premiumTotal, essencialBase
       <div className="cv-head">
         <span className="landing-eyebrow">Compare</span>
         <h2 id="cv-compare-title">Essencial ou Premium?</h2>
-        <p>Os dois incluem a Operação 2º Domingo inteira. O Premium amplia o repertório: os e-books de Física e Química e o banco geral.</p>
+        <p>Os dois incluem toda a área de Matemática e Natureza. O Premium amplia o repertório: os e-books de Física e Química e o banco geral.</p>
       </div>
       <div className="cmp-wrap" role="region" aria-label="Comparação entre os planos" tabIndex={0}>
         <table className="cmp">

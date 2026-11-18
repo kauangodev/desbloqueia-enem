@@ -20,7 +20,7 @@ export default function TryQuestion({ question }: { question: DemoQuestion }) {
   const reset = () => { setPicked(null); setStruck({}); };
 
   return (
-    <div className="s-try" role="group" aria-label="Questão de exemplo para testar">
+    <div className="s-try" id="experimentar" role="group" aria-label="Questão de exemplo para testar">
       <header className="s-try-head">
         <span>{question.discLabel} · {question.topic}</span>
         <b className="s-try-chip">{answered ? (right ? "Acertou" : "Quase") : "Tente você"}</b>

@@ -2,7 +2,8 @@ import "../../app/landing-sales.css";
 import { Header, Footer } from "../../components/site";
 import CheckoutParams from "./CheckoutParams";
 import SalesSticky from "./SalesSticky";
-import { SalesAccess, SalesFaq, SalesFinal, SalesHero, SalesNumbers, SalesOffers, SalesSamples, SalesStrip, SalesTools } from "./SalesSections";
+import { SalesAccess, SalesFaq, SalesFinal, SalesHero, SalesNumbers, SalesOffers, SalesSamples, SalesStrip, SalesTools, SalesTrilha } from "./SalesSections";
+import { UNITS } from "../../lib/trilha/service";
 import { ebookMaterials } from "../../lib/ebook-catalog";
 import "../../app/landing-plus.css";
 import { brl, SERVICE_FEE_CENTS } from "../../lib/pricing";
@@ -33,19 +34,20 @@ export default async function LandingPage() {
     <div className="sales">
       <CheckoutParams />
       {hasAccess
-        ? <SalesSticky href={campaign.destinations.studyArea} label="CONTINUAR MINHA REVISÃO" />
-        : <SalesSticky href="#ofertas" label="QUERO ESCOLHER MEU PLANO" note={`Planos a partir de ${essencialTotal} no total`} />}
+        ? <SalesSticky href={campaign.destinations.studyArea} label="CONTINUAR ESTUDANDO" />
+        : <SalesSticky href="#ofertas" label="CONHECER OS PLANOS" note={`Planos a partir de ${essencialTotal} no total`} />}
       <SalesStrip view={view} />
       <Header />
       <main id="conteudo">
-        <SalesHero hasAccess={hasAccess} studyArea={campaign.destinations.studyArea} essencialTotal={essencialTotal} question={heroQuestion} />
+        <SalesHero hasAccess={hasAccess} studyArea={campaign.destinations.studyArea} essencialTotal={essencialTotal} question={heroQuestion} view={view} />
         <SalesNumbers facts={facts} inv={inv} ebooks={ebookMaterials.length} />
+        <SalesTrilha units={UNITS.map((u) => ({ id: u.id, title: u.title, minutes: u.minutes }))} />
         <SalesSamples question={question} />
         <SalesTools facts={facts} inv={inv} />
         <SalesOffers plans={plans} facts={facts} inv={inv} checkoutReady={checkoutReady} />
         <SalesAccess />
         <SalesFaq inv={inv} essencialTotal={essencialTotal} premiumTotal={premiumTotal} essencialBase={brl(cents("essencial"))} premiumBase={brl(cents("premium"))} />
-        <SalesFinal message={view.active && view.countdown ? view.countdown : "Pronto para começar a sua revisão?"} />
+        <SalesFinal message={view.active && view.countdown ? view.countdown : "Pronto para começar a sua preparação?"} />
       </main>
       <Footer />
     </div>

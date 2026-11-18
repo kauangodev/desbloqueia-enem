@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { todayPlan, type TodayInput } from "../lib/aluno/today";
 
-const base: TodayInput = { sessions: [], reading: null, flashDue: 0, toReview: 0, weak: [], practiced: 12, nextModule: null, minutesPerQuestion: 2, basePath: "/aluno/operacao-segundo-domingo" };
+const base: TodayInput = { sessions: [], reading: null, flashDue: 0, toReview: 0, weak: [], practiced: 12, nextModule: null, minutesPerQuestion: 2, basePath: "/aluno/matematica-natureza" };
 
 test("aluno novo: primeiro treino com duração estimada", () => {
   const { primary } = todayPlan({ ...base, practiced: 0 });
@@ -22,7 +22,7 @@ test("sessão em andamento tem prioridade e leva ao lugar certo; a mais avançad
   assert.equal(primary.kind, "sessao");
   assert.match(primary.title, /Simulado/);
   assert.equal(primary.minutes, 100);
-  assert.equal(primary.href, "/aluno/operacao-segundo-domingo/treinos?abrir=simulado", "leva à sessão do tipo certo");
+  assert.equal(primary.href, "/aluno/matematica-natureza/treinos?abrir=simulado", "leva à sessão do tipo certo");
   assert.ok(others.some((item) => item.title.includes("Treino 1")), "outras sessões aparecem como opção");
   assert.ok(others.length <= 3);
 });

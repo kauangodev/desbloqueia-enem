@@ -86,3 +86,15 @@ body.godev-app .sales .s-tools p { color: var(--muted); }
 body.godev-app .sales .s-guardian { color: var(--g700); }
 
 @media (prefers-reduced-motion: reduce) { .s-tools li, .s-try-opts li, .s-guardian { transition: none; } .s-tools li:hover { transform: none; } }
+
+/* Aviso de calendário (edição ativa) e prévia da Trilha */
+.s-cal { margin: 10px 0 0; font-size: .875rem; color: var(--muted); max-width: 60ch; }
+body.godev-app .sales .s-cal { color: var(--muted); }
+.s-trail { list-style: none; margin: 0 auto 14px; padding: 0; display: grid; gap: 10px; max-width: 720px; }
+.s-trail li { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); }
+.s-trail-dot { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); font-weight: 800; }
+.s-trail .is-done .s-trail-dot { background: var(--step-bg); border-color: var(--step-bg); color: var(--step-fg); }
+.s-trail .is-now .s-trail-dot { border-color: #fbbf24; }
+.s-trail b { display: block; color: var(--g900); }
+.s-trail small { display: block; color: var(--muted); font-size: .875rem; }
+.s-trail .is-lock { opacity: .8; border-style: dashed; }

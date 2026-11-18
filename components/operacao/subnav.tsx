@@ -28,12 +28,12 @@ export default function OperacaoSubnav({ base }: { base: string }) {
   ));
   return (
     <>
-      <nav className="op-subnav op-subnav-wide" aria-label="Seções da Operação 2º Domingo">{links}</nav>
+      <nav className="op-subnav op-subnav-wide" aria-label="Seções de Matemática e Natureza">{links}</nav>
       <div className="op-subnav-compact">
         <button ref={button} type="button" className="op-subnav-toggle" aria-expanded={open} aria-controls="op-subnav-list" onClick={() => setOpen((value) => !value)}>
-          <span>Seções da Operação</span><strong>{label}</strong>
+          <span>Seções de Matemática e Natureza</span><strong>{label}</strong>
         </button>
-        {open ? <nav id="op-subnav-list" className="op-subnav-list" aria-label="Seções da Operação 2º Domingo">{links}</nav> : null}
+        {open ? <nav id="op-subnav-list" className="op-subnav-list" aria-label="Seções de Matemática e Natureza">{links}</nav> : null}
       </div>
     </>
   );

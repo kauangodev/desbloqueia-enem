@@ -16,9 +16,9 @@ export function Brand() {
   );
 }
 const NAV_LINKS: [string, string][] = [
-  ["Amostra", "/landing#amostra"],
+  ["Como funciona", "/landing#beneficios"],
   ["Planos", "/landing#ofertas"],
-  ["Acesso", "/landing#acesso"],
+  ["Recursos", "/landing#trilha"],
   ["Dúvidas", "/landing#duvidas"],
 ];
 export function Header() {
@@ -165,7 +165,7 @@ export function Footer() {
         </div>
       </div>
       <div className="container footer-bottom">
-        <span>© 2026 GoDev Education</span>
+        <span>© {new Date().getFullYear()} GoDev Education</span>
         <span>Material independente. Sem vínculo com INEP ou MEC.</span>
         <ThemeToggle className="footer-theme" />
       </div>
@@ -299,7 +299,7 @@ const faqs = [
   ],
   [
     "Qual é a diferença entre os planos?",
-    "Os dois incluem a Operação 2º Domingo inteira (600 questões comentadas de Matemática e Natureza, 5 simulados de 90 questões, 11 treinos e as revisões), além de Minha revisão e caderno de erros. O Essencial traz 4 e-books (Língua Portuguesa, História, Biologia e Matemática). O Premium traz os 16 e-books, incluindo Física, Química e Redação, o banco geral com 30 simulados, a biblioteca histórica e as fichas e checklists. Veja a tabela de comparação.",
+    "Os dois incluem toda a área de Matemática e Natureza (600 questões comentadas de Matemática e Natureza, 5 simulados de 90 questões, 11 treinos e as revisões), além de Minha revisão e caderno de erros. O Essencial traz 4 e-books (Língua Portuguesa, História, Biologia e Matemática). O Premium traz os 16 e-books, incluindo Física, Química e Redação, o banco geral com 30 simulados, a biblioteca histórica e as fichas e checklists. Veja a tabela de comparação.",
   ],
   [
     "Posso estudar pelo celular?",

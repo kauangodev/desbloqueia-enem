@@ -8,7 +8,7 @@ import { features } from "../lib/features";
 type Item = { href: string; label: string; icon: IconName; badge?: string };
 type Group = { id: string; title?: string; items: Item[] };
 
-const OP = "/aluno/operacao-segundo-domingo";
+const OP = "/aluno/matematica-natureza";
 
 /**
  * Estrutura do menu do aluno: Início e Dashboard no topo, depois Praticar, Estudar, Acompanhar e Conta.
@@ -29,7 +29,7 @@ export const navGroups: Group[] = [
   { id: "estudar", title: "Estudar", items: [
     { href: "/aluno/trilha", label: "Trilha ENEM", icon: "target" },
     { href: "/aluno/materiais", label: "Meus materiais", icon: "book-open" },
-    { href: OP, label: "Operação 2º Domingo", icon: "zap", badge: "Reta final" },
+    { href: OP, label: "Matemática e Natureza", icon: "zap" },
     { href: `${OP}/plano`, label: "Minha revisão", icon: "calendar-days" },
     { href: "/aluno/flash-cards", label: "Flash cards", icon: "rotate-ccw" },
     { href: "/aluno/checklists", label: "Fichas e checklists", icon: "list-checks" },
@@ -70,7 +70,7 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const aria = (href: string) => (current === href ? "page" : undefined);
   const moreLinks = links.filter((item) => !mobileMain.some((main) => main.href === item.href));
   const renderLink = (item: Item) => (
-    <Link key={item.href} href={item.href} className={item.href === OP ? "portal-nav-op" : undefined} aria-current={aria(item.href)} onClick={() => setMoreOpen(false)}>
+    <Link key={item.href} href={item.href} aria-current={aria(item.href)} onClick={() => setMoreOpen(false)}>
       <span className="portal-nav-icon"><Icon name={item.icon} size={20} /></span>
       <span>{item.label}</span>
       {item.badge ? <span className="portal-nav-badge">{item.badge}</span> : null}
@@ -83,7 +83,7 @@ export default function PortalNav({ isAdmin = false }: { isAdmin?: boolean }) {
           <div key={group.id} className="portal-nav-section" role="group" aria-label={group.title}>
             {group.title ? <p className="portal-nav-group" aria-hidden="true">{group.title}</p> : null}
             {group.items.map((item) => (
-              <Link key={item.href} href={item.href} className={item.href === OP ? "portal-nav-op" : undefined} aria-current={aria(item.href)} title={item.label}>
+              <Link key={item.href} href={item.href} aria-current={aria(item.href)} title={item.label}>
                 <span className="portal-nav-icon"><Icon name={item.icon} size={20} /></span>
                 <span>{item.label}</span>
                 {item.badge ? <span className="portal-nav-badge" aria-hidden="true">{item.badge}</span> : null}

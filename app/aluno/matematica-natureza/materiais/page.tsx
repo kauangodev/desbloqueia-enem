@@ -4,7 +4,7 @@ import { operacao } from "../../../../lib/operacao/config";
 import { operacaoUser } from "../../../../lib/operacao/store";
 import { disciplineLabel, type Discipline } from "../../../../lib/operacao/types";
 
-export const metadata = { title: "Materiais — Operação 2º Domingo" };
+export const metadata = { title: "Materiais — Matemática e Natureza" };
 
 export default async function Materials({ searchParams }: { searchParams: Promise<{ d?: string }> }) {
   const { d } = await searchParams;

@@ -39,11 +39,11 @@ const policies: Record<
   },
   termos: {
     title: "Termos de uso",
-    description: "Regras de uso do Desbloqueia ENEM 2026 e dos conteúdos da GoDev Education.",
+    description: "Regras de uso do Desbloqueia ENEM 2027 e dos conteúdos da GoDev Education.",
     sections: [
       [
         "Produto e conteúdo",
-        "GoDev Education apresenta o Desbloqueia ENEM 2026, material independente e complementar de estudo. Não é uma publicação do INEP/MEC e não oferece garantia de nota ou aprovação. Os itens incluídos em cada plano estão descritos na página de planos vigente na compra.",
+        "GoDev Education apresenta o Desbloqueia ENEM 2027, material independente e complementar de estudo. Não é uma publicação do INEP/MEC e não oferece garantia de nota ou aprovação. Os itens incluídos em cada plano estão descritos na página de planos vigente na compra.",
       ],
       [
         "Conta e acesso",
@@ -114,7 +114,7 @@ export default async function Policy({
           {policy.title}
         </h1>
         <p>
-          GoDev Education · Desbloqueia ENEM 2026
+          GoDev Education · Desbloqueia ENEM 2027
           <br />
           Atualizado em 14 de novembro de 2026.
         </p>

@@ -33,19 +33,25 @@ function fitToBudget(tasks: PlanTask[], limit: number) {
 }
 
 /**
- * Plano adaptável de segunda a sábado, com orientação leve no domingo.
+ * Plano adaptável de segunda a sábado, com orientação leve no domingo (rolante de 14 dias sem prova confirmada).
  * - Considera apenas os dias que ainda faltam (a partir de `today`); dias passados não geram tarefas vencidas.
  * - O volume cabe no tempo diário escolhido (30/60/120 min), com pausa proporcional.
  */
-export function buildPlan(minutes: 30 | 60 | 120, today: string, catalog: Catalog): PlanDay[] {
+/** Sem prova confirmada, o plano cobre as próximas 2 semanas e se renova a cada dia (nunca usa a data de outra edição). */
+export const PLAN_HORIZON_DAYS = 14;
+
+/**
+ * `examDate`: próxima prova CONFIRMADA e futura (ou nula). Com data, o plano vai até ela; sem data, usa a janela rolante.
+ */
+export function buildPlan(minutes: 30 | 60 | 120, today: string, catalog: Catalog, examDate: string | null = null): PlanDay[] {
   const days: PlanDay[] = [];
-  const left = daysBetween(today, operacao.examDate);
+  const left = examDate ? daysBetween(today, examDate) : PLAN_HORIZON_DAYS - 1;
   if (left < 0) return days;
   const budget = minutesBudget(minutes);
   for (let offset = 0; offset <= left; offset += 1) {
     const date = addDays(today, offset);
     const wd = weekday(date);
-    const isExamDay = date === operacao.examDate;
+    const isExamDay = examDate !== null && date === examDate;
     const label = formatShortDate(date);
     if (isExamDay) {
       days.push({ date, label, theme: "Dia da prova: sem maratona", isExamDay: true, light: true, totalMinutes: 5, tasks: [{ id: `${date}:checklist`, type: "checklist", minutes: 5, title: "Checklist de véspera e de manhã", detail: "Documento, caneta de tinta preta, água e lanche leves, trajeto e horário conferidos. Estudar hoje não é necessário.", href: `${operacao.basePath}/formulas` }] });

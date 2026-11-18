@@ -187,7 +187,7 @@ export default function Analytics() {
       if (href.startsWith("/api/checkout/")) {
         const planId = href.split("?")[0].split("/").pop() || "";
         const plan = plans.find((item) => item.id === planId);
-        const params: Record<string, string | number> = { content_name: plan ? `Desbloqueia ENEM 2026 — ${plan.name}` : "Desbloqueia ENEM 2026", content_ids: planId, content_type: "product", currency: "BRL" };
+        const params: Record<string, string | number> = { content_name: plan ? `Desbloqueia ENEM 2027 — ${plan.name}` : "Desbloqueia ENEM 2027", content_ids: planId, content_type: "product", currency: "BRL" };
         if (plan) params.value = plan.cents / 100;
         trackMetaEvent("InitiateCheckout", params);
         trackTikTok("InitiateCheckout", params);

@@ -5,6 +5,13 @@ const nextConfig = {
   experimental: { useWasmBinary: true },
   poweredByHeader: false,
   outputFileTracingIncludes: { "/*": ["./data/library.json", "./private/materials/**/*"] },
+  // Endereço antigo da área de Matemática e Natureza. 307 (temporário) durante a virada: um rollback não deixa o navegador preso a um redirecionamento 308 em cache.
+  async redirects() {
+    return [
+      { source: "/aluno/operacao-segundo-domingo", destination: "/aluno/matematica-natureza", permanent: false },
+      { source: "/aluno/operacao-segundo-domingo/:path*", destination: "/aluno/matematica-natureza/:path*", permanent: false },
+    ];
+  },
   async headers() {
     return [
       {

@@ -21,7 +21,7 @@ export default async function Login({
             <br />
             por aqui.
           </h1>
-          <p>Entre no seu espaço de estudo do Desbloqueia ENEM 2026.</p>
+          <p>Entre no seu espaço de estudo do Desbloqueia ENEM 2027.</p>
           {erro && (
             <p role="alert" className="error">
               {erro === "otp_expired"
