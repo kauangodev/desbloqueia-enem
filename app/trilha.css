@@ -77,6 +77,6 @@
 .tr-progress span { font-size: .875rem; color: var(--text-muted); }
 .tr-exit { justify-self: start; min-height: 44px; display: inline-flex; align-items: center; color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; font-size: .875rem; }
 .tr-result.is-ok { border-color: rgb(110 231 183 / 55%); }
-.tr-result.is-bad { border-color: rgb(249 115 22 / 55%); }
+.tr-result.is-bad { border-color: rgb(167 237 40 / 55%); }
 
 @media (prefers-reduced-motion: reduce) { .tr-unit, .tr-areas a { transition: none; } }

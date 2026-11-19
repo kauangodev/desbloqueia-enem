@@ -114,7 +114,7 @@ body.godev-app.godev-app .qmap .qmap-tab.is-on, body.godev-app.godev-app .qmap .
 .hj-option b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-control); font-size: .75rem; }
 .hj-option.is-picked { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); }
 .hj-note { font-size: .8125rem; color: var(--text-secondary); }
-.hj-warn { padding: 8px 10px; border-radius: 10px; background: rgb(251 191 36 / 12%); font-size: .875rem; }
+.hj-warn { padding: 8px 10px; border-radius: 10px; background: rgb(184 255 53 / 12%); font-size: .875rem; }
 .hj-bar { height: 10px; border-radius: 99px; background: rgb(255 255 255 / 12%); overflow: hidden; }
 .hj-bar i { display: block; width: 66.7%; height: 100%; background: var(--accent); border-radius: 99px; transform-origin: left; }
 .hero-journey figcaption { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: .8125rem; color: var(--text-secondary); }

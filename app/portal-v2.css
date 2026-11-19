@@ -52,3 +52,19 @@ html[data-gd-theme] body.godev-app.godev-app .portal .sidebar nav a[aria-current
 html[data-gd-theme] body.godev-app.godev-app .portal .sidebar nav a[aria-current] .portal-nav-icon { color: #102615 !important; background: transparent !important; }
 html[data-gd-theme="light"] body.godev-app { --op-ok: #14532d; }
 body.godev-app.godev-app .portal .sidebar .cookie-link-side { background: transparent !important; color: #f3f8f2 !important; }
+
+/* ---------- Área do aluno: textos neon viram verde escuro no claro; ícones de ação visíveis no escuro ---------- */
+html[data-gd-theme] body.godev-app.godev-app .op-cut { color: var(--text-secondary); }
+html[data-gd-theme="light"] body.godev-app.godev-app :is(.op-tag, .op-link, a.op-link, .bq-nav, .bq-origin-oficial, .op-root .op-link, .op-root a.op-link) { color: var(--link); }
+html[data-gd-theme="light"] body.godev-app.godev-app .op-tag { background: var(--pv-chip); border: 1px solid var(--pv-hairline); }
+html[data-gd-theme="light"] body.godev-app.godev-app .op-btn-primary:disabled, html[data-gd-theme="light"] body.godev-app.godev-app .op-root button.op-btn.op-btn-primary:disabled { background: #e3ece7; color: #405548; }
+body.godev-app.godev-app .portal .sidebar .cookie-link-side, body.godev-app.godev-app .portal .sidebar .cookie-link { background: transparent !important; color: #f3f8f2 !important; border-color: rgb(255 255 255 / 28%) !important; }
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar form button { background: transparent !important; color: #f3f8f2 !important; border: 1px solid rgb(255 255 255 / 28%) !important; }
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar form { background: var(--pv-side) !important; }
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar .as-upsell { background: rgb(255 255 255 / 8%) !important; border: 1px solid rgb(255 255 255 / 16%) !important; color: #f3f8f2 !important; }
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar .as-upsell :is(strong, p, small) { color: #f3f8f2 !important; }
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar .as-upsell a { color: #b8ff35 !important; font-weight: 700; }
+html[data-gd-theme="light"] body.godev-app.godev-app .as-tag { background: var(--pv-chip); color: var(--text-primary); border: 1px solid var(--pv-hairline); }
+html[data-gd-theme] body.godev-app.godev-app .portal-search input, html[data-gd-theme] body.godev-app.godev-app .portal-search input:focus { background: transparent !important; box-shadow: none; }
+html[data-gd-theme] body.godev-app.godev-app :is(.drawer-trigger) { color: var(--text-primary) !important; background: var(--pv-chip) !important; border: 1px solid var(--border-control) !important; }
+html[data-gd-theme] body.godev-app.godev-app :is(.drawer-trigger) svg { stroke: currentColor; color: var(--text-primary); }

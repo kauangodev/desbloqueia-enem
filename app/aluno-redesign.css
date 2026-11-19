@@ -35,7 +35,7 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .op-head2 { display: grid; gap: 6px; margin: 0 0 6px; }
 .op-head2 h1 { margin: 0; }
 .op-head2-sub { margin: 0; color: var(--text-muted); font-size: .9375rem; }
-.op-head2-note { margin: 4px 0 0; padding: 8px 12px; border-left: 3px solid var(--op-orange, #a7ed28); background: rgb(251 191 36 / 8%); border-radius: 0 10px 10px 0; font-size: .875rem; }
+.op-head2-note { margin: 4px 0 0; padding: 8px 12px; border-left: 3px solid var(--op-orange, #a7ed28); background: rgb(184 255 53 / 8%); border-radius: 0 10px 10px 0; font-size: .875rem; }
 .op-crumb { font-size: .8125rem; color: var(--text-muted); }
 .op-crumb a { color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
 .op-crumb [aria-current] { color: var(--text-primary); }
@@ -94,7 +94,7 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .bq-actions { display: flex; flex-wrap: wrap; gap: 6px; }
 .bq-act { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--text-muted); font: inherit; font-size: .8125rem; font-weight: 600; cursor: pointer; }
 .bq-act:hover { color: var(--text-primary); background: rgb(255 255 255 / 6%); }
-.bq-act.is-on { color: var(--op-amber, #b8ff35); border-color: rgb(251 191 36 / 40%); }
+.bq-act.is-on { color: var(--op-amber, #b8ff35); border-color: rgb(184 255 53 / 40%); }
 @media (max-width: 560px) { .bq-act span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } .bq-act { width: 44px; justify-content: center; padding: 0; } }
 .op-question .op-q-foot .op-btn-primary { min-height: 48px; padding-inline: 26px; font-size: 1rem; }
 .bq-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; }
@@ -120,7 +120,7 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .as-week { display: flex; gap: 5px; align-items: center; }
 .as-week i { display: block; width: 22px; height: 22px; border-radius: 6px; border: 1.5px dashed var(--border-subtle); }
 .as-week i.is-done { border: 0; background: linear-gradient(135deg, #b8ff35, #a7ed28); }
-.as-week i.is-today { box-shadow: 0 0 0 2px rgb(251 191 36 / 55%); }
+.as-week i.is-today { box-shadow: 0 0 0 2px rgb(184 255 53 / 55%); }
 
 @media (prefers-reduced-motion: reduce) { .as-shortcuts a { transition: none; } }
 
