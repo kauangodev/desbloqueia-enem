@@ -155,3 +155,27 @@ test("onboarding: API indisponível com a chave desligada e exige sessão quando
   const post = await request.post("/api/onboarding", { data: { step: 1, birthDate: "2005-03-19" }, headers: { origin: "https://evil.example" } });
   expect([404, 403]).toContain(post.status());
 });
+
+test("tema: um único botão de ícone alterna claro/escuro e persiste", async ({ page }) => {
+  await page.goto("/landing");
+  await expect(page.locator("header select")).toHaveCount(0);
+  const html = page.locator("html");
+  const toLight = page.getByRole("button", { name: "Ativar tema claro" }).first();
+  await expect(toLight).toBeVisible();
+  await toLight.click();
+  await expect(html).toHaveAttribute("data-gd-theme", "light");
+  await page.reload();
+  await expect(html).toHaveAttribute("data-gd-theme", "light");
+  await page.getByRole("button", { name: "Ativar tema escuro" }).first().click();
+  await expect(html).toHaveAttribute("data-gd-theme", "dark");
+});
+
+test("landing: três trilhas com imagem e botões de compra dos planos visíveis", async ({ page }) => {
+  await page.goto("/landing");
+  const imgs = page.locator("#trilha .v2-card-media img");
+  await expect(imgs).toHaveCount(3);
+  await imgs.first().scrollIntoViewIfNeeded();
+  for (let i = 0; i < 3; i++) await expect.poll(() => imgs.nth(i).evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  await expect(page.getByRole("link", { name: "Comprar Essencial" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Comprar Premium" })).toBeVisible();
+});

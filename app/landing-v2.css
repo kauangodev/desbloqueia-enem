@@ -122,9 +122,6 @@ html[data-gd-theme="dark"] .v2-solution h3 svg { color: var(--v2-accent); }
   .v2-strip li:nth-child(n+3) { border-top: 1px solid rgb(255 255 255 / 16%); }
   .v2-method { grid-template-columns: 1fr; }
   .v2-cards { grid-template-columns: 1fr; }
-  .v2-cards li { display: grid; grid-template-columns: 112px 1fr; gap: 4px 12px; align-items: center; padding: 10px; }
-  .v2-cards .v2-card-media { grid-row: span 3; aspect-ratio: 4 / 3; }
-  .v2-cards p, .v2-cards .v2-btn { grid-column: 2; }
   .v2-cards .v2-btn { min-height: 44px; }
   .v2-exp { grid-template-columns: 1fr; }
 }

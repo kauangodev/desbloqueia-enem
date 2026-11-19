@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { studentSummary } from "../../../lib/aluno/summary";
 import { publicPlans } from "../../../lib/catalog";
 import { inventory } from "../../../lib/inventory";
@@ -33,7 +33,7 @@ export default async function PlansPage() {
       <div className="as-plans">
         <article className={`as-plan${plan === "essencial" ? " is-current" : ""}`} aria-labelledby="pl-es">
           <h2 id="pl-es">Essencial {plan === "essencial" ? <span className="as-tag">Seu plano</span> : null}</h2>
-          <p className="as-price">{readyFor("essencial") ? total("essencial") : "—"}</p>
+          <p className="as-price">{total("essencial")}</p>
           <p className="as-muted">{SERVICE_FEE_CENTS ? `no total · pagamento único (${brl(cents("essencial"))} + ${brl(SERVICE_FEE_CENTS)} de taxa do checkout)` : "no total · pagamento único por Pix, sem taxa adicional"}</p>
           <ul>
             <li>Matemática e Natureza: {facts.questions} questões comentadas, {facts.simulados} simulados e {facts.treinos} treinos</li>
@@ -41,11 +41,11 @@ export default async function PlansPage() {
             <li>Minha revisão, caderno de erros, missões e flash cards</li>
             <li>4 e-books: Língua Portuguesa, História, Biologia e Matemática</li>
           </ul>
-          {plan === "none" ? buy("essencial", "Quero o Essencial", false) : null}
+          {plan === "none" ? buy("essencial", "Comprar Essencial", false) : null}
         </article>
         <article className={`as-plan is-premium${plan === "premium" ? " is-current" : ""}`} aria-labelledby="pl-pr">
           <h2 id="pl-pr">Premium {plan === "premium" || plan === "admin" ? <span className="as-tag">{plan === "admin" ? "Acesso total" : "Seu plano"}</span> : null}</h2>
-          <p className="as-price">{readyFor("premium") ? total("premium") : "—"}</p>
+          <p className="as-price">{total("premium")}</p>
           <p className="as-muted">{SERVICE_FEE_CENTS ? `no total · pagamento único (${brl(cents("premium"))} + ${brl(SERVICE_FEE_CENTS)} de taxa do checkout)` : "no total · pagamento único por Pix, sem taxa adicional"}</p>
           <ul>
             <li><b>Tudo do Essencial</b></li>
@@ -54,7 +54,7 @@ export default async function PlansPage() {
             <li>Biblioteca histórica: 1.800 referências com links para fontes oficiais (é um índice, não são resoluções autorais)</li>
             <li>Fichas e checklists de revisão</li>
           </ul>
-          {plan === "none" || plan === "essencial" ? buy("premium", plan === "essencial" ? "Fazer upgrade para o Premium" : "Quero o Premium", true) : null}
+          {plan === "none" || plan === "essencial" ? buy("premium", plan === "essencial" ? "Fazer upgrade para o Premium" : "Comprar Premium", true) : null}
         </article>
       </div>
       <section className="as-card">
@@ -79,3 +79,4 @@ export default async function PlansPage() {
     </div>
   );
 }
+

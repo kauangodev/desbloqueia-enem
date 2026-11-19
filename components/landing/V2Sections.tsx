@@ -5,7 +5,7 @@ import type { DemoQuestion } from "./explorer-types";
 import SearchExplorer, { type SearchItem } from "./SearchExplorer";
 import TryQuestion from "./TryQuestion";
 import TrilhaPreview, { type PreviewUnit } from "./TrilhaPreview";
-import { ArtMath, ArtReview, ArtScience, ArtTile } from "./Art";
+import { ArtTile } from "./Art";
 
 const Icon = ({ children }: { children: ReactNode }) => (
   <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{children}</svg>
@@ -92,6 +92,7 @@ export function MethodSection() {
   );
 }
 
+const TRILHA_IMG = { math: "matematica", science: "ciencias-da-natureza", review: "revisao-inteligente" } as const;
 export type TrilhaCard = { title: string; text: string; tag: string; art: "math" | "science" | "review"; href: string };
 
 export function TrilhasSection({ cards, units, signupHref }: { cards: TrilhaCard[]; units: PreviewUnit[]; signupHref: string | null }) {
@@ -103,7 +104,7 @@ export function TrilhasSection({ cards, units, signupHref }: { cards: TrilhaCard
           {cards.map((card) => (
             <li key={card.title}>
               <Link href={card.href} className="v2-card-media" tabIndex={-1} aria-hidden="true">
-                {card.art === "math" ? <ArtMath /> : card.art === "science" ? <ArtScience /> : <ArtReview />}
+                {/* eslint-disable-next-line @next/next/no-img-element */}<img src={`/trilhas/${TRILHA_IMG[card.art]}-800.webp`} srcSet={`/trilhas/${TRILHA_IMG[card.art]}-480.webp 480w, /trilhas/${TRILHA_IMG[card.art]}-800.webp 800w, /trilhas/${TRILHA_IMG[card.art]}-1200.webp 1200w`} sizes="(max-width: 700px) 92vw, 380px" width="1672" height="941" alt="" loading="lazy" decoding="async" />
                 <span className="v2-pill">{card.tag}</span>
               </Link>
               <h3>{card.title}</h3>
@@ -138,4 +139,5 @@ export function ExperienceSection({ question, ctaHref, gratis }: { question: Dem
     </section>
   );
 }
+
 

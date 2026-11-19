@@ -224,9 +224,10 @@ export function SalesOffers({ plans, facts, inv, checkoutReady, free, pixReady }
   const essentialBooks = ebookMaterials.filter((book) => book.plan === "essencial").map((book) => book.title);
   const pixOn = features.pix;
   const buy = (id: "essencial" | "premium", name: string) => pixOn
-    ? (pixReady?.[id]
-      ? <Link className="s-btn s-btn-block" href={`/comprar/${id}`} data-analytics-event={`offer_${id}`}>{`Pagar o ${name} com Pix`}</Link>
-      : <p className="s-plan-foot" role="status">Pagamento por Pix em breve{free ? ". Comece grátis agora." : "."}</p>)
+    ? <>
+        <Link className="s-btn s-btn-block" href={`/comprar/${id}`} data-analytics-event={`offer_${id}`}>{`Comprar ${name}`}</Link>
+        {pixReady?.[id] ? null : <p className="s-plan-foot" role="status">O Pix deste plano ainda está sendo habilitado; você poderá acompanhar o pedido na sua conta{free ? ", e pode começar grátis agora" : ""}.</p>}
+      </>
     : checkoutReady
       ? <a className="s-btn s-btn-block" href={checkoutHref(id)} data-analytics-event={`offer_${id}`}>{`Quero o ${name}`}</a>
       : <Link className="s-btn s-btn-block" href="/suporte">Falar com o atendimento</Link>;

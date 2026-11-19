@@ -59,3 +59,9 @@ html[data-gd-theme="light"] body.godev-app {
 .gd-footer .theme-switch label { color: #c5d2c7 !important; }
 
 .gd-footer .theme-switch label:has(input:checked), .gd-footer .theme-switch label:has(input:checked) span { color: #102615 !important; background-color: #b8ff35; }
+
+/* Botão de tema do cabeçalho: um ícone (sol/lua), sem menu nem seta. */
+.theme-icon { display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 12px; border: 1px solid var(--v2-line-strong, currentColor); background: transparent; color: var(--v2-link, currentColor); cursor: pointer; transition: background-color .15s ease; }
+.theme-icon:hover { background: rgb(184 255 53 / 14%); }
+.theme-icon:active { transform: translateY(1px); }
+.theme-icon:focus-visible { outline: 3px solid var(--v2-link, currentColor); outline-offset: 2px; }
