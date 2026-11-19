@@ -127,7 +127,7 @@ export function ExperienceSection({ question, ctaHref, gratis }: { question: Dem
   return (
     <section className="v2-section" id="amostra" aria-labelledby="v2-exp-title">
       <div className="v2-wrap">
-        <header className="v2-head"><h2 id="v2-exp-title">Veja como é estudar na GoDev.</h2></header>
+        <header className="v2-head"><h2 id="v2-exp-title">Veja como seu estudo acontece na GoDev.</h2></header>
         <div className="v2-exp">
           <TryQuestion question={question} />
           <aside className="v2-solution" aria-labelledby="v2-sol-title">
