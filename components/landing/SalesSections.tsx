@@ -235,7 +235,7 @@ export function SalesOffers({ plans, facts, inv, checkoutReady, free, pixReady }
     <section className="s-section s-offers" id="ofertas" aria-labelledby="s-ofertas-title"><span id="planos" aria-hidden="true" />
       <div className="s-wrap">
         <header className="s-head">
-          <h2 id="s-ofertas-title">Escolha como começar.</h2>
+          <h2 id="s-ofertas-title">Escolha como começar sua preparação.</h2>
           <p>Planos simples, acessíveis e pensados para a sua preparação para o ENEM 2027. {free ? "Comece grátis, sem cartão. " : ""}Os preços abaixo já são o total cobrado.</p>
         </header>
         <div className={`s-plans${free ? " s-plans-3" : ""}`}>
@@ -394,7 +394,7 @@ export function SalesFinal({ message }: { message: string }) {
       <div className="s-wrap s-center">
         <h2 id="s-final-title">{message}</h2>
         <p>Escolha o plano e comece pela primeira questão.</p>
-        <a className="s-btn s-btn-lg" href="#ofertas">QUERO ESCOLHER MEU PLANO</a>
+        <a className="s-btn s-btn-lg" href="#ofertas">Ver planos</a>
       </div>
     </section>
   );

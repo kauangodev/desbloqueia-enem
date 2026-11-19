@@ -14,18 +14,17 @@ const Icon = ({ children }: { children: ReactNode }) => (
 export function HeroV2({ hasAccess, studyArea, gratis, view, signupHref }: { hasAccess: boolean; studyArea: string; gratis: boolean; view: CampaignView; signupHref: string }) {
   const primary = hasAccess
     ? <Link className="v2-btn v2-btn-lg" href={studyArea}>Continuar estudando</Link>
-    : gratis
-      ? <Link className="v2-btn v2-btn-lg" href={signupHref} data-signup="hero">Começar grátis</Link>
-      : <a className="v2-btn v2-btn-lg" href="#experimentar">Testar uma questão</a>;
+    : <a className="v2-btn v2-btn-lg" href="#ofertas">Escolher meu plano</a>;
   return (
     <section className="v2-hero" id="topo" aria-labelledby="s-title">
       <div className="v2-wrap v2-hero-grid">
         <div className="v2-hero-copy">
-          <h1 id="s-title">Seu próximo passo começa na <em>GoDev.</em></h1>
-          <p className="v2-lead">Prepare-se para o ENEM 2027 com trilhas, questões comentadas e revisão.</p>
+          <p className="v2-eyebrow">Sua preparação para o ENEM 2027</p>
+          <h1 id="s-title">Prepare-se para o <em>ENEM 2027</em> com direção.</h1>
+          <p className="v2-lead">Organize seus estudos com trilhas, pratique com questões comentadas e revise seus erros em uma plataforma feita para acompanhar sua evolução.</p>
           <div className="v2-actions">
             {primary}
-            {!hasAccess ? <a className="v2-btn v2-btn-outline v2-btn-lg" href="#ofertas">Conhecer os planos</a> : null}
+            {!hasAccess ? <a className="v2-btn v2-btn-outline v2-btn-lg" href="#amostra">Testar uma questão</a> : null}
           </div>
           {!hasAccess && gratis ? <p className="v2-cond"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="11" fill="currentColor" /><path d="m7 12.5 3.3 3.3L17 9" fill="none" stroke="var(--v2-on-accent)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>Sem cartão</p> : null}
           <p className="s-cal" role="status"><b>{view.label}.</b> {view.calendarConfirmed ? view.detail : "Enquanto não há data oficial, o plano de estudos segue por semanas."}</p>

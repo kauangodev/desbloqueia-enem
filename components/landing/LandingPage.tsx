@@ -2,7 +2,7 @@ import "../../app/landing-sales.css";
 import { Header, Footer } from "../../components/site";
 import CheckoutParams from "./CheckoutParams";
 import SalesSticky from "./SalesSticky";
-import { SalesAccess, SalesFaq, SalesOffers, SalesStrip } from "./SalesSections";
+import { SalesAccess, SalesFaq, SalesFinal, SalesOffers, SalesStrip } from "./SalesSections";
 import PlanTeaser from "./PlanTeaser";
 import { BenefitStrip, ExperienceSection, HeroV2, MethodSection, SearchSection, TrilhasSection, type TrilhaCard } from "./V2Sections";
 import type { SearchItem } from "./SearchExplorer";
@@ -83,6 +83,7 @@ export default async function LandingPage() {
         <SalesOffers plans={plans} facts={facts} inv={inv} checkoutReady={checkoutReady} free={free} pixReady={{ essencial: pixReady.essencial, premium: pixReady.premium }} />
         <SalesAccess />
         <SalesFaq inv={inv} essencialTotal={essencialTotal} premiumTotal={premiumTotal} essencialBase={brl(cents("essencial"))} premiumBase={brl(cents("premium"))} />
+        <SalesFinal message="Dê o próximo passo na sua preparação para o ENEM 2027." />
       </main>
       <Footer />
     </div>

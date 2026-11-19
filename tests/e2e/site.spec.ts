@@ -8,7 +8,7 @@ test("landing, planos e FAQ (ENEM 2027)", async ({ page }) => {
   await page.goto("/landing");
   await page.evaluate(() => document.fonts.ready);
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Seu próximo passo começa na GoDev.");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Prepare-se para o ENEM 2027 com direção.");
   await expect(page.getByText("Calendário oficial do ENEM 2027 a confirmar")).toBeVisible();
   for (const id of ["amostra", "beneficios", "ofertas", "acesso", "duvidas", "trilha", "experimentar", "planos"]) await expect(page.locator(`#${id}`)).toHaveCount(1);
   await expect(page.getByRole("heading", { name: "Essencial", exact: true })).toBeVisible();

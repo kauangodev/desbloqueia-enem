@@ -106,7 +106,7 @@ export function Header() {
           <Link href="/entrar" className="login-link">
             Entrar
           </Link>
-          {features.gratis ? <Link href="/entrar?modo=cadastro" className="header-cta" data-signup="header">Começar grátis</Link> : null}
+          <Link href="/landing#ofertas" className="header-cta" onClick={(event) => goTo(event, "/landing#ofertas")}>Ver planos</Link>
           <button
             ref={toggle}
             className="menu-button"

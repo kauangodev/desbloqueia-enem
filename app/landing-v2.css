@@ -240,3 +240,5 @@ body.godev-app .sales .v2-tile-a b { color: var(--tile-a-fg) !important; }
 html[data-gd-theme="dark"] .v2-teaser-opts label.is-on::before { border-color: var(--v2-accent); background: radial-gradient(circle, var(--v2-accent) 0 45%, transparent 50%); }
 .v2-teaser-opts label:has(input:focus-visible) { outline: 3px solid var(--v2-link); outline-offset: 2px; }
 .sales .v2-teaser-opts input[type="radio"] { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; margin: 0 !important; opacity: 0 !important; }
+
+.v2-eyebrow{margin:0 0 12px;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--v2-link,var(--v2-accent))}
