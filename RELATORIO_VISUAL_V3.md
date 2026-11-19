@@ -44,3 +44,19 @@ Depois: ver seção 6 (medido no domínio após a publicação). O maior custo r
 
 ## 6. Verificação e publicação
 Ver o registro no fim deste arquivo (preenchido após o deploy).
+
+## Registro de publicação (19/11/2026)
+
+- **Revisão publicada:** `main` em `91c8827` (push para `kauangodev/desbloqueia-enem`; build e deploy automáticos da Hostinger). Confirmado no ar: a página `/landing` do domínio passou a conter o novo hero (`v2-device`) após cerca de 4 minutos.
+- **Medição depois (domínio, laboratório, 1 execução, tamanhos decodificados):**
+
+| | Requisições | Imagens | CSS | JS | Fontes | LCP lab | CLS lab |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Desktop 1366 | 31 (antes 37) | **0** (antes 404 KB, 8 `<img>`) | 517 KB | 485 KB | 129 KB | **1044 ms** (antes 1136) | 0,000 |
+| Mobile 390 | 31 (antes 34) | **0** (antes 75 KB) | 517 KB | 485 KB | 129 KB | **780 ms** (antes 1032) | 0,000 |
+
+  Melhorou onde havia imagem; CSS e JS seguem como o maior peso (o documento cresceu 20 KB por causa das ilustrações inline). Não é dado de campo.
+- **Verificado no domínio:** nenhum `<img>` na landing; preços R$ 10,90 / R$ 19,90 sem taxa (R$ 11,89 e R$ 20,89 sumiram); `/api/checkout/essencial` responde 307 para `/aluno/checkout/essencial` (nada abre a Cakto); `Strict-Transport-Security` presente. A única menção restante à Cakto é a frase da FAQ para quem comprou antes ("Primeiro acesso").
+- **Testes antes de publicar:** tsc e eslint sem erros; 165 testes unitários; 78 de 78 testes no Chrome (inclui axe e a auditoria responsiva de 7 rotas em 7 larguras); jornadas de aluno e admin conferidas por capturas com dados de teste local.
+- **Rollback:** refazer o deploy do commit `f9d1865` (versão anterior) ou definir `NEXT_PUBLIC_FEATURE_PIX=0` / `NEXT_PUBLIC_FEATURE_GRATIS=0` na Hostinger e reconstruir, para voltar ao fluxo Cakto sem reverter o visual.
+- **Pendente (externo):** migrações 06/07 no banco, cadastro dos Copia e Cola no admin, credenciais Google, fotos originais, decisão jurídica para ligar o onboarding.
