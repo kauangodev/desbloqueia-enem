@@ -11,7 +11,9 @@ html[data-gd-theme="light"] body.godev-app {
   --text-primary: #102d22; --text-secondary: #405548; --text-muted: #52685a; --text-aux: #52685a; --text-2: #405548; --text-3: #52685a;
   --border-subtle: #dfe9de; --border-control: #718c78; --border-strong: #718c78;
   --accent: #b8ff35; --accent-hover: #a7ed28; --accent-press: #96d81f; --on-accent: #102615;
-  --highlight: #245d16; --link: #245d16; --lime: #245d16; --accent-lime: #245d16; --brand-green: #245d16; --brand-green-strong: #1b4a10; --brand-green-hover: #1b4a10; --brand-green-deep: #102d22; --btn-text: #ffffff; --focus-ring: #0f5c8a; --focus: #0f5c8a;
+  --bg: #f7faf6; --ink: #102d22; --text: #102d22; --muted: #405548; --line: #dfe9de; --border: #dfe9de; --navy: #102d22; --blue: #245d16; --teal: #245d16; --lime: #245d16; --link: #245d16;
+  --color-bg: #f7faf6; --color-surface: #ffffff; --color-surface-elevated: #ffffff; --color-text: #102d22; --color-text-secondary: #405548; --color-text-muted: #52685a; --color-link: #245d16; --color-accent: #b8ff35; --color-accent-hover: #a7ed28; --color-accent-ink: #102615; --color-accent-secondary: #b8ff35; --color-border: #718c78; --color-success: #14532d; --color-warning: #7a4a00; --color-danger: #8a1020;
+  --highlight: #245d16; --lime: #245d16; --accent-lime: #245d16; --brand-green: #245d16; --brand-green-strong: #1b4a10; --brand-green-hover: #1b4a10; --brand-green-deep: #102d22; --btn-text: #ffffff; --focus-ring: #0f5c8a; --focus: #0f5c8a;
   --success-bg: #e4f6e6; --success-text: #14532d; --warning-bg: #fff4dc; --warning-text: #7a4a00;
   --error-bg: #fde8ea; --error-text: #8a1020; --danger: #8a1020; --warning: #7a4a00;
   --green-900: #102d22; --green-800: #0c2b20; --green-700: #245d16; --green-500: #3d8b1f; --green-300: #b8ff35; --green-100: #eef7e7; --green-50: #f7faf6;
