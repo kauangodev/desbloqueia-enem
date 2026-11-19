@@ -4,6 +4,11 @@ import PortalNav from "../../components/portal-nav";
 import CookiePreferencesLink from "../../components/cookie-preferences-link";
 import ResponsiveDrawerToggle from "../../components/responsive-drawer-toggle";
 import ThemeToggle from "../../components/theme-toggle";
+import OnboardingGate from "../../components/aluno/onboarding-gate";
+import { features } from "../../lib/features";
+import { operacaoUser } from "../../lib/operacao/store";
+import { loadOnboarding } from "../../lib/onboarding/store";
+import { freeScope } from "../../lib/planos/free";
 import TopbarChips from "../../components/aluno/topbar-chips";
 import UpsellCard from "../../components/aluno/upsell-card";
 import { studentSummary } from "../../lib/aluno/summary";
@@ -22,6 +27,17 @@ export default async function StudentLayout({
   const { who, isAdmin, plan, planLabel, momentum } = summary;
   if (who.user.must_change_password) redirect("/definir-senha?first=1");
   const name = who.profile?.name || "Estudante";
+  // Onboarding (chave NEXT_PUBLIC_FEATURE_ONBOARDING): falha de leitura nunca bloqueia o estudo, só deixa de mostrar o modal.
+  let onboarding: { state: Awaited<ReturnType<typeof loadOnboarding>>; freeLimit: number | null } | null = null;
+  if (features.onboarding) {
+    try {
+      const student = await operacaoUser();
+      if (student) {
+        const state = await loadOnboarding(student.kv);
+        if (!state.completedAt) onboarding = { state, freeLimit: student.tier === "gratis" ? freeScope().questionsPerDay : null };
+      }
+    } catch { onboarding = null; }
+  }
   return (
     <div className="portal">
       <aside id="student-navigation" className="sidebar">
@@ -43,6 +59,7 @@ export default async function StudentLayout({
           <span className="portal-user-name">{name.split(" ")[0]}</span>
         </header>
         <div className="workspace-scroll">{children}</div>
+        {onboarding ? <OnboardingGate initial={onboarding.state} freeLimit={onboarding.freeLimit} /> : null}
       </main>
     </div>
   );

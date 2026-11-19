@@ -1,0 +1,46 @@
+/* Onboarding GoDev v2: <dialog> modal nativo, tokens dos dois temas (neon só como ação; texto escuro sobre neon). */
+dialog.ob { width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 1px solid var(--border-subtle); border-radius: 16px; background: var(--surface); color: var(--text-primary); box-shadow: 0 24px 70px rgb(0 0 0 / 45%); overflow: hidden; }
+dialog.ob::backdrop { background: rgb(4 14 9 / 62%); backdrop-filter: blur(4px); }
+.ob-card { max-height: calc(100dvh - 26px); overflow-y: auto; padding: 18px 22px 20px; }
+.ob-bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ob-bars i { height: 6px; border-radius: 999px; background: var(--border-subtle); }
+.ob-bars i.is-on { background: #b8ff35; }
+.ob-step { margin: 10px 0 12px; font-size: .8125rem; font-weight: 700; color: var(--text-muted); }
+.ob h2 { margin: 0 0 6px; font-size: 1.375rem; line-height: 1.2; outline: none; }
+.ob-lead { margin: 0 0 16px; color: var(--text-secondary); font-size: .9375rem; line-height: 1.5; }
+.ob-field { display: grid; gap: 6px; font-weight: 700; font-size: .875rem; margin-bottom: 12px; min-width: 0; }
+.ob-field input, .ob-custom { min-height: 46px; padding: 0 12px; border-radius: 10px; border: 1.5px solid var(--border-control); background: var(--bg-base); color: var(--text-primary); font: 600 1rem inherit; width: 100%; }
+.ob-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ob-check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 600; }
+.ob-check input, .ob-chips input, .ob-routines input[type="radio"] { width: 20px; height: 20px; accent-color: #5fa80a; flex: none; }
+.ob-exams { border: 0; margin: 10px 0 0; padding: 0; }
+.ob-exams legend { font-weight: 700; font-size: .875rem; margin-bottom: 8px; }
+.ob-exams legend small { font-weight: 500; color: var(--text-muted); }
+.ob-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ob-chips label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--border-control); font-weight: 700; cursor: pointer; }
+.ob-chips label.is-on { background: #b8ff35; border-color: transparent; color: #102615; }
+.ob-routines { border: 0; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ob-routines label { position: relative; display: grid; gap: 2px; padding: 12px 14px 12px 44px; border-radius: 12px; border: 1.5px solid var(--border-subtle); cursor: pointer; min-height: 88px; }
+.ob-routines label input[type="radio"] { position: absolute; left: 14px; top: 14px; }
+.ob-routines label.is-on { border-color: #5fa80a; background: var(--pv-chip, var(--surface-elevated)); box-shadow: inset 0 0 0 1px #5fa80a; }
+.ob-routines b { font-size: 1rem; }
+.ob-routines span { color: var(--link); font-weight: 700; font-size: .875rem; }
+.ob-routines small { color: var(--text-muted); font-size: .8125rem; }
+.ob-custom { min-height: 38px; margin-top: 4px; }
+.ob-note, .ob-error { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; font-size: .9375rem; }
+.ob-note { background: var(--warning-bg); color: var(--warning-text); }
+.ob-error { background: var(--error-bg); color: var(--error-text); font-weight: 600; }
+.ob-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); }
+.ob-btn { min-height: 48px; padding: 0 20px; border-radius: 10px; border: 1.5px solid transparent; background: #b8ff35; color: #102615; font: 800 1rem inherit; cursor: pointer; }
+.ob-btn:hover:not(:disabled) { background: #c7ff65; }
+.ob-btn:disabled { opacity: .55; cursor: not-allowed; }
+.ob-btn-ghost { background: transparent; color: var(--text-primary); border-color: var(--border-control); }
+.ob-btn-ghost:hover:not(:disabled) { background: rgb(184 255 53 / 14%); }
+.ob :is(button, input, label):focus-visible, .ob-chips label:focus-within, .ob-routines label:focus-within { outline: 3px solid var(--focus-ring, #0f5c8a); outline-offset: 2px; }
+@media (max-width: 520px) { .ob-row, .ob-routines { grid-template-columns: 1fr; } .ob-actions .ob-btn { flex: 1 1 100%; } dialog.ob { width: calc(100vw - 16px); } }
+@media (prefers-reduced-motion: reduce) { dialog.ob::backdrop { backdrop-filter: none; } }
+/* Especificidade: o CSS legado fixa cor de texto em <button> */
+body.godev-app dialog.ob .ob-btn { color: #102615 !important; background: #b8ff35; }
+body.godev-app dialog.ob .ob-btn:hover:not(:disabled) { background: #c7ff65; }
+body.godev-app dialog.ob .ob-btn-ghost { color: var(--text-primary) !important; background: transparent !important; border-color: var(--border-control) !important; }
+.ob-actions { position: sticky; bottom: -20px; background: var(--surface); }

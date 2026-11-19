@@ -11,4 +11,6 @@ export const features = {
   gratis: process.env.NEXT_PUBLIC_FEATURE_GRATIS === "1",
   google: process.env.NEXT_PUBLIC_FEATURE_GOOGLE === "1",
   pix: process.env.NEXT_PUBLIC_FEATURE_PIX === "1",
+  /** `onboarding` (NEXT_PUBLIC_FEATURE_ONBOARDING=1): modal de 3 etapas no primeiro acesso. Ligar só depois da revisão jurídica da coleta da data de nascimento. */
+  onboarding: process.env.NEXT_PUBLIC_FEATURE_ONBOARDING === "1",
 } as const;

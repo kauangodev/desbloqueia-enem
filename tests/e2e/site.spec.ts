@@ -148,3 +148,10 @@ test("políticas e suporte têm rotas reais", async ({ page }) => {
 
 // Mobile layout coverage is part of the release gate.
 
+
+test("onboarding: API indisponível com a chave desligada e exige sessão quando ligada", async ({ request }) => {
+  const get = await request.get("/api/onboarding");
+  expect([404, 401]).toContain(get.status());
+  const post = await request.post("/api/onboarding", { data: { step: 1, birthDate: "2005-03-19" }, headers: { origin: "https://evil.example" } });
+  expect([404, 403]).toContain(post.status());
+});
