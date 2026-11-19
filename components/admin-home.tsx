@@ -2,6 +2,8 @@ import Link from "next/link";
 import { hasAdminPermission } from "../lib/admin-permissions";
 import { dailySeries, listStudents, overview, type DaySeries } from "../lib/admin/students";
 import { adminOrders, type OrderView } from "../lib/pix/store";
+import { onboardingStats } from "../lib/admin/onboarding";
+import { features } from "../lib/features";
 
 const brl = (cents: number) => `R$ ${(cents / 100).toFixed(2).replace(".", ",")}`;
 const tierLabel = { gratis: "Grátis", essencial: "Essencial", premium: "Premium" } as const;
@@ -40,11 +42,12 @@ export default async function AdminHome({ role }: { role: unknown }) {
   const can = hasAdminPermission(role, "students.read");
   // Pix e receita seguem a mesma permissão da aba Pagamentos Pix (payments.read), não a de alunos.
   const canPay = hasAdminPermission(role, "payments.read");
-  const [ov, series, queue, recent] = await Promise.all([
+  const [ov, series, queue, recent, onb] = await Promise.all([
     can ? overview().catch(() => null) : null,
     can ? dailySeries(7).catch(() => null) : null,
     canPay ? adminOrders({ status: "em_conferencia" }).catch(() => null) : null,
     can ? listStudents({ page: 1 }).catch(() => null) : null,
+    can && features.onboarding ? onboardingStats() : null,
   ]);
   const metrics: [string, string, string][] = ov ? [
     ["Novos cadastros", String(ov.signups7), "Contas de aluno criadas nos últimos 7 dias"],
@@ -60,6 +63,12 @@ export default async function AdminHome({ role }: { role: unknown }) {
           {metrics.map(([title, value, text]) => (<li key={title}><span>{title}</span><strong>{value}</strong><small>{text}</small></li>))}
         </ul>
       ) : <p role="alert" className="status-message">{can ? "Não foi possível carregar os indicadores agora." : "Você não tem permissão para ver os indicadores de alunos."}</p>}
+      {can && features.onboarding ? (
+        <section className="ah-card" aria-labelledby="ah-onb-t">
+          <h2 id="ah-onb-t">Onboarding (30 dias)</h2>
+          {onb ? (onb.started ? <p className="ah-sub">{onb.started} iniciaram · {onb.completed} concluíram ({Math.round((onb.completed / onb.started) * 100)}%) · parados na etapa 1: {onb.stoppedAt[1]}, etapa 2: {onb.stoppedAt[2]}, etapa 3: {onb.stoppedAt[3]}. Contagens, sem respostas pessoais.</p> : <p className="ah-sub">Sem dados: ninguém iniciou o onboarding ainda.</p>) : <p className="status-message">Métricas de onboarding indisponíveis agora.</p>}
+        </section>
+      ) : null}
       <div className="ah-row">
         <section className="ah-card" aria-labelledby="ah-chart-t">
           <h2 id="ah-chart-t">Cadastros e atividade</h2>
@@ -78,7 +87,7 @@ export default async function AdminHome({ role }: { role: unknown }) {
                 <Link className="ah-link" href={`/admin?tab=pix&status=em_conferencia&q=${o.id.slice(0, 8)}`} aria-label={`Conferir pedido ${o.id.slice(0, 8)}`}>Conferir ›</Link>
               </li>
             ))}</ul>
-          ) : <p className="ah-empty">Nenhum pagamento aguardando conferência.</p>) : <p className="status-message">Fila Pix indisponível agora.</p>}
+          ) : <p className="ah-empty">Nenhum pagamento aguardando conferência.</p>) : <p className="status-message" role="status">Fila Pix indisponível agora (não é fila vazia). Confirme se a migração 06 foi aplicada e abra <Link className="ah-link" href="/admin?tab=pix">Pagamentos Pix</Link> para o diagnóstico.</p>}
           <p><Link className="ah-link" href="/admin?tab=pix">Abrir todos os pagamentos</Link></p>
         </section> : null}
       </div>

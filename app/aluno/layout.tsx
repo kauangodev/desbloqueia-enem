@@ -28,13 +28,13 @@ export default async function StudentLayout({
   if (who.user.must_change_password) redirect("/definir-senha?first=1");
   const name = who.profile?.name || "Estudante";
   // Onboarding (chave NEXT_PUBLIC_FEATURE_ONBOARDING): falha de leitura nunca bloqueia o estudo, só deixa de mostrar o modal.
-  let onboarding: { state: Awaited<ReturnType<typeof loadOnboarding>>; freeLimit: number | null } | null = null;
+  let onboarding: { state: Awaited<ReturnType<typeof loadOnboarding>>; open: boolean; freeLimit: number | null } | null = null;
   if (features.onboarding) {
     try {
       const student = await operacaoUser();
       if (student) {
         const state = await loadOnboarding(student.kv);
-        if (!state.completedAt) onboarding = { state, freeLimit: student.tier === "gratis" ? freeScope().questionsPerDay : null };
+        onboarding = { state, open: !state.completedAt, freeLimit: student.tier === "gratis" ? freeScope().questionsPerDay : null };
       }
     } catch { onboarding = null; }
   }
@@ -59,7 +59,7 @@ export default async function StudentLayout({
           <span className="portal-user-name">{name.split(" ")[0]}</span>
         </header>
         <div className="workspace-scroll">{children}</div>
-        {onboarding ? <OnboardingGate initial={onboarding.state} freeLimit={onboarding.freeLimit} /> : null}
+        {onboarding ? <OnboardingGate initial={onboarding.state} freeLimit={onboarding.freeLimit} open={onboarding.open} /> : null}
       </main>
     </div>
   );

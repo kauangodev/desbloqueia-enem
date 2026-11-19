@@ -68,3 +68,17 @@ html[data-gd-theme="light"] body.godev-app.godev-app .as-tag { background: var(-
 html[data-gd-theme] body.godev-app.godev-app .portal-search input, html[data-gd-theme] body.godev-app.godev-app .portal-search input:focus { background: transparent !important; box-shadow: none; }
 html[data-gd-theme] body.godev-app.godev-app :is(.drawer-trigger) { color: var(--text-primary) !important; background: var(--pv-chip) !important; border: 1px solid var(--border-control) !important; }
 html[data-gd-theme] body.godev-app.godev-app :is(.drawer-trigger) svg { stroke: currentColor; color: var(--text-primary); }
+
+/* ---------- Início: banner enxuto e linha secundária ---------- */
+body.godev-app.godev-app .as-today { padding: clamp(14px, 2vw, 22px) clamp(16px, 2.4vw, 26px); min-height: 0; }
+body.godev-app.godev-app .as-today-reason { margin: 4px 0 12px; max-width: 62ch; }
+.as-today-more { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 24px; margin: 10px 0 2px; color: var(--text-secondary); font-size: .875rem; }
+.as-today-more details { min-width: 0; }
+.as-today-more summary { cursor: pointer; font-weight: 700; color: var(--link); min-height: 32px; display: inline-flex; align-items: center; }
+.as-today-more ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.as-today-more .as-today-note { margin: 0; flex: 1 1 320px; color: var(--text-muted); border: 0; padding: 0; }
+/* Planos: nome, valor e ação alinhados entre os cartões */
+.sales .s-plans { align-items: stretch; }
+.sales .s-plan { display: flex; flex-direction: column; }
+.sales .s-plan .s-checks { flex: 1; }
+.sales .s-plan .s-plan-foot { margin-top: auto; }

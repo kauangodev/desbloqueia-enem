@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { features } from "../../../lib/features";
 import { identity, canAccess } from "../../../lib/supabase";
 import CookiePreferencesLink from "../../../components/cookie-preferences-link";
+import OnboardingReopen from "../../../components/aluno/onboarding-reopen";
 import Library from "../../../components/library";
 import Schedule from "../../../components/schedule";
 import Support from "../../../components/support";
@@ -88,6 +89,7 @@ export default async function Section({
           <b>Nome:</b> {who.profile?.name || "Não informado"}
         </p>
         <p><b>Privacidade:</b> <CookiePreferencesLink /></p>
+        {features.onboarding ? <p><OnboardingReopen /></p> : null}
         <h2>Seus acessos</h2>
         {data?.length ? (
           data.map((e) => (

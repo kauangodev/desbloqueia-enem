@@ -3,6 +3,7 @@ import { Header, Footer } from "../../components/site";
 import CheckoutParams from "./CheckoutParams";
 import SalesSticky from "./SalesSticky";
 import { SalesAccess, SalesFaq, SalesOffers, SalesStrip } from "./SalesSections";
+import PlanTeaser from "./PlanTeaser";
 import { BenefitStrip, ExperienceSection, HeroV2, MethodSection, SearchSection, TrilhasSection, type TrilhaCard } from "./V2Sections";
 import type { SearchItem } from "./SearchExplorer";
 import LandingEvents from "./LandingEvents";
@@ -54,9 +55,9 @@ export default async function LandingPage() {
     ...UNITS.map((u) => ({ label: u.title, kind: "Unidade da Trilha", href: exploreHref })),
   ];
   const trilhaCards: TrilhaCard[] = [
-    { title: "Matemática", text: "Do básico à resolução de questões do ENEM, com foco no que mais cai.", tag: "Trilha", image: "/covers/editorial-v3/matematica.jpg", href: exploreHref },
-    { title: "Ciências da Natureza", text: "Conteúdos de Biologia, Química e Física integrados com questões do ENEM.", tag: "Trilha", image: "/covers/editorial-v3/natureza.jpg", href: exploreHref },
-    { title: "Revisão inteligente", text: "Revisões direcionadas, resumos objetivos e questões para fixar o conteúdo.", tag: "Revisão", image: "/amostras/mat-p07.webp", href: exploreHref },
+    { title: "Matemática", text: "Do básico à resolução de questões do ENEM, com foco no que mais cai.", tag: "Trilha", art: "math", href: exploreHref },
+    { title: "Ciências da Natureza", text: "Conteúdos de Biologia, Química e Física integrados com questões do ENEM.", tag: "Trilha", art: "science", href: exploreHref },
+    { title: "Revisão inteligente", text: "Revisões direcionadas, resumos objetivos e questões para fixar o conteúdo.", tag: "Revisão", art: "review", href: exploreHref },
   ];
   const demos = demoQuestions();
   const heroQuestion = demos.find((item) => item.disc === "matematica");
@@ -78,6 +79,7 @@ export default async function LandingPage() {
         <MethodSection />
         <TrilhasSection cards={trilhaCards} units={previewUnits} signupHref={features.gratis ? trilhaSignup : null} />
         <ExperienceSection question={heroQuestion} ctaHref={features.gratis ? trilhaSignup : "#ofertas"} gratis={features.gratis} />
+        <PlanTeaser ctaHref={features.gratis ? trilhaSignup : "#ofertas"} gratis={features.gratis} />
         <SalesOffers plans={plans} facts={facts} inv={inv} checkoutReady={checkoutReady} free={free} pixReady={{ essencial: pixReady.essencial, premium: pixReady.premium }} />
         <SalesAccess />
         <SalesFaq inv={inv} essencialTotal={essencialTotal} premiumTotal={premiumTotal} essencialBase={brl(cents("essencial"))} premiumBase={brl(cents("premium"))} />

@@ -8,9 +8,10 @@
  */
 export const features = {
   redacao: process.env.NEXT_PUBLIC_FEATURE_REDACAO === "1",
-  gratis: process.env.NEXT_PUBLIC_FEATURE_GRATIS === "1",
+  /** Ligadas por padrão (decisão do proprietário): defina NEXT_PUBLIC_FEATURE_GRATIS=0 / NEXT_PUBLIC_FEATURE_PIX=0 para voltar ao comportamento anterior. */
+  gratis: process.env.NEXT_PUBLIC_FEATURE_GRATIS !== "0",
   google: process.env.NEXT_PUBLIC_FEATURE_GOOGLE === "1",
-  pix: process.env.NEXT_PUBLIC_FEATURE_PIX === "1",
+  pix: process.env.NEXT_PUBLIC_FEATURE_PIX !== "0",
   /** `onboarding` (NEXT_PUBLIC_FEATURE_ONBOARDING=1): modal de 3 etapas no primeiro acesso. Ligar só depois da revisão jurídica da coleta da data de nascimento. */
   onboarding: process.env.NEXT_PUBLIC_FEATURE_ONBOARDING === "1",
 } as const;

@@ -12,7 +12,7 @@ const today = () => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Pa
  * Onboarding de 3 etapas em <dialog> modal nativo: foco preso no diálogo, fundo inerte e Escape tratados pelo navegador.
  * A etapa 1 (nascimento) é obrigatória e oferece "Sair da conta"; as etapas 2 e 3 podem ser puladas. Cada etapa é salva no servidor.
  */
-export default function OnboardingGate({ initial, freeLimit }: { initial: OnboardingState; freeLimit: number | null }) {
+export default function OnboardingGate({ initial, freeLimit, open = true }: { initial: OnboardingState; freeLimit: number | null; open?: boolean }) {
   const router = useRouter();
   const dialog = useRef<HTMLDialogElement>(null);
   const [step, setStep] = useState<Step>(initial.step);
@@ -29,7 +29,13 @@ export default function OnboardingGate({ initial, freeLimit }: { initial: Onboar
   const errorId = useId();
   const heading = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => { const d = dialog.current; if (d && !d.open) d.showModal(); }, []);
+  useEffect(() => { const d = dialog.current; if (d && open && !d.open) d.showModal(); }, [open]);
+  // "Rever metas e ritmo" (Minha conta) reabre o modal na etapa 2, sem pedir de novo a data de nascimento.
+  useEffect(() => {
+    const reopen = () => { setError(null); setStep(2); const d = dialog.current; if (d && !d.open) d.showModal(); };
+    window.addEventListener("godev-onboarding-open", reopen);
+    return () => window.removeEventListener("godev-onboarding-open", reopen);
+  }, []);
   // A cada etapa o foco vai ao título, para quem usa leitor de tela ou teclado não perder o lugar.
   useEffect(() => { heading.current?.focus(); }, [step]);
 

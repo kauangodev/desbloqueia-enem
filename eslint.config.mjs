@@ -12,5 +12,7 @@ export default defineConfig([
     "public/vendor/**",
     "test-results/**",
     "playwright-report/**",
+    "scripts/**/*.cjs",
+    "tmp/**",
   ]),
 ]);

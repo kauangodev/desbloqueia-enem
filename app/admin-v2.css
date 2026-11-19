@@ -121,3 +121,8 @@ html[data-gd-theme] body.godev-app.godev-app .ah-plan-premium { background: #b8f
   .ah-pix li b { margin-left: auto; }
 }
 html[data-gd-theme] body.godev-app.godev-app .ah { box-shadow: none !important; border: 0 !important; padding: 0 !important; }
+
+/* Seletor de tema único (mesmo componente do aluno e da landing), visível em todas as larguras */
+.admin-theme, .portal-topbar .portal-theme { display: inline-flex !important; margin: 0 8px 0 auto; }
+.portal-topbar .portal-theme { margin-left: 0; }
+.admin-theme select, .portal-theme select { min-width: 0; width: 8.4rem; min-height: 44px; }

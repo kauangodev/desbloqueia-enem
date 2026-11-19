@@ -5,6 +5,7 @@ import type { DemoQuestion } from "./explorer-types";
 import SearchExplorer, { type SearchItem } from "./SearchExplorer";
 import TryQuestion from "./TryQuestion";
 import TrilhaPreview, { type PreviewUnit } from "./TrilhaPreview";
+import { ArtMath, ArtReview, ArtScience, ArtTile } from "./Art";
 
 const Icon = ({ children }: { children: ReactNode }) => (
   <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{children}</svg>
@@ -31,8 +32,16 @@ export function HeroV2({ hasAccess, studyArea, gratis, view, signupHref }: { has
         </div>
         <div className="v2-hero-visual">
           <span className="v2-blob" aria-hidden="true" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="v2-hero-photo" src="/landing/hero.webp" width={500} height={816} alt="" fetchPriority="high" decoding="async" />
+          <div className="v2-device" role="img" aria-label="Prévia ilustrativa da Trilha ENEM: fundamento e prática concluídos, desafio em andamento e revisão a seguir">
+            <div className="v2-device-head"><b>Trilha ENEM</b><span>Prévia ilustrativa</span></div>
+            <svg className="v2-ring" viewBox="0 0 80 80" width="92" height="92" aria-hidden="true" focusable="false"><circle cx="40" cy="40" r="32" fill="none" stroke="var(--v2-line)" strokeWidth="9" /><circle cx="40" cy="40" r="32" fill="none" stroke="var(--v2-ring)" strokeWidth="9" strokeLinecap="round" strokeDasharray="201" strokeDashoffset="100" transform="rotate(-90 40 40)" /><text x="40" y="46" textAnchor="middle" className="v2-ring-text">50%</text></svg>
+            <ol className="v2-device-steps" aria-hidden="true">
+              <li className="is-done"><i />Fundamento</li>
+              <li className="is-done"><i />Prática</li>
+              <li className="is-now"><i />Desafio</li>
+              <li><i />Revisão</li>
+            </ol>
+          </div>
           <a className="v2-float v2-float-a" href="#trilha"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16ZM8 8h8" /></svg>Trilha ENEM<span aria-hidden="true">›</span></a>
           <a className="v2-float v2-float-b" href="#experimentar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3.5" /></svg>Pratique e evolua<span aria-hidden="true">›</span></a>
           <div className="v2-float v2-float-c">
@@ -74,9 +83,8 @@ export function MethodSection() {
     <section className="v2-section" id="beneficios" aria-labelledby="v2-method-title">
       <div className="v2-wrap v2-method">
         <div className="v2-mosaic" aria-hidden="true">
-          {[1, 2, 3, 4].map((n) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={n} src={`/landing/estudante-${n}.webp`} width={468} height={n < 3 ? 381 : 354} alt="" loading="lazy" decoding="async" />
+          {([["trilha", "Trilha", "n"], ["resolucao", "Resolução", "f"], ["erros", "Seus erros", "t"], ["revisao", "Revisão", "a"]] as const).map(([kind, label, tone]) => (
+            <div key={kind} className={`v2-tile v2-tile-${tone}`}><ArtTile kind={kind} /><b>{label}</b></div>
           ))}
         </div>
         <div>
@@ -88,7 +96,7 @@ export function MethodSection() {
   );
 }
 
-export type TrilhaCard = { title: string; text: string; tag: string; image: string; href: string };
+export type TrilhaCard = { title: string; text: string; tag: string; art: "math" | "science" | "review"; href: string };
 
 export function TrilhasSection({ cards, units, signupHref }: { cards: TrilhaCard[]; units: PreviewUnit[]; signupHref: string | null }) {
   return (
@@ -99,8 +107,7 @@ export function TrilhasSection({ cards, units, signupHref }: { cards: TrilhaCard
           {cards.map((card) => (
             <li key={card.title}>
               <Link href={card.href} className="v2-card-media" tabIndex={-1} aria-hidden="true">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={card.image} width={320} height={200} alt="" loading="lazy" decoding="async" />
+                {card.art === "math" ? <ArtMath /> : card.art === "science" ? <ArtScience /> : <ArtReview />}
                 <span className="v2-pill">{card.tag}</span>
               </Link>
               <h3>{card.title}</h3>

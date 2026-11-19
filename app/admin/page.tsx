@@ -12,6 +12,7 @@ import { META_PIXEL_ID } from "../../lib/meta-pixel";
 import TicketManager from "../../components/ticket-manager";
 import AdminOverview from "../../components/admin-overview";
 import AdminHome from "../../components/admin-home";
+import ThemeToggle from "../../components/theme-toggle";
 import TeamManager from "../../components/team-manager";
 import ManualAccessForm from "../../components/manual-access-form";
 import DeleteUserButton from "../../components/delete-user-button";
@@ -613,6 +614,7 @@ export default async function Admin({
             <strong>Operação</strong>
           </div>
           <div className="admin-topbar-actions">
+            <ThemeToggle className="header-theme admin-theme" />
             <span className="admin-live-indicator"><i /> Dados conectados</span>
           </div>
         </header>

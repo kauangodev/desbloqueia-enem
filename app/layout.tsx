@@ -28,6 +28,7 @@ import "./portal-v2.css";
 import "./admin-v2.css";
 import { appUrl } from "../lib/config";
 import Analytics from "../components/analytics";
+import ThemeSync from "../components/theme-sync";
 
 const bodyFont = Inter({
   subsets: ["latin"],
@@ -80,6 +81,7 @@ export default function RootLayout({
           Pular para o conteúdo
         </a>
         {children}
+        <ThemeSync />
         <Suspense fallback={null}>
           <Analytics />
         </Suspense>
