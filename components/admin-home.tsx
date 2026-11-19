@@ -36,38 +36,25 @@ function Chart({ series }: { series: DaySeries }) {
 }
 
 /** Visão geral operacional (anexo 5): indicadores, gráfico, fila Pix e cadastros recentes. Cada bloco falha sozinho, com mensagem, sem derrubar a página. */
-/** Só em desenvolvimento local (GODEV_DEV_USER=1, nunca em produção): dados SINTÉTICOS para conferir o layout sem banco. */
-const devMode = () => process.env.GODEV_DEV_USER === "1" && process.env.NODE_ENV !== "production";
-const devFixture = () => {
-  const day = (back: number) => new Date(Date.now() - back * 86_400_000).toISOString().slice(0, 10);
-  const freq = (last: string | null) => ({ hasData: Boolean(last), lastStudyDay: last, active7: 3, active30: 9, streak: 2, totalDays: 12, activeDays: [] as string[] });
-  const row = (i: number, name: string, source: string, tier: "gratis" | "essencial" | "premium", verified: boolean, last: string | null) => ({ id: `00000000-0000-4000-8000-00000000000${i}`, name, email: `${name.toLowerCase()}@exemplo.dev`, createdAt: new Date().toISOString(), verified, status: "active", source, tier, lastLoginAt: null, freq: freq(last) });
-  return {
-    ov: { signups7: 128, signups30: 301, verified30: 240, pending30: 61, bySource30: {}, firstActivity30: 180, active7: 84, active30: 150, upgrades30: 24, revenue30Cents: 47760, toReview: 3, conversion30: { total: 240, paid: 24, rate: 10 }, migrated: true },
-    series: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ day: day(6 - i), signups: [14, 22, 18, 25, 21, 27, 30][i], active: [9, 13, 11, 16, 15, 17, 20][i] })),
-    orders: ["a1b2", "c3d4", "e5f6"].map((c, i) => ({ id: `${c}0000-0000-4000-8000-000000000000`, userId: "u", offerCode: i === 1 ? "essencial-v1" : "premium-v1", offerVersion: 1, expectedCents: i === 1 ? 1090 : 1990, status: i === 1 ? "aguardando_pix" : "em_conferencia", expiresAt: "", bankRef: null, tier: (i === 1 ? "essencial" : "premium") as "essencial" | "premium", notifiedAt: null, createdAt: "" })),
-    rows: [row(1, "Marina", "google", "gratis", true, day(0)), row(2, "Lucas", "email", "essencial", true, day(1)), row(3, "Beatriz", "google", "premium", false, day(0))],
-  };
-};
 export default async function AdminHome({ role }: { role: unknown }) {
-  const can = hasAdminPermission(role, "students.read") || devMode();
-  const fx = devMode() ? devFixture() : null;
-  const [ov, series, queue, recent] = fx ? ([fx.ov, fx.series, { rows: fx.orders, total: 3, page: 1, pageSize: 20 }, { rows: fx.rows, total: 3, page: 1, pageSize: 20, migrated: true }] as never as [Awaited<ReturnType<typeof overview>>, DaySeries, Awaited<ReturnType<typeof adminOrders>>, Awaited<ReturnType<typeof listStudents>>]) : await Promise.all([
+  const can = hasAdminPermission(role, "students.read");
+  // Pix e receita seguem a mesma permissão da aba Pagamentos Pix (payments.read), não a de alunos.
+  const canPay = hasAdminPermission(role, "payments.read");
+  const [ov, series, queue, recent] = await Promise.all([
     can ? overview().catch(() => null) : null,
     can ? dailySeries(7).catch(() => null) : null,
-    adminOrders({ status: "em_conferencia" }).catch(() => null),
+    canPay ? adminOrders({ status: "em_conferencia" }).catch(() => null) : null,
     can ? listStudents({ page: 1 }).catch(() => null) : null,
   ]);
   const metrics: [string, string, string][] = ov ? [
     ["Novos cadastros", String(ov.signups7), "Contas de aluno criadas nos últimos 7 dias"],
     ["Alunos que estudaram", String(ov.active7), "Com atividade pedagógica nos últimos 7 dias"],
-    ["Pix a conferir", String(ov.toReview), "Avisos de pagamento aguardando conciliação bancária"],
-    ["Receita confirmada", brl(ov.revenue30Cents), "Pix confirmados nos últimos 30 dias, sem devoluções"],
   ] : [];
+  if (ov && canPay) metrics.push(["Pix a conferir", String(ov.toReview), "Avisos de pagamento aguardando conciliação bancária"], ["Receita confirmada", brl(ov.revenue30Cents), "Pix confirmados nos últimos 30 dias, sem devoluções"]);
   const orders: OrderView[] = queue?.rows.slice(0, 5) ?? [];
   return (
     <div className="ah">
-      <div className="ah-period"><span>Últimos 7 dias</span><small>Receita: 30 dias</small></div>
+      <div className="ah-period"><span>Últimos 7 dias</span>{canPay ? <small>Receita: 30 dias</small> : null}</div>
       {ov ? (
         <ul className="ah-metrics" aria-label="Indicadores">
           {metrics.map(([title, value, text]) => (<li key={title}><span>{title}</span><strong>{value}</strong><small>{text}</small></li>))}
@@ -78,7 +65,7 @@ export default async function AdminHome({ role }: { role: unknown }) {
           <h2 id="ah-chart-t">Cadastros e atividade</h2>
           {series ? <Chart series={series} /> : <p className="status-message">Sem dados de série agora.</p>}
         </section>
-        <section className="ah-card" aria-labelledby="ah-pix-t">
+        {canPay ? <section className="ah-card" aria-labelledby="ah-pix-t">
           <h2 id="ah-pix-t">Pagamentos Pix</h2>
           <p className="ah-sub">Liberação só depois da conferência bancária. O aviso do aluno não é crédito.</p>
           {queue ? (orders.length ? (
@@ -93,7 +80,7 @@ export default async function AdminHome({ role }: { role: unknown }) {
             ))}</ul>
           ) : <p className="ah-empty">Nenhum pagamento aguardando conferência.</p>) : <p className="status-message">Fila Pix indisponível agora.</p>}
           <p><Link className="ah-link" href="/admin?tab=pix">Abrir todos os pagamentos</Link></p>
-        </section>
+        </section> : null}
       </div>
       <section className="ah-card" aria-labelledby="ah-recent-t">
         <div className="ah-card-head"><h2 id="ah-recent-t">Cadastros recentes</h2><Link className="ah-link" href="/admin?tab=cadastros">Ver todos ›</Link></div>

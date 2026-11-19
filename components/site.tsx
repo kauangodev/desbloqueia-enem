@@ -1,8 +1,6 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { materials } from "../lib/config";
 import CookiePreferencesLink from "./cookie-preferences-link";
 import ThemeToggle from "./theme-toggle";
 import { features } from "../lib/features";
@@ -35,8 +33,7 @@ export function Header() {
     const id = href.split("#")[1];
     const target = id ? document.getElementById(id) : null;
     if (!target || window.location.pathname !== "/landing") return;
-    event.preventDefault();
-    document.body.style.overflow = "";
+    event.preventDefault(); // fechar o menu (setOpen acima) já restaura a rolagem no efeito de limpeza
     requestAnimationFrame(() => {
       target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${id}`);

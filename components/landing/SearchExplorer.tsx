@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
-import { trackBusiness } from "../../lib/funnel/client";
 
 export type SearchItem = { label: string; kind: string; href: string };
 
@@ -21,7 +20,7 @@ export default function SearchExplorer({ items, fallbackHref }: { items: SearchI
   return (
     <div className="v2-search">
       <h2 id="v2-search-title">O que você quer estudar hoje?</h2>
-      <form role="search" aria-labelledby="v2-search-title" onSubmit={(event) => { event.preventDefault(); setSubmitted(query); trackBusiness("demo_started", {}, { once: true }); }}>
+      <form role="search" aria-labelledby="v2-search-title" onSubmit={(event) => { event.preventDefault(); setSubmitted(query); }}>
         <label htmlFor={inputId} className="sr-only">Busque por disciplina ou assunto</label>
         <span className="v2-search-field">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6" /><path d="m15 15 5 5" /></svg>
