@@ -11,6 +11,7 @@ import { modules, questions, toPublic } from "../../lib/operacao/catalog";
 import { UNITS } from "../../lib/trilha/service";
 import "../../app/landing-plus.css";
 import "../../app/landing-v2.css";
+import "../../app/hero-glass.css";
 import { brl, SERVICE_FEE_CENTS } from "../../lib/pricing";
 import { publicPlans } from "../../lib/catalog";
 import { checkoutConfigured } from "../../lib/readiness";

@@ -90,7 +90,7 @@ for (const width of [320, 390]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
     const body = await page.locator("main").innerText();
     expect(body).not.toMatch(/Operação|Reta final|Operação 2º Domingo/);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Prepare-se para o ENEM 2027 com direção/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Prepare-se para o ENEM 2027 com mais direção/);
   });
 }
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import type { ReactNode } from "react";
 import type { CampaignView } from "../../lib/campaign";
 import type { DemoQuestion } from "./explorer-types";
@@ -11,6 +11,12 @@ const Icon = ({ children }: { children: ReactNode }) => (
   <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{children}</svg>
 );
 
+const GLASS: [string, string, string, ReactNode][] = [
+  ["a", "Trilhas de estudo", "Saiba por onde começar", <Icon key="a"><path d="M5 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM19 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM7 17c5 0 3-8 8-8h2" /></Icon>],
+  ["b", "Questões comentadas", "Entenda cada resposta", <Icon key="b"><path d="M4 5h16v11H9l-5 4V5ZM8 9.5h8M8 12.5h5" /></Icon>],
+  ["c", "Caderno de erros", "Revise o que precisa", <Icon key="c"><path d="M7 3h10v18l-5-4-5 4V3Z" /></Icon>],
+  ["d", "Revisão espaçada", "Reforce o que aprendeu", <Icon key="d"><path d="M5 5h14v15H5V5ZM5 9h14M9 3v4M15 3v4M9 14l2 2 4-4" /></Icon>],
+];
 export function HeroV2({ hasAccess, studyArea, gratis, view, signupHref }: { hasAccess: boolean; studyArea: string; gratis: boolean; view: CampaignView; signupHref: string }) {
   const primary = hasAccess
     ? <Link className="v2-btn v2-btn-lg" href={studyArea}>Continuar estudando</Link>
@@ -20,33 +26,24 @@ export function HeroV2({ hasAccess, studyArea, gratis, view, signupHref }: { has
       <div className="v2-wrap v2-hero-grid">
         <div className="v2-hero-copy">
           <p className="v2-eyebrow">Sua preparação para o ENEM 2027</p>
-          <h1 id="s-title">Prepare-se para o <em>ENEM 2027</em> com direção.</h1>
-          <p className="v2-lead">Organize seus estudos com trilhas, pratique com questões comentadas e revise seus erros em uma plataforma feita para acompanhar sua evolução.</p>
+          <h1 id="s-title">Prepare-se para o <em>ENEM 2027</em> com mais direção.</h1>
+          <p className="v2-lead">Trilhas de estudo, questões comentadas e revisão para você evoluir no seu ritmo.</p>
           <div className="v2-actions">
             {primary}
             {!hasAccess ? <a className="v2-btn v2-btn-outline v2-btn-lg" href="#amostra">Testar uma questão</a> : null}
           </div>
-          {!hasAccess && gratis ? <p className="v2-cond"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="11" fill="currentColor" /><path d="m7 12.5 3.3 3.3L17 9" fill="none" stroke="var(--v2-on-accent)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>Sem cartão</p> : null}
+          {!hasAccess && gratis ? <p className="v2-cond"><Link href={signupHref} data-signup="hero-gratis">Conheça o plano gratuito</Link><span>Sem cartão</span></p> : null}
           <p className="s-cal" role="status"><b>{view.label}.</b> {view.calendarConfirmed ? view.detail : "Enquanto não há data oficial, o plano de estudos segue por semanas."}</p>
         </div>
-        <div className="v2-hero-visual">
-          <span className="v2-blob" aria-hidden="true" />
-          <div className="v2-device" role="img" aria-label="Prévia ilustrativa da Trilha ENEM: fundamento e prática concluídos, desafio em andamento e revisão a seguir">
-            <div className="v2-device-head"><b>Trilha ENEM</b><span>Prévia ilustrativa</span></div>
-            <svg className="v2-ring" viewBox="0 0 80 80" width="92" height="92" aria-hidden="true" focusable="false"><circle cx="40" cy="40" r="32" fill="none" stroke="var(--v2-line)" strokeWidth="9" /><circle cx="40" cy="40" r="32" fill="none" stroke="var(--v2-ring)" strokeWidth="9" strokeLinecap="round" strokeDasharray="201" strokeDashoffset="100" transform="rotate(-90 40 40)" /><text x="40" y="46" textAnchor="middle" className="v2-ring-text">50%</text></svg>
-            <ol className="v2-device-steps" aria-hidden="true">
-              <li className="is-done"><i />Fundamento</li>
-              <li className="is-done"><i />Prática</li>
-              <li className="is-now"><i />Desafio</li>
-              <li><i />Revisão</li>
-            </ol>
-          </div>
-          <a className="v2-float v2-float-a" href="#trilha"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16ZM8 8h8" /></svg>Trilha ENEM<span aria-hidden="true">›</span></a>
-          <a className="v2-float v2-float-b" href="#experimentar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3.5" /></svg>Pratique e evolua<span aria-hidden="true">›</span></a>
-          <div className="v2-float v2-float-c">
-            <p><b>Seu próximo passo</b><small>Prévia ilustrativa</small></p>
-            <a className="v2-btn v2-btn-block" href={hasAccess ? studyArea : "#trilha"}>Continuar trilha<span aria-hidden="true">›</span></a>
-          </div>
+        <div className="gh-visual">
+          <span className="gh-glow" aria-hidden="true" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="gh-person" src="/hero/personagem-793.webp" srcSet="/hero/personagem-480.webp 480w, /hero/personagem-793.webp 793w" sizes="(max-width: 900px) 240px, 380px" width="793" height="1560" alt="" fetchPriority="high" decoding="async" />
+          <ul className="gh-cards">
+            {GLASS.map(([k, title, sub, icon]) => (
+              <li key={k} className={`gh-card gh-card-${k}`}><span className="gh-ico">{icon}</span><b>{title}</b><small>{sub}</small></li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
@@ -141,3 +138,4 @@ export function ExperienceSection({ question, ctaHref, gratis }: { question: Dem
     </section>
   );
 }
+
