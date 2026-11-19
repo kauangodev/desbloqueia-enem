@@ -23,7 +23,7 @@ test("dispositivo por largura", () => {
 });
 
 test("taxas: denominador explícito e 'sem dados' nunca vira 0%", () => {
-  assert.deepEqual(rate(1, 4), { numerator: 1, denominator: 4, pct: 25 });
+  assert.deepEqual(rate(1, 4), { numerator: 1, denominator: 4, pct: 25, incomplete: false });
   assert.equal(rate(0, 0).pct, null);
   const r = funnelRates({ visitors: 200, demoVisitors: 80, planViewers: 60, signupsVerified: 20, firstStudy: 15, checkouts: 5, purchases: 2 });
   assert.equal(r.visitaParaDemo.pct, 40);
@@ -32,4 +32,20 @@ test("taxas: denominador explícito e 'sem dados' nunca vira 0%", () => {
   assert.equal(r.checkoutParaPagamento.pct, 40);
   assert.equal(r.visitaParaPagamento.pct, 1);
   assert.equal(funnelRates({ visitors: 0, demoVisitors: 0, planViewers: 0, signupsVerified: 0, firstStudy: 0, checkouts: 0, purchases: 0 }).visitaParaDemo.pct, null);
+});
+
+test("taxa com numerador maior que a base fica 'incompleta', nunca acima de 100%", () => {
+  const r = funnelRates({ visitors: 10, demoVisitors: 4, planViewers: 3, signupsVerified: 25, firstStudy: 5, checkouts: 2, purchases: 3 });
+  assert.equal(r.visitaParaCadastroVerificado.pct, null);
+  assert.equal(r.visitaParaCadastroVerificado.incomplete, true);
+  assert.equal(r.checkoutParaPagamento.incomplete, true);
+  assert.equal(r.visitaParaDemo.pct, 40);
+});
+
+test("rateLimited recusa depois do máximo e libera após a janela", async () => {
+  const { rateLimited } = await import("../lib/http");
+  assert.equal(rateLimited("t", 2, 1000, 0), false);
+  assert.equal(rateLimited("t", 2, 1000, 10), false);
+  assert.equal(rateLimited("t", 2, 1000, 20), true);
+  assert.equal(rateLimited("t", 2, 1000, 1500), false);
 });

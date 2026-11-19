@@ -11,12 +11,14 @@ import { funnelRates } from "../funnel/model";
 export async function funnelSummary() {
   try {
     const win = "created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY)";
-    const one = async (sql: string) => Number(((await mysqlPool().query<RowDataPacket[]>(sql))[0][0]?.n) ?? 0);
-    const distinct = (name: string) => one(`SELECT COUNT(DISTINCT visitor_id) AS n FROM funnel_events WHERE name = '${name}' AND visitor_id IS NOT NULL AND ${win}`);
-    const count = (name: string) => one(`SELECT COUNT(*) AS n FROM funnel_events WHERE name = '${name}' AND ${win}`);
-    const [visitors, demoVisitors, planViewers, signupsVerified, firstStudy, checkouts, purchases] = await Promise.all([
+    // Uma consulta só: visitantes distintos (navegador) e contagens (servidor) por nome de evento.
+    const [rows] = await mysqlPool().query<RowDataPacket[]>(`SELECT name, COUNT(*) AS total, COUNT(DISTINCT visitor_id) AS visitors FROM funnel_events WHERE ${win} GROUP BY name`);
+    const by = new Map(rows.map((r) => [String(r.name), r]));
+    const distinct = (name: string) => Number(by.get(name)?.visitors ?? 0);
+    const count = (name: string) => Number(by.get(name)?.total ?? 0);
+    const [visitors, demoVisitors, planViewers, signupsVerified, firstStudy, checkouts, purchases] = [
       distinct("landing_viewed"), distinct("demo_started"), distinct("plans_viewed"), count("signup_verified"), count("first_study_completed"), count("checkout_started"), count("purchase_confirmed"),
-    ]);
+    ];
     return { counts: { visitors, demoVisitors, planViewers, signupsVerified, firstStudy, checkouts, purchases }, rates: funnelRates({ visitors, demoVisitors, planViewers, signupsVerified, firstStudy, checkouts, purchases }) };
   } catch { return null; }
 }

@@ -14,3 +14,7 @@ playwright-report/
 private/
 tmp/
 supabase/.temp/
+
+# Capturas geradas pelos testes e evidencias locais (regeneraveis)
+tests/__screenshots__/
+evidencias-landing/

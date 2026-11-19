@@ -119,14 +119,17 @@ export async function POST(req: Request) {
         const q = questionById(input.questionId);
         if (!q) return jsonError("Questão não encontrada", 404);
         const run = async () => {
+          const day = todayInSaoPaulo();
+          let freeUses: Awaited<ReturnType<typeof loadQuota>> | null = null;
           if (user.tier === "gratis") {
-            const day = todayInSaoPaulo();
             const free = freeAnswerDecision(freeScope(), q, await loadQuota(user.kv, day), day);
             if (!free.decision.allowed) return jsonError(free.decision.message, 403);
-            await saveQuota(user.kv, day, free.uses);
+            freeUses = free.uses;
           }
           const correction = grade(q, input.selected);
           const attempt = await recordAttempt(user, q.id, input.selected, correction.correct, input.context);
+          // A cota só é gasta depois que a resposta foi gravada: erro ao gravar não custa uma das questões do dia.
+          if (freeUses) await saveQuota(user.kv, day, freeUses);
           return NextResponse.json({ correction, firstTry: attempt.history.length === 1, afterResolution: attempt.history.length > 1 });
         };
         // Grátis: leitura e gravação da cota ficam numa fila por aluno (respostas simultâneas não passam do limite).

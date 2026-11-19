@@ -4,7 +4,7 @@ import { appUrl } from "../../../../../lib/config";
 import { claimProblems, GOOGLE_JWKS_URL, GOOGLE_TOKEN_URL, verifyRs256 } from "../../../../../lib/auth/google";
 import { features } from "../../../../../lib/features";
 import { mysqlPool } from "../../../../../lib/mysql";
-import { startSessionForUser } from "../../../../../lib/supabase";
+import { linkEntitlementsToUser, startSessionForUser } from "../../../../../lib/supabase";
 import { TERMS_VERSION } from "../../../../../lib/auth/terms";
 import { recordEvent } from "../../../../../lib/funnel/record";
 import { signPayload } from "../../../../../lib/auth/oauth-cookie";
@@ -57,7 +57,7 @@ export async function GET(req: Request) {
         await conn.query("INSERT INTO auth_identities (provider,subject,user_id) VALUES ('google',?,?)", [sub, id]);
         await conn.commit();
         userId = id;
-        void recordEvent("signup_verified", { userId: id, dedupeKey: id, params: { plan: "gratis" } });
+        await recordEvent("signup_verified", { userId: id, dedupeKey: id, params: { plan: "gratis" } });
       } catch (error) {
         await conn.rollback();
         // Duas requisições simultâneas: a identidade (provider, sub) é única; a perdedora reaproveita a conta já criada.
@@ -66,7 +66,11 @@ export async function GET(req: Request) {
         userId = again[0]?.user_id ?? null;
       } finally { conn.release(); }
     }
-    if (!userId || !(await startSessionForUser(userId))) return back("google-conta");
+    if (!userId) return back("google-conta");
+    // Mesmo vínculo do login por senha: compras antigas feitas com o e-mail da conta passam a valer para ela (senão o comprador cairia no Grátis).
+    const [owner] = await pool.query<import("mysql2/promise").RowDataPacket[]>("SELECT email FROM users WHERE id = ? LIMIT 1", [userId]);
+    if (owner[0]?.email) await linkEntitlementsToUser(userId, String(owner[0].email)).catch(() => undefined);
+    if (!(await startSessionForUser(userId))) return back("google-conta");
     const response = NextResponse.redirect(`${appUrl}${cookie.redirect}`, 303);
     response.cookies.delete({ name: "gd_oauth", path: "/api/auth/google" });
     response.headers.set("Cache-Control", "no-store");

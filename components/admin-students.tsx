@@ -8,7 +8,7 @@ const sourceLabel: Record<string, string> = { email: "E-mail", google: "Google",
 const orderStatus: Record<string, string> = { aguardando_pix: "Aguardando Pix", em_conferencia: "Em conferência", pago: "Pago", expirado: "Expirado", cancelado: "Cancelado", reembolsado: "Reembolsado" };
 const brl = (c: number) => `R$ ${(c / 100).toFixed(2).replace(".", ",")}`;
 const dateBr = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("pt-BR") : "—");
-const pct = (r: { numerator: number; denominator: number; pct: number | null }) => (r.pct === null ? "sem dados" : `${r.pct}% (${r.numerator}/${r.denominator})`);
+const pct = (r: { numerator: number; denominator: number; pct: number | null; incomplete?: boolean }) => (r.incomplete ? `base incompleta (${r.numerator}/${r.denominator})` : r.pct === null ? "sem dados" : `${r.pct}% (${r.numerator}/${r.denominator})`);
 const dayBr = (day: string | null) => (day ? day.split("-").reverse().join("/") : "—");
 
 /** "Alunos e cadastros": indicadores com definição, lista paginada (inclui quem nunca comprou) e detalhe do aluno. */

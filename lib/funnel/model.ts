@@ -36,8 +36,10 @@ export function sanitizeParams(input: unknown): EventParams {
 export const deviceOf = (width: number): "mobile" | "tablet" | "desktop" => (width < 768 ? "mobile" : width < 1100 ? "tablet" : "desktop");
 
 /** Taxa com denominador explícito. Sem denominador = "sem dados" (null), nunca 0%. */
-export function rate(numerator: number, denominator: number): { numerator: number; denominator: number; pct: number | null } {
-  return { numerator, denominator, pct: denominator > 0 ? Math.round((numerator / denominator) * 1000) / 10 : null };
+export function rate(numerator: number, denominator: number): { numerator: number; denominator: number; pct: number | null; incomplete: boolean } {
+  // Numerador maior que o denominador significa base incompleta (ex.: cadastros de quem não consentiu ou não passou pela landing): não mostra percentual enganoso.
+  const incomplete = denominator > 0 && numerator > denominator;
+  return { numerator, denominator, pct: denominator > 0 && !incomplete ? Math.round((numerator / denominator) * 1000) / 10 : null, incomplete };
 }
 
 export type FunnelCounts = Partial<Record<FunnelEvent, number>>;

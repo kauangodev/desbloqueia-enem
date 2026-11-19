@@ -99,7 +99,7 @@ export async function createOrder(userId: string, tier: "essencial" | "premium")
     return { ok: true as const, id, created: true as const };
   });
   // Funil: pedido criado = checkout iniciado (um por pedido; reaproveitar pedido aberto não repete o evento).
-  if (result.ok && result.created) void recordEvent("checkout_started", { userId, orderId: result.id, dedupeKey: result.id, params: { plan: tier } });
+  if (result.ok) await recordEvent("checkout_started", { userId, orderId: result.id, dedupeKey: result.id, params: { plan: tier } });
   return result.ok ? { ok: true as const, id: result.id } : result;
 }
 
@@ -133,7 +133,7 @@ export async function adminOrders(filter: { status?: string; q?: string; page?: 
   const where: string[] = []; const args: unknown[] = [];
   if (filter.status && ["aguardando_pix", "em_conferencia", "pago", "expirado", "cancelado", "reembolsado"].includes(filter.status)) { where.push("o.status = ?"); args.push(filter.status); }
   const q = (filter.q || "").trim().slice(0, 80);
-  if (q) { where.push("(o.id LIKE ? OR u.email LIKE ? OR u.name LIKE ? OR o.bank_ref LIKE ?)"); args.push(`${q}%`, `%${q}%`, `%${q}%`, `${q}%`); }
+  if (q) { const e = q.replace(/[\\%_]/g, "\\$&"); where.push("(o.id LIKE ? OR u.email LIKE ? OR u.name LIKE ? OR o.bank_ref LIKE ?)"); args.push(`${e}%`, `%${e}%`, `%${e}%`, `${e}%`); }
   const clause = where.length ? `WHERE ${where.join(" AND ")}` : "";
   const base = `FROM pix_orders o JOIN users u ON u.id = o.user_id ${clause}`;
   const [count] = await mysqlPool().query<RowDataPacket[]>(`SELECT COUNT(*) AS n ${base}`, args);
@@ -171,7 +171,7 @@ export async function confirmOrder(actor: string, id: string, evidence: Evidence
       return { ok: true as const, status: result.value.status, changed: result.changed, plan: order.tier };
     });
     // Funil: venda = pagamento CONFIRMADO. Só quando esta chamada mudou o estado (confirmação repetida não conta duas vezes; a chave única também protege).
-    if (out.ok && out.changed) void recordEvent("purchase_confirmed", { userId: undefined, orderId: id, dedupeKey: id, params: { plan: out.plan } });
+    if (out.ok) await recordEvent("purchase_confirmed", { orderId: id, dedupeKey: id, params: { plan: out.plan } }); // chave única: repetir a confirmação regrava sem duplicar e recupera um registro que falhou antes
     return out;
   } catch (error) {
     if ((error as { code?: string }).code === "ER_DUP_ENTRY") return { ok: false, error: "esta referência bancária já confirmou outro pedido" };

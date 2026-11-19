@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   if (token) {
     try {
       const [src] = await mysqlPool().query<RowDataPacket[]>("SELECT signup_source FROM users WHERE id = ? LIMIT 1", [userId]);
-      if (src[0]?.signup_source) void recordEvent("signup_verified", { userId, dedupeKey: userId, params: { plan: "gratis" } });
+      if (src[0]?.signup_source) await recordEvent("signup_verified", { userId, dedupeKey: userId, params: { plan: "gratis" } });
     } catch { /* migração 06 pendente */ }
   }
   const [users] = await mysqlPool().query<RowDataPacket[]>("SELECT role FROM users WHERE id = ? LIMIT 1", [userId]);

@@ -123,7 +123,7 @@ async function currentUser() {
   const row = rows[0]; if (!row || !row.email_verified_at || row.account_status === "suspended" || (row.updated_at && new Date(row.updated_at).getTime() > tokenUser.iat)) return null; return { ...userRecord(row), must_change_password: await mustChangePassword(row.id) };
 }
 async function setSession(user: UserRow | null) { const jar = await cookies(); if (!user) { jar.delete(SESSION_COOKIE); return true; } try { jar.set(SESSION_COOKIE, tokenFor(user), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 7 * 86400 }); return true; } catch { return false; } }
-async function linkEntitlementsToUser(userId: string, email: string) {
+export async function linkEntitlementsToUser(userId: string, email: string) {
   await mysqlPool().query(
     "UPDATE entitlements SET user_id = ? WHERE LOWER(email) = LOWER(?) AND active = TRUE AND (user_id IS NULL OR user_id = ?)",
     [userId, email.trim().toLowerCase(), userId],
