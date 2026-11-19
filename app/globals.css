@@ -4572,7 +4572,7 @@ textarea::placeholder {
   color: #cbd5e1;
 }
 .overview-metric-tracking .overview-metric-icon { color: #34d399; }
-.overview-metric-roi .overview-metric-icon { color: #fbbf24; }
+.overview-metric-roi .overview-metric-icon { color: #b8ff35; }
 
 /* Blue-first action system: the lime highlight was too bright against both
    browser themes. Green remains reserved for success and live-status states. */

@@ -235,9 +235,8 @@ export function SalesOffers({ plans, facts, inv, checkoutReady, free, pixReady }
     <section className="s-section s-offers" id="ofertas" aria-labelledby="s-ofertas-title"><span id="planos" aria-hidden="true" />
       <div className="s-wrap">
         <header className="s-head">
-          <span className="s-eyebrow">Planos</span>
-          <h2 id="s-ofertas-title">Escolha o plano ideal para sua revisão</h2>
-          <p>{free ? "Comece grátis, sem cartão. " : ""}Os planos pagos incluem toda a área de Matemática e Natureza. O Premium amplia o repertório. Os preços abaixo já são o total cobrado.</p>
+          <h2 id="s-ofertas-title">Escolha como começar.</h2>
+          <p>Planos simples, acessíveis e pensados para a sua preparação para o ENEM 2027. {free ? "Comece grátis, sem cartão. " : ""}Os preços abaixo já são o total cobrado.</p>
         </header>
         <div className={`s-plans${free ? " s-plans-3" : ""}`}>
           {free ? (
@@ -326,8 +325,7 @@ export function SalesAccess() {
     <section className="s-section s-band" id="acesso" aria-labelledby="s-acesso-title">
       <div className="s-wrap">
         <header className="s-head">
-          <span className="s-eyebrow">Acesso e garantia</span>
-          <h2 id="s-acesso-title">Como você recebe</h2>
+          <h2 id="s-acesso-title">Como você recebe e a garantia</h2>
         </header>
         <ol className="s-steps">
           {steps2.map(([title, text], index) => (<li key={title}><span aria-hidden="true">{index + 1}</span><b>{title}</b><p>{text}</p></li>))}
@@ -381,7 +379,7 @@ export function SalesFaq({ inv, essencialTotal, premiumTotal, essencialBase, pre
   return (
     <section className="s-section" id="duvidas" aria-labelledby="s-faq-title">
       <div className="s-wrap s-narrow">
-        <header className="s-head"><span className="s-eyebrow">Dúvidas</span><h2 id="s-faq-title">Perguntas frequentes</h2></header>
+        <header className="s-head"><h2 id="s-faq-title">Ainda tem alguma dúvida?</h2></header>
         <div className="s-faq">
           {faq.map(([q, a]) => (<details key={q}><summary>{q}</summary><div>{typeof a === "string" ? <p>{a}</p> : <p>{a}</p>}</div></details>))}
         </div>

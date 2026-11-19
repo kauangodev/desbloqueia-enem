@@ -4,14 +4,14 @@
   --bg: var(--bg-base); --g50: var(--bg-secondary); --card: var(--surface-soft); --line: var(--border-subtle);
   --ink: var(--text-secondary); --muted: var(--text-muted); --g900: var(--text-primary); --g700: var(--accent);
   /* escuro (padrão da marca) */
-  --g800: #6ee7b7; --g600: #6ee7b7; --g100: #123a3c; --stage: #153a43; --sh: 0 0 0; --ring: rgb(255 255 255 / 16%); --em: #c7f464;
-  --cta-bg: linear-gradient(90deg, #fbbf24, #f97316); --cta-bg-h: linear-gradient(90deg, #fcd34d, #fb923c); --cta-fg: #2a1500;
+  --g800: #b8ff35; --g600: #b8ff35; --g100: #0c2015; --stage: #10271a; --sh: 0 0 0; --ring: rgb(255 255 255 / 16%); --em: #b8ff35;
+  --cta-bg: linear-gradient(90deg, #b8ff35, #a7ed28); --cta-bg-h: linear-gradient(90deg, #fcd34d, #fb923c); --cta-fg: #102615;
   --cta-glow: 0 10px 30px rgb(249 115 22 / 35%); --cta-glow-h: 0 14px 38px rgb(249 115 22 / 48%); --cta-bd: transparent;
-  --step-bg: #6ee7b7; --step-fg: #06231a; --badge-fg: #2a1500;
+  --step-bg: #b8ff35; --step-fg: #06231a; --badge-fg: #102615;
   --tp-bg: #3a2411; --tp-fg: #ffc78a; --tp-bd: #7a4a1d; --zebra: rgb(255 255 255 / 4%); --row-hover: rgb(110 231 183 / 10%);
   --glow-g: rgb(110 231 183 / 20%); --glow-g2: rgb(199 244 100 / 9%); --glow-o: rgb(249 115 22 / 26%); --glow-o2: rgb(251 191 36 / 8%); --cover-glow: rgb(110 231 183 / 22%);
-  --plan-glow: 0 0 0 1px rgb(249 115 22 / 35%), 0 22px 50px -22px rgb(249 115 22 / 50%); --plan-bd: #f97316; --plan-tint: rgb(249 115 22 / 9%);
-  --strip-bg: linear-gradient(90deg, #fbbf24, #f97316); --final-bg: #0b2730; --sticky-bg: rgb(7 25 31 / 96%);
+  --plan-glow: 0 0 0 1px rgb(249 115 22 / 35%), 0 22px 50px -22px rgb(249 115 22 / 50%); --plan-bd: #a7ed28; --plan-tint: rgb(249 115 22 / 9%);
+  --strip-bg: linear-gradient(90deg, #b8ff35, #a7ed28); --final-bg: #081d13; --sticky-bg: rgb(7 25 31 / 96%);
   background: var(--bg); color: var(--ink); line-height: 1.55; overflow-x: clip;
 }
 html[data-gd-theme="light"] .sales {
@@ -20,7 +20,7 @@ html[data-gd-theme="light"] .sales {
   --step-bg: #12624a; --step-fg: #ffffff;
   --tp-bg: #fff4e5; --tp-fg: #7a3300; --tp-bd: #f0c595; --zebra: #f6faf7; --row-hover: #e3f2ea;
   --glow-g: rgb(18 98 74 / 8%); --glow-g2: rgb(18 98 74 / 3%); --glow-o: rgb(249 115 22 / 12%); --glow-o2: rgb(251 191 36 / 8%); --cover-glow: rgb(12 59 46 / 0%);
-  --plan-glow: 0 18px 44px rgb(12 59 46 / 14%); --plan-bd: #ea580c; --plan-tint: rgb(249 115 22 / 7%);
+  --plan-glow: 0 18px 44px rgb(12 59 46 / 14%); --plan-bd: #8bd10f; --plan-tint: rgb(249 115 22 / 7%);
   --final-bg: #0c3b2e; --sticky-bg: rgb(255 255 255 / 97%);
 }
 .sales *, .sales *::before, .sales *::after { box-sizing: border-box; }
@@ -195,7 +195,7 @@ html[data-gd-theme="light"] .sales {
 .sales a:focus-visible, .sales summary:focus-visible, .sales button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
 
 /* faixa superior e botão de compra: mesmo gradiente do original, texto escuro para contraste */
-.s-strip { background: var(--strip-bg); color: #2a1500; font-weight: 800; }
+.s-strip { background: var(--strip-bg); color: #102615; font-weight: 800; }
 .s-strip span { opacity: 1; font-weight: 600; }
 .s-btn { background: var(--cta-bg); color: var(--cta-fg); border: 1px solid var(--cta-bd) !important; box-shadow: var(--cta-glow); transition: box-shadow .2s ease, transform .2s ease, background .2s ease; }
 .s-btn:hover { background: var(--cta-bg-h); box-shadow: var(--cta-glow-h); transform: translateY(-1px); }
@@ -227,7 +227,7 @@ body.godev-app .sales .s-eyebrow, body.godev-app .sales .s-qmeta { color: var(--
 body.godev-app .sales .s-price span, body.godev-app .sales .s-more { color: var(--g700); }
 body.godev-app .sales .s-pill, body.godev-app .sales .s-tag-ok { color: var(--g800); background: var(--g100); }
 body.godev-app .sales .s-tag-premium { color: var(--tp-fg); background: var(--tp-bg); }
-body.godev-app .sales .s-strip, body.godev-app .sales .s-strip span { color: #2a1500; }
+body.godev-app .sales .s-strip, body.godev-app .sales .s-strip span { color: #102615; }
 body.godev-app .sales .s-badge { color: var(--badge-fg); }
 body.godev-app .sales .s-steps li > span { color: var(--step-fg); background: var(--step-bg); }
 body.godev-app .sales .s-cover i { color: #fff; }
@@ -259,4 +259,4 @@ body.godev-app .sales .s-compare td::before { color: var(--g600); }
   body.godev-app .sales .s-compare tbody td { border-top: 1px solid var(--line); }
 }
 @media (prefers-reduced-motion: reduce) { .s-btn { transition: none; } .s-btn:hover { transform: none; } }
-body.godev-app .sales .s-strip b, body.godev-app .sales .s-strip strong { color: #2a1500; }
+body.godev-app .sales .s-strip b, body.godev-app .sales .s-strip strong { color: #102615; }

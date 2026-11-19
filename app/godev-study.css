@@ -27,7 +27,7 @@ body.godev-app.godev-app .option {
 body.godev-app.godev-app .option:hover { border-color: var(--accent); background: rgb(110 231 183 / 8%); }
 body.godev-app.godev-app .option.selected { border-color: var(--accent); background: rgb(110 231 183 / 14%); box-shadow: inset 0 0 0 1px var(--accent); }
 body.godev-app.godev-app .option input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
-body.godev-app.godev-app .option b { color: var(--accent); font-weight: 800; }
+body.godev-app.godev-app .option b { color: var(--link); font-weight: 800; }
 body.godev-app.godev-app .option span { color: var(--text-primary); line-height: 1.5; }
 body.godev-app.godev-app .option:focus-within { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 

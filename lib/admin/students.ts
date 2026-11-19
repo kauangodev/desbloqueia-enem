@@ -124,3 +124,22 @@ export async function overview(): Promise<Overview> {
     conversion30: { total: verified30, paid: paidUsers, rate: verified30 ? Math.round((paidUsers / verified30) * 1000) / 10 : null }, migrated,
   };
 }
+export type DaySeries = { day: string; signups: number; active: number }[];
+
+const spDay = (date: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+
+/**
+ * Série diária (America/Sao_Paulo, UTC-3 sem horário de verão) dos últimos `days` dias: contas de aluno criadas e alunos distintos com
+ * atividade pedagógica gravada no dia (resposta, módulo ou treino; login não conta). Os dias sem registro valem 0, nunca somem.
+ */
+export async function dailySeries(days = 7): Promise<DaySeries> {
+  const n = Math.min(31, Math.max(2, Math.floor(days)));
+  const list: string[] = [];
+  for (let i = n - 1; i >= 0; i -= 1) list.push(spDay(new Date(Date.now() - i * 86_400_000)));
+  const [signups] = await mysqlPool().query<RowDataPacket[]>(`SELECT DATE(CONVERT_TZ(u.created_at,'+00:00','-03:00')) AS d, COUNT(*) AS n FROM users u WHERE u.role = 'student' AND u.created_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL ${n + 1} DAY) GROUP BY d`);
+  const [active] = await mysqlPool().query<RowDataPacket[]>(`SELECT DATE(CONVERT_TZ(st.updated_at,'+00:00','-03:00')) AS d, COUNT(DISTINCT st.user_id) AS n FROM operacao_state st JOIN users u ON u.id = st.user_id WHERE u.role = 'student' AND st.kind IN ${KINDS} AND st.updated_at >= DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL ${n + 1} DAY) GROUP BY d`);
+  const key = (v: unknown) => (v instanceof Date ? v.toISOString().slice(0, 10) : String(v).slice(0, 10));
+  const s = new Map(signups.map((r) => [key(r.d), Number(r.n)]));
+  const a = new Map(active.map((r) => [key(r.d), Number(r.n)]));
+  return list.map((day) => ({ day, signups: s.get(day) ?? 0, active: a.get(day) ?? 0 }));
+}

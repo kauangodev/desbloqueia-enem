@@ -27,7 +27,7 @@ body.godev-app.godev-app .material-carousel-arrow {
   border-radius: 50%; border: 1.5px solid var(--border-control); background: var(--surface); color: var(--text-primary); cursor: pointer;
   font-size: 0; box-shadow: none;
 }
-body.godev-app.godev-app .material-carousel-arrow:hover { border-color: var(--accent); color: var(--accent); }
+body.godev-app.godev-app .material-carousel-arrow:hover { border-color: var(--accent); color: var(--link); }
 body.godev-app.godev-app .material-carousel-arrow:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 
 @media (max-width: 640px) {

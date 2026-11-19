@@ -1,0 +1,54 @@
+/* GoDev v2 para área do aluno e painel administrativo. Carregado por último: traduz as folhas históricas para os tokens do tema
+   (os valores vêm de app/tokens.css no escuro e de public-theme.css no claro) e aplica a composição aprovada dos anexos 3 e 5. */
+body.godev-app { --pv-side: #081d13; --pv-top: #0c2015; --pv-banner: linear-gradient(100deg, #123a24 0%, #14452a 60%, #1a5a2e 100%); --pv-card: #10271a; --pv-chip: #163321; --pv-hairline: #294333; }
+html[data-gd-theme="light"] body.godev-app { --pv-side: #0c2b20; --pv-top: #ffffff; --pv-banner: linear-gradient(100deg, #eaf8cf 0%, #f3fbdf 55%, #e4f5c2 100%); --pv-card: #ffffff; --pv-chip: #eef7e7; --pv-hairline: #dfe9de; }
+
+/* ---------- Casca: sidebar ---------- */
+body.godev-app.godev-app .portal .sidebar { background: var(--pv-side); color: #f3f8f2; border-right: 0; padding-top: 18px; gap: 14px; }
+body.godev-app.godev-app .portal .sidebar nav a { color: #f3f8f2; border-radius: 8px; font-weight: 600; background: transparent; }
+body.godev-app.godev-app .portal .sidebar nav a:hover { background: rgb(255 255 255 / 9%); color: #fff; }
+body.godev-app.godev-app .portal .sidebar nav a .portal-nav-icon { color: #b8ff35; }
+body.godev-app.godev-app .portal .sidebar nav a[aria-current="page"], body.godev-app.godev-app .portal .sidebar nav a[aria-current="true"] { background: #b8ff35; color: #102615; }
+body.godev-app.godev-app .portal .sidebar nav a[aria-current="page"] .portal-nav-icon, body.godev-app.godev-app .portal .sidebar nav a[aria-current="true"] .portal-nav-icon { color: #102615; }
+body.godev-app.godev-app .portal .sidebar nav .portal-nav-group { color: #a9beb0; }
+body.godev-app.godev-app .portal .sidebar .cookie-link, body.godev-app.godev-app .portal .sidebar form button { color: #f3f8f2; }
+body.godev-app.godev-app .portal .sidebar form button { background: transparent; border: 1px solid rgb(255 255 255 / 28%); border-radius: 8px; min-height: 44px; }
+
+/* ---------- Casca: topo ---------- */
+body.godev-app.godev-app .portal-topbar { background: var(--pv-top); border-bottom: 1px solid var(--pv-hairline); }
+body.godev-app.godev-app .portal-search { background: var(--pv-chip); border: 1px solid var(--pv-hairline); border-radius: 10px; }
+body.godev-app.godev-app .portal-search input { color: var(--text-primary); background: transparent; }
+body.godev-app.godev-app .portal-user-avatar { background: var(--accent); color: var(--on-accent); font-weight: 800; }
+.portal-topbar .portal-theme { display: none; }
+@media (min-width: 900px) { .portal-topbar .portal-theme { display: inline-flex; margin-left: auto; margin-right: 8px; } }
+
+/* ---------- Botões, cartões e links do portal ---------- */
+body.godev-app.godev-app .as-btn-primary, body.godev-app.godev-app .button:not(.secondary):not(.ghost), body.godev-app.godev-app .op-btn-primary { background: var(--accent); color: var(--on-accent); border: 1px solid transparent; background-image: none; box-shadow: none; font-weight: 800; }
+body.godev-app.godev-app .as-btn-primary:hover, body.godev-app.godev-app .button:not(.secondary):not(.ghost):hover { background: var(--accent-hover); color: var(--on-accent); }
+body.godev-app.godev-app .as-card, body.godev-app.godev-app .as-shortcuts a, body.godev-app.godev-app .admin-card { background: var(--pv-card); border: 1px solid var(--pv-hairline); border-radius: 12px; box-shadow: var(--shadow-card); }
+body.godev-app.godev-app .as-today { background: var(--pv-banner); border: 1px solid var(--pv-hairline); border-radius: 14px; position: relative; overflow: hidden; box-shadow: var(--shadow-card); }
+body.godev-app.godev-app .as-today > * { position: relative; z-index: 1; }
+body.godev-app.godev-app .as-today::after { content: ""; position: absolute; right: 24px; bottom: 0; width: min(300px, 32%); aspect-ratio: 300 / 160; background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 160'%3E%3Cpath d='M20 150c40-30 70 10 110-20s60-50 110-70' fill='none' stroke='%23b8ff35' stroke-width='3' stroke-dasharray='2 8' stroke-linecap='round'/%3E%3Crect x='60' y='96' width='130' height='20' rx='4' fill='%232f7d2a'/%3E%3Crect x='72' y='74' width='120' height='20' rx='4' fill='%23e8c14a'/%3E%3Crect x='56' y='52' width='126' height='22' rx='4' fill='%231e5f3a'/%3E%3Cpath d='M236 30v70' stroke='%23102615' stroke-width='3'/%3E%3Cpath d='M236 30l28 8-28 10z' fill='%23b8ff35'/%3E%3Ccircle cx='236' cy='118' r='10' fill='%23b8ff35'/%3E%3C/svg%3E"); pointer-events: none; opacity: .95; }
+body.godev-app.godev-app .as-today-eyebrow { color: var(--link); }
+body.godev-app.godev-app .as-today a.op-link, body.godev-app.godev-app .op-link { color: var(--link); }
+body.godev-app.godev-app .as-today .as-tag { background: var(--pv-chip); color: var(--text-primary); border: 1px solid var(--pv-hairline); }
+body.godev-app.godev-app .as-shortcuts a:hover { border-color: var(--link); background: var(--pv-chip); }
+@media (max-width: 760px) { body.godev-app.godev-app .as-today::after { display: none; } }
+
+/* ---------- Administração ---------- */
+body.godev-app.godev-app .admin-side, body.godev-app.godev-app .admin-sidebar { background: var(--pv-side); color: #f3f8f2; }
+body.godev-app.godev-app .admin-side a, body.godev-app.godev-app .admin-sidebar a { color: #f3f8f2; }
+body.godev-app.godev-app .admin-side a[aria-current], body.godev-app.godev-app .admin-sidebar a[aria-current], body.godev-app.godev-app .admin-side .is-active { background: #b8ff35; color: #102615; }
+
+/* Correções de especificidade (tema claro) e ilustração do banner no alto, longe da nota de calendário */
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar nav a:not([aria-current]) { color: #f3f8f2 !important; }
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar nav a[aria-current] { color: #102615 !important; }
+body.godev-app.godev-app .as-today::after { top: 18px; bottom: auto; right: 28px; width: min(250px, 26%); }
+
+.bq-origin-oficial, body.godev-app.godev-app .op-question .bq-origin-oficial { color: var(--link); }
+body.godev-app.godev-app .portal .sidebar { background: var(--pv-side) !important; }
+body.godev-app.godev-app .portal-topbar { background: var(--pv-top) !important; }
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar nav a[aria-current] { background: #b8ff35 !important; color: #102615 !important; }
+html[data-gd-theme] body.godev-app.godev-app .portal .sidebar nav a[aria-current] .portal-nav-icon { color: #102615 !important; background: transparent !important; }
+html[data-gd-theme="light"] body.godev-app { --op-ok: #14532d; }
+body.godev-app.godev-app .portal .sidebar .cookie-link-side { background: transparent !important; color: #f3f8f2 !important; }

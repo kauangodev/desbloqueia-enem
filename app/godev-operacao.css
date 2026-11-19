@@ -1,9 +1,9 @@
-/* Operação 2º Domingo — estilos próprios. Âmbar #FBBF24 e laranja #F97316 só como destaque; base herdada do tema petróleo/esmeralda. */
+/* Operação 2º Domingo — estilos próprios. Âmbar #b8ff35 e laranja #a7ed28 só como destaque; base herdada do tema petróleo/esmeralda. */
 :root {
-  --op-amber: #fbbf24;
-  --op-orange: #f97316;
-  --op-ink: #2a1500;
-  --op-ok: #6ee7b7;
+  --op-amber: #b8ff35;
+  --op-orange: #a7ed28;
+  --op-ink: #102615;
+  --op-ok: #b8ff35;
   --op-bad: #ffb5bd;
 }
 

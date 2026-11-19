@@ -3,6 +3,7 @@ import { Brand } from "../../components/site";
 import PortalNav from "../../components/portal-nav";
 import CookiePreferencesLink from "../../components/cookie-preferences-link";
 import ResponsiveDrawerToggle from "../../components/responsive-drawer-toggle";
+import ThemeToggle from "../../components/theme-toggle";
 import TopbarChips from "../../components/aluno/topbar-chips";
 import UpsellCard from "../../components/aluno/upsell-card";
 import { studentSummary } from "../../lib/aluno/summary";
@@ -36,6 +37,7 @@ export default async function StudentLayout({
         <header className="portal-topbar">
           <ResponsiveDrawerToggle target="student" label="do aluno" />
           <form className="portal-search" role="search" action="/aluno/materiais" method="get"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="5.8" /><path d="m15.2 15.2 4.3 4.3" /></svg><input name="q" type="search" aria-label="Buscar nos materiais" placeholder="Buscar nos materiais" enterKeyHint="search" /></form>
+          <ThemeToggle className="header-theme portal-theme" />
           {momentum ? <TopbarChips data={momentum} dailyGoal={summary.progress?.gamification.dailyGoal ?? 10} /> : null}
           <span className="portal-user-avatar" aria-hidden="true">{name.slice(0, 1).toUpperCase()}</span>
           <span className="portal-user-name">{name.split(" ")[0]}</span>

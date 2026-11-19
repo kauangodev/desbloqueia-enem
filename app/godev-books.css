@@ -22,7 +22,7 @@
 }
 
 /* Legenda discreta (sem controles: a animação é contínua) */
-.hl-caption { margin: 0; font-size: .8125rem; line-height: 1.35; color: var(--text-secondary, #c9e0e5); }
+.hl-caption { margin: 0; font-size: .8125rem; line-height: 1.35; color: var(--text-secondary, #c5d2c7); }
 
 /* Hero em duas colunas com mais espaço para a biblioteca; no desktop largo ela sangra um pouco para a margem direita. */
 @media (min-width: 1024px) {

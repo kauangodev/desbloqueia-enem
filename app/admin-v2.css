@@ -1,0 +1,106 @@
+/* Administração GoDev v2: casca com tokens (claro e escuro) e Visão geral do anexo 5. Carregado depois de portal-v2.css. */
+html[data-gd-theme] body.godev-app.godev-app .admin-app, html[data-gd-theme] body.godev-app.godev-app .admin-workspace, html[data-gd-theme] body.godev-app.godev-app .admin-content { background: var(--bg-base) !important; color: var(--text-primary); }
+html[data-gd-theme] body.godev-app.godev-app .admin-sidebar, html[data-gd-theme] body.godev-app.godev-app .admin-sidebar-footer { background: var(--pv-side) !important; color: #f3f8f2; border-color: rgb(255 255 255 / 12%); }
+html[data-gd-theme] body.godev-app.godev-app .admin-topbar { background: var(--pv-top) !important; border-bottom: 1px solid var(--pv-hairline); color: var(--text-primary); }
+html[data-gd-theme] body.godev-app.godev-app .admin-topbar strong, html[data-gd-theme] body.godev-app.godev-app .admin-hero h1, html[data-gd-theme] body.godev-app.godev-app .admin-page-header h1 { color: var(--text-primary); }
+html[data-gd-theme] body.godev-app.godev-app .admin-topbar-kicker, html[data-gd-theme] body.godev-app.godev-app .admin-hero p, html[data-gd-theme] body.godev-app.godev-app .admin-page-header p, html[data-gd-theme] body.godev-app.godev-app .eyebrow { color: var(--text-secondary); }
+html[data-gd-theme] body.godev-app.godev-app .admin-side-link { color: #f3f8f2; }
+html[data-gd-theme] body.godev-app.godev-app .admin-side-link .admin-side-icon { color: #b8ff35; background: transparent; }
+html[data-gd-theme] body.godev-app.godev-app .admin-side-link:hover { background: rgb(255 255 255 / 9%); color: #fff; }
+html[data-gd-theme] body.godev-app.godev-app .admin-side-link[aria-current="page"] { background: #b8ff35 !important; color: #102615 !important; }
+html[data-gd-theme] body.godev-app.godev-app .admin-side-link[aria-current="page"] .admin-side-icon { color: #102615; background: transparent; }
+html[data-gd-theme] body.godev-app.godev-app .admin-sidebar-label, html[data-gd-theme] body.godev-app.godev-app .admin-brand small, html[data-gd-theme] body.godev-app.godev-app .admin-profile small { color: #a9beb0; }
+html[data-gd-theme] body.godev-app.godev-app .admin-brand > span, html[data-gd-theme] body.godev-app.godev-app .admin-profile strong { color: #ffffff; }
+html[data-gd-theme] body.godev-app.godev-app .admin-live-indicator { background: var(--pv-chip); color: var(--link); border: 1px solid var(--pv-hairline); }
+html[data-gd-theme] body.godev-app.godev-app :is(.overview-metric, .overview-revenue-card, .overview-activity-card, .overview-white-card) { background: var(--pv-card) !important; border: 1px solid var(--pv-hairline); color: var(--text-primary); box-shadow: var(--shadow-card); }
+html[data-gd-theme] body.godev-app.godev-app :is(.overview-metric, .overview-revenue-card, .overview-activity-card, .overview-white-card) :is(h2, h3, strong, b) { color: var(--text-primary); }
+
+/* ---------- Visão geral ---------- */
+.ah { display: grid; gap: 16px; }
+.ah-period { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.ah-period span { padding: 8px 14px; border: 1px solid var(--pv-hairline); border-radius: 10px; background: var(--pv-card); font-weight: 700; }
+.ah-period small { color: var(--text-muted); }
+.ah-metrics { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+.ah-metrics li { display: grid; gap: 2px; padding: 16px 18px; background: var(--pv-card); border: 1px solid var(--pv-hairline); border-top: 4px solid #b8ff35; border-radius: 12px; box-shadow: var(--shadow-card); }
+.ah-metrics li:nth-child(2) { border-top-color: #20c9a6; }
+.ah-metrics li:nth-child(3) { border-top-color: #f0a928; }
+.ah-metrics li:nth-child(4) { border-top-color: #6fc216; }
+.ah-metrics span { font-weight: 700; color: var(--text-primary); }
+.ah-metrics strong { font: 800 clamp(1.75rem, 3vw, 2.1rem)/1.15 var(--godev-font-display), system-ui, sans-serif; font-variant-numeric: tabular-nums; color: var(--text-primary); }
+.ah-metrics small { color: var(--text-muted); font-size: .8125rem; }
+.ah-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.ah-card { padding: 18px; background: var(--pv-card); border: 1px solid var(--pv-hairline); border-radius: 12px; box-shadow: var(--shadow-card); min-width: 0; }
+.ah-card h2 { margin: 0 0 8px; font-size: 1.125rem; }
+.ah-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ah-sub { margin: 0 0 10px; color: var(--text-muted); font-size: .875rem; }
+.ah-link { color: var(--link); font-weight: 700; text-decoration: none; }
+.ah-link:hover { text-decoration: underline; }
+.ah-chart { margin: 0; }
+.ah-chart svg { width: 100%; height: auto; display: block; }
+.ah-grid { stroke: var(--pv-hairline); stroke-width: 1; }
+.ah-axis { fill: var(--text-muted); font-size: 11px; }
+.ah-line { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.ah-line-a { stroke: #5fa80a; }
+.ah-line-b { stroke: #0f8f74; }
+.ah-dot-a { fill: #5fa80a; }
+.ah-dot-b { fill: #0f8f74; }
+html[data-gd-theme="dark"] .ah-line-a { stroke: #b8ff35; }
+html[data-gd-theme="dark"] .ah-dot-a { fill: #b8ff35; }
+html[data-gd-theme="dark"] .ah-line-b { stroke: #2ee6c0; }
+html[data-gd-theme="dark"] .ah-dot-b { fill: #2ee6c0; }
+.ah-dot-a, .ah-dot-b { stroke: none; }
+.ah-legend { display: flex; gap: 18px; margin-top: 4px; font-size: .875rem; color: var(--text-secondary); }
+.ah-legend i { display: inline-block; width: 18px; height: 4px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.ah-key-a { background: #5fa80a; }
+.ah-key-b { background: #0f8f74; }
+html[data-gd-theme="dark"] .ah-key-a { background: #b8ff35; }
+html[data-gd-theme="dark"] .ah-key-b { background: #2ee6c0; }
+.ah-table summary { cursor: pointer; margin-top: 6px; color: var(--link); font-weight: 700; min-height: 32px; }
+.ah-table table, .ah-recent { width: 100%; border-collapse: collapse; }
+.ah-table th, .ah-table td, .ah-recent th, .ah-recent td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--pv-hairline); font-size: .9375rem; }
+.ah-recent thead th { font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.ah-recent th[scope="row"] { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ah-recent th small { display: block; width: 100%; color: var(--text-muted); font-weight: 500; padding-left: 42px; margin-top: -8px; }
+.ah-avatar { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--pv-chip); color: var(--link); font-weight: 800; }
+.ah-pix { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 4px; }
+.ah-pix li { display: grid; grid-template-columns: 74px 1fr auto auto auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--pv-hairline); font-size: .9375rem; }
+.ah-code { font-weight: 800; letter-spacing: .02em; }
+.ah-badge, .ah-plan, .ah-state { font-style: normal; font-weight: 700; font-size: .8125rem; padding: 3px 10px; border-radius: 999px; white-space: nowrap; background: var(--pv-chip); color: var(--text-primary); border: 1px solid var(--pv-hairline); }
+.ah-badge-em_conferencia { background: var(--success-bg); color: var(--success-text); border-color: transparent; }
+.ah-badge-aguardando_pix { background: var(--warning-bg); color: var(--warning-text); border-color: transparent; }
+.ah-plan-premium { background: #b8ff35; color: #102615; border-color: transparent; }
+.ah-plan-essencial { background: var(--success-bg); color: var(--success-text); border-color: transparent; }
+.ah-state.is-ok { background: var(--success-bg); color: var(--success-text); border-color: transparent; }
+.ah-state.is-wait { background: var(--warning-bg); color: var(--warning-text); border-color: transparent; }
+.ah-state.is-bad { background: var(--error-bg); color: var(--error-text); border-color: transparent; }
+.ah-empty { color: var(--text-secondary); }
+.ah-legacy-title { margin: 28px 0 8px; font-size: 1.0625rem; color: var(--text-secondary); }
+@media (max-width: 1000px) {
+  .ah-row { grid-template-columns: 1fr; }
+  .ah-pix li { grid-template-columns: 70px 1fr auto; }
+}
+
+html[data-gd-theme="light"] .admin-app, html[data-gd-theme="light"] .portal { color-scheme: light; }
+
+/* Especificidade (tema claro): remove fundos escuros herdados do CSS legado do painel */
+html[data-gd-theme] body.godev-app.godev-app .ah, html[data-gd-theme] body.godev-app.godev-app .admin-content > div:not(.admin-hero) { background: transparent !important; }
+html[data-gd-theme] body.godev-app.godev-app .admin-side-link:not([aria-current]) { color: #f3f8f2 !important; }
+html[data-gd-theme] body.godev-app.godev-app .admin-sidebar-label { color: #a9beb0 !important; }
+html[data-gd-theme] body.godev-app.godev-app .ah-period span { color: var(--text-primary); }
+html[data-gd-theme] body.godev-app.godev-app .ah-recent, html[data-gd-theme] body.godev-app.godev-app .ah-recent :is(thead, tbody, tr, th, td) { background: transparent; color: var(--text-primary); }
+html[data-gd-theme] body.godev-app.godev-app .ah-recent thead th { color: var(--text-muted); }
+
+/* ---------- CRM e filas (Alunos e cadastros, Pagamentos Pix): densidade de trabalho ---------- */
+.admin-content .op-stack { display: grid; gap: 16px; }
+.admin-content .op-stack h2 { font-size: 1.25rem; margin: 0 0 8px; }
+.admin-content .op-stack h3 { font-size: 1.0625rem; margin: 0 0 6px; }
+.admin-content .op-stack form[role="search"] { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)) auto; gap: 12px; align-items: end; padding: 14px; background: var(--pv-card); border: 1px solid var(--pv-hairline); border-radius: 12px; }
+.admin-content .op-stack form[role="search"] .field { margin: 0; display: grid; gap: 4px; font-weight: 600; font-size: .875rem; }
+.admin-content .op-stack form[role="search"] :is(input, select) { min-height: 44px; font-size: 1rem; }
+.admin-content .op-stack .as-grid > .admin-card { border-top: 4px solid #b8ff35; }
+.admin-content .crm-table { width: 100%; border-collapse: collapse; background: var(--pv-card); }
+.admin-content .crm-table :is(th, td) { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--pv-hairline); font-size: .9375rem; background: transparent; color: var(--text-primary); }
+.admin-content .crm-table thead th { font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+.admin-content .table-wrap { border: 1px solid var(--pv-hairline); border-radius: 12px; overflow-x: auto; background: var(--pv-card); }
+@media (max-width: 1000px) { .admin-content .op-stack form[role="search"] { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .admin-content .op-stack form[role="search"] { grid-template-columns: 1fr; } }

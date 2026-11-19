@@ -11,6 +11,7 @@ import { mysqlConfigured } from "../../lib/mysql";
 import { META_PIXEL_ID } from "../../lib/meta-pixel";
 import TicketManager from "../../components/ticket-manager";
 import AdminOverview from "../../components/admin-overview";
+import AdminHome from "../../components/admin-home";
 import TeamManager from "../../components/team-manager";
 import ManualAccessForm from "../../components/manual-access-form";
 import DeleteUserButton from "../../components/delete-user-button";
@@ -552,7 +553,7 @@ export default async function Admin({
       db.from("quiz_events").select("event_name,question_index,created_at").limit(10000),
     ]);
     const adSpendCents = Number(process.env.META_AD_SPEND_CENTS || 0);
-    content = <AdminOverview stats={stats} orders={overviewOrders || []} quizEvents={quizResult.error ? [] : quizResult.data || []} adSpendCents={Number.isFinite(adSpendCents) ? adSpendCents : 0} />;
+    content = <><AdminHome role={(who.user as { admin_role?: string | null }).admin_role} /><h2 className="ah-legacy-title">Pedidos Cakto e funil de diagnóstico (histórico)</h2><AdminOverview stats={stats} orders={overviewOrders || []} quizEvents={quizResult.error ? [] : quizResult.data || []} adSpendCents={Number.isFinite(adSpendCents) ? adSpendCents : 0} /></>;
   }
   return (
     <main id="conteudo" className="admin-app">

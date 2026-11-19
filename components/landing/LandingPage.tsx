@@ -2,12 +2,14 @@ import "../../app/landing-sales.css";
 import { Header, Footer } from "../../components/site";
 import CheckoutParams from "./CheckoutParams";
 import SalesSticky from "./SalesSticky";
-import { SalesAccess, SalesFaq, SalesFinal, SalesHero, SalesNumbers, SalesOffers, SalesSamples, SalesStrip, SalesTools, SalesTrilha } from "./SalesSections";
+import { SalesAccess, SalesFaq, SalesOffers, SalesStrip } from "./SalesSections";
+import { BenefitStrip, ExperienceSection, HeroV2, MethodSection, SearchSection, TrilhasSection, type TrilhaCard } from "./V2Sections";
+import type { SearchItem } from "./SearchExplorer";
 import LandingEvents from "./LandingEvents";
 import { modules, questions, toPublic } from "../../lib/operacao/catalog";
 import { UNITS } from "../../lib/trilha/service";
-import { ebookMaterials } from "../../lib/ebook-catalog";
 import "../../app/landing-plus.css";
+import "../../app/landing-v2.css";
 import { brl, SERVICE_FEE_CENTS } from "../../lib/pricing";
 import { publicPlans } from "../../lib/catalog";
 import { checkoutConfigured } from "../../lib/readiness";
@@ -42,10 +44,22 @@ export default async function LandingPage() {
   const cents = (id: string) => plans.find((plan) => plan.id === id)?.cents ?? 0;
   const essencialTotal = brl(cents("essencial") + SERVICE_FEE_CENTS);
   const premiumTotal = brl(cents("premium") + SERVICE_FEE_CENTS);
+  const signupHref = "/entrar?modo=cadastro";
+  const trilhaSignup = "/entrar?modo=cadastro&redirect=%2Faluno%2Ftrilha";
+  const exploreHref = features.gratis ? trilhaSignup : "#trilha";
+  // Catálogo PÚBLICO para a busca: disciplinas cobertas e unidades reais da Trilha (nada de conteúdo pago).
+  const searchItems: SearchItem[] = [
+    { label: "Matemática", kind: "Disciplina · Trilha ENEM", href: exploreHref },
+    { label: "Ciências da Natureza", kind: "Disciplina · Trilha ENEM", href: exploreHref },
+    ...UNITS.map((u) => ({ label: u.title, kind: "Unidade da Trilha", href: exploreHref })),
+  ];
+  const trilhaCards: TrilhaCard[] = [
+    { title: "Matemática", text: "Do básico à resolução de questões do ENEM, com foco no que mais cai.", tag: "Trilha", image: "/covers/editorial-v3/matematica.jpg", href: exploreHref },
+    { title: "Ciências da Natureza", text: "Conteúdos de Biologia, Química e Física integrados com questões do ENEM.", tag: "Trilha", image: "/covers/editorial-v3/natureza.jpg", href: exploreHref },
+    { title: "Revisão inteligente", text: "Revisões direcionadas, resumos objetivos e questões para fixar o conteúdo.", tag: "Revisão", image: "/amostras/mat-p07.webp", href: exploreHref },
+  ];
   const demos = demoQuestions();
   const heroQuestion = demos.find((item) => item.disc === "matematica");
-  // A amostra comentada usa outra disciplina, para a página não repetir a mesma questão.
-  const question = demos.find((item) => item.disc === "fisica") ?? demos.find((item) => item.id !== heroQuestion?.id) ?? heroQuestion;
   return (
     <div className="sales">
       <CheckoutParams />
@@ -58,15 +72,15 @@ export default async function LandingPage() {
       <SalesStrip view={view} />
       <Header />
       <main id="conteudo">
-        <SalesHero hasAccess={hasAccess} studyArea={campaign.destinations.studyArea} question={heroQuestion} view={view} gratis={features.gratis} />
-        <SalesNumbers facts={facts} inv={inv} ebooks={ebookMaterials.length} />
-        <SalesTrilha signupHref={features.gratis ? "/entrar?modo=cadastro&redirect=%2Faluno%2Ftrilha" : null} units={previewUnits} />
-        <SalesSamples question={question} />
-        <SalesTools facts={facts} inv={inv} />
+        <HeroV2 hasAccess={hasAccess} studyArea={campaign.destinations.studyArea} gratis={features.gratis} view={view} signupHref={signupHref} />
+        <BenefitStrip />
+        <SearchSection items={searchItems} fallbackHref={features.gratis ? signupHref : "#trilha"} />
+        <MethodSection />
+        <TrilhasSection cards={trilhaCards} units={previewUnits} signupHref={features.gratis ? trilhaSignup : null} />
+        <ExperienceSection question={heroQuestion} ctaHref={features.gratis ? trilhaSignup : "#ofertas"} gratis={features.gratis} />
         <SalesOffers plans={plans} facts={facts} inv={inv} checkoutReady={checkoutReady} free={free} pixReady={{ essencial: pixReady.essencial, premium: pixReady.premium }} />
         <SalesAccess />
         <SalesFaq inv={inv} essencialTotal={essencialTotal} premiumTotal={premiumTotal} essencialBase={brl(cents("essencial"))} premiumBase={brl(cents("premium"))} />
-        <SalesFinal message={view.active && view.countdown ? view.countdown : "Pronto para começar a sua preparação?"} />
       </main>
       <Footer />
     </div>

@@ -9,21 +9,21 @@ body.godev-app {
   color-scheme: dark;
 
   /* Superfícies */
-  --bg-base: #07191f;
-  --bg-primary: #07191f;
-  --bg-secondary: #0b2730;
-  --bg-sidebar: #0b2730;
-  --surface: #153a43;
-  --surface-elevated: #1b4650;
-  --surface-raised: #1b4650;
+  --bg-base: #07150f;
+  --bg-primary: #07150f;
+  --bg-secondary: #081d13;
+  --bg-sidebar: #081d13;
+  --surface: #10271a;
+  --surface-elevated: #163321;
+  --surface-raised: #163321;
   --surface-soft: #123741;
   --surface-muted: #123741;
 
   /* Texto (todos ≥ 4,5:1 sobre as superfícies acima) */
-  --text-primary: #f6fcfc;
-  --text-secondary: #c9e0e5;
+  --text-primary: #f2f8ee;
+  --text-secondary: #c5d2c7;
   --text-muted: #b4cdd3;
-  --text-2: #c9e0e5;
+  --text-2: #c5d2c7;
   --text-3: #b4cdd3;
 
   /* Bordas */
@@ -32,13 +32,13 @@ body.godev-app {
   --border-strong: #7fb0ba;
 
   /* Ação e destaque */
-  --accent: #6ee7b7;
-  --accent-hover: #a2f3d0;
+  --accent: #b8ff35;
+  --accent-hover: #c7ff65;
   --accent-press: #4ccf9d;
-  --on-accent: #07291f;
-  --highlight: #c7f464;
-  --focus-ring: #c7f464;
-  --focus: #c7f464;
+  --on-accent: #102615;
+  --highlight: #b8ff35;
+  --focus-ring: #b8ff35;
+  --focus: #b8ff35;
 
   /* Estados */
   --success-bg: #143b34; --success-text: #8ef0c2;
@@ -48,17 +48,17 @@ body.godev-app {
 
   /* Escala verde legada, invertida para o tema escuro:
      900 = tom mais legível (texto), 50 = superfície mais discreta. */
-  --green-900: #f6fcfc;
+  --green-900: #f2f8ee;
   --green-800: #e3f6ef;
-  --green-700: #6ee7b7;
+  --green-700: #b8ff35;
   --green-500: #4ccf9d;
   --green-300: #2f6f73;
-  --green-100: #1b4650;
+  --green-100: #163321;
   --green-50:  #123741;
-  --master-green-950: #f6fcfc;
+  --master-green-950: #f2f8ee;
   --master-green-900: #0f6b4e;
-  --master-green-700: #6ee7b7;
-  --master-green-100: #1b4650;
+  --master-green-700: #b8ff35;
+  --master-green-100: #163321;
 
   --shadow-card: 0 18px 42px rgb(0 0 0 / 28%);
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
@@ -83,7 +83,7 @@ body.godev-app :is(h1, h2, h3, h4) { color: var(--text-primary); letter-spacing:
 body.godev-app :is(h1, h2) { font-family: var(--font-display); font-weight: 800; text-wrap: balance; }
 body.godev-app :is(h3, h4) { font-family: var(--font-body); font-weight: 700; }
 body.godev-app p, body.godev-app li, body.godev-app label, body.godev-app small { color: var(--text-secondary); }
-body.godev-app a { color: var(--accent); }
+body.godev-app a { color: var(--link); }
 body.godev-app a:hover { color: var(--accent-hover); }
 body.godev-app strong, body.godev-app b { color: var(--text-primary); }
 body.godev-app em { color: var(--highlight); font-style: normal; }
@@ -132,7 +132,7 @@ button:disabled, .button[aria-disabled="true"] { opacity: 1; background: var(--s
 .site-footer { background: var(--bg-sidebar); border-top: 1px solid var(--border-subtle); color: var(--text-secondary); }
 .site-footer p, .site-footer .footer-bottom, .footer-bottom { color: var(--text-secondary); }
 .site-footer a:not(.brand) { color: var(--text-primary); }
-.site-footer a:not(.brand):hover { color: var(--accent); }
+.site-footer a:not(.brand):hover { color: var(--link); }
 .site-footer h2, .site-footer h3, .site-footer h4, .site-footer strong { color: var(--text-primary); }
 .site-footer .brand, .site-footer .brand b, .site-footer .brand-wordmark { color: var(--text-primary) !important; }
 
@@ -146,11 +146,11 @@ button:disabled, .button[aria-disabled="true"] { opacity: 1; background: var(--s
 .landing-demo, .landing-demo .demo-sidebar, .landing-demo .demo-aside { background: var(--surface); border-color: var(--border-subtle); color: var(--text-primary); }
 .landing-demo .demo-sidebar { background: var(--bg-sidebar); }
 .demo-sidebar a { color: var(--text-secondary); }
-.demo-sidebar a.is-active { background: rgb(110 231 183 / 16%); color: var(--accent); }
+.demo-sidebar a.is-active { background: rgb(110 231 183 / 16%); color: var(--link); }
 .landing-demo [class*="previewStatement"], .landing-demo h2, .landing-demo h3 { color: var(--text-primary) !important; }
 .landing-demo [class*="previewOption"] { color: var(--text-primary); border-color: var(--border-control); background: transparent; }
 .landing-demo [class*="previewOptionSelected"], .landing-demo [class*="previewOption"][aria-checked="true"] { background: rgb(110 231 183 / 16%); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
-.landing-demo [class*="previewOption"] b, .landing-demo [class*="previewOption"] > span:first-child { color: var(--accent); }
+.landing-demo [class*="previewOption"] b, .landing-demo [class*="previewOption"] > span:first-child { color: var(--link); }
 
 .landing-steps .step-number {
   background: var(--surface-elevated); color: var(--text-primary) !important;
@@ -168,7 +168,7 @@ button:disabled, .button[aria-disabled="true"] { opacity: 1; background: var(--s
 .ref-price-card { background: var(--surface); border: 1px solid var(--border-subtle); color: var(--text-primary); box-shadow: var(--shadow-card); }
 .ref-price-card h3 { color: var(--text-primary); }
 .ref-price-card li { color: var(--text-primary); }
-.ref-price-card li > span { color: var(--accent) !important; }
+.ref-price-card li > span { color: var(--link) !important; }
 .ref-price-card.is-premium { border-color: var(--accent); background: linear-gradient(180deg, #194a54 0%, var(--surface) 100%); }
 .ref-price, .ref-price small { color: var(--text-primary); }
 .ref-price small { display: block; color: var(--text-secondary); font-size: .875rem; font-weight: 500; }
@@ -177,15 +177,15 @@ button:disabled, .button[aria-disabled="true"] { opacity: 1; background: var(--s
 .ref-guarantee { background: var(--surface-soft) !important; border: 1px solid var(--border-subtle); color: var(--text-primary) !important; }
 .ref-guarantee strong { color: var(--text-primary); }
 .ref-guarantee span, .ref-guarantee-copy span { color: var(--text-secondary) !important; }
-.ref-guarantee a { color: var(--accent) !important; text-decoration: underline; text-underline-offset: 3px; }
-.ref-guarantee-mark { background: var(--surface-elevated) !important; color: var(--accent) !important; border: 1px solid var(--border-control); }
+.ref-guarantee a { color: var(--link) !important; text-decoration: underline; text-underline-offset: 3px; }
+.ref-guarantee-mark { background: var(--surface-elevated) !important; color: var(--link) !important; border: 1px solid var(--border-control); }
 .ref-guarantee-mark svg { stroke: currentColor; fill: none; }
 
 /* FAQ */
 .landing-faq .faq-list details { background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 18px; box-shadow: none; }
 .landing-faq .faq-list details[open], .landing-faq .faq-list details:hover { background: var(--surface-elevated); border-color: var(--border-control); }
 .landing-faq .faq-list summary { color: var(--text-primary); min-height: 56px; }
-.landing-faq .faq-list summary span { color: var(--accent); }
+.landing-faq .faq-list summary span { color: var(--link); }
 .landing-faq .faq-list details p { color: var(--text-secondary); }
 
 /* Cookies */
@@ -286,7 +286,7 @@ body.godev-app.godev-app .consent .button.secondary { color: var(--text-primary)
 body.godev-app.godev-app .consent .button.primary { background: var(--accent) !important; color: var(--on-accent) !important; }
 body.godev-app.godev-app .consent-toggle { color: var(--text-primary) !important; }
 body.godev-app.godev-app .reformulated-landing .demo-aside, body.godev-app.godev-app .reformulated-landing .demo-aside * { color: var(--text-secondary); }
-body.godev-app.godev-app .reformulated-landing .demo-aside .demo-tab.is-active { color: var(--accent); border-color: var(--accent); }
+body.godev-app.godev-app .reformulated-landing .demo-aside .demo-tab.is-active { color: var(--link); border-color: var(--accent); }
 body.godev-app.godev-app .reformulated-landing .demo-aside .demo-tab { font-weight: 700; }
 @media (max-width: 640px) {
   body.godev-app .reformulated-landing .landing-stat-strip { flex-wrap: wrap; justify-content: center; row-gap: .5rem; }
@@ -319,17 +319,17 @@ body.godev-app.godev-app .portal-search { display: flex; align-items: center; ga
 body.godev-app.godev-app .portal-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(199 244 100 / 45%); }
 body.godev-app.godev-app .portal-search input { border: 0; background: transparent; min-height: 0; padding: 0; outline: 0; box-shadow: none; width: 100%; }
 body.godev-app.godev-app .student-count { color: var(--text-secondary); background: var(--surface-soft); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 4px 10px; }
-body.godev-app.godev-app .student-welcome { padding: clamp(20px, 3vw, 32px); background: linear-gradient(135deg, #1b4650 0%, var(--surface) 70%); }
+body.godev-app.godev-app .student-welcome { padding: clamp(20px, 3vw, 32px); background: linear-gradient(135deg, #163321 0%, var(--surface) 70%); }
 
 /* ---------- Admin: ícones, atividade e métricas ---------- */
 body.godev-app.godev-app .overview-metric-icon {
-  background: var(--surface-elevated); color: var(--accent); border: 1px solid var(--border-control);
+  background: var(--surface-elevated); color: var(--link); border: 1px solid var(--border-control);
 }
 body.godev-app.godev-app .activity-icon { background: var(--surface-elevated); color: var(--text-primary); border: 1px solid var(--border-control); }
 body.godev-app.godev-app .activity-icon.is-success { background: var(--success-bg); color: var(--success-text); border-color: var(--success-text); }
 body.godev-app.godev-app .activity-icon.is-warning { background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-text); }
 body.godev-app.godev-app .activity-icon.is-danger, body.godev-app.godev-app .activity-icon.is-error { background: var(--error-bg); color: var(--error-text); border-color: var(--error-text); }
-body.godev-app.godev-app .overview-chart-bar { min-height: 6px; background: linear-gradient(180deg, #a2f3d0 0%, #6ee7b7 55%, #2fb59a 100%); border-radius: 8px 8px 3px 3px; }
+body.godev-app.godev-app .overview-chart-bar { min-height: 6px; background: linear-gradient(180deg, #c7ff65 0%, #b8ff35 55%, #2fb59a 100%); border-radius: 8px 8px 3px 3px; }
 body.godev-app.godev-app .overview-chart-column small, body.godev-app.godev-app .overview-revenue-card .overview-chart-column small { color: var(--text-secondary); }
 
 /* ---------- Chips por área (cores legíveis no tema escuro) ---------- */
@@ -364,7 +364,7 @@ body.godev-app.godev-app .demo-number-grid span.is-active { border-color: var(--
 
 /* ---------- Benefícios com ícone (landing) ---------- */
 body.godev-app .petroleum-benefits article { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: start; }
-body.godev-app .petroleum-benefits article > svg { grid-row: span 2; width: 44px; height: 44px; padding: 10px; border-radius: 50%; border: 1.5px solid var(--border-control); color: var(--accent); background: var(--surface-soft); }
+body.godev-app .petroleum-benefits article > svg { grid-row: span 2; width: 44px; height: 44px; padding: 10px; border-radius: 50%; border: 1.5px solid var(--border-control); color: var(--link); background: var(--surface-soft); }
 body.godev-app .petroleum-benefits article > strong, body.godev-app .petroleum-benefits article > p { grid-column: 2; margin: 0; }
 
 /* ---------- Admin: título do topo ---------- */

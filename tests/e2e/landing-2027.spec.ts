@@ -90,7 +90,7 @@ for (const width of [320, 390]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
     const body = await page.locator("main").innerText();
     expect(body).not.toMatch(/Operação|Reta final|Operação 2º Domingo/);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Saiba o que estudar para o ENEM 2027/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Seu próximo passo começa na GoDev/);
   });
 }
 
@@ -98,6 +98,6 @@ test("âncoras antigas continuam e o topo tem uma ação dominante", async ({ pa
   await withConsent(page, false);
   await page.goto("/landing");
   for (const id of ["amostra", "beneficios", "ofertas", "acesso", "duvidas", "trilha", "experimentar"]) await expect(page.locator(`#${id}`)).toHaveCount(1);
-  await expect(page.locator("#topo .s-btn-lg")).toHaveCount(1);
+  await expect(page.locator("#topo .v2-btn-lg:not(.v2-btn-outline)")).toHaveCount(1);
   await expect(page.locator(".scroll-progress")).toHaveCount(0);
 });

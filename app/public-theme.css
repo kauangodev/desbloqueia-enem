@@ -3,22 +3,24 @@
    ligada por html[data-gd-theme="light"] e por um marcador (.theme-public) que só o Header público renderiza:
    a área do aluno e o painel não carregam esse marcador e continuam escuros. */
 
-html[data-gd-theme="light"] body.godev-app:has(.theme-public) {
+/* Paleta clara GoDev v2, válida para landing, área do aluno e painel (os mesmos tokens do escuro em app/tokens.css). */
+html[data-gd-theme="light"] body.godev-app {
   color-scheme: light;
-  --bg-base: #ffffff; --bg-primary: #ffffff; --bg-secondary: #f2f8f4; --bg-sidebar: #eaf4ee;
-  --surface: #ffffff; --surface-elevated: #f2f8f4; --surface-raised: #ffffff; --surface-soft: #ffffff; --surface-muted: #e3f2ea;
-  --text-primary: #0c3b2e; --text-secondary: #3a5248; --text-muted: #4b645b; --text-2: #3a5248; --text-3: #4b645b;
-  --border-subtle: #cfe0d6; --border-control: #5f8271; --border-strong: #5f8271;
-  --accent: #12624a; --accent-hover: #0c3b2e; --accent-press: #0a2f24; --on-accent: #ffffff;
-  --highlight: #12624a; --focus-ring: #0f5c8a; --focus: #0f5c8a;
-  --success-bg: #e3f2ea; --success-text: #0c4a35; --warning-bg: #fff4e5; --warning-text: #7a3300;
-  --error-bg: #fde8ea; --error-text: #8a1020; --danger: #8a1020; --warning: #7a3300;
-  --green-900: #0c3b2e; --green-800: #0f4a39; --green-700: #12624a; --green-500: #17805f; --green-300: #9fd4bd; --green-100: #e3f2ea; --green-50: #f2f8f4;
-  --master-green-950: #0c3b2e; --master-green-900: #0f4a39; --master-green-700: #12624a; --master-green-100: #e3f2ea;
-  --shadow-card: 0 18px 42px rgb(12 59 46 / 12%); --shadow-sm: 0 1px 2px rgb(12 59 46 / 14%); --shadow-md: 0 12px 28px rgb(12 59 46 / 14%);
-  --shadow-soft: 0 18px 42px rgb(12 59 46 / 12%); --shadow-raised: 0 12px 32px rgb(12 59 46 / 14%);
-  background: var(--bg-base); color: var(--text-primary);
+  --bg-base: #f7faf6; --bg-primary: #f7faf6; --bg-secondary: #eef7e7; --bg-sidebar: #eef7e7;
+  --surface: #ffffff; --surface-elevated: #ffffff; --surface-raised: #ffffff; --surface-soft: #eef7e7; --surface-muted: #eef7e7;
+  --text-primary: #102d22; --text-secondary: #405548; --text-muted: #52685a; --text-aux: #52685a; --text-2: #405548; --text-3: #52685a;
+  --border-subtle: #dfe9de; --border-control: #718c78; --border-strong: #718c78;
+  --accent: #b8ff35; --accent-hover: #a7ed28; --accent-press: #96d81f; --on-accent: #102615;
+  --highlight: #245d16; --link: #245d16; --lime: #245d16; --accent-lime: #245d16; --brand-green: #245d16; --brand-green-strong: #1b4a10; --brand-green-hover: #1b4a10; --brand-green-deep: #102d22; --btn-text: #ffffff; --focus-ring: #0f5c8a; --focus: #0f5c8a;
+  --success-bg: #e4f6e6; --success-text: #14532d; --warning-bg: #fff4dc; --warning-text: #7a4a00;
+  --error-bg: #fde8ea; --error-text: #8a1020; --danger: #8a1020; --warning: #7a4a00;
+  --green-900: #102d22; --green-800: #0c2b20; --green-700: #245d16; --green-500: #3d8b1f; --green-300: #b8ff35; --green-100: #eef7e7; --green-50: #f7faf6;
+  --master-green-950: #102d22; --master-green-900: #0c2b20; --master-green-700: #245d16; --master-green-100: #eef7e7;
+  --shadow-card: 0 10px 30px rgb(16 45 34 / 9%); --shadow-sm: 0 1px 2px rgb(16 45 34 / 12%); --shadow-md: 0 10px 24px rgb(16 45 34 / 11%);
+  --shadow-soft: 0 10px 30px rgb(16 45 34 / 9%); --shadow-raised: 0 10px 28px rgb(16 45 34 / 12%);
 }
+html[data-gd-theme="light"] body.godev-app { background: var(--bg-base); color: var(--text-primary); }
+html[data-gd-theme="dark"] body.godev-app { color-scheme: dark; --link: #b8ff35; --text-aux: #a9beb0; }
 html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header { background: rgb(255 255 255 / 94%); }
 html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .login-link { background: var(--accent); color: var(--on-accent); box-shadow: none; }
 html[data-gd-theme="light"] body.godev-app:has(.theme-public) .site-header .login-link:hover { background: var(--accent-hover); }

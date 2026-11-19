@@ -21,7 +21,7 @@ body.godev-app.godev-app .portal-topbar .as-chips { margin-left: auto; gap: 14px
 body.godev-app.godev-app .portal-topbar .as-chip { min-height: 36px; padding: 0 4px; border: 0; background: transparent; font-size: .8125rem; color: var(--text-muted); }
 body.godev-app.godev-app .portal-topbar .as-chip b { color: var(--text-primary); }
 body.godev-app.godev-app .portal-topbar .as-chip:hover { color: var(--text-primary); background: transparent; }
-body.godev-app.godev-app .portal-topbar .as-chip.is-hot, body.godev-app.godev-app .portal-topbar .as-chip.is-hot b { color: var(--op-orange, #f97316); }
+body.godev-app.godev-app .portal-topbar .as-chip.is-hot, body.godev-app.godev-app .portal-topbar .as-chip.is-hot b { color: var(--op-orange, #a7ed28); }
 @media (max-width: 1280px) { body.godev-app.godev-app .portal-user-name { display: none; } }
 @media (max-width: 760px) { body.godev-app.godev-app .portal-topbar .portal-search { flex: 1 1 auto; max-width: none; } }
 
@@ -35,7 +35,7 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .op-head2 { display: grid; gap: 6px; margin: 0 0 6px; }
 .op-head2 h1 { margin: 0; }
 .op-head2-sub { margin: 0; color: var(--text-muted); font-size: .9375rem; }
-.op-head2-note { margin: 4px 0 0; padding: 8px 12px; border-left: 3px solid var(--op-orange, #f97316); background: rgb(251 191 36 / 8%); border-radius: 0 10px 10px 0; font-size: .875rem; }
+.op-head2-note { margin: 4px 0 0; padding: 8px 12px; border-left: 3px solid var(--op-orange, #a7ed28); background: rgb(251 191 36 / 8%); border-radius: 0 10px 10px 0; font-size: .875rem; }
 .op-crumb { font-size: .8125rem; color: var(--text-muted); }
 .op-crumb a { color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
 .op-crumb [aria-current] { color: var(--text-primary); }
@@ -43,7 +43,7 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .op-subnav-wide { display: flex; gap: 4px; flex-wrap: nowrap; overflow-x: auto; border-bottom: 1px solid var(--border-subtle); padding: 0; margin: 0 0 14px; scrollbar-width: thin; }
 .op-subnav-wide a { flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 0; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--text-muted); font-size: .875rem; font-weight: 600; text-decoration: none; margin-bottom: -1px; }
 .op-subnav-wide a:hover { color: var(--text-primary); }
-.op-subnav-wide a[aria-current="page"] { color: var(--text-primary); border-bottom-color: var(--accent, #6ee7b7); background: transparent; }
+.op-subnav-wide a[aria-current="page"] { color: var(--text-primary); border-bottom-color: var(--accent, #b8ff35); background: transparent; }
 .op-subnav-compact { display: none; margin: 0 0 14px; position: relative; }
 .op-subnav-toggle { width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--surface); color: inherit; font: inherit; cursor: pointer; }
 .op-subnav-toggle span { font-size: .8125rem; color: var(--text-muted); }
@@ -60,14 +60,14 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .bq-field > span { font-size: .75rem; color: var(--text-muted); font-weight: 600; }
 .bq-field select, .bq-field input { width: 100%; min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border-subtle); background: var(--surface-soft, rgb(255 255 255 / 4%)); color: inherit; font: inherit; font-size: .9375rem; min-width: 0; }
 .bq-filters-btn { min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; border: 1px solid var(--border-subtle); background: transparent; color: inherit; font: inherit; font-weight: 700; cursor: pointer; }
-.bq-filters-btn[aria-expanded="true"] { border-color: var(--accent, #6ee7b7); }
-.bq-filters-btn b { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--accent, #6ee7b7); color: #06231a; font-size: .75rem; }
+.bq-filters-btn[aria-expanded="true"] { border-color: var(--accent, #b8ff35); }
+.bq-filters-btn b { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--accent, #b8ff35); color: #06231a; font-size: .75rem; }
 .bq-panel { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; padding: 14px; border-radius: 12px; border: 1px solid var(--border-subtle); background: rgb(255 255 255 / 3%); }
 .bq-close { min-height: 44px; border-radius: 10px; border: 1px solid var(--border-subtle); background: transparent; color: inherit; font: inherit; cursor: pointer; }
 .bq-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
 .bq-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .bq-chips button { min-height: 32px; padding: 0 10px; border-radius: 99px; border: 1px solid var(--border-subtle); background: rgb(110 231 183 / 10%); color: inherit; font: inherit; font-size: .8125rem; cursor: pointer; }
-.bq-chips button:hover { border-color: var(--accent, #6ee7b7); }
+.bq-chips button:hover { border-color: var(--accent, #b8ff35); }
 .bq-count { margin: 0; font-size: .875rem; font-weight: 700; }
 .bq-count span { font-weight: 400; color: var(--text-muted); }
 .bq-tools { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-left: auto; }
@@ -90,11 +90,11 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .bq-meta { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 0; font-size: .8125rem; color: var(--text-muted); }
 .bq-meta > * + *::before { content: "·"; margin: 0 8px; opacity: .6; }
 .bq-meta strong { color: var(--text-primary); font-weight: 700; }
-.bq-origin-oficial { color: var(--accent, #6ee7b7); font-weight: 700; }
+.bq-origin-oficial { color: var(--accent, #b8ff35); font-weight: 700; }
 .bq-actions { display: flex; flex-wrap: wrap; gap: 6px; }
 .bq-act { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--text-muted); font: inherit; font-size: .8125rem; font-weight: 600; cursor: pointer; }
 .bq-act:hover { color: var(--text-primary); background: rgb(255 255 255 / 6%); }
-.bq-act.is-on { color: var(--op-amber, #fbbf24); border-color: rgb(251 191 36 / 40%); }
+.bq-act.is-on { color: var(--op-amber, #b8ff35); border-color: rgb(251 191 36 / 40%); }
 @media (max-width: 560px) { .bq-act span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } .bq-act { width: 44px; justify-content: center; padding: 0; } }
 .op-question .op-q-foot .op-btn-primary { min-height: 48px; padding-inline: 26px; font-size: 1rem; }
 .bq-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; }
@@ -108,7 +108,7 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .as-today { padding: clamp(16px, 3vw, 26px); }
 .as-shortcuts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 .as-shortcuts a { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-subtle); color: inherit; text-decoration: none; background: transparent; }
-.as-shortcuts a:hover { border-color: var(--accent, #6ee7b7); background: rgb(110 231 183 / 6%); }
+.as-shortcuts a:hover { border-color: var(--accent, #b8ff35); background: rgb(110 231 183 / 6%); }
 .as-shortcuts strong { display: block; font-size: .9375rem; }
 .as-shortcuts small { display: block; color: var(--text-muted); font-size: .8125rem; }
 .as-summary { display: grid; gap: 14px; }
@@ -119,7 +119,7 @@ body.godev-app.godev-app .workspace-scroll > .as-page, body.godev-app.godev-app 
 .as-summary-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 14px; font-size: .875rem; color: var(--text-muted); }
 .as-week { display: flex; gap: 5px; align-items: center; }
 .as-week i { display: block; width: 22px; height: 22px; border-radius: 6px; border: 1.5px dashed var(--border-subtle); }
-.as-week i.is-done { border: 0; background: linear-gradient(135deg, #fbbf24, #f97316); }
+.as-week i.is-done { border: 0; background: linear-gradient(135deg, #b8ff35, #a7ed28); }
 .as-week i.is-today { box-shadow: 0 0 0 2px rgb(251 191 36 / 55%); }
 
 @media (prefers-reduced-motion: reduce) { .as-shortcuts a { transition: none; } }
@@ -136,17 +136,17 @@ body.godev-app.godev-app .bq button.bq-filters-btn, body.godev-app.godev-app .bq
 body.godev-app.godev-app .bq button.bq-filters-btn b { color: #06231a; }
 body.godev-app.godev-app .op-question button.bq-act { color: var(--text-muted); }
 body.godev-app.godev-app .op-question button.bq-act:hover { color: var(--text-primary); }
-body.godev-app.godev-app .op-question button.bq-act.is-on { color: var(--op-amber, #fbbf24); }
-body.godev-app.godev-app .op-question .bq-origin-oficial { color: var(--accent, #6ee7b7); }
+body.godev-app.godev-app .op-question button.bq-act.is-on { color: var(--op-amber, #b8ff35); }
+body.godev-app.godev-app .op-question .bq-origin-oficial { color: var(--accent, #b8ff35); }
 body.godev-app.godev-app .op-root .op-subnav-wide a { color: var(--text-muted); background: transparent; border-color: transparent; border-radius: 0; }
 body.godev-app.godev-app .op-root .op-subnav-wide a:hover { color: var(--text-primary); }
-body.godev-app.godev-app .op-root .op-subnav-wide a[aria-current="page"] { color: var(--text-primary); background: transparent; border-bottom: 2px solid var(--accent, #6ee7b7); }
+body.godev-app.godev-app .op-root .op-subnav-wide a[aria-current="page"] { color: var(--text-primary); background: transparent; border-bottom: 2px solid var(--accent, #b8ff35); }
 body.godev-app.godev-app .op-root .op-subnav-list a { color: var(--text-primary); }
 body.godev-app.godev-app .op-root .op-subnav-toggle { color: var(--text-primary); }
 body.godev-app.godev-app .op-root .op-subnav-toggle span { color: var(--text-muted); }
 body.godev-app.godev-app .tr-page .tr-prefs summary { color: var(--text-primary); }
 body.godev-app.godev-app .tr-page a.as-btn, body.godev-app.godev-app .tr-page button.as-btn { color: var(--text-primary); }
-body.godev-app.godev-app .tr-page a.as-btn-primary, body.godev-app.godev-app .tr-page button.as-btn-primary { color: #2a1500; }
+body.godev-app.godev-app .tr-page a.as-btn-primary, body.godev-app.godev-app .tr-page button.as-btn-primary { color: #102615; }
 
 /* ===== Alvos de toque de 44px nos controles do dia a dia em telas estreitas ===== */
 @media (max-width: 900px) {

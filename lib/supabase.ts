@@ -210,7 +210,7 @@ export async function startSessionForUser(userId: string): Promise<boolean> {
 }
 export const authConfigured = () => mysqlConfigured();
 export async function sessionClient() { return mysqlConfigured() ? { auth: createAuth(), from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any : null; }
-export function serviceClient() { if (!mysqlConfigured()) throw new Error("Banco MySQL não configurado"); return { auth: { admin: createAuth().admin }, from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any; }
+export function serviceClient() { if (devUserEnabled()) return (devIdentity() as unknown as { db: unknown }).db as any; if (!mysqlConfigured()) throw new Error("Banco MySQL não configurado"); return { auth: { admin: createAuth().admin }, from: (table: string) => new QueryBuilder(table), rpc: rpcHandler, storage: storageHandler } as any; }
 export function publicClient() { return mysqlConfigured() ? { auth: createAuth() } as any : null; }
 /**
  * Usuário de teste somente para desenvolvimento local (NODE_ENV diferente de "production" E GODEV_DEV_USER=1), na mesma regra de
@@ -229,7 +229,7 @@ function devIdentity() {
     return proxy;
   };
   const db = { from: builder, auth: {}, rpc: async () => ({ data: null, error: null }), storage: storageHandler } as never;
-  return { db, user: { id: "dev-user", email: "estudante@exemplo.dev", must_change_password: false, admin_role: null, account_status: "active" }, profile: { id: "dev-user", name: "Estudante Teste", role: normalizedRole("student"), admin_role: null, account_status: "active" } } as never as Awaited<ReturnType<typeof realIdentity>>;
+  return { db, user: { id: "dev-user", email: "estudante@exemplo.dev", must_change_password: false, admin_role: null, account_status: "active" }, profile: { id: "dev-user", name: "Estudante Teste", role: normalizedRole(process.env.GODEV_DEV_ROLE === "admin" ? "admin" : "student"), admin_role: null, account_status: "active" } } as never as Awaited<ReturnType<typeof realIdentity>>;
 }
 const devUserEnabled = () => process.env.NODE_ENV !== "production" && process.env.GODEV_DEV_USER === "1";
 

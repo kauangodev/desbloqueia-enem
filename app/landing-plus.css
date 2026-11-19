@@ -94,16 +94,16 @@ body.godev-app .sales .s-cal { color: var(--muted); }
 .s-trail li { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); }
 .s-trail-dot { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); font-weight: 800; }
 .s-trail .is-done .s-trail-dot { background: var(--step-bg); border-color: var(--step-bg); color: var(--step-fg); }
-.s-trail .is-now .s-trail-dot { border-color: #fbbf24; }
+.s-trail .is-now .s-trail-dot { border-color: #b8ff35; }
 .s-trail b { display: block; color: var(--g900); }
 .s-trail small { display: block; color: var(--muted); font-size: .875rem; }
 .s-trail .is-lock { opacity: .8; border-style: dashed; }
 
 /* ===== Landing 2027: demonstração primeiro, ação única, planos comparáveis ===== */
 .sales .s-wrap { max-width: 1140px; }
-.sales .s-btn { background: #f97316; color: #1f1100; border: 1px solid #c2570c !important; box-shadow: none; transform: none; text-transform: none; letter-spacing: 0; font-weight: 800; }
+.sales .s-btn { background: #a7ed28; color: #1f1100; border: 1px solid #c2570c !important; box-shadow: none; transform: none; text-transform: none; letter-spacing: 0; font-weight: 800; }
 .sales .s-btn:hover { background: #ea6a0a; box-shadow: none; transform: none; }
-.sales .s-btn:focus-visible, .sales .s-link:focus-visible, .s-tp button:focus-visible, .s-sticky a:focus-visible { outline: 3px solid var(--focus-ring, #fbbf24); outline-offset: 3px; }
+.sales .s-btn:focus-visible, .sales .s-link:focus-visible, .s-tp button:focus-visible, .s-sticky a:focus-visible { outline: 3px solid var(--focus-ring, #b8ff35); outline-offset: 3px; }
 .s-hero::after { display: none; }
 .s-hero::before { opacity: .6; }
 .s-hero-grid { align-items: start; }

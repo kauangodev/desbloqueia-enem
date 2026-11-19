@@ -1,0 +1,61 @@
+/* GoDev v2: identidade verde neon + floresta para a landing e os componentes de marca compartilhados (cabeçalho, rodapé, botões).
+   Os tokens --v2-* são a tradução da tabela aprovada e valem em ambos os temas (data-gd-theme no <html>, definido por lib/theme). */
+body.godev-app {
+  --v2-bg: #07150f; --v2-surface: #10271a; --v2-elev: #163321; --v2-support: #0c2015;
+  --v2-text: #f2f8ee; --v2-text2: #c5d2c7; --v2-aux: #a9beb0; --v2-line: #294333; --v2-line-strong: #688773;
+  --v2-accent: #b8ff35; --v2-accent-hover: #c7ff65; --v2-on-accent: #102615; --v2-link: #b8ff35;
+  --v2-side: #081d13; --v2-band: #0c2015; --v2-photo-bg: #d8ff88;
+  --v2-shadow: 0 14px 40px rgb(0 0 0 / 38%); --v2-hero-glow: radial-gradient(60% 70% at 78% 40%, rgb(184 255 53 / 10%), transparent 70%);
+}
+html[data-gd-theme="light"] body.godev-app {
+  --v2-bg: #f7faf6; --v2-surface: #ffffff; --v2-elev: #ffffff; --v2-support: #eef7e7;
+  --v2-text: #102d22; --v2-text2: #405548; --v2-aux: #52685a; --v2-line: #dfe9de; --v2-line-strong: #718c78;
+  --v2-accent: #b8ff35; --v2-accent-hover: #a7ed28; --v2-on-accent: #102615; --v2-link: #245d16;
+  --v2-side: #0c2b20; --v2-band: #eef7e7; --v2-photo-bg: #c9f56b;
+  --v2-shadow: 0 12px 34px rgb(16 45 34 / 12%); --v2-hero-glow: radial-gradient(60% 70% at 78% 40%, rgb(184 255 53 / 22%), transparent 70%);
+}
+
+/* ---------- Marca: logo tradicional; só a cor se adapta ao fundo (claro/escuro, sidebar e rodapé verdes) ---------- */
+.site-header .brand .brand-wordmark, .site-header .brand .brand-sub { color: var(--v2-text) !important; }
+.sidebar .brand .brand-wordmark, .admin-side .brand .brand-wordmark, .gd-footer .brand .brand-wordmark { color: #ffffff !important; }
+.sidebar .brand .brand-sub, .admin-side .brand .brand-sub, .gd-footer .brand .brand-sub { color: #c5d2c7 !important; }
+
+/* ---------- Botões ---------- */
+.v2-btn, .sales .s-btn, .site-header .header-cta { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 10px; border: 1px solid transparent !important; background: var(--v2-accent); color: var(--v2-on-accent); font: 800 1rem/1.2 var(--godev-font-body), system-ui, sans-serif; text-decoration: none; cursor: pointer; box-shadow: none; text-align: center; transition: background .18s ease, transform .18s ease; }
+.v2-btn:hover, .sales .s-btn:hover, .site-header .header-cta:hover { background: var(--v2-accent-hover); transform: none; box-shadow: none; }
+.v2-btn-lg { min-height: 52px; padding: 0 28px; font-size: 1.0625rem; }
+.v2-btn-block { width: 100%; }
+.v2-btn-outline { background: transparent; color: var(--v2-text); border: 1.5px solid var(--v2-line-strong) !important; }
+.v2-btn-outline:hover { background: rgb(184 255 53 / 12%); }
+.sales .s-btn { background: var(--v2-accent) !important; color: var(--v2-on-accent) !important; }
+.v2-btn:focus-visible, .sales a:focus-visible, .sales button:focus-visible, .sales summary:focus-visible, .sales input:focus-visible { outline: 3px solid var(--v2-link); outline-offset: 3px; }
+
+/* ---------- Cabeçalho ---------- */
+.sales .site-header, .site-header { background: color-mix(in srgb, var(--v2-bg) 94%, transparent) !important; border-bottom: 1px solid var(--v2-line) !important; backdrop-filter: blur(10px); }
+.site-header .header-inner { display: flex; align-items: center; gap: 20px; min-height: 68px; }
+.site-header .nav a { color: var(--v2-text2) !important; font-weight: 600; text-decoration: none; }
+.site-header .nav a:hover { color: var(--v2-text) !important; background: transparent !important; text-decoration: underline; text-underline-offset: 6px; }
+.site-header .nav a[aria-current="true"] { color: var(--v2-link) !important; }
+.site-header .login-link { border: 1.5px solid var(--v2-line-strong) !important; background: transparent !important; color: var(--v2-text) !important; box-shadow: none !important; border-radius: 10px; min-height: 44px; display: inline-flex; align-items: center; padding: 0 18px; font-weight: 700; }
+.site-header .login-link:hover { background: rgb(184 255 53 / 14%) !important; }
+.site-header .header-cta { padding: 0 18px; color: var(--v2-on-accent) !important; }
+.site-header .header-actions { display: flex; align-items: center; gap: 10px; }
+.site-header .nav.open { background: var(--v2-bg) !important; }
+.site-header .nav.open a { color: var(--v2-text) !important; border-bottom-color: var(--v2-line) !important; }
+.site-header .nav.open a::before { color: var(--v2-link) !important; }
+.theme-select select { min-height: 44px; border-radius: 10px; border: 1.5px solid var(--v2-line-strong); background: var(--v2-surface); color: var(--v2-text); padding: 0 12px; font: 600 1rem var(--godev-font-body), system-ui, sans-serif; }
+@media (max-width: 899px) { .site-header .header-cta, .site-header .login-link { display: none; } }
+
+/* ---------- Rodapé ---------- */
+.gd-footer.site-footer { background: var(--v2-side) !important; color: #c5d2c7 !important; border-top: 0 !important; padding: 28px 0 18px; }
+.gd-footer .footer-grid { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 28px; }
+.gd-footer .gd-footer-brand { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.gd-footer .gd-footer-brand p { margin: 0; color: #c5d2c7; }
+.gd-footer .gd-footer-links { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.gd-footer .gd-footer-links a, .gd-footer .gd-footer-links .cookie-link, .gd-footer .gd-footer-links button { color: #f2f8ee !important; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 0; font-size: .9375rem; cursor: pointer; }
+.gd-footer .gd-footer-links a:hover, .gd-footer .gd-footer-links .cookie-link:hover { color: #b8ff35 !important; text-decoration: underline; text-underline-offset: 5px; }
+.gd-footer .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; margin-top: 8px; padding-top: 14px; border-top: 1px solid rgb(255 255 255 / 14%); color: #a9beb0 !important; font-size: .8125rem; }
+.gd-footer .theme-switch { border-color: #688773; }
+.gd-footer .theme-switch label { color: #c5d2c7 !important; }
+
+.gd-footer .theme-switch label:has(input:checked), .gd-footer .theme-switch label:has(input:checked) span { color: #102615 !important; background-color: #b8ff35; }
